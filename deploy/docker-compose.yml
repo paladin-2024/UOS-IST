@@ -21,7 +21,9 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./postgres-init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-istm}"]
+      # pg_isready defaults to a database named after -U, not POSTGRES_DB --
+      # explicit -d avoids spamming "database ... does not exist" every interval.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-istm} -d postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
