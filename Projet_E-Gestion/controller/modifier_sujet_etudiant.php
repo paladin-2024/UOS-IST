@@ -67,15 +67,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 3. Effectuer la mise à jour
         $updateQuery = "UPDATE sujets SET 
                         intitule = :intitule,
-                        idSpecialisation = :specialisation,
-                        idDirecteur = :directeur,
-                        idEncadreur = :encadreur,
+                        \"idSpecialisation\" = :specialisation,
+                        \"idDirecteur\" = :directeur,
+                        \"idEncadreur\" = :encadreur,
                         annee_acad_idannee_acad = :annee_acad,
                         cycle = :cycle,
                         statut_validation = 'En attente',
                         commentaire_commission = NULL,
                         date_validation = NULL,
-                        idValidateur = NULL
+                        \"idValidateur\" = NULL
                         WHERE idsujets = :sujet_id AND etudiant_idetudiant = :etudiant_id";
 
         $updateStmt = $connexion->prepare($updateQuery);
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                    statut_validation = 'En attente',
                                    commentaire_commission = NULL,
                                    date_validation = NULL,
-                                   idValidateur = NULL
+                                   \"idValidateur\" = NULL
                                    WHERE idsujets = :sujet_id AND etudiant_idetudiant = :etudiant_id";
                 
                 $forceUpdateStmt = $connexion->prepare($forceUpdateQuery);

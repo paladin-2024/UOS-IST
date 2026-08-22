@@ -36,7 +36,7 @@ $promotion = [];
 $annee = [];
 
 try {
-    $sql = "SELECT idpromotion, designationPromotion FROM promotion WHERE idpromotion = :id";
+    $sql = "SELECT idpromotion, \"designationPromotion\" FROM promotion WHERE idpromotion = :id";
     $stmt = $db->prepare($sql);
     $stmt->execute([':id' => $promotionId]);
     $promotion = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -137,19 +137,19 @@ try {
         case 'par_ue':
             $sql = "SELECT 
                         ec.codeECUE as code_ue,
-                        ec.designationECUE as designation,
-                        s.numeroSemestre as semestre,
+                        ec.\"designationECUE\" as designation,
+                        s.\"numeroSemestre\" as semestre,
                         COUNT(DISTINCT d.matricule) as nombre_etudiants,
                         SUM(d.credits_ecue) as total_credits,
                         SUM(CASE WHEN d.statut = 'Validée' THEN 1 ELSE 0 END) as nombre_validees,
                         ROUND((SUM(CASE WHEN d.statut = 'Validée' THEN 1 ELSE 0 END) * 100.0) / COUNT(*), 1) as taux_validation
                     FROM dette_etudiant d
-                    INNER JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
+                    INNER JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
                     INNER JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
                     WHERE d.promotion_idpromotion = :promotion
                     AND d.annee_acad_idannee_acad = :annee
-                    GROUP BY ec.idECUE, s.numeroSemestre
-                    ORDER BY s.numeroSemestre, ec.codeECUE";
+                    GROUP BY ec.\"idECUE\", s.\"numeroSemestre\"
+                    ORDER BY s.\"numeroSemestre\", ec.codeECUE";
             
             $stmt = $db->prepare($sql);
             $stmt->execute([
@@ -161,7 +161,7 @@ try {
             
         case 'par_semestre':
             $sql = "SELECT 
-                        CONCAT('Semestre ', s.numeroSemestre) as designation,
+                        CONCAT('Semestre ', s.\"numeroSemestre\") as designation,
                         COUNT(DISTINCT d.matricule) as nombre_etudiants,
                         SUM(d.credits_ecue) as total_credits,
                         SUM(CASE WHEN d.statut = 'Validée' THEN 1 ELSE 0 END) as dettes_validees,
@@ -170,8 +170,8 @@ try {
                     INNER JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
                     WHERE d.promotion_idpromotion = :promotion
                     AND d.annee_acad_idannee_acad = :annee
-                    GROUP BY s.idsemestre, s.numeroSemestre
-                    ORDER BY s.numeroSemestre";
+                    GROUP BY s.idsemestre, s.\"numeroSemestre\"
+                    ORDER BY s.\"numeroSemestre\"";
             
             $stmt = $db->prepare($sql);
             $stmt->execute([

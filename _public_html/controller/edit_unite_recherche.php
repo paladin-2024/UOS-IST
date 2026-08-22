@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editResearchUnitBtn'])
     
     try {
         // 1. Mettre à jour l'unité de recherche
-        $stmtUR = $db->prepare("UPDATE unite_recherche SET designation_UR = ?, description = ? WHERE idunite_recherche = ?");
+        $stmtUR = $db->prepare("UPDATE unite_recherche SET \"designation_UR\" = ?, description = ? WHERE idunite_recherche = ?");
         $stmtUR->execute([$designationUR, $description, $idUniteRecherche]);
         
         // 2. Supprimer les anciennes associations avec les sections

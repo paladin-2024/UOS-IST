@@ -88,7 +88,7 @@ try {
         // Création d'un nouveau budget
         $sql = "INSERT INTO budget (
                     exercice_id, categorie_id, montant_prevu, montant_revise,
-                    montant_engage, montant_realise, disponible, commentaire, idUser
+                    montant_engage, montant_realise, disponible, commentaire, \"idUser\"
                 ) VALUES (
                     :exercice_id, :categorie_id, :montant_prevu, :montant_revise,
                     :montant_engage, :montant_realise, :disponible, :commentaire, :idUser

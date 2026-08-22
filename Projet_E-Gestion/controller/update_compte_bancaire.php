@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 (nom_banque, numero_compte, intitule_compte, devise, 
                 solde_initial, solde_actuel, date_ouverture, 
                 contact_banque, telephone_banque, email_banque, 
-                adresse_banque, est_actif, idUser) 
+                adresse_banque, est_actif, \"idUser\") 
                 VALUES 
                 (:nom_banque, :numero_compte, :intitule_compte, :devise, 
                 :solde_initial, :solde_actuel, :date_ouverture, 

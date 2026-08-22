@@ -20,11 +20,11 @@ if ($receptionId <= 0) {
 
 // Récupération des détails de la réception
 $queryReception = "SELECT rf.*, f.nom_fournisseur, f.code_fournisseur, 
-                  d.libelle_depot, u.nomUser as user_creation
+                  d.libelle_depot, u.\"nomUser\" as user_creation
                   FROM reception_fournisseur rf 
                   JOIN fournisseur f ON rf.id_fournisseur = f.id_fournisseur 
                   JOIN depot d ON rf.id_depot = d.id_depot
-                  JOIN t_users u ON rf.id_user_creation = u.idUser
+                  JOIN t_users u ON rf.id_user_creation = u.\"idUser\"
                   LEFT JOIN entree_stock es ON rf.id_entree_stock = es.id_entree
                   WHERE rf.id_reception = :id";
 $stmtReception = $db->prepare($queryReception);

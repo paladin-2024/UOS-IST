@@ -22,7 +22,7 @@ try {
     
     // Récupérer les détails du chef actuel
     $queryChef = "SELECT cp.*, e.matricule, e.noms, 
-                         p.designationPromotion, o.designationOrientation, s.designationSection
+                         p.\"designationPromotion\", o.\"designationOrientation\", s.\"designationSection\"
                   FROM chef_promotion cp
                   JOIN etudiant e ON cp.idetudiant = e.idetudiant
                   JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion

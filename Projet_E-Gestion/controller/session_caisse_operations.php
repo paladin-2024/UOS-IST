@@ -15,7 +15,7 @@ $connexion = Connexion::getInstance()->getPDO();
 $stmt = $connexion->prepare("
     SELECT COUNT(*) as count
     FROM droits_acces_finances 
-    WHERE idUser = :idUser AND type = 'Caisse' 
+    WHERE \"idUser\" = :idUser AND type = 'Caisse' 
     AND est_actif = 1 
     AND (date_debut IS NULL OR date_debut <= CURRENT_DATE) 
     AND (date_fin IS NULL OR date_fin >= CURRENT_DATE)
@@ -46,7 +46,7 @@ try {
         $stmt = $connexion->prepare("
             SELECT niveau 
             FROM droits_acces_finances 
-            WHERE idUser = :idUser AND type = 'Caisse' 
+            WHERE \"idUser\" = :idUser AND type = 'Caisse' 
             AND (entite_id = :caisse_id OR entite_id IS NULL)
             AND est_actif = 1
             ORDER BY entite_id DESC, niveau DESC
@@ -82,7 +82,7 @@ try {
         }
         
         // Vérifier que l'agent est bien l'utilisateur connecté
-        $stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+        $stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
         $stmt->bindParam(':idUser', $idUser);
         $stmt->execute();
         $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -97,7 +97,7 @@ try {
         // Ouvrir la session
         $stmt = $connexion->prepare("
             INSERT INTO sessions_caisse (
-                caisse_id, idAgent, date_ouverture, montant_ouverture, statut, commentaire
+                caisse_id, \"idAgent\", date_ouverture, montant_ouverture, statut, commentaire
             ) VALUES (
                 :caisse_id, :idAgent, NOW(), :montant_ouverture, 'Ouverte', :commentaire
             )
@@ -138,7 +138,7 @@ try {
         }
         
         // Vérifier que l'utilisateur est bien l'agent qui a ouvert la session
-        $stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+        $stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
         $stmt->bindParam(':idUser', $idUser);
         $stmt->execute();
         $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -200,7 +200,7 @@ try {
         $commentaire_validation = $_POST['commentaire_validation'] ?? null;
         
         // Récupérer l'agent ID de l'utilisateur connecté (pour la validation)
-        $stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+        $stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
         $stmt->bindParam(':idUser', $idUser);
         $stmt->execute();
         $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -235,7 +235,7 @@ try {
         $stmt = $connexion->prepare("
             SELECT niveau 
             FROM droits_acces_finances 
-            WHERE idUser = :idUser AND type = 'Caisse' 
+            WHERE \"idUser\" = :idUser AND type = 'Caisse' 
             AND (entite_id = :caisse_id OR entite_id IS NULL)
             AND est_actif = 1
             ORDER BY entite_id DESC, niveau DESC
@@ -257,7 +257,7 @@ try {
         $stmt = $connexion->prepare("
             UPDATE sessions_caisse SET
                 date_validation = NOW(),
-                idValidateur = :idValidateur,
+                \"idValidateur\" = :idValidateur,
                 commentaire = CONCAT(IFNULL(commentaire, ''), '\n\n--- Commentaire de validation ---\n', :commentaire_validation)
             WHERE id = :session_id
         ");

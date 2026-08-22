@@ -33,7 +33,7 @@ try {
     // Récupérer les informations de l'inscription externe
     $stmt = $connexion->prepare("
         SELECT ie.*, lie.promotion_id, lie.annee_acad_id, lie.titre as titre_lien,
-               p.designationPromotion as nom_promotion, aa.designation as annee_academique
+               p.\"designationPromotion\" as nom_promotion, aa.designation as annee_academique
         FROM inscriptions_externes ie
         JOIN liens_inscription_externe lie ON ie.lien_inscription_id = lie.id
         LEFT JOIN promotion p ON lie.promotion_id = p.idpromotion
@@ -81,7 +81,7 @@ try {
     $stmt = $connexion->prepare("
         SELECT COUNT(*) as nb_etudiants 
         FROM etudiant 
-        WHERE YEAR(dateEnregistrement) = ?
+        WHERE YEAR(\"dateEnregistrement\") = ?
     ");
     $stmt->execute([$anneeActuelle]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -104,22 +104,22 @@ try {
     // Insérer l'étudiant dans la table etudiant
     $stmt = $connexion->prepare("
         INSERT INTO etudiant (
-            matricule, 
-            noms, 
-            lieuNaissance, 
-            dateNaissance, 
-            adressemail, 
-            telephone, 
-            adresse, 
-            personne_contact, 
-            telephone_contact, 
-            sexe, 
-            nationalite, 
-            dateEnregistrement, 
-            annee_acad_idannee_acad, 
-            promotion_idpromotion, 
-            idUser, 
-            est_actif, 
+            matricule,
+            noms,
+            \"lieuNaissance\",
+            \"dateNaissance\",
+            adressemail,
+            telephone,
+            adresse,
+            personne_contact,
+            telephone_contact,
+            sexe,
+            nationalite,
+            \"dateEnregistrement\",
+            annee_acad_idannee_acad,
+            promotion_idpromotion,
+            \"idUser\",
+            est_actif,
             dossier_complete
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 1, 0)
     ");

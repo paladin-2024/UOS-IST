@@ -19,10 +19,10 @@ class Role
         $query = "SELECT * FROM t_roles";
         
         if (!empty($search)) {
-            $query .= " WHERE (nomRole LIKE :search)";
+            $query .= " WHERE (\"nomRole\" LIKE :search)";
         }
         
-        $query .= " ORDER BY idRole DESC LIMIT :limit OFFSET :offset";
+        $query .= " ORDER BY \"idRole\" DESC LIMIT :limit OFFSET :offset";
         
         $stmt = $this->db->prepare($query);
         
@@ -43,7 +43,7 @@ class Role
         $query = "SELECT COUNT(*) FROM t_roles";
                   
         if (!empty($search)) {
-            $query .= " WHERE (nomRole LIKE :search)";
+            $query .= " WHERE (\"nomRole\" LIKE :search)";
         }
         
         $stmt = $this->db->prepare($query);
@@ -60,7 +60,7 @@ class Role
     //GEt Roles by id
     function getRolesById($id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM t_roles WHERE idRole = :idRole");
+        $stmt = $this->db->prepare("SELECT * FROM t_roles WHERE \"idRole\" = :idRole");
         $stmt->bindParam(':idRole', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -70,7 +70,7 @@ class Role
     public function checkDuplicateRole($nomRole)
     {
         try {
-            $sql = "SELECT COUNT(*) AS count FROM t_roles WHERE nomRole = :nomRole";
+            $sql = "SELECT COUNT(*) AS count FROM t_roles WHERE \"nomRole\" = :nomRole";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':nomRole', $nomRole, PDO::PARAM_STR);
             $stmt->execute();
@@ -87,7 +87,7 @@ class Role
     // Ajouter un role
     public function addRole($nomRole)
     {
-        $query = "INSERT INTO t_roles (nomRole) VALUES (:nomRole)";
+        $query = "INSERT INTO t_roles (\"nomRole\") VALUES (:nomRole)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nomRole', $nomRole);
         return $stmt->execute();
@@ -96,7 +96,7 @@ class Role
     // Modifier un role
     public function updateRole($idRole, $nomRole)
     {
-        $query = "UPDATE t_roles SET nomRole = :nomRole WHERE idRole = :idRole";
+        $query = "UPDATE t_roles SET \"nomRole\" = :nomRole WHERE \"idRole\" = :idRole";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nomRole', $nomRole);
         $stmt->bindParam(':idRole', $idRole);
@@ -111,7 +111,7 @@ class Role
     }
 
     // Récupérer l'ID du rôle de l'utilisateur
-    $stmt = $this->db->prepare("SELECT idRole FROM t_users WHERE idUser = :userId");
+    $stmt = $this->db->prepare("SELECT \"idRole\" FROM t_users WHERE \"idUser\" = :userId");
     $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
     $stmt->execute();
     
@@ -122,11 +122,11 @@ class Role
         $roleId = $user['idRole'];
         
         // Vérifier si le rôle a la permission d'accéder à la page
-        $stmt = $this->db->prepare("SELECT up.idUP 
+        $stmt = $this->db->prepare("SELECT up.\"idUP\" 
                                     FROM t_user_permissions up
-                                    JOIN t_permissions p ON up.idPerm = p.idPerm
-                                    WHERE up.idRole = :roleId 
-                                    AND p.nomPerm = :pageName");
+                                    JOIN t_permissions p ON up.\"idPerm\" = p.\"idPerm\"
+                                    WHERE up.\"idRole\" = :roleId 
+                                    AND p.\"nomPerm\" = :pageName");
         $stmt->bindParam(':roleId', $roleId, PDO::PARAM_INT);
         $stmt->bindParam(':pageName', $pageName, PDO::PARAM_STR);
         $stmt->execute();

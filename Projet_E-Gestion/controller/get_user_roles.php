@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['idUser'])) {
     $idUser = intval($_GET['idUser']);
     $connexion = Connexion::getInstance()->getPDO();
 
-    $query = "SELECT idRole, isPrincipal FROM t_user_roles WHERE idUser = :idUser";
+    $query = "SELECT \"idRole\", \"isPrincipal\" FROM t_user_roles WHERE \"idUser\" = :idUser";
     $stmt = $connexion->prepare($query);
     $stmt->bindParam(':idUser', $idUser);
     $stmt->execute();

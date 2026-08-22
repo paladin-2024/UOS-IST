@@ -9,13 +9,13 @@ $par_page = isset($_GET['par_page']) ? intval($_GET['par_page']) : 50;
 
 // Obtenir les données depuis la table user_activity_log
 $db = Connexion::getInstance()->getPDO();
-$sql = "SELECT u.idUser, u.nomUser, ual.* FROM user_activity_log ual 
-        LEFT JOIN t_users u ON ual.user_id = u.idUser 
+$sql = "SELECT u.\"idUser\", u.\"nomUser\", ual.* FROM user_activity_log ual 
+        LEFT JOIN t_users u ON ual.user_id = u.\"idUser\" 
         WHERE 1=1";
 $parametres = [];
 
 if (!empty($_GET['recherche'])) {
-    $sql .= " AND (ual.description LIKE ? OR u.nomUser LIKE ? OR ual.ip_address LIKE ?)";
+    $sql .= " AND (ual.description LIKE ? OR u.\"nomUser\" LIKE ? OR ual.ip_address LIKE ?)";
     $recherche = '%' . $_GET['recherche'] . '%';
     $parametres[] = $recherche;
     $parametres[] = $recherche;
@@ -35,11 +35,11 @@ if (!empty($_GET['date_fin'])) {
 // Compter total
 $sqlBase = explode(' ORDER BY', $sql)[0];
 $sqlCount = "SELECT COUNT(*) as total FROM user_activity_log ual 
-        LEFT JOIN t_users u ON ual.user_id = u.idUser 
+        LEFT JOIN t_users u ON ual.user_id = u.\"idUser\" 
         WHERE 1=1";
 if (strpos($sqlBase, 'AND') !== false) {
     $sqlCount = $sqlBase;
-    $sqlCount = str_replace('SELECT u.idUser, u.nomUser, ual.*', 'SELECT COUNT(*) as total', $sqlCount);
+    $sqlCount = str_replace('SELECT u."idUser", u."nomUser", ual.*', 'SELECT COUNT(*) as total', $sqlCount);
 }
 
 $stmtCount = $db->prepare($sqlCount);

@@ -33,7 +33,7 @@ try {
     $creditHeure = $config && isset($config['credit_heure']) ? intval($config['credit_heure']) : 25;
     
     // Récupérer les informations de la promotion
-    $queryPromo = "SELECT p.*, o.designationOrientation, s.designationSection,
+    $queryPromo = "SELECT p.*, o.\"designationOrientation\", s.\"designationSection\",
                           aa.designation as annee_designation
                    FROM promotion p
                    JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -164,10 +164,10 @@ try {
         $row++;
         
         // Récupérer les UE du semestre
-        $queryUEs = "SELECT u.idUE, u.codeUE, u.designationUE 
+        $queryUEs = "SELECT u.\"idUE\", u.\"codeUE\", u.\"designationUE\" 
                      FROM ue u 
                      WHERE u.semestre_idsemestre = :semestreId 
-                     ORDER BY u.codeUE";
+                     ORDER BY u.\"codeUE\"";
         $stmtUEs = $pdo->prepare($queryUEs);
         $stmtUEs->bindParam(':semestreId', $semestre['idsemestre'], PDO::PARAM_INT);
         $stmtUEs->execute();
@@ -177,10 +177,10 @@ try {
         
         foreach ($ues as $ue) {
             // Récupérer les ECUEs de cette UE
-            $queryECUEs = "SELECT e.idECUE, e.designationECUE, e.CMI, e.TD, e.TP
+            $queryECUEs = "SELECT e.\"idECUE\", e.\"designationECUE\", e.\"CMI\", e.\"TD\", e.\"TP\"
                            FROM ecue e 
-                           WHERE e.UE_idUE = :ueId 
-                           ORDER BY e.designationECUE";
+                           WHERE e.\"UE_idUE\" = :ueId 
+                           ORDER BY e.\"designationECUE\"";
             $stmtECUEs = $pdo->prepare($queryECUEs);
             $stmtECUEs->bindParam(':ueId', $ue['idUE'], PDO::PARAM_INT);
             $stmtECUEs->execute();

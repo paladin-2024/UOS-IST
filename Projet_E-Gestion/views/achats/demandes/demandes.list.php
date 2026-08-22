@@ -51,7 +51,7 @@ $demandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php foreach ($demandes as $demande): ?>
                                     <?php
                                     // Récupérer le nom de l'utilisateur qui a créé la demande
-                                    $queryUser = "SELECT nomUser FROM t_users WHERE idUser = :id";
+                                    $queryUser = "SELECT \"nomUser\" FROM t_users WHERE \"idUser\" = :id";
                                     $stmtUser = $db->prepare($queryUser);
                                     $stmtUser->bindParam(':id', $demande['id_user_creation'], PDO::PARAM_INT);
                                     $stmtUser->execute();

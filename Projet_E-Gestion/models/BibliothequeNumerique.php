@@ -42,7 +42,7 @@ class BibliothequeNumerique {
                  (SELECT COUNT(*) FROM consultations WHERE travail_id = t.id) as nb_consultations
                  FROM travaux_scientifiques t
                  LEFT JOIN section d ON t.departement_id = d.idsection
-                 LEFT JOIN specialisation s ON t.specialisation_id = s.idSpecialisation
+                 LEFT JOIN specialisation s ON t.specialisation_id = s.\"idSpecialisation\"
                  WHERE t.statut = 'Validé'";
         
         $params = [];

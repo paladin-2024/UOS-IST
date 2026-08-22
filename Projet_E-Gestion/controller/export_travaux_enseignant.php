@@ -47,7 +47,7 @@ if (!$anneeInfo) {
 $query = "SELECT a.*, g.designation as grade 
           FROM agent a 
           LEFT JOIN grade g ON a.grade_id = g.idgrade 
-          WHERE a.idAgent = :enseignantId";
+          WHERE a.\"idAgent\" = :enseignantId";
 $stmt = $connexion->prepare($query);
 $stmt->bindParam(':enseignantId', $enseignantId);
 $stmt->execute();
@@ -67,7 +67,7 @@ if (!$isAdmin) {
     
     // Récupérer les sections dont l'utilisateur est responsable pour l'année sélectionnée
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     
     $stmt = $connexion->prepare($query);
     $stmt->bindParam(':userId', $userId);
@@ -84,7 +84,7 @@ if (!$isAdmin) {
     // Vérifier si l'enseignant appartient à une des sections autorisées
     $placeholders = implode(',', array_fill(0, count($userSections), '?'));
     $query = "SELECT COUNT(*) FROM agent_section 
-              WHERE idAgent = ? AND idsection IN ($placeholders)";
+              WHERE \"idAgent\" = ? AND idsection IN ($placeholders)";
     
     $params = array_merge([$enseignantId], $userSections);
     $stmt = $connexion->prepare($query);
@@ -106,16 +106,16 @@ $query = "SELECT s.*,
           spec.designation as specialisation, 
           e.noms as etudiant,
           e.matricule as matricule_etudiant,
-          p.designationPromotion as promotion,
-          sec.designationSection as section,
-          o.designationOrientation as orientation
+          p.\"designationPromotion\" as promotion,
+          sec.\"designationSection\" as section,
+          o.\"designationOrientation\" as orientation
           FROM sujets s
-          LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+          LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
           LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
           LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
           LEFT JOIN orientation o ON spec.idorientation = o.idorientation
           LEFT JOIN section sec ON o.section_idsection = sec.idsection
-          WHERE (s.idDirecteur = :enseignantId OR s.idEncadreur = :enseignantId)
+          WHERE (s.\"idDirecteur\" = :enseignantId OR s.\"idEncadreur\" = :enseignantId)
           AND s.annee_acad_idannee_acad = :anneeAcadId
           AND s.etudiant_idetudiant IS NOT NULL
           AND s.statut_validation = 'Validé'";
@@ -148,7 +148,7 @@ if (!$isAdmin && !empty($authorizedSections)) {
     $stmt->bindParam(':anneeAcadId', $anneeAcadId);
 }
 
-$query .= " ORDER BY p.designationPromotion ASC, s.intitule ASC";
+$query .= " ORDER BY p.\"designationPromotion\" ASC, s.intitule ASC";
 
 // Exécuter la requête finale
 if (!$isAdmin && !empty($authorizedSections)) {
@@ -157,23 +157,23 @@ if (!$isAdmin && !empty($authorizedSections)) {
               spec.designation as specialisation, 
               e.noms as etudiant,
               e.matricule as matricule_etudiant,
-              p.designationPromotion as promotion,
-              sec.designationSection as section,
-              o.designationOrientation as orientation
+              p.\"designationPromotion\" as promotion,
+              sec.\"designationSection\" as section,
+              o.\"designationOrientation\" as orientation
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
-              WHERE (s.idDirecteur = ? OR s.idEncadreur = ?)
+              WHERE (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)
               AND s.annee_acad_idannee_acad = ?
               AND s.etudiant_idetudiant IS NOT NULL
               AND s.statut_validation = 'Validé'";
     
     $placeholders = implode(',', array_fill(0, count($authorizedSections), '?'));
     $query .= " AND o.section_idsection IN ($placeholders)";
-    $query .= " ORDER BY p.designationPromotion ASC, s.intitule ASC";
+    $query .= " ORDER BY p.\"designationPromotion\" ASC, s.intitule ASC";
     
     $params = array_merge(
         [$enseignantId, $enseignantId, $anneeAcadId],
@@ -188,19 +188,19 @@ if (!$isAdmin && !empty($authorizedSections)) {
               spec.designation as specialisation, 
               e.noms as etudiant,
               e.matricule as matricule_etudiant,
-              p.designationPromotion as promotion,
-              sec.designationSection as section,
-              o.designationOrientation as orientation
+              p.\"designationPromotion\" as promotion,
+              sec.\"designationSection\" as section,
+              o.\"designationOrientation\" as orientation
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
-              WHERE (s.idDirecteur = ? OR s.idEncadreur = ?)
+              WHERE (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)
               AND s.annee_acad_idannee_acad = ?
               AND s.etudiant_idetudiant IS NOT NULL
-              ORDER BY p.designationPromotion ASC, s.intitule ASC";
+              ORDER BY p.\"designationPromotion\" ASC, s.intitule ASC";
     
     $stmt = $connexion->prepare($query);
     $stmt->execute([$enseignantId, $enseignantId, $anneeAcadId]);

@@ -26,13 +26,13 @@ try {
     $pdo = Connexion::getInstance()->getPDO();
     
     // Récupérer les promotions de l'année académique
-    $query = "SELECT p.idpromotion, p.designationPromotion, p.cycle,
-                     o.designationOrientation, a.designation as anneeDesignation, p.est_terminale
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
+                     o.\"designationOrientation\", a.designation as anneeDesignation, p.est_terminale
               FROM promotion p
               INNER JOIN orientation o ON p.orientation_idorientation = o.idorientation
               INNER JOIN annee_acad a ON p.annee_acad_idannee_acad = a.idannee_acad
               WHERE p.annee_acad_idannee_acad = :annee_id
-              ORDER BY p.designationPromotion ASC";
+              ORDER BY p.\"designationPromotion\" ASC";
     
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':annee_id', $anneeId, PDO::PARAM_INT);

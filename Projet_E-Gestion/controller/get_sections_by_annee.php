@@ -26,7 +26,7 @@ $hasFullAccess = $_SESSION['idRole'] == 1;
 // Fonctions utilitaires
 function getUserSections($db, $userId, $anneeAcadId) {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     $stmt = $db->prepare($query);
     $stmt->execute(['userId' => $userId, 'anneeId' => $anneeAcadId]);
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -61,13 +61,13 @@ try {
     $whereClause = !empty($whereConditions) ? ' AND ' . implode(' AND ', $whereConditions) : '';
     
     // Récupérer les sections qui ont des promotions dans cette année académique
-    $query = "SELECT DISTINCT sec.idsection, sec.designationSection
+    $query = "SELECT DISTINCT sec.idsection, sec.\"designationSection\"
               FROM section sec
               JOIN orientation o ON sec.idsection = o.section_idsection
               JOIN promotion p ON o.idorientation = p.orientation_idorientation
               WHERE p.annee_acad_idannee_acad = :annee_id
               $whereClause
-              ORDER BY sec.designationSection";
+              ORDER BY sec.\"designationSection\"";
     
     $stmt = $connexion->prepare($query);
     foreach ($queryParams as $placeholder => $value) {

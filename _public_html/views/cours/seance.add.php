@@ -14,7 +14,7 @@ $hasFullAccess = $_SESSION['idRole'] == 1;
 // Récupérer les sections dont l'utilisateur est responsable
 $userSections = [];
 if ($anneeId) {
-    $stmtSec = $db->prepare("SELECT section_idsection FROM responsable_section WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId");
+    $stmtSec = $db->prepare("SELECT section_idsection FROM responsable_section WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId");
     $stmtSec->bindParam(':userId', $currentUserId);
     $stmtSec->bindParam(':anneeId', $anneeId);
     $stmtSec->execute();
@@ -25,31 +25,31 @@ if ($anneeId) {
 $ecues = [];
 if ($anneeId) {
     if ($hasFullAccess) {
-        $query = "SELECT ec.idECUE, ec.designationECUE, ue.designationUE, s.numeroSemestre, p.designationPromotion, sec.designationSection
+        $query = "SELECT ec.\"idECUE\", ec.\"designationECUE\", ue.\"designationUE\", s.\"numeroSemestre\", p.\"designationPromotion\", sec.\"designationSection\"
                   FROM ecue ec
-                  JOIN ue ON ec.UE_idUE = ue.idUE
+                  JOIN ue ON ec.\"UE_idUE\" = ue.\"idUE\"
                   JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
                   JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                   JOIN orientation o ON p.orientation_idorientation = o.idorientation
                   JOIN section sec ON o.section_idsection = sec.idsection
                   WHERE p.annee_acad_idannee_acad = :anneeId
-                  ORDER BY sec.designationSection, p.designationPromotion, s.numeroSemestre, ec.designationECUE";
+                  ORDER BY sec.\"designationSection\", p.\"designationPromotion\", s.\"numeroSemestre\", ec.\"designationECUE\"";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':anneeId', $anneeId);
         $stmt->execute();
         $ecues = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } elseif (!empty($userSections)) {
         $placeholders = implode(',', array_fill(0, count($userSections), '?'));
-        $query = "SELECT ec.idECUE, ec.designationECUE, ue.designationUE, s.numeroSemestre, p.designationPromotion, sec.designationSection
+        $query = "SELECT ec.\"idECUE\", ec.\"designationECUE\", ue.\"designationUE\", s.\"numeroSemestre\", p.\"designationPromotion\", sec.\"designationSection\"
                   FROM ecue ec
-                  JOIN ue ON ec.UE_idUE = ue.idUE
+                  JOIN ue ON ec.\"UE_idUE\" = ue.\"idUE\"
                   JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
                   JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                   JOIN orientation o ON p.orientation_idorientation = o.idorientation
                   JOIN section sec ON o.section_idsection = sec.idsection
                   WHERE p.annee_acad_idannee_acad = ?
                   AND sec.idsection IN ($placeholders)
-                  ORDER BY sec.designationSection, p.designationPromotion, s.numeroSemestre, ec.designationECUE";
+                  ORDER BY sec.\"designationSection\", p.\"designationPromotion\", s.\"numeroSemestre\", ec.\"designationECUE\"";
         $stmt = $db->prepare($query);
         $params = array_merge([$anneeId], $userSections);
         $stmt->execute($params);
@@ -58,7 +58,7 @@ if ($anneeId) {
 }
 
 // Récupérer les salles disponibles
-$querySalles = "SELECT * FROM salle ORDER BY designationSalle";
+$querySalles = "SELECT * FROM salle ORDER BY \"designationSalle\"";
 $stmtSalles = $db->prepare($querySalles);
 $stmtSalles->execute();
 $salles = $stmtSalles->fetchAll(PDO::FETCH_ASSOC);

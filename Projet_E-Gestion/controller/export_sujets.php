@@ -91,7 +91,7 @@ if ($isAdmin) {
     
     // Récupérer les sections dont l'utilisateur est responsable pour l'année sélectionnée
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     
     $stmt = $connexion->prepare($query);
     $stmt->bindParam(':userId', $userId);
@@ -163,16 +163,16 @@ $query = "SELECT s.*,
         enc.noms as encadreur,
         gr_e.designation as grade_encadreur,
         spec.designation as specialisation,
-        o.designationOrientation as orientation,
-        sec.designationSection as section
+        o.\"designationOrientation\" as orientation,
+        sec.\"designationSection\" as section
      FROM sujets s
      LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad
      LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-     LEFT JOIN agent d ON s.idDirecteur = d.idAgent
+     LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
      LEFT JOIN grade gr_d ON d.grade_id = gr_d.idgrade
-     LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+     LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
      LEFT JOIN grade gr_e ON enc.grade_id = gr_e.idgrade
-     LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+     LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
      LEFT JOIN orientation o ON spec.idorientation = o.idorientation
      LEFT JOIN section sec ON o.section_idsection = sec.idsection
      WHERE s.annee_acad_idannee_acad = ?";
@@ -265,7 +265,7 @@ $statistiques = [
 
 // Construction des requêtes de statistiques avec tous les filtres appliqués
 $baseQuery = "SELECT COUNT(*) as total FROM sujets s
-              JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               JOIN orientation o ON spec.idorientation = o.idorientation
               WHERE s.annee_acad_idannee_acad = ?";
 
@@ -520,7 +520,7 @@ if ($cycleExport) {
 }
 if ($specialisationExport) {
     // Récupérer le nom de la spécialisation
-    $querySpec = "SELECT designation FROM specialisation WHERE idSpecialisation = ?";
+    $querySpec = "SELECT designation FROM specialisation WHERE \"idSpecialisation\" = ?";
     $stmtSpec = $connexion->prepare($querySpec);
     $stmtSpec->execute([$specialisationExport]);
     $specName = $stmtSpec->fetch(PDO::FETCH_ASSOC);

@@ -7,7 +7,7 @@ $connexion = Connexion::getInstance()->getPDO();
 // Récupérer toutes les caisses
 $stmt = $connexion->query("SELECT c.*, CONCAT(a.noms) as responsable_nom 
                            FROM caisses c 
-                           LEFT JOIN agent a ON c.idAgent_responsable = a.idAgent 
+                           LEFT JOIN agent a ON c.\"idAgent_responsable\" = a.\"idAgent\" 
                            ORDER BY c.est_actif DESC, c.designation ASC");
 $caisses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -39,7 +39,7 @@ foreach ($devises_supplementaires as $dev) {
 }
 
 // Récupérer tous les agents pour le sélecteur de responsables
-$stmt = $connexion->query("SELECT idAgent as id, noms AS nom_complet FROM agent WHERE 1 ORDER BY noms");
+$stmt = $connexion->query("SELECT \"idAgent\" as id, noms AS nom_complet FROM agent WHERE 1 ORDER BY noms");
 $agents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>

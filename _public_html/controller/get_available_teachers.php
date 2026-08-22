@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 $db = Connexion::getInstance()->getPDO();
 
 try {
-    $query = "SELECT a.idAgent, a.noms, g.designation as grade
+    $query = "SELECT a.\"idAgent\", a.noms, g.designation as grade
               FROM agent a
               LEFT JOIN grade g ON a.grade_id = g.idgrade
               WHERE a.type_agent = 'Enseignant'

@@ -116,7 +116,7 @@ try {
     
     // Vérifier s'il existe déjà un dépôt pour ce sujet
     error_log("DEBUG: Checking for existing depot with sujetId = $sujetId");
-    $query = "SELECT idDepot FROM depot_memoire WHERE sujets_idsujets = :sujetId";
+    $query = "SELECT \"idDepot\" FROM depot_memoire WHERE sujets_idsujets = :sujetId";
     $stmt = $db->prepare($query);
     $checkResult = $stmt->execute(['sujetId' => $sujetId]);
     error_log("DEBUG: Check query result = " . ($checkResult ? 'true' : 'false'));
@@ -136,7 +136,7 @@ try {
         
         // Mettre à jour le dépôt existant
         $query = "UPDATE depot_memoire 
-                  SET fichier = :fichier, dateDepot = CURRENT_TIMESTAMP
+                  SET fichier = :fichier, \"dateDepot\" = CURRENT_TIMESTAMP
                   WHERE sujets_idsujets = :sujetId";
         $stmt = $db->prepare($query);
         $result = $stmt->execute(['fichier' => $relativePath, 'sujetId' => $sujetId]);

@@ -51,11 +51,11 @@ foreach ($statsParTypeData as $stat) {
 }
 
 // Récupérer les statistiques par orientation
-$queryStatsParOrientation = "SELECT o.designationOrientation, COUNT(t.id) as count 
+$queryStatsParOrientation = "SELECT o.\"designationOrientation\", COUNT(t.id) as count 
                             FROM travaux_scientifiques t
                             JOIN orientation o ON t.orientation_id = o.idorientation
                             WHERE t.est_public = 1 AND t.statut = 'Validé' 
-                            GROUP BY t.orientation_id, o.designationOrientation
+                            GROUP BY t.orientation_id, o.\"designationOrientation\"
                             ORDER BY count DESC";
 $stmtStatsParOrientation = $db->prepare($queryStatsParOrientation);
 $stmtStatsParOrientation->execute();

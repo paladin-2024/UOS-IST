@@ -64,7 +64,7 @@ try {
         // Récupérer les sections dont l'utilisateur est responsable
         $queryUserSections = "SELECT section_idsection 
                              FROM responsable_section 
-                             WHERE idUser = ? AND annee_acad_idannee_acad = ?";
+                             WHERE \"idUser\" = ? AND annee_acad_idannee_acad = ?";
         $stmtUserSections = $pdo->prepare($queryUserSections);
         $stmtUserSections->execute([$userId, $anneeId]);
         $userSections = $stmtUserSections->fetchAll(PDO::FETCH_COLUMN);
@@ -110,7 +110,7 @@ try {
             }
             
             // Vérifier si l'étudiant est déjà chef d'une autre promotion cette année
-            $queryCheckExistingChef = "SELECT p.designationPromotion 
+            $queryCheckExistingChef = "SELECT p.\"designationPromotion\" 
                                       FROM chef_promotion cp
                                       INNER JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion
                                       WHERE cp.idetudiant = ? 
@@ -150,7 +150,7 @@ try {
                 
                 // Insérer le nouveau chef avec est_actif explicitement défini à 1
                 $queryInsert = "INSERT INTO chef_promotion 
-                               (promotion_idpromotion, idetudiant, annee_acad_idannee_acad, date_nomination, est_actif, idUser) 
+                               (promotion_idpromotion, idetudiant, annee_acad_idannee_acad, date_nomination, est_actif, \"idUser\") 
                                VALUES (?, ?, ?, CURDATE(), 1, ?)";
                 $stmtInsert = $pdo->prepare($queryInsert);
                 $stmtInsert->execute([$promotionId, $etudiantId, $anneeId, $userId]);
@@ -198,7 +198,7 @@ try {
                 if (!empty($commentaire)) {
                     try {
                         $queryHistory = "INSERT INTO chef_promotion 
-                                        (promotion_idpromotion, idetudiant, annee_acad_idannee_acad, date_nomination, est_actif, idUser) 
+                                        (promotion_idpromotion, idetudiant, annee_acad_idannee_acad, date_nomination, est_actif, \"idUser\") 
                                         VALUES (?, ?, ?, CURDATE(), 0, ?)";
                         $stmtHistory = $pdo->prepare($queryHistory);
                         $stmtHistory->execute([

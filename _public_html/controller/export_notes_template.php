@@ -63,11 +63,11 @@ if (!$isAuthorized) {
 
 // Récupérer les détails de l'évaluation
 try {
-    $sql = "SELECT e.*, t.designationT, t.categorie, s.designSession, s.description AS session_description 
-            FROM evaluations e 
-            INNER JOIN typeevaluation t ON e.idType = t.idType 
-            INNER JOIN session s ON e.session_idsession = s.idsession 
-            WHERE e.idevaluation = ? AND e.idECUE = ?";
+    $sql = "SELECT e.*, t.\"designationT\", t.categorie, s.\"designSession\", s.description AS session_description
+            FROM evaluations e
+            INNER JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
+            INNER JOIN session s ON e.session_idsession = s.idsession
+            WHERE e.idevaluation = ? AND e.\"idECUE\" = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$evaluationId, $ecueId]);
     $evaluation = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -87,13 +87,13 @@ $isDeuxiemeSession = mb_strpos(mb_strtolower($evaluation['designSession']), 'deu
 
 // Récupérer les détails de l'ECUE
 try {
-    $sql = "SELECT e.*, u.designationUE, u.codeUE, s.numeroSemestre, p.designationPromotion, o.designationOrientation
+    $sql = "SELECT e.*, u.\"designationUE\", u.\"codeUE\", s.\"numeroSemestre\", p.\"designationPromotion\", o.\"designationOrientation\"
             FROM ecue e
-            INNER JOIN ue u ON e.UE_idUE = u.idUE
+            INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
             INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
             INNER JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
             INNER JOIN orientation o ON p.orientation_idorientation = o.idorientation
-            WHERE e.idECUE = ?";
+            WHERE e.\"idECUE\" = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$ecueId]);
     $ecueDetails = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -110,7 +110,7 @@ try {
 try {
     if ($isDeuxiemeSession) {
         // 1. Récupérer l'UE associée à cet ECUE
-        $sqlUE = "SELECT e.UE_idUE FROM ecue e WHERE e.idECUE = ?";
+        $sqlUE = "SELECT e.\"UE_idUE\" FROM ecue e WHERE e.\"idECUE\" = ?";
         $stmtUE = $pdo->prepare($sqlUE);
         $stmtUE->execute([$ecueId]);
         $idUE = $stmtUE->fetchColumn();
@@ -120,9 +120,9 @@ try {
         }
         
         // 2. Récupérer l'ID de la première session
-        $sqlSession = "SELECT idsession FROM session 
-                     WHERE LOWER(designSession) LIKE 'premi%re session' 
-                     OR LOWER(designSession) = 'premiere session' LIMIT 1";
+        $sqlSession = "SELECT idsession FROM session
+                     WHERE LOWER(\"designSession\") LIKE 'premi%re session'
+                     OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmtSession = $pdo->prepare($sqlSession);
         $stmtSession->execute();
         $session1Id = $stmtSession->fetchColumn();
@@ -132,12 +132,12 @@ try {
         }
         
         // 3. Récupérer la promotion associée à cet ECUE
-        $sqlPromotion = "SELECT p.idpromotion 
-                       FROM ecue e 
-                       JOIN ue u ON e.UE_idUE = u.idUE 
-                       JOIN semestre s ON u.semestre_idsemestre = s.idsemestre 
-                       JOIN promotion p ON s.promotion_idpromotion = p.idpromotion 
-                       WHERE e.idECUE = ?";
+        $sqlPromotion = "SELECT p.idpromotion
+                       FROM ecue e
+                       JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
+                       JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
+                       JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
+                       WHERE e.\"idECUE\" = ?";
         $stmtPromotion = $pdo->prepare($sqlPromotion);
         $stmtPromotion->execute([$ecueId]);
         $promotionId = $stmtPromotion->fetchColumn();
@@ -147,9 +147,9 @@ try {
         }
         
         // 4. Vérifier si des notes existent pour cet ECUE en première session
-        $sqlNoteCount = "SELECT COUNT(*) FROM cotes_grille 
-                       WHERE ECUE_idECUE = ? 
-                       AND session_idsession = ? 
+        $sqlNoteCount = "SELECT COUNT(*) FROM cotes_grille
+                       WHERE \"ECUE_idECUE\" = ?
+                       AND session_idsession = ?
                        AND annee_acad_id = ?";
         $stmtNoteCount = $pdo->prepare($sqlNoteCount);
         $stmtNoteCount->execute([$ecueId, $session1Id, $currentYear['idannee_acad']]);
@@ -158,13 +158,13 @@ try {
         // 5. Récupérer les étudiants qui ont échoué à cet ECUE
         $sqlFailed = "SELECT e.idetudiant, e.matricule, e.noms 
                     FROM etudiant e 
-                    LEFT JOIN cotes_grille cg ON e.matricule = cg.matricule 
-                                              AND cg.ECUE_idECUE = ? 
-                                              AND cg.session_idsession = ? 
-                                              AND cg.annee_acad_id = ? 
-                    WHERE e.promotion_idpromotion = ? 
-                    AND e.annee_acad_idannee_acad = ? 
-                    AND (cg.MF IS NULL OR cg.MF < 10 OR cg.CC IS NULL OR cg.EX IS NULL) 
+                    LEFT JOIN cotes_grille cg ON e.matricule = cg.matricule
+                                              AND cg.\"ECUE_idECUE\" = ?
+                                              AND cg.session_idsession = ?
+                                              AND cg.annee_acad_id = ?
+                    WHERE e.promotion_idpromotion = ?
+                    AND e.annee_acad_idannee_acad = ?
+                    AND (cg.\"MF\" IS NULL OR cg.\"MF\" < 10 OR cg.\"CC\" IS NULL OR cg.\"EX\" IS NULL)
                     ORDER BY e.noms";
         $stmtFailed = $pdo->prepare($sqlFailed);
         $stmtFailed->execute([$ecueId, $session1Id, $currentYear['idannee_acad'], $promotionId, $currentYear['idannee_acad']]);
@@ -192,16 +192,16 @@ try {
                 $matricule = $student['matricule'];
                 
                 // Vérifier si l'UE a été validée en première session
-                $sqlUEValidation = "SELECT 
-                                  SUM(cg.MF * ROUND((ec.CMI + ec.TD + ec.TP)/15, 2)) / 
-                                  SUM(ROUND((ec.CMI + ec.TD + ec.TP)/15, 2)) AS moyenne_ponderee, 
-                                  COUNT(cg.MF) AS notes_count, 
-                                  (SELECT COUNT(*) FROM ecue WHERE UE_idUE = ?) AS total_ecues 
-                                FROM cotes_grille cg 
-                                JOIN ecue ec ON cg.ECUE_idECUE = ec.idECUE 
-                                WHERE ec.UE_idUE = ? 
-                                AND cg.matricule = ? 
-                                AND cg.session_idsession = ? 
+                $sqlUEValidation = "SELECT
+                                  SUM(cg.\"MF\" * ROUND((ec.\"CMI\" + ec.\"TD\" + ec.\"TP\")/15, 2)) /
+                                  SUM(ROUND((ec.\"CMI\" + ec.\"TD\" + ec.\"TP\")/15, 2)) AS moyenne_ponderee,
+                                  COUNT(cg.\"MF\") AS notes_count,
+                                  (SELECT COUNT(*) FROM ecue WHERE \"UE_idUE\" = ?) AS total_ecues
+                                FROM cotes_grille cg
+                                JOIN ecue ec ON cg.\"ECUE_idECUE\" = ec.\"idECUE\"
+                                WHERE ec.\"UE_idUE\" = ?
+                                AND cg.matricule = ?
+                                AND cg.session_idsession = ?
                                 AND cg.annee_acad_id = ? 
                                 AND cg.MF IS NOT NULL";
                 $stmtUEValidation = $pdo->prepare($sqlUEValidation);
@@ -226,12 +226,12 @@ try {
     } else {
         // Pour la première session, récupérer tous les étudiants inscrits
         // Récupérer la promotion associée à cet ECUE
-        $sqlPromotion = "SELECT p.idpromotion 
-                       FROM ecue e 
-                       JOIN ue u ON e.UE_idUE = u.idUE 
-                       JOIN semestre s ON u.semestre_idsemestre = s.idsemestre 
-                       JOIN promotion p ON s.promotion_idpromotion = p.idpromotion 
-                       WHERE e.idECUE = ?";
+        $sqlPromotion = "SELECT p.idpromotion
+                       FROM ecue e
+                       JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
+                       JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
+                       JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
+                       WHERE e.\"idECUE\" = ?";
         $stmtPromotion = $pdo->prepare($sqlPromotion);
         $stmtPromotion->execute([$ecueId]);
         $promotionId = $stmtPromotion->fetchColumn();
@@ -276,10 +276,10 @@ if (empty($etudiants)) {
 
 // Récupérer les notes existantes pour cette évaluation
 try {
-    $sql = "SELECT p.matricule, p.coteObtenu
+    $sql = "SELECT p.matricule, p.\"coteObtenu\"
             FROM points p
             WHERE p.typeEvaluation = ?
-            AND p.ECUE_idECUE = ?
+            AND p.\"ECUE_idECUE\" = ?
             AND p.session_idsession = ?
             AND p.annee_acad_id = ?";
     $stmt = $pdo->prepare($sql);

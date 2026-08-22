@@ -22,7 +22,7 @@ try {
     $db = Connexion::getInstance()->getPDO();
     
     // Requête pour obtenir la section associée à l'orientation
-    $query = "SELECT s.idsection, s.designationSection 
+    $query = "SELECT s.idsection, s.\"designationSection\" 
               FROM section s 
               INNER JOIN orientation o ON o.section_idsection = s.idsection 
               WHERE o.idorientation = :orientation_id";

@@ -13,7 +13,7 @@ class User
     // Fonction pour vérifier les doublons de nom et de login
     public function checkDuplicateUser($nomUser, $loginUser, $idRole)
     {
-        $stmt = $this->con->prepare("SELECT * FROM t_users WHERE (nomUser = :nomUser AND idRole = :idRole) OR (loginUser = :loginUser)");
+        $stmt = $this->con->prepare("SELECT * FROM t_users WHERE (\"nomUser\" = :nomUser AND \"idRole\" = :idRole) OR (\"loginUser\" = :loginUser)");
         $stmt->bindParam(':nomUser', $nomUser, PDO::PARAM_STR);
         $stmt->bindParam(':loginUser', $loginUser, PDO::PARAM_STR);
         $stmt->bindParam(':idRole', $idRole, PDO::PARAM_STR);
@@ -54,7 +54,7 @@ class User
             $imagePath = "user.png";
         }
 
-        $stmt = $this->con->prepare("INSERT INTO t_users (idRole, nomUser, loginUser, pw, imageUser, etatUser, dernier_connexion,idAgent) 
+        $stmt = $this->con->prepare("INSERT INTO t_users (\"idRole\", \"nomUser\", \"loginUser\", pw, \"imageUser\", \"etatUser\", dernier_connexion,\"idAgent\") 
                                     VALUES (:idRole, :nomUser, :loginUser, :pw, :imageUser, :etatUser, :dernier_connexion,:idAgent)");
         $stmt->bindParam(':idRole', $idRole, PDO::PARAM_STR);
         $stmt->bindParam(':nomUser', $nomUser, PDO::PARAM_STR);
@@ -72,7 +72,7 @@ class User
     {
         $imagePath = $this->uploadImage($imageFile);
 
-        $sql = "UPDATE t_users SET idRole = :idRole, nomUser = :nomUser, loginUser = :loginUser, etatUser = :etatUser, dernier_connexion = :dernier_connexion";
+        $sql = "UPDATE t_users SET \"idRole\" = :idRole, \"nomUser\" = :nomUser, \"loginUser\" = :loginUser, \"etatUser\" = :etatUser, dernier_connexion = :dernier_connexion";
         $params = [
             ':idRole' => $idRole,
             ':nomUser' => $nomUser,
@@ -87,11 +87,11 @@ class User
         }
 
         if ($imagePath) {
-            $sql .= ", imageUser = :imageUser";
+            $sql .= ", \"imageUser\" = :imageUser";
             $params[':imageUser'] = $imagePath;
         }
 
-        $sql .= " WHERE idUser = :idUser";
+        $sql .= " WHERE \"idUser\" = :idUser";
         $params[':idUser'] = $id;
 
         $stmt = $this->con->prepare($sql);
@@ -101,20 +101,20 @@ class User
     // Méthode pour obtenir tous les utilisateurs
     function getUser()
     {
-        $stmt = $this->con->query("SELECT * FROM t_users INNER JOIN t_roles ON t_roles.idRole=t_users.idRole WHERE t_users.idUser<>1");
+        $stmt = $this->con->query("SELECT * FROM t_users INNER JOIN t_roles ON t_roles.\"idRole\"=t_users.\"idRole\" WHERE t_users.\"idUser\"<>1");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     function getUserListe($offset = 0, $limit = 10, $search = '') {
         $query = "SELECT * FROM t_users 
-                  INNER JOIN t_roles ON t_roles.idRole=t_users.idRole 
-                  WHERE t_users.idUser<>1";
+                  INNER JOIN t_roles ON t_roles.\"idRole\"=t_users.\"idRole\" 
+                  WHERE t_users.\"idUser\"<>1";
         
         if (!empty($search)) {
-            $query .= " AND (nomUser LIKE :search OR nomRole LIKE :search)";
+            $query .= " AND (\"nomUser\" LIKE :search OR \"nomRole\" LIKE :search)";
         }
         
-        $query .= " ORDER BY idUser DESC LIMIT :limit OFFSET :offset";
+        $query .= " ORDER BY \"idUser\" DESC LIMIT :limit OFFSET :offset";
         
         $stmt = $this->con->prepare($query);
         
@@ -133,11 +133,11 @@ class User
     // Nouvelle méthode pour compter le total
     function countUser($search = '') {
         $query = "SELECT COUNT(*) FROM t_users 
-                  INNER JOIN t_roles ON t_roles.idRole=t_users.idRole 
-                  WHERE t_users.idUser<>1";
+                  INNER JOIN t_roles ON t_roles.\"idRole\"=t_users.\"idRole\" 
+                  WHERE t_users.\"idUser\"<>1";
                   
         if (!empty($search)) {
-            $query .= " AND (nomUser LIKE :search OR nomRole LIKE :search)";
+            $query .= " AND (\"nomUser\" LIKE :search OR \"nomRole\" LIKE :search)";
         }
         
         $stmt = $this->con->prepare($query);
@@ -159,13 +159,13 @@ class User
             $this->con->beginTransaction();
 
             // Supprimer d'abord toutes les permissions existantes pour cet utilisateur
-            $query = "DELETE FROM t_user_permissions WHERE idRole = :idRole";
+            $query = "DELETE FROM t_user_permissions WHERE \"idRole\" = :idRole";
             $stmt = $this->con->prepare($query);
             $stmt->execute(['idRole' => $idRole]);
 
             // Insérer les nouvelles permissions
             if (!empty($permissions)) {
-                $query = "INSERT INTO t_user_permissions (idRole, idPerm) VALUES (:idRole, :idPerm)";
+                $query = "INSERT INTO t_user_permissions (\"idRole\", \"idPerm\") VALUES (:idRole, :idPerm)";
                 $stmt = $this->con->prepare($query);
 
                 foreach ($permissions as $permission) {
@@ -191,7 +191,7 @@ class User
     // Méthode pour obtenir un utilisateur par ID
     function getUserById($id)
     {
-        $stmt = $this->con->prepare("SELECT * FROM t_users INNER JOIN t_roles ON t_roles.idRole=t_users.idRole WHERE t_users.idUser = :idUser");
+        $stmt = $this->con->prepare("SELECT * FROM t_users INNER JOIN t_roles ON t_roles.\"idRole\"=t_users.\"idRole\" WHERE t_users.\"idUser\" = :idUser");
         $stmt->bindParam(':idUser', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -201,7 +201,7 @@ class User
     public function deleteUser($id)
     {
         try {
-            $stmt = $this->con->prepare("DELETE FROM t_users WHERE idUser = :idUser");
+            $stmt = $this->con->prepare("DELETE FROM t_users WHERE \"idUser\" = :idUser");
             $stmt->bindParam(':idUser', $id, PDO::PARAM_INT);
             return $stmt->execute(); // Retourne true si réussi
         } catch (PDOException $e) {
@@ -213,7 +213,7 @@ class User
     // Méthode pour mettre à jour un utilisateur avec possibilité de changer l'image
     public function updateUserPassWord($id, $pw)
     {
-        $sql = "UPDATE t_users SET pw = :pw WHERE idUser = :id";
+        $sql = "UPDATE t_users SET pw = :pw WHERE \"idUser\" = :id";
         $stmt = $this->con->prepare($sql);
         $stmt->bindParam(':pw', $pw, PDO::PARAM_STR);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -223,7 +223,7 @@ class User
     //GEstion des roles
     function getRolesById($id)
     {
-        $stmt = $this->con->prepare("SELECT * FROM t_roles WHERE idRole = :idRole");
+        $stmt = $this->con->prepare("SELECT * FROM t_roles WHERE \"idRole\" = :idRole");
         $stmt->bindParam(':idRole', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -245,7 +245,7 @@ class User
                 return ['success' => false, 'message' => 'Les deux Logins ne correspondent pas'];
             }
 
-            $sql = "UPDATE t_users SET loginUser = ? WHERE idUser = ?";
+            $sql = "UPDATE t_users SET \"loginUser\" = ? WHERE \"idUser\" = ?";
             $stmt = $this->con->prepare($sql);
             $result = $stmt->execute([$newLogin, $userId]);
 
@@ -270,7 +270,7 @@ class User
                 return ['success' => false, 'message' => 'Le nom ne peut pas être vide'];
             }
 
-            $sql = "UPDATE t_users SET nomUser = ? WHERE idUser = ?";
+            $sql = "UPDATE t_users SET \"nomUser\" = ? WHERE \"idUser\" = ?";
             $stmt = $this->con->prepare($sql);
             $result = $stmt->execute([$newName, $userId]);
 
@@ -302,7 +302,7 @@ class User
             }
 
             $hashNewPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-            $sql = "UPDATE t_users SET pw = ? WHERE idUser = ?";
+            $sql = "UPDATE t_users SET pw = ? WHERE \"idUser\" = ?";
             $stmt = $this->con->prepare($sql);
             $result = $stmt->execute([$hashNewPassword, $userId]);
 
@@ -349,7 +349,7 @@ class User
             }
 
             // Mise à jour dans la base de données
-            $sql = "UPDATE t_users SET imageUser = ? WHERE idUser = ?";
+            $sql = "UPDATE t_users SET \"imageUser\" = ? WHERE \"idUser\" = ?";
             $stmt = $this->con->prepare($sql);
             $result = $stmt->execute([$newFileName, $userId]);
 
@@ -368,7 +368,7 @@ class User
      */
     private function verifyCurrentLogin($login, $userId)
     {
-        $sql = "SELECT loginUser FROM t_users WHERE idUser = ?";
+        $sql = "SELECT \"loginUser\" FROM t_users WHERE \"idUser\" = ?";
         $stmt = $this->con->prepare($sql);
         $stmt->execute([$userId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -379,7 +379,7 @@ class User
     // Méthode pour vérifier les informations de connexion d'un utilisateur
     function seConnecter($log, $pwd)
     {
-        $stmt = $this->con->prepare("SELECT * FROM t_users INNER JOIN t_roles ON t_roles.idRole=t_users.idRole WHERE loginUser = :loginUser AND pw = :pw");
+        $stmt = $this->con->prepare("SELECT * FROM t_users INNER JOIN t_roles ON t_roles.\"idRole\"=t_users.\"idRole\" WHERE \"loginUser\" = :loginUser AND pw = :pw");
         $stmt->bindParam(':loginUser', $log, PDO::PARAM_STR);
         $stmt->bindParam(':pw', $pwd, PDO::PARAM_STR);
         $stmt->execute();

@@ -108,7 +108,7 @@ $sheet->setTitle('Grille de Notes');
 
 // Protection basique
 $sheet->getProtection()->setSheet(true);
-$sheet->getProtection()->setPassword('GRACEsoliste1234@');
+$sheet->getProtection()->setPassword(getenv('EXPORT_SHEET_PASSWORD') ?: 'e-gestion-university');
 
 // Créer une feuille de métadonnées cachée
 $metadataSheet = $spreadsheet->createSheet();

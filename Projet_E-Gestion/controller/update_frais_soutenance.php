@@ -28,7 +28,7 @@ try {
               SET designation = :designation, 
                   montant = :montant, 
                   devise = :devise, 
-                  estObligatoire = :estObligatoire, 
+                  \"estObligatoire\" = :estObligatoire, 
                   description = :description
               WHERE idfrais_soutenance = :id";
 

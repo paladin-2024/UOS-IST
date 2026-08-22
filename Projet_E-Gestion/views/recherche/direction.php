@@ -14,7 +14,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $selectedYear = isset($_GET['annee_id']) ? intval($_GET['annee_id']) : 0;
 
 // Récupérer toutes les années académiques
-$queryAnnees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC";
+$queryAnnees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY \"dateCreation\" DESC";
 $stmtAnnees = $connexion->prepare($queryAnnees);
 $stmtAnnees->execute();
 $academicYears = $stmtAnnees->fetchAll(PDO::FETCH_ASSOC);
@@ -46,7 +46,7 @@ $isAdmin = $_SESSION['idRole'] == 1;
 if ($currentYear) {
     $query = "SELECT section_idsection 
               FROM responsable_section 
-              WHERE idUser = :userId 
+              WHERE \"idUser\" = :userId 
               AND annee_acad_idannee_acad = :anneeId";
     
     $stmt = $connexion->prepare($query);
@@ -64,30 +64,30 @@ if ($currentYear) {
 if ($isResponsableSection && !empty($userSections)) {
     // Pour les responsables de section : seulement les enseignants de leurs sections
     $sectionPlaceholders = implode(',', array_fill(0, count($userSections), '?'));
-    $queryEnseignants = "SELECT DISTINCT a.idAgent, a.noms, g.designation as gradeDesignation,
-                                GROUP_CONCAT(DISTINCT s.designationSection SEPARATOR ', ') as sections_list
-                         FROM agent a 
-                         LEFT JOIN grade g ON a.grade_id = g.idgrade 
-                         INNER JOIN agent_section ags ON a.idAgent = ags.idAgent
+    $queryEnseignants = 'SELECT DISTINCT a."idAgent", a.noms, g.designation as gradeDesignation,
+                                STRING_AGG(DISTINCT s."designationSection", \', \') as sections_list
+                         FROM agent a
+                         LEFT JOIN grade g ON a.grade_id = g.idgrade
+                         INNER JOIN agent_section ags ON a."idAgent" = ags."idAgent"
                          INNER JOIN section s ON ags.idsection = s.idsection
-                         WHERE a.type_agent = 'Enseignant' 
-                         AND ags.idsection IN ($sectionPlaceholders) ";
-    
+                         WHERE a.type_agent = \'Enseignant\'
+                         AND ags.idsection IN (' . $sectionPlaceholders . ') ';
+
     $params = $userSections;
-    
+
     if (!empty($search)) {
         $queryEnseignants .= "AND (a.noms LIKE ?) ";
         $params[] = "%$search%";
     }
-    
-    $queryEnseignants .= "GROUP BY a.idAgent, a.noms, g.designation ORDER BY a.noms ASC";
+
+    $queryEnseignants .= 'GROUP BY a."idAgent", a.noms, g.designation ORDER BY a.noms ASC';
     
     $stmtEnseignants = $connexion->prepare($queryEnseignants);
     $stmtEnseignants->execute($params);
     
 } else {
     // Pour les administrateurs : tous les enseignants
-    $queryEnseignants = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+    $queryEnseignants = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                          FROM agent a 
                          LEFT JOIN grade g ON a.grade_id = g.idgrade 
                          WHERE a.type_agent = 'Enseignant' ";
@@ -137,19 +137,19 @@ function getSujetsByEnseignant($connexion, $enseignantId, $anneeId = null, $user
     $query = "SELECT s.*, 
                      a.designation as annee, 
                      e.noms as etudiant_nom,
-                     p.designationPromotion as promotion,
-                     s.etatSujet,
+                     p.\"designationPromotion\" as promotion,
+                     s.\"etatSujet\",
                      spec.designation as specialisation,
-                     o.designationOrientation as orientation,
-                     sec.designationSection as section
+                     o.\"designationOrientation\" as orientation,
+                     sec.\"designationSection\" as section
               FROM sujets s
               LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
-              WHERE (s.idDirecteur = :enseignantId OR s.idEncadreur = :enseignantId) ";
+              WHERE (s.\"idDirecteur\" = :enseignantId OR s.\"idEncadreur\" = :enseignantId) ";
     
     $params = [':enseignantId' => $enseignantId];
     
@@ -175,7 +175,7 @@ function getSujetsByEnseignant($connexion, $enseignantId, $anneeId = null, $user
         $params[':anneeId'] = $anneeId;
     }
     
-    $query .= "ORDER BY p.designationPromotion, s.intitule";
+    $query .= 'ORDER BY p."designationPromotion", s.intitule';
     
     $stmt = $connexion->prepare($query);
     foreach ($params as $key => $value) {

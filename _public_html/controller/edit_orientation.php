@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Vérifier si cet utilisateur est déjà responsable pour cette orientation
                         $checkUserQuery = "SELECT idresponsable_orientation FROM responsable_orientation 
                                          WHERE orientation_idorientation = :orientationId 
-                                         AND idUser = :userId 
+                                         AND \"idUser\" = :userId 
                                          AND annee_acad_idannee_acad = :anneeId";
                         $checkUserStmt = $conn->prepare($checkUserQuery);
                         $checkUserStmt->execute([
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         } else {
                             // Créer un nouveau responsable avec une signature par défaut
                             $insertQuery = "INSERT INTO responsable_orientation 
-                                          (noms, fonction, signature, idUser, orientation_idorientation, 
+                                          (noms, fonction, signature, \"idUser\", orientation_idorientation, 
                                            annee_acad_idannee_acad, est_chef, date_debut) 
                                           VALUES (:noms, :fonction, :signature, :userId, :orientationId, 
                                                   :anneeId, :estChef, :dateDebut)";

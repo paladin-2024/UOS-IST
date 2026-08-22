@@ -15,7 +15,7 @@ $connexion = Connexion::getInstance()->getPDO();
 $journal = new JournalServeur();
 
 // Récupérer l'ID de l'agent associé à l'utilisateur
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -177,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $connexion->prepare("
             INSERT INTO transactions (
                 reference, date_transaction, montant, devise, type,
-                source, source_id, idUser, commentaire, statut, idAgent
+                source, source_id, \"idUser\", commentaire, statut, \"idAgent\"
             ) VALUES (
                 :reference, :date_transaction, :montant, :devise, 'Recette',
                 :source, :source_id, :idUser, :commentaire, 'Confirmée', :agent
@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             INSERT INTO paiements_frais (
                 transaction_id, etudiant_id, matricule_etudiant, affectation_id, 
                 echelonnement_id, montant, devise, mode_paiement, reference_externe, 
-                date_valeur, commentaire, est_confirme, date_confirmation, idConfirmateur
+                date_valeur, commentaire, est_confirme, date_confirmation, \"idConfirmateur\"
             ) VALUES (
                 :transaction_id, :etudiant_id, :matricule_etudiant, :affectation_id,
                 :echelonnement_id, :montant, :devise, :mode_paiement, :reference_externe,

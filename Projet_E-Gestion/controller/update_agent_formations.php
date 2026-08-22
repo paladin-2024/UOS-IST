@@ -38,14 +38,14 @@ try {
     $pdo = Connexion::getInstance()->getPDO();
     
     // Mettre à jour le niveau d'étude de l'agent
-    $query = "UPDATE agent SET niveauEtude = :niveauEtude WHERE idAgent = :idAgent";
+    $query = "UPDATE agent SET \"niveauEtude\" = :\"niveauEtude\" WHERE \"idAgent\" = :\"idAgent\"";
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':niveauEtude', $niveauEtude, PDO::PARAM_STR);
     $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
     $stmt->execute();
     
     // Récupérer le code de l'agent pour la redirection
-    $queryAgent = "SELECT codeAgent FROM agent WHERE idAgent = :idAgent";
+    $queryAgent = "SELECT \"codeAgent\" FROM agent WHERE \"idAgent\" = :\"idAgent\"";
     $stmtAgent = $pdo->prepare($queryAgent);
     $stmtAgent->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
     $stmtAgent->execute();

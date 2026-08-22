@@ -13,7 +13,7 @@ $pdo = Connexion::getInstance()->getPDO();
 
 try {
     // Récupérer l'année académique active
-    $stmtAnnee = $pdo->prepare("SELECT idannee_acad FROM annee_acad ORDER BY dateCreation DESC LIMIT 1");
+    $stmtAnnee = $pdo->prepare("SELECT idannee_acad FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1");
     $stmtAnnee->execute();
     $anneeAcad = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
     $idAnneeAcad = $anneeAcad['idannee_acad'] ?? null;

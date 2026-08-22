@@ -1,0 +1,9 @@
+{
+    "require": {
+        "phpoffice/phpspreadsheet": "^4.0",
+        "endroid/qr-code": "^6.0",
+        "chillerlan/php-qrcode": "^5.0",
+        "tecnickcom/tcpdf": "^6.9",
+        "phpmailer/phpmailer": "^6.9"
+    }
+}

@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = "UPDATE palmares_archive 
                  SET designation = ?, description = ?, annee_academique = ?, 
                      promotion = ?, session = ?, fichier_scanne = ?,
-                     date_modification = NOW(), idUser = ?,
+                     date_modification = NOW(), \"idUser\" = ?,
                      annee_acad_idannee_acad = ?, promotion_idpromotion = ?, 
                      session_idsession = ?
                  WHERE id_palmares = ?";
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Enregistrer l'historique
         $query = "INSERT INTO palmares_historique 
-                 (id_palmares, action, details, idUser) 
+                 (id_palmares, action, details, \"idUser\") 
                  VALUES (?, 'Modification', ?, ?)";
         
         $stmt = $pdo->prepare($query);

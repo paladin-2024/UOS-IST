@@ -17,27 +17,27 @@ if ($resultCurrent) {
 // Récupérer la liste des promotions (filtrées par année courante)
 if ($currentYear) {
     $stmt = $connexion->prepare("
-        SELECT p.idpromotion, p.designationPromotion, p.cycle,
-               o.designationOrientation, s.designationSection,
+        SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
+               o.\"designationOrientation\", s.\"designationSection\",
                aa.designation as annee_academique
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation
         JOIN section s ON o.section_idsection = s.idsection
         JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
         WHERE aa.idannee_acad = ?
-        ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion
+        ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"
     ");
     $stmt->execute([$currentYear]);
 } else {
     $stmt = $connexion->query("
-        SELECT p.idpromotion, p.designationPromotion, p.cycle,
-               o.designationOrientation, s.designationSection,
+        SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
+               o.\"designationOrientation\", s.\"designationSection\",
                aa.designation as annee_academique
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation
         JOIN section s ON o.section_idsection = s.idsection
         JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
-        ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion
+        ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"
     ");
 }
 $promotions = $stmt->fetchAll(PDO::FETCH_ASSOC);

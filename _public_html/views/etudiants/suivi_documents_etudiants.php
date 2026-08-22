@@ -18,7 +18,7 @@ $anneesAcademiques = $stmtAnnees->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer toutes les sections (filtrées par année si sélectionnée)
 $sqlSections = "
-    SELECT DISTINCT s.idsection, s.designationSection
+    SELECT DISTINCT s.idsection, s.\"designationSection\"
     FROM section s
     JOIN orientation o ON s.idsection = o.section_idsection
     JOIN promotion p ON o.idorientation = p.orientation_idorientation
@@ -31,7 +31,7 @@ if ($anneeId > 0) {
     $paramsSections[] = $anneeId;
 }
 
-$sqlSections .= " ORDER BY s.designationSection";
+$sqlSections .= " ORDER BY s.\"designationSection\"";
 
 $stmtSections = $connexion->prepare($sqlSections);
 $stmtSections->execute($paramsSections);
@@ -39,8 +39,8 @@ $sections = $stmtSections->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer la liste des promotions (filtrées par année si sélectionnée)
 $sqlPromotions = "
-    SELECT p.idpromotion, p.designationPromotion, p.cycle,
-           o.designationOrientation, s.designationSection,
+    SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
+           o.\"designationOrientation\", s.\"designationSection\",
            aa.designation as annee_academique
     FROM promotion p
     JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -60,7 +60,7 @@ if ($sectionId > 0) {
     $paramsPromotions[] = $sectionId;
 }
 
-$sqlPromotions .= " ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion";
+$sqlPromotions .= " ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"";
 
 $stmt = $connexion->prepare($sqlPromotions);
 $stmt->execute($paramsPromotions);

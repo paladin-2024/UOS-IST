@@ -169,7 +169,7 @@ $encadreurs = $agentModel->getAgentsByType('Enseignant');
                         <hr>
                         <p><strong>Lecteur:</strong><br>
                             <?php 
-                            $lectQuery = "SELECT noms FROM agent WHERE idAgent = :id";
+                            $lectQuery = 'SELECT noms FROM agent WHERE "idAgent" = :id';
                             $lectStmt = $db->prepare($lectQuery);
                             $lectStmt->execute(['id' => $stageData['idlecteur']]);
                             $lecteur = $lectStmt->fetch();

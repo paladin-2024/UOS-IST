@@ -30,10 +30,10 @@ try {
 $promotions = [];
 if ($anneeId) {
     try {
-        $sql = "SELECT DISTINCT p.idpromotion, p.designationPromotion 
+        $sql = "SELECT DISTINCT p.idpromotion, p.\"designationPromotion\" 
                 FROM promotion p 
                 WHERE p.annee_acad_idannee_acad = :annee
-                ORDER BY p.designationPromotion";
+                ORDER BY p.\"designationPromotion\"";
         $stmt = $db->prepare($sql);
         $stmt->execute([':annee' => $anneeId]);
         $promotions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -51,20 +51,20 @@ if ($promotionId && $anneeId) {
                     d.id_dette,
                     d.matricule,
                     (SELECT e.noms FROM etudiant e WHERE e.matricule = d.matricule LIMIT 1) as nom_etudiant,
-                    s.numeroSemestre as semestre,
-                    ec.designationECUE as ue_designation,
+                    s.\"numeroSemestre\" as semestre,
+                    ec.\"designationECUE\" as ue_designation,
                     d.credits_ecue as credits,
                     d.statut,
                     -- Utiliser la note de la dernière session
                     (SELECT cg.MF FROM cotes_grille cg 
                      WHERE cg.matricule = d.matricule 
-                     AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                     AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                      AND cg.annee_acad_id = d.annee_acad_idannee_acad
                      ORDER BY cg.session_idsession DESC 
                      LIMIT 1) as note_obtenue,
                     d.note_rachat
                 FROM dette_etudiant d
-                INNER JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
+                INNER JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
                 INNER JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
                 WHERE d.promotion_idpromotion = :promotion
                 AND d.annee_acad_idannee_acad = :annee
@@ -72,14 +72,14 @@ if ($promotionId && $anneeId) {
                 AND (
                     (SELECT cg.MF FROM cotes_grille cg 
                      WHERE cg.matricule = d.matricule 
-                     AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                     AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                      AND cg.annee_acad_id = d.annee_acad_idannee_acad
                      ORDER BY cg.session_idsession DESC 
                      LIMIT 1) < 10
                     OR
                     (SELECT cg.MF FROM cotes_grille cg 
                      WHERE cg.matricule = d.matricule 
-                     AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                     AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                      AND cg.annee_acad_id = d.annee_acad_idannee_acad
                      ORDER BY cg.session_idsession DESC 
                      LIMIT 1) IS NULL
@@ -103,7 +103,7 @@ if ($promotionId && $anneeId) {
             $params[':search2'] = '%' . $search . '%';
         }
         
-        $sql .= " ORDER BY nom_etudiant, s.numeroSemestre";
+        $sql .= " ORDER BY nom_etudiant, s.\"numeroSemestre\"";
         
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
@@ -124,7 +124,7 @@ if ($promotionId && $anneeId) {
                     SUM(CASE WHEN d.statut = 'En cours' THEN 1 ELSE 0 END) as dettes_en_cours,
                     SUM(CASE WHEN d.statut = 'Validée' THEN 1 ELSE 0 END) as dettes_validees
                 FROM dette_etudiant d
-                INNER JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
+                INNER JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
                 WHERE d.promotion_idpromotion = :promotion
                 AND d.annee_acad_idannee_acad = :annee";
         

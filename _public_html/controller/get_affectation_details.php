@@ -30,11 +30,11 @@ try {
                f.est_echelonnable,
                cf.designation AS categorie_nom,
                aa.designation AS annee_academique,
-               p.designationPromotion AS promotion_nom,
-               CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte_nom,
+               p.\"designationPromotion\" AS promotion_nom,
+               CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte_nom,
                e.noms AS etudiant_nom,
                e.promotion_idpromotion,
-               ep.designationPromotion AS etudiant_promotion
+               ep.\"designationPromotion\" AS etudiant_promotion
         FROM affectation_frais a
         INNER JOIN frais f ON a.frais_id = f.id
         LEFT JOIN categories_frais cf ON f.categorie_id = cf.id
@@ -64,9 +64,9 @@ try {
     
     // Récupérer les paiements associés
     $stmt = $connexion->prepare("
-    SELECT pf.*, u.nomUser AS agent_nom
+    SELECT pf.*, u.\"nomUser\" AS agent_nom
     FROM paiements_frais pf
-    LEFT JOIN t_users u ON pf.idConfirmateur = u.idUser
+    LEFT JOIN t_users u ON pf.\"idConfirmateur\" = u.\"idUser\"
     WHERE pf.affectation_id = :affectation_id
     ORDER BY pf.date_confirmation DESC
     ");

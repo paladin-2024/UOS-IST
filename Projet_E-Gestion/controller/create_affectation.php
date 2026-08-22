@@ -29,7 +29,7 @@ try {
     foreach ($specialisations as $idSpecialisation) {
         // Vérifier si l'affectation existe déjà
         $stmtCheck = $db->prepare("SELECT COUNT(*) FROM enseignant_specialisation 
-                                WHERE idAgent = ? AND idSpecialisation = ?");
+                                WHERE \"idAgent\" = ? AND \"idSpecialisation\" = ?");
         $stmtCheck->execute([$idAgent, $idSpecialisation]);
         $exists = $stmtCheck->fetchColumn();
         
@@ -40,7 +40,7 @@ try {
         
         // Insérer la nouvelle affectation
         $stmt = $db->prepare("INSERT INTO enseignant_specialisation 
-                             (idAgent, idSpecialisation, dateAffectation, idUser) 
+                             (\"idAgent\", \"idSpecialisation\", \"dateAffectation\", \"idUser\") 
                              VALUES (?, ?, NOW(), ?)");
         $stmt->execute([$idAgent, $idSpecialisation, $_SESSION['id'] ?? 1]);
         $insertedCount++;

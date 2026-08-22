@@ -41,8 +41,8 @@ try {
     // Récupérer la configuration des pondérations (pour la première session)
     $sqlConfig = "SELECT ponderation_cc, ponderation_ex 
                  FROM configuration_moyenne 
-                 WHERE idECUE = ? AND session_idsession = ? AND annee_acad_id = ?
-                 ORDER BY dateCreation DESC LIMIT 1";
+                 WHERE \"idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?
+                 ORDER BY \"dateCreation\" DESC LIMIT 1";
                  
     $stmtConfig = $pdo->prepare($sqlConfig);
     $stmtConfig->execute([$idECUE, $sessionId, $anneeId]);
@@ -59,11 +59,11 @@ try {
                         SELECT promotion_idpromotion 
                         FROM semestre s 
                         JOIN ue u ON s.idsemestre = u.semestre_idsemestre
-                        WHERE u.idUE IN (SELECT UE_idUE FROM ecue WHERE idECUE = ?)
+                        WHERE u.\"idUE\" IN (SELECT \"UE_idUE\" FROM ecue WHERE \"idECUE\" = ?)
                     )
                     ORDER BY e.noms";
     
-    $sqlSessionsPremiere = "SELECT idsession FROM session WHERE designSession LIKE '%Première%' OR designSession LIKE '%Premiere%' LIMIT 1";
+    $sqlSessionsPremiere = "SELECT idsession FROM session WHERE \"designSession\" LIKE '%Première%' OR \"designSession\" LIKE '%Premiere%' LIMIT 1";
     $stmtSessionsPremiere = $pdo->query($sqlSessionsPremiere);
     $sessionPremiere = $stmtSessionsPremiere->fetchColumn();
     
@@ -73,11 +73,11 @@ try {
     
     // Récupérer toutes les évaluations définies pour cet ECUE
     $sqlAllEvals = "SELECT e.idevaluation, e.titre, e.note_max, e.ponderation, 
-                   t.idType, t.designationT, t.categorie, s.idsession, s.description
+                   t.\"idType\", t.\"designationT\", t.categorie, s.idsession, s.description
                    FROM evaluations e
-                   JOIN typeevaluation t ON e.idType = t.idType
+                   JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
                    JOIN session s ON e.session_idsession = s.idsession
-                   WHERE e.idECUE = ? AND e.annee_acad_id = ? AND s.idsession = ?
+                   WHERE e.\"idECUE\" = ? AND e.annee_acad_id = ? AND s.idsession = ?
                    ORDER BY e.date_evaluation";
     
     $stmtAllEvals = $pdo->prepare($sqlAllEvals);
@@ -113,9 +113,9 @@ try {
         $matricule = $etudiant['matricule'];
         
         // Récupérer toutes les notes de l'étudiant pour cet ECUE
-        $sqlNotes = "SELECT p.coteObtenu, p.typeEvaluation
+        $sqlNotes = "SELECT p.\"coteObtenu\", p.typeEvaluation
                     FROM points p
-                    WHERE p.matricule = ? AND p.ECUE_idECUE = ? AND p.annee_acad_id = ? AND p.session_idsession = ?";
+                    WHERE p.matricule = ? AND p.\"ECUE_idECUE\" = ? AND p.annee_acad_id = ? AND p.session_idsession = ?";
         
         $stmtNotes = $pdo->prepare($sqlNotes);
         $stmtNotes->execute([$matricule, $idECUE, $anneeId, $sessionId]);

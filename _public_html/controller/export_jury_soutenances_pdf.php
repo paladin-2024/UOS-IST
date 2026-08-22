@@ -46,10 +46,10 @@ try {
     $sectionInfo = null;
     
     // D'abord, récupérer une soutenance pour obtenir la promotion/orientation
-    $queryTemp = "SELECT sj.idSpecialisation, sp.idorientation
+    $queryTemp = "SELECT sj.\"idSpecialisation\", sp.idorientation
                   FROM soutenance s
                   JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
-                  LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idspecialisation
+                  LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.idspecialisation
                   WHERE s.annee_acad_idannee_acad = :yearId AND s.jury_id = :juryId
                   LIMIT 1";
     $stmtTemp = $db->prepare($queryTemp);
@@ -77,13 +77,13 @@ try {
                      d.noms as directeur_nom,
                      gd.designation as directeur_grade,
                      sp.designation as specialisation,
-                     dm.idDepot, dm.fichier as memoire_fichier, dm.dateDepot
+                     dm.\"idDepot\", dm.fichier as memoire_fichier, dm.\"dateDepot\"
               FROM soutenance s
               JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
               JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
+              LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
               LEFT JOIN grade gd ON d.grade_id = gd.idgrade
-              LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+              LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
               LEFT JOIN depot_memoire dm ON sj.idsujets = dm.sujets_idsujets
               WHERE s.annee_acad_idannee_acad = :yearId AND s.jury_id = :juryId
               ORDER BY s.date_soutenance DESC";
@@ -96,7 +96,7 @@ try {
     foreach ($soutenances as &$soutenance) {
         $queryLecteurs = "SELECT a.noms, COALESCE(g.designation, '') as grade, ls.est_premier_lecteur 
                          FROM lecteurs_soutenance ls
-                         JOIN agent a ON ls.idenseignant = a.idAgent
+                         JOIN agent a ON ls.idenseignant = a.\"idAgent\"
                          LEFT JOIN grade g ON a.grade_id = g.idgrade
                          WHERE ls.idsoutenance = :idSoutenance
                          ORDER BY ls.est_premier_lecteur DESC";

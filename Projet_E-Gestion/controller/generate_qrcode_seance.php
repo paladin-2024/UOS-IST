@@ -23,11 +23,11 @@ $idSeance = intval($_GET['id']);
 try {
     // Récupérer les détails de la séance (sans enseignant_ecue)
     $stmt = $db->prepare("
-        SELECT sc.*, ec.designationECUE, p.designationPromotion, s.numeroSemestre,
-               sec.designationSection, ue.designationUE
+        SELECT sc.*, ec.\"designationECUE\", p.\"designationPromotion\", s.\"numeroSemestre\",
+               sec.\"designationSection\", ue.\"designationUE\"
         FROM seance_cours sc
-        JOIN ecue ec ON sc.idECUE = ec.idECUE
-        JOIN ue ON ec.UE_idUE = ue.idUE
+        JOIN ecue ec ON sc.\"idECUE\" = ec.\"idECUE\"
+        JOIN ue ON ec.\"UE_idUE\" = ue.\"idUE\"
         JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
         JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
         JOIN orientation o ON p.orientation_idorientation = o.idorientation

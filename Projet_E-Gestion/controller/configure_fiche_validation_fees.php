@@ -18,7 +18,7 @@ $hasFullAccess = $_SESSION['idRole'] == 1; // Administrateur
 if (!$hasFullAccess) {
     try {
         $db = Connexion::getInstance()->getPDO();
-        $query = "SELECT COUNT(*) FROM responsable_section WHERE idUser = :userId";
+        $query = "SELECT COUNT(*) FROM responsable_section WHERE \"idUser\" = :userId";
         $stmt = $db->prepare($query);
         $stmt->execute(['userId' => $userId]);
         $hasSectionRole = $stmt->fetchColumn() > 0;

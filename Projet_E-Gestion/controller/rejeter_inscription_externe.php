@@ -34,7 +34,7 @@ try {
     // Récupérer les informations de l'inscription externe
     $stmt = $connexion->prepare("
         SELECT ie.*, lie.promotion_id, lie.annee_acad_id, lie.titre as titre_lien,
-               p.designationPromotion as nom_promotion, aa.designation as annee_academique
+               p.\"designationPromotion\" as nom_promotion, aa.designation as annee_academique
         FROM inscriptions_externes ie
         JOIN liens_inscription_externe lie ON ie.lien_inscription_id = lie.id
         LEFT JOIN promotion p ON lie.promotion_id = p.idpromotion

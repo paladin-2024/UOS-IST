@@ -28,7 +28,7 @@ if ($orientationId <= 0) {
 try {
     $pdo = Connexion::getInstance()->getPDO();
 
-    $sql = "SELECT p.idpromotion, p.designationPromotion
+    $sql = "SELECT p.idpromotion, p.\"designationPromotion\"
             FROM promotion p
             WHERE p.orientation_idorientation = :orientationId";
 
@@ -36,7 +36,7 @@ try {
         $sql .= " AND p.annee_acad_idannee_acad = :anneeId";
     }
 
-    $sql .= " ORDER BY p.designationPromotion ASC";
+    $sql .= " ORDER BY p.\"designationPromotion\" ASC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':orientationId', $orientationId, PDO::PARAM_INT);

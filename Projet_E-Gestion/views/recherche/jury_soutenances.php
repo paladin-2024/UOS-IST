@@ -59,13 +59,13 @@ if ($selectedJuryId > 0) {
                              sj.intitule as sujet_titre, sj.idsujets,
                              e.noms as etudiant_nom, e.matricule,
                              d.noms as directeur_nom,
-                             sp.designation as specialisation, sp.idSpecialisation,
-                             dm.idDepot, dm.fichier as memoire_fichier, dm.dateDepot
+                             sp.designation as specialisation, sp.\"idSpecialisation\",
+                             dm.\"idDepot\", dm.fichier as memoire_fichier, dm.\"dateDepot\"
                       FROM soutenance s
                       JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
                       JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-                      LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-                      LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+                      LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+                      LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
                       LEFT JOIN depot_memoire dm ON sj.idsujets = dm.sujets_idsujets
                       WHERE s.annee_acad_idannee_acad = ? AND s.jury_id = ?
                       ORDER BY s.date_soutenance DESC";

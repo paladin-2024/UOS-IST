@@ -21,7 +21,7 @@ $anneeEnCours = $stmtCurrentYear->fetch(PDO::FETCH_ASSOC);
 
 // Si aucune année active, prendre la plus récente
 if (!$anneeEnCours) {
-    $queryLastYear = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryLastYear = 'SELECT * FROM annee_acad ORDER BY "dateCreation" DESC LIMIT 1';
     $stmtLastYear = $pdo->prepare($queryLastYear);
     $stmtLastYear->execute();
     $anneeEnCours = $stmtLastYear->fetch(PDO::FETCH_ASSOC);
@@ -44,9 +44,9 @@ if ($selectedYear) {
 }
 
 // Vérifier si l'utilisateur est un enseignant
-$query = "SELECT a.idAgent FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ? AND a.type_agent = 'Enseignant'";
+$query = 'SELECT a."idAgent" FROM agent a
+          INNER JOIN t_users u ON a."idAgent" = u."idAgent"
+          WHERE u."idUser" = ? AND a.type_agent = \'Enseignant\'';
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $isEnseignant = $stmt->rowCount() > 0;
@@ -57,9 +57,9 @@ if (!$userId || !$isEnseignant) {
 }
 
 // Récupérer l'ID de l'agent (enseignant)
-$query = "SELECT a.idAgent FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ?";
+$query = 'SELECT a."idAgent" FROM agent a
+          INNER JOIN t_users u ON a."idAgent" = u."idAgent"
+          WHERE u."idUser" = ?';
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $idEnseignant = $stmt->fetchColumn();
@@ -70,9 +70,9 @@ if (!$idEnseignant) {
 }
 
 // Récupérer les informations de l'enseignant
-$query = "SELECT a.* FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ?";
+$query = 'SELECT a.* FROM agent a
+          INNER JOIN t_users u ON a."idAgent" = u."idAgent"
+          WHERE u."idUser" = ?';
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -26,13 +26,13 @@ class Structure
 
     public function getUsers()
     {
-        $query = "SELECT * FROM t_users ORDER BY nomUser ASC";
+        $query = "SELECT * FROM t_users ORDER BY \"nomUser\" ASC";
         return $this->db->query($query);
     }
 
     public function getUserById($id)
     {
-        $query = "SELECT * FROM t_users WHERE idUser='$id'";
+        $query = "SELECT * FROM t_users WHERE \"idUser\"='$id'";
         return $this->db->query($query);
     }
 
@@ -41,9 +41,9 @@ class Structure
         $query = "
             SELECT u.*
             FROM t_users u
-            JOIN user_structure us ON u.idUser = us.idUser
-            WHERE us.idStructure = :structureId
-            ORDER BY u.nomUser ASC
+            JOIN user_structure us ON u.\"idUser\" = us.\"idUser\"
+            WHERE us.\"idStructure\" = :structureId
+            ORDER BY u.\"nomUser\" ASC
         ";
 
         $stmt = $this->db->prepare($query);
@@ -54,12 +54,12 @@ class Structure
     }
 
     public function getUserStructure($id){
-        $query = "SELECT * FROM user_structure as us INNER JOIN t_users as u ON us.idUser=u.idUser WHERE idStructure='$id'";
+        $query = "SELECT * FROM user_structure as us INNER JOIN t_users as u ON us.\"idUser\"=u.\"idUser\" WHERE \"idStructure\"='$id'";
         return $this->db->query($query);
     }
 
     public function getUserPermissionStructure($user,$structure){
-        $query = "SELECT * FROM user_structure as us INNER JOIN t_users as u ON us.idUser=u.idUser WHERE us.idStructure='$structure' AND us.idUser='$user'";
+        $query = "SELECT * FROM user_structure as us INNER JOIN t_users as u ON us.\"idUser\"=u.\"idUser\" WHERE us.\"idStructure\"='$structure' AND us.\"idUser\"='$user'";
         return $this->db->query($query);
     }
 
@@ -82,7 +82,7 @@ class Structure
     // Ajouter une nouvelle structure
     public function addStructure($designation, $adresse, $phone1, $phone2, $siteweb, $logo, $joursOuvrables, $IPR, $tauxRetenuAbsence, $nJoursRecouvrement)
     {
-        $query = "INSERT INTO structure (designation, adresse, phone1, phone2, siteweb, logo, joursOuvrables, IPR, taux_retenu_absence, nJoursRecouvrement, dateEnregistrement) 
+        $query = "INSERT INTO structure (designation, adresse, phone1, phone2, siteweb, logo, \"joursOuvrables\", IPR, taux_retenu_absence, \"nJoursRecouvrement\", \"dateEnregistrement\") 
                   VALUES (:designation, :adresse, :phone1, :phone2, :siteweb, :logo, :joursOuvrables, :IPR, :tauxRetenuAbsence, :nJoursRecouvrement, NOW())";
 
         $stmt = $this->db->prepare($query);
@@ -105,7 +105,7 @@ class Structure
     // Récupérer une structure par son ID
     public function getStructureById($id)
     {
-        $query = "SELECT * FROM structure WHERE idStructure = :id";
+        $query = "SELECT * FROM structure WHERE \"idStructure\" = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -116,7 +116,7 @@ class Structure
     public function getStructureByCompte($id)
     {
         $query = "SELECT c.*,s.* FROM compte as c INNER JOIN structure as s
-        ON c.Structure_idStructure=s.idStructure WHERE c.idCompte = :id";
+        ON c.\"Structure_idStructure\"=s.\"idStructure\" WHERE c.idCompte = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -127,7 +127,7 @@ class Structure
     public function getStructureByJournal($id)
     {
         $query = "SELECT * FROM journaux as c INNER JOIN structure as s
-        ON c.Structure_idStructure=s.idStructure WHERE c.idJournaux = :id";
+        ON c.\"Structure_idStructure\"=s.\"idStructure\" WHERE c.idJournaux = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -145,11 +145,11 @@ class Structure
                     phone2 = :phone2,
                     siteweb = :siteweb,
                     logo = :logo,
-                    joursOuvrables = :joursOuvrables,
+                    \"joursOuvrables\" = :joursOuvrables,
                     IPR = :IPR,
                     taux_retenu_absence = :tauxRetenuAbsence,
-                    nJoursRecouvrement = :nJoursRecouvrement
-                  WHERE idStructure = :id";
+                    \"nJoursRecouvrement\" = :nJoursRecouvrement
+                  WHERE \"idStructure\" = :id";
 
         $stmt = $this->db->prepare($query);
 
@@ -172,7 +172,7 @@ class Structure
     // Récupérer le logo par ID
     public function getLogoById($id)
     {
-        $query = "SELECT logo FROM structure WHERE idStructure = :id";
+        $query = "SELECT logo FROM structure WHERE \"idStructure\" = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -189,7 +189,7 @@ class Structure
     // Vérifier si une structure existe
     public function checkStructureExists($idStructure)
     {
-        $query = "SELECT COUNT(*) as count FROM structure WHERE idStructure = :idStructure";
+        $query = "SELECT COUNT(*) as count FROM structure WHERE \"idStructure\" = :idStructure";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['idStructure' => $idStructure]);
         $result = $stmt->fetch();
@@ -199,7 +199,7 @@ class Structure
     // Create a new account
     public function addCompte($numeroCompte, $intituleCompte, $typeCompte, $classeCompte, $structureId)
     {
-        $query = "INSERT INTO compte (numeroCompte, intituleCompte, typeCompte, classeCompte, dateEnregistrement, Structure_idStructure) 
+        $query = "INSERT INTO compte (numeroCompte, intituleCompte, typeCompte, classeCompte, \"dateEnregistrement\", \"Structure_idStructure\") 
                 VALUES (:numeroCompte, :intituleCompte, :typeCompte, :classeCompte, NOW(), :structureId)";
         $stmt = $this->db->prepare($query);
 
@@ -238,7 +238,7 @@ class Structure
                     intituleCompte = :intituleCompte,
                     typeCompte = :typeCompte,
                     classeCompte = :classeCompte,
-                    Structure_idStructure = :structureId
+                    \"Structure_idStructure\" = :structureId
                   WHERE idCompte = :idCompte";
 
         $stmt = $this->db->prepare($query);
@@ -264,7 +264,7 @@ class Structure
     }
     public function checkDuplicateCompte($numeroCompte, $structureId)
     {
-        $query = "SELECT COUNT(*) FROM compte WHERE numeroCompte = :numeroCompte AND Structure_idStructure = :structureId";
+        $query = "SELECT COUNT(*) FROM compte WHERE numeroCompte = :numeroCompte AND \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':numeroCompte', $numeroCompte, PDO::PARAM_STR);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
@@ -275,7 +275,7 @@ class Structure
 
     public function addJournal($nomJournal, $description, $codeJournal, $structureId)
     {
-        $query = "INSERT INTO journaux (nom_journal, description, code_journal, dateEnregistrement, Structure_idStructure) 
+        $query = "INSERT INTO journaux (nom_journal, description, code_journal, \"dateEnregistrement\", \"Structure_idStructure\") 
                 VALUES (:nomJournal, :description, :codeJournal, NOW(), :structureId)";
         $stmt = $this->db->prepare($query);
 
@@ -289,7 +289,7 @@ class Structure
 
     public function checkDuplicateJournal($codeJournal, $structureId)
     {
-        $query = "SELECT COUNT(*) FROM journaux WHERE code_journal = :codeJournal AND Structure_idStructure = :structureId";
+        $query = "SELECT COUNT(*) FROM journaux WHERE code_journal = :codeJournal AND \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':codeJournal', $codeJournal, PDO::PARAM_STR);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
@@ -306,8 +306,8 @@ class Structure
 
     public function getJournauxByUserAccess($userId)
     {
-        $query = "SELECT * FROM journaux j INNER JOIN structure s ON j.Structure_idStructure=s.idStructure
-        INNER JOIN user_structure u ON u.idStructure=s.idStructure WHERE u.idUser='$userId'";
+        $query = "SELECT * FROM journaux j INNER JOIN structure s ON j.\"Structure_idStructure\"=s.\"idStructure\"
+        INNER JOIN user_structure u ON u.\"idStructure\"=s.\"idStructure\" WHERE u.\"idUser\"='$userId'";
         return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -317,7 +317,7 @@ class Structure
                     nom_journal = :nomJournal,
                     code_journal = :codeJournal,
                     description = :description,
-                    Structure_idStructure = :structureId
+                    \"Structure_idStructure\" = :structureId
                 WHERE idJournaux = :idJournaux";
 
         $stmt = $this->db->prepare($query);
@@ -342,7 +342,7 @@ class Structure
 
     public function getUsersByJournal($journalId)
     {
-        $query = "SELECT u.*,uj.* FROM user_journal uj INNER JOIN t_users u ON uj.idUser = u.idUser WHERE uj.Journal_idJournal = :journalId";
+        $query = "SELECT u.*,uj.* FROM user_journal uj INNER JOIN t_users u ON uj.\"idUser\" = u.\"idUser\" WHERE uj.Journal_idJournal = :journalId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':journalId', $journalId, PDO::PARAM_INT);
         $stmt->execute();
@@ -351,7 +351,7 @@ class Structure
 
     public function addUserToJournal($userId, $journalId)
     {
-        $query = "INSERT INTO user_journal (idUser, Journal_idJournal, dateEnregistrement) VALUES (:userId, :journalId, NOW())";
+        $query = "INSERT INTO user_journal (\"idUser\", Journal_idJournal, \"dateEnregistrement\") VALUES (:userId, :journalId, NOW())";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':journalId', $journalId, PDO::PARAM_INT);
@@ -369,9 +369,9 @@ class Structure
     public function getAuthorizedComptes($userId)
     {
         $query = "SELECT c.* FROM compte c
-                INNER JOIN structure s ON c.Structure_idStructure = s.idStructure
-                INNER JOIN user_structure us ON s.idStructure = us.idStructure
-                WHERE us.idUser = :userId ORDER BY c.numeroCompte ASC";
+                INNER JOIN structure s ON c.\"Structure_idStructure\" = s.\"idStructure\"
+                INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+                WHERE us.\"idUser\" = :userId ORDER BY c.numeroCompte ASC";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -380,7 +380,7 @@ class Structure
 
     public function getComptesByStructure($structureId)
     {
-        $query = "SELECT * FROM compte WHERE Structure_idStructure = :structureId";
+        $query = "SELECT * FROM compte WHERE \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
         $stmt->execute();
@@ -390,7 +390,7 @@ class Structure
     
     public function addClient($noms, $adresse, $email, $telephone, $solde, $structureId, $compteId)
     {
-        $query = "INSERT INTO client (noms, adresse, email, telephone, solde, dateEnregistrement, Structure_idStructure, Compte_idCompte) 
+        $query = "INSERT INTO client (noms, adresse, email, telephone, solde, \"dateEnregistrement\", \"Structure_idStructure\", Compte_idCompte) 
                 VALUES (:noms, :adresse, :email, :telephone, :solde, NOW(), :structureId, :compteId)";
         $stmt = $this->db->prepare($query);
 
@@ -410,8 +410,8 @@ class Structure
     $query = "
         SELECT s.*
         FROM structure s
-        INNER JOIN user_structure us ON s.idStructure = us.idStructure
-        WHERE us.idUser = :userId
+        INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+        WHERE us.\"idUser\" = :userId
     ";
 
     if (!empty($search)) {
@@ -442,7 +442,7 @@ class Structure
             SELECT client.*, compte.numeroCompte, compte.intituleCompte 
             FROM client 
             LEFT JOIN compte ON client.Compte_idCompte = compte.idCompte 
-            WHERE client.Structure_idStructure = :structureId
+            WHERE client.\"Structure_idStructure\" = :structureId
         ";
         
         if (!empty($search)) {
@@ -489,9 +489,9 @@ class Structure
             SELECT client.*, compte.numeroCompte, compte.intituleCompte 
             FROM client 
             LEFT JOIN compte ON client.Compte_idCompte = compte.idCompte 
-            INNER JOIN structure ON client.Structure_idStructure = structure.idStructure
-            INNER JOIN user_structure ON structure.idStructure = user_structure.idStructure
-            WHERE user_structure.idUser = :userId
+            INNER JOIN structure ON client.\"Structure_idStructure\" = structure.\"idStructure\"
+            INNER JOIN user_structure ON structure.\"idStructure\" = user_structure.\"idStructure\"
+            WHERE user_structure.\"idUser\" = :userId
         ";
         
         if (!empty($search)) {
@@ -512,7 +512,7 @@ class Structure
 
     public function checkDuplicateClient($noms, $structureId)
     {
-        $query = "SELECT COUNT(*) FROM client WHERE noms = :noms AND Structure_idStructure = :structureId";
+        $query = "SELECT COUNT(*) FROM client WHERE noms = :noms AND \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':noms', $noms, PDO::PARAM_STR);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
@@ -529,7 +529,7 @@ class Structure
                     email = :email,
                     telephone = :telephone,
                     solde = :solde,
-                    Structure_idStructure = :structureId,
+                    \"Structure_idStructure\" = :structureId,
                     Compte_idCompte = :compteId
                 WHERE idClient = :idClient";
 
@@ -558,7 +558,7 @@ class Structure
 
     public function checkDuplicateFournisseur($nom, $structureId)
     {
-        $query = "SELECT COUNT(*) FROM fournisseur WHERE nom = :nom AND Structure_idStructure = :structureId";
+        $query = "SELECT COUNT(*) FROM fournisseur WHERE nom = :nom AND \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
@@ -569,7 +569,7 @@ class Structure
 
     public function addFournisseur($nom, $adresse, $email, $telephone, $solde, $structureId, $compteId)
     {
-        $query = "INSERT INTO fournisseur (nom, adresse, email, telephone, solde, dateEnregistrement, Structure_idStructure, Compte_idCompte) 
+        $query = "INSERT INTO fournisseur (nom, adresse, email, telephone, solde, \"dateEnregistrement\", \"Structure_idStructure\", Compte_idCompte) 
                 VALUES (:nom, :adresse, :email, :telephone, :solde, NOW(), :structureId, :compteId)";
         $stmt = $this->db->prepare($query);
 
@@ -590,7 +590,7 @@ class Structure
             SELECT fournisseur.*, compte.numeroCompte, compte.intituleCompte 
             FROM fournisseur 
             LEFT JOIN compte ON fournisseur.Compte_idCompte = compte.idCompte 
-            WHERE fournisseur.Structure_idStructure = :structureId
+            WHERE fournisseur.\"Structure_idStructure\" = :structureId
         ";
         
         if (!empty($search)) {
@@ -617,7 +617,7 @@ class Structure
                     email = :email,
                     telephone = :telephone,
                     solde = :solde,
-                    Structure_idStructure = :structureId,
+                    \"Structure_idStructure\" = :structureId,
                     Compte_idCompte = :compteId
                 WHERE idFournisseur = :idFournisseur";
 
@@ -657,7 +657,7 @@ class Structure
 
     public function addInvoice($dateFacture, $montant, $motif, $numeroFacture, $statut, $userId, $clientId)
     {
-        $query = "INSERT INTO facture_client (dateFacture, montant, motif, numeroFacture, statut, dateEnregistrement, idUser, Client_idClient) 
+        $query = "INSERT INTO facture_client (dateFacture, montant, motif, numeroFacture, statut, \"dateEnregistrement\", \"idUser\", Client_idClient) 
                 VALUES (:dateFacture, :montant, :motif, :numeroFacture, :statut, NOW(), :userId, :clientId)";
         $stmt = $this->db->prepare($query);
 
@@ -676,12 +676,12 @@ class Structure
     {
         $query = "
             SELECT fc.idFacture_client AS idInvoice, fc.numeroFacture, fc.dateFacture, fc.montant, 
-                fc.statut, fc.Client_idClient, c.noms AS clientName, s.designation AS structureName, c.Structure_idStructure,fc.motif
+                fc.statut, fc.Client_idClient, c.noms AS clientName, s.designation AS structureName, c.\"Structure_idStructure\",fc.motif
             FROM facture_client fc
             INNER JOIN client c ON fc.Client_idClient = c.idClient
-            INNER JOIN structure s ON c.Structure_idStructure = s.idStructure
-            INNER JOIN user_structure us ON s.idStructure = us.idStructure
-            WHERE us.idUser = :userId AND s.idStructure = :structureId
+            INNER JOIN structure s ON c.\"Structure_idStructure\" = s.\"idStructure\"
+            INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+            WHERE us.\"idUser\" = :userId AND s.\"idStructure\" = :structureId
             
         ";
 
@@ -711,9 +711,9 @@ class Structure
             fc.statut, fc.Client_idClient, c.noms AS clientName, s.designation AS structureName
         FROM facture_client fc
         INNER JOIN client c ON fc.Client_idClient = c.idClient
-        INNER JOIN structure s ON c.Structure_idStructure = s.idStructure
-        INNER JOIN user_structure us ON s.idStructure = us.idStructure
-        WHERE us.idUser = :userId AND s.idStructure = :structureId
+        INNER JOIN structure s ON c.\"Structure_idStructure\" = s.\"idStructure\"
+        INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+        WHERE us.\"idUser\" = :userId AND s.\"idStructure\" = :structureId
     ";
 
     // Add conditions for search parameters
@@ -782,9 +782,9 @@ class Structure
             SELECT fournisseur.*, compte.numeroCompte, compte.intituleCompte 
             FROM fournisseur 
             LEFT JOIN compte ON fournisseur.Compte_idCompte = compte.idCompte 
-            INNER JOIN structure ON fournisseur.Structure_idStructure = structure.idStructure
-            INNER JOIN user_structure ON structure.idStructure = user_structure.idStructure
-            WHERE user_structure.idUser = :userId
+            INNER JOIN structure ON fournisseur.\"Structure_idStructure\" = structure.\"idStructure\"
+            INNER JOIN user_structure ON structure.\"idStructure\" = user_structure.\"idStructure\"
+            WHERE user_structure.\"idUser\" = :userId
         ";
         
         if (!empty($search)) {
@@ -810,8 +810,8 @@ class Structure
                     observation = :observation,
                     transporteur = :transporteur,
                     reference_document = :referenceDocument,
-                    idUser = :userId,
-                    Depot_idDepot = :depotId,
+                    \"idUser\" = :userId,
+                    \"Depot_idDepot\" = :depotId,
                     Fournisseur_idFournisseur = :fournisseurId
                 WHERE idManifeste_entree = :idManifesteEntree";
 
@@ -846,7 +846,7 @@ class Structure
 
     public function addSupplierInvoice($dateFacture, $montant, $motif, $numeroFacture, $statut, $userId, $fournisseurId)
     {
-        $query = "INSERT INTO facture_fournisseur (dateFacture, montant, motif, numeroFacture, statut, dateEnregistrement, idUser, Fournisseur_idFournisseur) 
+        $query = "INSERT INTO facture_fournisseur (dateFacture, montant, motif, numeroFacture, statut, \"dateEnregistrement\", \"idUser\", Fournisseur_idFournisseur) 
                 VALUES (:dateFacture, :montant, :motif, :numeroFacture, :statut, NOW(), :userId, :fournisseurId)";
         $stmt = $this->db->prepare($query);
 
@@ -866,12 +866,12 @@ class Structure
     $query = "
         SELECT ff.idFacture_fournisseur AS idInvoice, ff.numeroFacture, ff.dateFacture, ff.montant, 
                ff.statut, ff.Fournisseur_idFournisseur, f.nom AS fournisseurName, 
-               s.designation AS structureName, f.Structure_idStructure
+               s.designation AS structureName, f.\"Structure_idStructure\"
         FROM facture_fournisseur ff
         INNER JOIN fournisseur f ON ff.Fournisseur_idFournisseur = f.idFournisseur
-        INNER JOIN structure s ON f.Structure_idStructure = s.idStructure
-        INNER JOIN user_structure us ON s.idStructure = us.idStructure
-        WHERE us.idUser = :userId AND s.idStructure = :structureId
+        INNER JOIN structure s ON f.\"Structure_idStructure\" = s.\"idStructure\"
+        INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+        WHERE us.\"idUser\" = :userId AND s.\"idStructure\" = :structureId
     ";
 
     if (!empty($search)) {
@@ -898,12 +898,12 @@ public function getSupplierInvoicesByUserAccess2($userId, $structureId, $searchN
     $query = "
         SELECT ff.idFacture_fournisseur AS idInvoice, ff.numeroFacture, ff.dateFacture, ff.montant, 
                ff.statut, ff.Fournisseur_idFournisseur, f.nom AS fournisseurName, 
-               s.designation AS structureName, f.Structure_idStructure
+               s.designation AS structureName, f.\"Structure_idStructure\"
         FROM facture_fournisseur ff
         INNER JOIN fournisseur f ON ff.Fournisseur_idFournisseur = f.idFournisseur
-        INNER JOIN structure s ON f.Structure_idStructure = s.idStructure
-        INNER JOIN user_structure us ON s.idStructure = us.idStructure
-        WHERE us.idUser = :userId AND s.idStructure = :structureId
+        INNER JOIN structure s ON f.\"Structure_idStructure\" = s.\"idStructure\"
+        INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+        WHERE us.\"idUser\" = :userId AND s.\"idStructure\" = :structureId
     ";
 
     // Add conditions for search parameters
@@ -968,7 +968,7 @@ public function deleteSupplierInvoice($idInvoice)
 
 public function addPayment($datePaiement, $montant, $libelle, $depositaire, $userId, $idInvoice, $bankId)
 {
-    $query = "INSERT INTO paiement_client (datePaiement, montant, libelle, depositaire, dateEnregistrement, idUser, Facture_client_idFacture_client, Banque_idBanque) 
+    $query = "INSERT INTO paiement_client (\"datePaiement\", montant, libelle, depositaire, \"dateEnregistrement\", \"idUser\", Facture_client_idFacture_client, Banque_idBanque) 
               VALUES (:datePaiement, :montant, :libelle, :depositaire, NOW(), :userId, :idInvoice, :bankId)";
     $stmt = $this->db->prepare($query);
 
@@ -986,11 +986,11 @@ public function addPayment($datePaiement, $montant, $libelle, $depositaire, $use
 public function getPaymentsByInvoiceId($idInvoice)
 {
     $query = "
-        SELECT pc.*, u.nomUser AS userName
+        SELECT pc.*, u.\"nomUser\" AS userName
         FROM paiement_client pc
-        INNER JOIN t_users u ON pc.idUser = u.idUser
+        INNER JOIN t_users u ON pc.\"idUser\" = u.\"idUser\"
         WHERE pc.Facture_client_idFacture_client = :idInvoice
-        ORDER BY pc.datePaiement DESC;
+        ORDER BY pc.\"datePaiement\" DESC;
     ";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idInvoice', $idInvoice, PDO::PARAM_INT);
@@ -1049,11 +1049,11 @@ public function updateInvoiceStatus($idInvoice, $status)
 public function getPaymentById($paymentId)
 {
     $query = "
-        SELECT pc.*, c.Structure_idStructure, u.nomUser AS userName
+        SELECT pc.*, c.\"Structure_idStructure\", u.\"nomUser\" AS userName
         FROM paiement_client pc
         INNER JOIN facture_client fc ON pc.Facture_client_idFacture_client = fc.idFacture_client
         INNER JOIN client c ON fc.Client_idClient = c.idClient
-        INNER JOIN t_users u ON pc.idUser = u.idUser
+        INNER JOIN t_users u ON pc.\"idUser\" = u.\"idUser\"
         WHERE pc.idPaiement_client = :paymentId
     ";
     $stmt = $this->db->prepare($query);
@@ -1160,7 +1160,7 @@ public function cancelPayment_fournisseur($paymentId)
 // Add a new journal entry
 public function addJournalAutomatique($dateOperation, $compte, $libelleCompte, $montantDebit, $montantCredit, $libele, $numPiece, $structureId, $idUser)
 {
-    $query = "INSERT INTO journal_automatique (dateOperation, compte, libelle_compte, montant_debit, montant_credit, libele, numPiece, Structure_idStructure, idUser) 
+    $query = "INSERT INTO journal_automatique (dateOperation, compte, libelle_compte, montant_debit, montant_credit, libele, numPiece, \"Structure_idStructure\", \"idUser\") 
               VALUES (:dateOperation, :compte, :libelleCompte, :montantDebit, :montantCredit, :libele, :numPiece, :structureId, :idUser)";
     $stmt = $this->db->prepare($query);
 
@@ -1205,7 +1205,7 @@ public function updateJournalAutomatique($idJournal, $dateOperation, $compte, $m
                 montant_credit = :montantCredit,
                 libele = :libele,
                 numPiece = :numPiece,
-                Structure_idStructure = :structureId
+                \"Structure_idStructure\" = :structureId
               WHERE idJournal = :idJournal";
 
     $stmt = $this->db->prepare($query);
@@ -1402,11 +1402,11 @@ public function reversePaymentJournalEntries($idPaiement,$idUser)
 public function getSupplierPaymentsByInvoiceId($idInvoice)
 {
     $query = "
-        SELECT pf.*, u.nomUser AS userName
+        SELECT pf.*, u.\"nomUser\" AS userName
         FROM paiement_fournisseur pf
-        INNER JOIN t_users u ON pf.idUser = u.idUser
+        INNER JOIN t_users u ON pf.\"idUser\" = u.\"idUser\"
         WHERE pf.Facture_fournisseur_idFacture_fournisseur = :idInvoice
-        ORDER BY pf.datePaiement DESC;
+        ORDER BY pf.\"datePaiement\" DESC;
     ";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idInvoice', $idInvoice, PDO::PARAM_INT);
@@ -1420,11 +1420,11 @@ public function getSupplierPaymentsById($id) {
         SELECT 
             pf.idPaiement_fournisseur,
             pf.montant,
-            pf.datePaiement,
+            pf.\"datePaiement\",
             pf.libelle,
             pf.beneficiaire,
-            pf.modePaiement,
-            pf.dateEnregistrement,
+            pf.\"modePaiement\",
+            pf.\"dateEnregistrement\",
             f.nom AS fournisseurNom,
             f.adresse AS fournisseurAdresse,
             f.email AS fournisseurEmail,
@@ -1477,7 +1477,7 @@ public function getTotalSupplierPaymentsForInvoice($idInvoice)
 // Add a supplier payment
 public function addSupplierPayment($datePaiement, $montant, $libelle, $beneficiaire, $modePaiement, $userId, $idInvoice, $bankId)
 {
-    $query = "INSERT INTO paiement_fournisseur (datePaiement, montant, libelle, beneficiaire, modePaiement, dateEnregistrement, idUser, Facture_fournisseur_idFacture_fournisseur, Banque_idBanque) 
+    $query = "INSERT INTO paiement_fournisseur (\"datePaiement\", montant, libelle, beneficiaire, \"modePaiement\", \"dateEnregistrement\", \"idUser\", Facture_fournisseur_idFacture_fournisseur, Banque_idBanque) 
               VALUES (:datePaiement, :montant, :libelle, :beneficiaire, :modePaiement, NOW(), :userId, :idInvoice, :bankId)";
     $stmt = $this->db->prepare($query);
 
@@ -1513,7 +1513,7 @@ public function getSupplierById($idFournisseur)
                structure.*
         FROM fournisseur 
         LEFT JOIN compte ON fournisseur.Compte_idCompte = compte.idCompte 
-        LEFT JOIN structure ON fournisseur.Structure_idStructure = structure.idStructure
+        LEFT JOIN structure ON fournisseur.\"Structure_idStructure\" = structure.\"idStructure\"
         WHERE fournisseur.idFournisseur = :idFournisseur
     ";
     $stmt = $this->db->prepare($query);
@@ -1525,11 +1525,11 @@ public function getSupplierById($idFournisseur)
 public function getSupplierPaymentById($paymentId)
 {
     $query = "
-        SELECT pc.*, c.Structure_idStructure, u.nomUser AS userName,c.idFournisseur as Fournisseur_idFournisseur
+        SELECT pc.*, c.\"Structure_idStructure\", u.\"nomUser\" AS userName,c.idFournisseur as Fournisseur_idFournisseur
         FROM paiement_fournisseur pc
         INNER JOIN facture_fournisseur fc ON pc.Facture_fournisseur_idFacture_fournisseur = fc.idFacture_fournisseur
         INNER JOIN fournisseur c ON fc.Fournisseur_idFournisseur = c.idFournisseur
-        INNER JOIN t_users u ON pc.idUser = u.idUser
+        INNER JOIN t_users u ON pc.\"idUser\" = u.\"idUser\"
         WHERE pc.idPaiement_fournisseur = :paymentId
     ";
     $stmt = $this->db->prepare($query);
@@ -1588,7 +1588,7 @@ public function getUserCount()
     // Check for duplicate groupe_depense designation within the same budget structure
     public function checkDuplicateGroupeDepense($designationGD, $budgetDepenseStructureId)
     {
-        $query = "SELECT COUNT(*) FROM groupe_depense_structure WHERE designationGD = :designationGD AND Budget_depense_structure_idBudget_depense_structure = :budgetDepenseStructureId";
+        $query = "SELECT COUNT(*) FROM groupe_depense_structure WHERE \"designationGD\" = :designationGD AND \"Budget_depense_structure_idBudget_depense_structure\" = :budgetDepenseStructureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designationGD', $designationGD, PDO::PARAM_STR);
         $stmt->bindParam(':budgetDepenseStructureId', $budgetDepenseStructureId, PDO::PARAM_INT);
@@ -1600,7 +1600,7 @@ public function getUserCount()
     // Add a new groupe_depense
     public function addGroupeDepense($designationGD, $soldeGD, $budgetDepenseStructureId)
     {
-        $query = "INSERT INTO groupe_depense_structure (designationGD, soldeGD, Budget_depense_structure_idBudget_depense_structure) 
+        $query = "INSERT INTO groupe_depense_structure (\"designationGD\", \"soldeGD\", \"Budget_depense_structure_idBudget_depense_structure\") 
                   VALUES (:designationGD, :soldeGD, :budgetDepenseStructureId)";
         $stmt = $this->db->prepare($query);
 
@@ -1614,7 +1614,7 @@ public function getUserCount()
     // Method to add a new budget depense
     public function addBudgetDepense($designation, $annee, $solde_b_depense, $userId, $structureId)
     {
-        $query = "INSERT INTO budget_depense_structure (designation, annee, solde_b_depense, dateEnregistrement, idUser, Structure_idStructure) 
+        $query = "INSERT INTO budget_depense_structure (designation, annee, solde_b_depense, \"dateEnregistrement\", \"idUser\", \"Structure_idStructure\") 
                   VALUES (:designation, :annee, :solde_b_depense, NOW(), :idUser, :structureId)";
         $stmt = $this->db->prepare($query);
 
@@ -1634,7 +1634,7 @@ public function getUserCount()
         $query = "SELECT COUNT(*) FROM budget_depense_structure 
                   WHERE designation = :designation 
                   AND annee = :annee 
-                  AND Structure_idStructure = :structureId";
+                  AND \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
 
         // Bind parameters
@@ -1653,7 +1653,7 @@ public function getUserCount()
         $query = "SELECT COUNT(*) FROM budget_recette_structure 
                   WHERE designation = :designation 
                   AND annee = :annee 
-                  AND Structure_idStructure = :structureId";
+                  AND \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
 
         // Bind parameters
@@ -1669,7 +1669,7 @@ public function getUserCount()
     // Add a new budget recette
     public function addBudgetRecette($designation, $annee, $solde_b_recette, $userId, $structureId)
     {
-        $query = "INSERT INTO budget_recette_structure (designation, annee, solde_b_recette, dateEnregistrement, idUser, Structure_idStructure) 
+        $query = "INSERT INTO budget_recette_structure (designation, annee, solde_b_recette, \"dateEnregistrement\", \"idUser\", \"Structure_idStructure\") 
                   VALUES (:designation, :annee, :solde_b_recette, NOW(), :idUser, :structureId)";
         $stmt = $this->db->prepare($query);
 
@@ -1686,7 +1686,7 @@ public function getUserCount()
     // Retrieve budgets by structure ID
     public function getBudgetsByStructure($structureId)
     {
-        $query = "SELECT * FROM budget_depense_structure WHERE Structure_idStructure = :structureId";
+        $query = "SELECT * FROM budget_depense_structure WHERE \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1697,7 +1697,7 @@ public function getUserCount()
     public function getBudgetsByUser($userId)
     {
         $query = "SELECT * FROM budget_depense_structure as bd
-        INNER JOIN user_budget_depense as u ON u.Budget_depense_structure_idBudget_depense_structure=bd.idBudget_depense_structure WHERE u.idUser = :iduser";
+        INNER JOIN user_budget_depense as u ON u.\"Budget_depense_structure_idBudget_depense_structure\"=bd.idBudget_depense_structure WHERE u.\"idUser\" = :iduser";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':iduser', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1708,7 +1708,7 @@ public function getUserCount()
     // Method to get the total of all groupe de dépense for a given budget
     public function getTotalGroupeDepense($budgetDepenseStructureId)
     {
-        $query = "SELECT SUM(soldeGD) as total FROM groupe_depense_structure WHERE Budget_depense_structure_idBudget_depense_structure = :budgetDepenseStructureId";
+        $query = "SELECT SUM(\"soldeGD\") as total FROM groupe_depense_structure WHERE \"Budget_depense_structure_idBudget_depense_structure\" = :budgetDepenseStructureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':budgetDepenseStructureId', $budgetDepenseStructureId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1730,7 +1730,7 @@ public function getUserCount()
     // Fetch recette budgets by structure ID
     public function getRecetteBudgetsByStructure($structureId)
     {
-        $query = "SELECT * FROM budget_recette_structure WHERE Structure_idStructure = :structureId";
+        $query = "SELECT * FROM budget_recette_structure WHERE \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1741,7 +1741,7 @@ public function getUserCount()
     public function getRecetteBudgetsByUser($userId)
     {
         $query = "SELECT * FROM budget_recette_structure as br
-        INNER JOIN user_budget_recette as u ON u.Budget_recette_structure_idBudget_recette_structure=br.idBudget_recette_structure WHERE u.idUser = :iduser";
+        INNER JOIN user_budget_recette as u ON u.\"Budget_recette_structure_idBudget_recette_structure\"=br.idBudget_recette_structure WHERE u.\"idUser\" = :iduser";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':iduser', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1752,7 +1752,7 @@ public function getUserCount()
     // Add a new recette budget
     public function addRecetteBudget($structureId, $designation, $solde)
     {
-        $query = "INSERT INTO budget_recette_structure (Structure_idStructure, designation, solde) VALUES (:structureId, :designation, :solde)";
+        $query = "INSERT INTO budget_recette_structure (\"Structure_idStructure\", designation, solde) VALUES (:structureId, :designation, :solde)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
         $stmt->bindParam(':designation', $designation, PDO::PARAM_STR);
@@ -1789,7 +1789,7 @@ public function getUserCount()
      // Check for duplicate groupe_recette designation within the same budget structure
      public function checkDuplicateGroupeRecette($designationGR, $budgetRecetteStructureId)
      {
-         $query = "SELECT COUNT(*) FROM groupe_recette_structure WHERE designationGR = :designationGR AND Budget_recette_structure_idBudget_recette_structure = :budgetRecetteStructureId";
+         $query = "SELECT COUNT(*) FROM groupe_recette_structure WHERE \"designationGR\" = :designationGR AND \"Budget_recette_structure_idBudget_recette_structure\" = :budgetRecetteStructureId";
          $stmt = $this->db->prepare($query);
          $stmt->bindParam(':designationGR', $designationGR, PDO::PARAM_STR);
          $stmt->bindParam(':budgetRecetteStructureId', $budgetRecetteStructureId, PDO::PARAM_INT);
@@ -1801,7 +1801,7 @@ public function getUserCount()
      // Add a new groupe_recette
      public function addGroupeRecette($designationGR, $soldeGR, $budgetRecetteStructureId)
      {
-         $query = "INSERT INTO groupe_recette_structure (designationGR, soldeGR, Budget_recette_structure_idBudget_recette_structure) 
+         $query = "INSERT INTO groupe_recette_structure (\"designationGR\", \"soldeGR\", \"Budget_recette_structure_idBudget_recette_structure\") 
                    VALUES (:designationGR, :soldeGR, :budgetRecetteStructureId)";
          $stmt = $this->db->prepare($query);
  
@@ -1815,7 +1815,7 @@ public function getUserCount()
      // Retrieve all groupes de dépenses
     public function getGroupesDepense()
     {
-        $query = "SELECT * FROM groupe_depense_structure ORDER BY designationGD ASC";
+        $query = "SELECT * FROM groupe_depense_structure ORDER BY \"designationGD\" ASC";
         $stmt = $this->db->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -1834,11 +1834,11 @@ public function getUserCount()
         $query = "
             SELECT gds.*, bds.designation
             FROM groupe_depense_structure gds
-            INNER JOIN structure s ON gds.Budget_depense_structure_idBudget_depense_structure = s.idStructure
-            INNER JOIN user_structure us ON s.idStructure = us.idStructure
-            INNER JOIN budget_depense_structure bds ON gds.Budget_depense_structure_idBudget_depense_structure = bds.idBudget_depense_structure
-            WHERE us.idUser = :userId
-            ORDER BY gds.designationGD ASC
+            INNER JOIN structure s ON gds.\"Budget_depense_structure_idBudget_depense_structure\" = s.\"idStructure\"
+            INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+            INNER JOIN budget_depense_structure bds ON gds.\"Budget_depense_structure_idBudget_depense_structure\" = bds.idBudget_depense_structure
+            WHERE us.\"idUser\" = :userId
+            ORDER BY gds.\"designationGD\" ASC
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -1854,23 +1854,23 @@ public function getUserCount()
                 bds.designation AS designation_budget
             FROM groupe_depense_structure gds
             INNER JOIN budget_depense_structure bds 
-                ON gds.Budget_depense_structure_idBudget_depense_structure = bds.idBudget_depense_structure
+                ON gds.\"Budget_depense_structure_idBudget_depense_structure\" = bds.idBudget_depense_structure
             INNER JOIN structure s 
-                ON bds.Structure_idStructure = s.idStructure
+                ON bds.\"Structure_idStructure\" = s.\"idStructure\"
             INNER JOIN user_structure us 
-                ON s.idStructure = us.idStructure
+                ON s.\"idStructure\" = us.\"idStructure\"
             INNER JOIN user_budget_depense ubd
-                ON bds.idBudget_depense_structure = ubd.Budget_depense_structure_idBudget_depense_structure
-            WHERE us.idUser = :userId
-            AND ubd.idUser = :userId
+                ON bds.idBudget_depense_structure = ubd.\"Budget_depense_structure_idBudget_depense_structure\"
+            WHERE us.\"idUser\" = :userId
+            AND ubd.\"idUser\" = :userId
         ";
 
         // Add a filter if a search term is provided
         if ($searchTerm) {
-            $query .= " AND (gds.designationGD LIKE :searchTerm OR bds.designation LIKE :searchTerm OR bds.annee LIKE :searchTerm)";
+            $query .= " AND (gds.\"designationGD\" LIKE :searchTerm OR bds.designation LIKE :searchTerm OR bds.annee LIKE :searchTerm)";
         }
 
-        $query .= " ORDER BY gds.designationGD ASC";
+        $query .= " ORDER BY gds.\"designationGD\" ASC";
 
         // Add the limit if provided
         if ($limit) {
@@ -1900,9 +1900,9 @@ public function getUserCount()
         $query = "
             SELECT c.*
             FROM compte c
-            INNER JOIN structure s ON c.Structure_idStructure = s.idStructure
-            INNER JOIN user_structure us ON s.idStructure = us.idStructure
-            WHERE us.idUser = :userId
+            INNER JOIN structure s ON c.\"Structure_idStructure\" = s.\"idStructure\"
+            INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+            WHERE us.\"idUser\" = :userId
             ORDER BY c.intituleCompte ASC
         ";
         $stmt = $this->db->prepare($query);
@@ -1935,11 +1935,11 @@ public function getUserCount()
         $query = "
             SELECT gr.*, brs.designation AS budgetDesignation, brs.solde_b_recette AS budgetSolde
             FROM groupe_recette_structure gr
-            INNER JOIN budget_recette_structure brs ON gr.Budget_recette_structure_idBudget_recette_structure = brs.idBudget_recette_structure
-            INNER JOIN structure s ON brs.Structure_idStructure = s.idStructure
-            INNER JOIN user_structure us ON s.idStructure = us.idStructure
-            WHERE us.idUser = :userId
-            ORDER BY gr.designationGR ASC
+            INNER JOIN budget_recette_structure brs ON gr.\"Budget_recette_structure_idBudget_recette_structure\" = brs.idBudget_recette_structure
+            INNER JOIN structure s ON brs.\"Structure_idStructure\" = s.\"idStructure\"
+            INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+            WHERE us.\"idUser\" = :userId
+            ORDER BY gr.\"designationGR\" ASC
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -1952,18 +1952,18 @@ public function getUserCount()
         $query = "
             SELECT gr.*, brs.designation AS budgetDesignation, brs.solde_b_recette AS budgetSolde
             FROM groupe_recette_structure gr
-            INNER JOIN budget_recette_structure brs ON gr.Budget_recette_structure_idBudget_recette_structure = brs.idBudget_recette_structure
-            INNER JOIN structure s ON brs.Structure_idStructure = s.idStructure
-            INNER JOIN user_structure us ON s.idStructure = us.idStructure
-            INNER JOIN user_budget_recette ubr ON brs.idBudget_recette_structure = ubr.Budget_recette_structure_idBudget_recette_structure
-            WHERE us.idUser = :userId AND ubr.idUser = :userId
+            INNER JOIN budget_recette_structure brs ON gr.\"Budget_recette_structure_idBudget_recette_structure\" = brs.idBudget_recette_structure
+            INNER JOIN structure s ON brs.\"Structure_idStructure\" = s.\"idStructure\"
+            INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+            INNER JOIN user_budget_recette ubr ON brs.idBudget_recette_structure = ubr.\"Budget_recette_structure_idBudget_recette_structure\"
+            WHERE us.\"idUser\" = :userId AND ubr.\"idUser\" = :userId
         ";
 
         if (!empty($search)) {
-            $query .= " AND (gr.designationGR LIKE :search OR brs.designation LIKE :search OR brs.annee LIKE :search)";
+            $query .= " AND (gr.\"designationGR\" LIKE :search OR brs.designation LIKE :search OR brs.annee LIKE :search)";
         }
 
-        $query .= " ORDER BY gr.designationGR ASC LIMIT :limit";
+        $query .= " ORDER BY gr.\"designationGR\" ASC LIMIT :limit";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -1999,8 +1999,8 @@ public function getUserCount()
     public function getUsersByBudget($budgetId) {
         $query = "SELECT ub.*, u.*
                   FROM user_budget_depense ub
-                  JOIN t_users u ON ub.idUser = u.idUser
-                  WHERE ub.Budget_depense_structure_idBudget_depense_structure = :budgetId";
+                  JOIN t_users u ON ub.\"idUser\" = u.\"idUser\"
+                  WHERE ub.\"Budget_depense_structure_idBudget_depense_structure\" = :budgetId";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':budgetId', $budgetId, PDO::PARAM_INT);
@@ -2011,7 +2011,7 @@ public function getUserCount()
 
     public function addUserToBudget($idUser, $idBudget) {
         try {
-            $query = "INSERT INTO user_budget_depense (idUser, Budget_depense_structure_idBudget_depense_structure) VALUES (:idUser, :idBudget)";
+            $query = "INSERT INTO user_budget_depense (\"idUser\", \"Budget_depense_structure_idBudget_depense_structure\") VALUES (:idUser, :idBudget)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindParam(':idBudget', $idBudget, PDO::PARAM_INT);
@@ -2053,8 +2053,8 @@ public function getUserCount()
         $query = "
             SELECT bds.*
             FROM budget_depense_structure bds
-            JOIN user_structure us ON bds.Structure_idStructure = us.idStructure
-            WHERE us.idUser = :userId";
+            JOIN user_structure us ON bds.\"Structure_idStructure\" = us.\"idStructure\"
+            WHERE us.\"idUser\" = :userId";
         
         // Ajouter la condition de recherche si $search est renseigné
         if (!empty($search)) {
@@ -2083,8 +2083,8 @@ public function getUserCount()
         $query = "
             SELECT brs.*
             FROM budget_recette_structure brs
-            JOIN user_structure us ON brs.Structure_idStructure = us.idStructure
-            WHERE us.idUser = :userId";
+            JOIN user_structure us ON brs.\"Structure_idStructure\" = us.\"idStructure\"
+            WHERE us.\"idUser\" = :userId";
         
         // Ajouter la condition de recherche si $search est renseigné
         if (!empty($search)) {
@@ -2111,7 +2111,7 @@ public function getUserCount()
     // Add a user to a budget recette
     public function addUserToBudgetRecette($idUser, $idBudgetRecette)
     {
-        $query = "INSERT INTO user_budget_recette (idUser, Budget_recette_structure_idBudget_recette_structure) VALUES (:idUser, :idBudgetRecette)";
+        $query = "INSERT INTO user_budget_recette (\"idUser\", \"Budget_recette_structure_idBudget_recette_structure\") VALUES (:idUser, :idBudgetRecette)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->bindParam(':idBudgetRecette', $idBudgetRecette, PDO::PARAM_INT);
@@ -2121,7 +2121,7 @@ public function getUserCount()
     // Retrieve users by budget recette
     public function getUsersByBudgetRecette($budgetRecetteId)
     {
-        $query = "SELECT ubr.*, u.* FROM user_budget_recette ubr JOIN t_users u ON ubr.idUser = u.idUser WHERE ubr.Budget_recette_structure_idBudget_recette_structure = :budgetRecetteId";
+        $query = "SELECT ubr.*, u.* FROM user_budget_recette ubr JOIN t_users u ON ubr.\"idUser\" = u.\"idUser\" WHERE ubr.\"Budget_recette_structure_idBudget_recette_structure\" = :budgetRecetteId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':budgetRecetteId', $budgetRecetteId, PDO::PARAM_INT);
         $stmt->execute();
@@ -2204,9 +2204,9 @@ public function getUserCount()
     public function updateGroupeDepense($idGroupe, $designationGD, $soldeGD)
     {
         $query = "UPDATE groupe_depense_structure SET 
-                    designationGD = :designationGD,
-                    soldeGD = :soldeGD
-                  WHERE idGroupe_depense_structure = :idGroupe";
+                    \"designationGD\" = :designationGD,
+                    \"soldeGD\" = :soldeGD
+                  WHERE \"idGroupe_depense_structure\" = :idGroupe";
 
         $stmt = $this->db->prepare($query);
 
@@ -2221,9 +2221,9 @@ public function getUserCount()
     public function updateGroupeRecette($idGroupe, $designationGD, $soldeGD)
     {
         $query = "UPDATE groupe_recette_structure SET 
-                    designationGR = :designationGR,
-                    soldeGR = :soldeGR
-                  WHERE idGroupe_recette_structure = :idGroupe";
+                    \"designationGR\" = :designationGR,
+                    \"soldeGR\" = :soldeGR
+                  WHERE \"idGroupe_recette_structure\" = :idGroupe";
 
         $stmt = $this->db->prepare($query);
 
@@ -2294,7 +2294,7 @@ public function getUserCount()
     // Add a new depense
     public function addDepense($montantD, $motifD, $beneficiaire, $dateOperation, $idUser, $ligneDepenseId, $bankId, $etatDeBesoinId)
     {
-        $query = "INSERT INTO depense_structure (montantD, motifD, beneficiaire, dateoperation, dateEnregistrement, idUser, ligne_depense_structure_idligne_depense_structure, Banque_idBanque, Etat_de_besoin_idEtat_de_besoin) 
+        $query = "INSERT INTO depense_structure (montantD, motifD, beneficiaire, dateoperation, \"dateEnregistrement\", \"idUser\", ligne_depense_structure_idligne_depense_structure, Banque_idBanque, Etat_de_besoin_idEtat_de_besoin) 
                   VALUES (:montantD, :motifD, :beneficiaire, :dateOperation, NOW(), :idUser, :ligneDepenseId, :bankId, :etatDeBesoinId)";
         $stmt = $this->db->prepare($query);
 
@@ -2356,10 +2356,10 @@ public function getUserCount()
                 u.*
             FROM depense_structure ds
             INNER JOIN ligne_depense_structure lds ON ds.ligne_depense_structure_idligne_depense_structure = lds.idligne_depense_structure
-            INNER JOIN groupe_depense_structure gds ON lds.Groupe_depense_structure_idGroupe_depense_structure = gds.idGroupe_depense_structure
-            INNER JOIN budget_depense_structure bds ON gds.Budget_depense_structure_idBudget_depense_structure = bds.idBudget_depense_structure
-            INNER JOIN structure s ON bds.Structure_idStructure = s.idStructure
-            INNER JOIN t_users u ON ds.idUser = u.idUser
+            INNER JOIN groupe_depense_structure gds ON lds.Groupe_depense_structure_idGroupe_depense_structure = gds.\"idGroupe_depense_structure\"
+            INNER JOIN budget_depense_structure bds ON gds.\"Budget_depense_structure_idBudget_depense_structure\" = bds.idBudget_depense_structure
+            INNER JOIN structure s ON bds.\"Structure_idStructure\" = s.\"idStructure\"
+            INNER JOIN t_users u ON ds.\"idUser\" = u.\"idUser\"
             WHERE ds.idDepense_structure = :idDepense
         ";
         $stmt = $this->db->prepare($query);
@@ -2372,7 +2372,7 @@ public function getUserCount()
     // Add a new recette
     public function addRecette($montantR, $motif, $depositaire, $dateOperation, $idUser, $ligneRecetteId, $bankId)
     {
-        $query = "INSERT INTO recette_structure (montantR, motif, depositaire, dateOperation, dateEnregistrement, idUser, ligne_recette_structure_idligne_recette_structure, Banque_idBanque) 
+        $query = "INSERT INTO recette_structure (montantR, motif, depositaire, dateOperation, \"dateEnregistrement\", \"idUser\", ligne_recette_structure_idligne_recette_structure, Banque_idBanque) 
                   VALUES (:montantR, :motif, :depositaire, :dateOperation, NOW(), :idUser, :ligneRecetteId, :bankId)";
         $stmt = $this->db->prepare($query);
 
@@ -2431,10 +2431,10 @@ public function getUserCount()
                 u.*
             FROM recette_structure rs
             INNER JOIN ligne_recette_structure lrs ON rs.ligne_recette_structure_idligne_recette_structure = lrs.idligne_recette_structure
-            INNER JOIN groupe_recette_structure grs ON lrs.Groupe_recette_structure_idGroupe_recette_structure = grs.idGroupe_recette_structure
-            INNER JOIN budget_recette_structure brs ON grs.Budget_recette_structure_idBudget_recette_structure = brs.idBudget_recette_structure
-            INNER JOIN structure s ON brs.Structure_idStructure = s.idStructure
-            INNER JOIN t_users u ON rs.idUser = u.idUser
+            INNER JOIN groupe_recette_structure grs ON lrs.Groupe_recette_structure_idGroupe_recette_structure = grs.\"idGroupe_recette_structure\"
+            INNER JOIN budget_recette_structure brs ON grs.\"Budget_recette_structure_idBudget_recette_structure\" = brs.idBudget_recette_structure
+            INNER JOIN structure s ON brs.\"Structure_idStructure\" = s.\"idStructure\"
+            INNER JOIN t_users u ON rs.\"idUser\" = u.\"idUser\"
             WHERE rs.idRecette_structure = :idRecette
         ";
         $stmt = $this->db->prepare($query);
@@ -2450,10 +2450,10 @@ public function getUserCount()
             SELECT ds.*,lds.*
             FROM depense_structure ds
             INNER JOIN ligne_depense_structure lds ON ds.ligne_depense_structure_idligne_depense_structure = lds.idligne_depense_structure
-            INNER JOIN groupe_depense_structure gds ON lds.Groupe_depense_structure_idGroupe_depense_structure = gds.idGroupe_depense_structure
-            INNER JOIN budget_depense_structure bds ON gds.Budget_depense_structure_idBudget_depense_structure = bds.idBudget_depense_structure
-            INNER JOIN user_budget_depense ubd ON bds.idBudget_depense_structure = ubd.Budget_depense_structure_idBudget_depense_structure
-            WHERE ubd.idUser = :userId
+            INNER JOIN groupe_depense_structure gds ON lds.Groupe_depense_structure_idGroupe_depense_structure = gds.\"idGroupe_depense_structure\"
+            INNER JOIN budget_depense_structure bds ON gds.\"Budget_depense_structure_idBudget_depense_structure\" = bds.idBudget_depense_structure
+            INNER JOIN user_budget_depense ubd ON bds.idBudget_depense_structure = ubd.\"Budget_depense_structure_idBudget_depense_structure\"
+            WHERE ubd.\"idUser\" = :userId
         ";
 
         if (!empty($search)) {
@@ -2482,10 +2482,10 @@ public function getUserCount()
             SELECT rs.*,lrs.*
             FROM recette_structure rs
             INNER JOIN ligne_recette_structure lrs ON rs.ligne_recette_structure_idligne_recette_structure = lrs.idligne_recette_structure
-            INNER JOIN groupe_recette_structure grs ON lrs.Groupe_recette_structure_idGroupe_recette_structure = grs.idGroupe_recette_structure
-            INNER JOIN budget_recette_structure brs ON grs.Budget_recette_structure_idBudget_recette_structure = brs.idBudget_recette_structure
-            INNER JOIN user_budget_recette ubr ON brs.idBudget_recette_structure = ubr.Budget_recette_structure_idBudget_recette_structure
-            WHERE ubr.idUser = :userId
+            INNER JOIN groupe_recette_structure grs ON lrs.Groupe_recette_structure_idGroupe_recette_structure = grs.\"idGroupe_recette_structure\"
+            INNER JOIN budget_recette_structure brs ON grs.\"Budget_recette_structure_idBudget_recette_structure\" = brs.idBudget_recette_structure
+            INNER JOIN user_budget_recette ubr ON brs.idBudget_recette_structure = ubr.\"Budget_recette_structure_idBudget_recette_structure\"
+            WHERE ubr.\"idUser\" = :userId
         ";
 
         if (!empty($search)) {
@@ -2515,10 +2515,10 @@ public function getUserCount()
             SELECT lrs.*, c.*
             FROM ligne_recette_structure lrs
             INNER JOIN compte c ON lrs.Compte_idCompte = c.idCompte
-            INNER JOIN groupe_recette_structure grs ON lrs.Groupe_recette_structure_idGroupe_recette_structure = grs.idGroupe_recette_structure
-            INNER JOIN budget_recette_structure brs ON grs.Budget_recette_structure_idBudget_recette_structure = brs.idBudget_recette_structure
-            INNER JOIN user_budget_recette ubr ON brs.idBudget_recette_structure = ubr.Budget_recette_structure_idBudget_recette_structure
-            WHERE ubr.idUser = :userId
+            INNER JOIN groupe_recette_structure grs ON lrs.Groupe_recette_structure_idGroupe_recette_structure = grs.\"idGroupe_recette_structure\"
+            INNER JOIN budget_recette_structure brs ON grs.\"Budget_recette_structure_idBudget_recette_structure\" = brs.idBudget_recette_structure
+            INNER JOIN user_budget_recette ubr ON brs.idBudget_recette_structure = ubr.\"Budget_recette_structure_idBudget_recette_structure\"
+            WHERE ubr.\"idUser\" = :userId
         ";
 
         if (!empty($search)) {
@@ -2548,10 +2548,10 @@ public function getUserCount()
             SELECT lds.*, c.*
             FROM ligne_depense_structure lds
             INNER JOIN compte c ON lds.Compte_idCompte = c.idCompte
-            INNER JOIN groupe_depense_structure gds ON lds.Groupe_depense_structure_idGroupe_depense_structure = gds.idGroupe_depense_structure
-            INNER JOIN budget_depense_structure bds ON gds.Budget_depense_structure_idBudget_depense_structure = bds.idBudget_depense_structure
-            INNER JOIN user_budget_depense ubd ON bds.idBudget_depense_structure = ubd.Budget_depense_structure_idBudget_depense_structure
-            WHERE ubd.idUser = :userId
+            INNER JOIN groupe_depense_structure gds ON lds.Groupe_depense_structure_idGroupe_depense_structure = gds.\"idGroupe_depense_structure\"
+            INNER JOIN budget_depense_structure bds ON gds.\"Budget_depense_structure_idBudget_depense_structure\" = bds.idBudget_depense_structure
+            INNER JOIN user_budget_depense ubd ON bds.idBudget_depense_structure = ubd.\"Budget_depense_structure_idBudget_depense_structure\"
+            WHERE ubd.\"idUser\" = :userId
         ";
 
         if (!empty($search)) {
@@ -2577,7 +2577,7 @@ public function getUserCount()
     // Method to add a new etat_de_besoin
     public function addEtatDeBesoin($dateElaboration, $libelle, $montant, $userId, $serviceId, $ligneDepenseId)
     {
-        $query = "INSERT INTO etat_de_besoin (dateElaboration, dateEnregistrement, libelle, montant, idUser, Service_idService, idLigne_depense) 
+        $query = "INSERT INTO etat_de_besoin (\"dateElaboration\", \"dateEnregistrement\", libelle, montant, \"idUser\", \"Service_idService\", \"idLigne_depense\") 
                   VALUES (:dateElaboration, NOW(), :libelle, :montant, :userId, :serviceId, :ligneDepenseId)";
         $stmt = $this->db->prepare($query);
 
@@ -2597,7 +2597,7 @@ public function getUserCount()
     // Method to add a new ligne_etat_besoin
     public function addLigneEtatBesoin($designation, $quantite, $prixUnitaire, $observation, $etatDeBesoinId)
     {
-        $query = "INSERT INTO ligne_etat_besoin (designation, quantite, prixUnitaire, observation, dateEnregistrement, Etat_de_besoin_idEtat_de_besoin) 
+        $query = "INSERT INTO ligne_etat_besoin (designation, quantite, prixUnitaire, observation, \"dateEnregistrement\", Etat_de_besoin_idEtat_de_besoin) 
                   VALUES (:designation, :quantite, :prixUnitaire, :observation, NOW(), :etatDeBesoinId)";
         $stmt = $this->db->prepare($query);
 
@@ -2651,9 +2651,9 @@ public function getUserCount()
         $query = "
             SELECT DISTINCT s.*,st.designation as des_structure
             FROM service s
-            INNER JOIN structure st ON s.Structure_idStructure = st.idStructure
-            INNER JOIN user_structure us ON st.idStructure = us.idStructure
-            WHERE us.idUser = :userId
+            INNER JOIN structure st ON s.\"Structure_idStructure\" = st.\"idStructure\"
+            INNER JOIN user_structure us ON st.\"idStructure\" = us.\"idStructure\"
+            WHERE us.\"idUser\" = :userId
             ORDER BY s.designation ASC
         ";
 
@@ -2670,15 +2670,15 @@ public function getUserCount()
         $query = "
             SELECT edb.*, s.designation AS serviceDesignation
             FROM etat_de_besoin edb
-            INNER JOIN service s ON edb.Service_idService = s.idService
-            WHERE edb.idUser = :userId
+            INNER JOIN service s ON edb.\"Service_idService\" = s.\"idService\"
+            WHERE edb.\"idUser\" = :userId
         ";
 
         if (!empty($search)) {
-            $query .= " AND (edb.libelle LIKE :search OR s.designation LIKE :search OR edb.idEtat_de_besoin LIKE :search)";
+            $query .= " AND (edb.libelle LIKE :search OR s.designation LIKE :search OR edb.\"idEtat_de_besoin\" LIKE :search)";
         }
 
-        $query .= " ORDER BY edb.idEtat_de_besoin DESC LIMIT :limit";
+        $query .= " ORDER BY edb.\"idEtat_de_besoin\" DESC LIMIT :limit";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -2699,18 +2699,18 @@ public function getUserCount()
         $query = "
             SELECT edb.*, s.designation AS serviceDesignation
             FROM etat_de_besoin edb
-            INNER JOIN service s ON edb.Service_idService = s.idService
-            INNER JOIN structure st ON st.idStructure=s.Structure_idStructure
-            INNER JOIN user_structure us ON us.idStructure=st.idStructure
-            INNER JOIN t_users u ON u.idUser=us.idUser
-            WHERE us.idUser = :userId
+            INNER JOIN service s ON edb.\"Service_idService\" = s.\"idService\"
+            INNER JOIN structure st ON st.\"idStructure\"=s.\"Structure_idStructure\"
+            INNER JOIN user_structure us ON us.\"idStructure\"=st.\"idStructure\"
+            INNER JOIN t_users u ON u.\"idUser\"=us.\"idUser\"
+            WHERE us.\"idUser\" = :userId
         ";
 
         if (!empty($search)) {
-            $query .= " AND (edb.libelle LIKE :search OR s.designation LIKE :search OR edb.idEtat_de_besoin LIKE :search)";
+            $query .= " AND (edb.libelle LIKE :search OR s.designation LIKE :search OR edb.\"idEtat_de_besoin\" LIKE :search)";
         }
 
-        $query .= " ORDER BY edb.idEtat_de_besoin DESC LIMIT :limit";
+        $query .= " ORDER BY edb.\"idEtat_de_besoin\" DESC LIMIT :limit";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -2739,17 +2739,17 @@ public function getUserCount()
             d.dateoperation as dateDepense,
             b.designation as bankDesignation,
             b.numeroCompte as bankNumeroCompte,
-            u.nomUser as userDepense
+            u.\"nomUser\" as userDepense
         FROM etat_de_besoin edb
-        INNER JOIN service s ON edb.Service_idService = s.idService
-        INNER JOIN ligne_depense_structure lds ON edb.idLigne_depense = lds.idligne_depense_structure
-        INNER JOIN groupe_depense_structure gds ON lds.Groupe_depense_structure_idGroupe_depense_structure = gds.idGroupe_depense_structure
-        INNER JOIN budget_depense_structure bds ON gds.Budget_depense_structure_idBudget_depense_structure = bds.idBudget_depense_structure
-        INNER JOIN user_budget_depense ubd ON bds.idBudget_depense_structure = ubd.Budget_depense_structure_idBudget_depense_structure
-        LEFT JOIN depense_structure d ON edb.idEtat_de_besoin = d.Etat_de_besoin_idEtat_de_besoin
+        INNER JOIN service s ON edb.\"Service_idService\" = s.\"idService\"
+        INNER JOIN ligne_depense_structure lds ON edb.\"idLigne_depense\" = lds.idligne_depense_structure
+        INNER JOIN groupe_depense_structure gds ON lds.Groupe_depense_structure_idGroupe_depense_structure = gds.\"idGroupe_depense_structure\"
+        INNER JOIN budget_depense_structure bds ON gds.\"Budget_depense_structure_idBudget_depense_structure\" = bds.idBudget_depense_structure
+        INNER JOIN user_budget_depense ubd ON bds.idBudget_depense_structure = ubd.\"Budget_depense_structure_idBudget_depense_structure\"
+        LEFT JOIN depense_structure d ON edb.\"idEtat_de_besoin\" = d.Etat_de_besoin_idEtat_de_besoin
         LEFT JOIN banque b ON d.Banque_idBanque = b.idBanque
-        LEFT JOIN t_users u ON d.idUser = u.idUser
-        WHERE ubd.idUser = :userId
+        LEFT JOIN t_users u ON d.\"idUser\" = u.\"idUser\"
+        WHERE ubd.\"idUser\" = :userId
     ";
 
 
@@ -2758,14 +2758,14 @@ public function getUserCount()
             edb.libelle LIKE :search 
             OR s.designation LIKE :search 
             OR edb.montant LIKE :search 
-            OR edb.idEtat_de_besoin LIKE :search
+            OR edb.\"idEtat_de_besoin\" LIKE :search
             OR d.motifD LIKE :search
             OR d.beneficiaire LIKE :search
             OR b.designation LIKE :search
         )";
     }
 
-    $query .= " ORDER BY edb.idEtat_de_besoin DESC LIMIT :limit";
+    $query .= " ORDER BY edb.\"idEtat_de_besoin\" DESC LIMIT :limit";
 
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -2805,7 +2805,7 @@ public function getUserCount()
             $query = "
                 UPDATE etat_de_besoin
                 SET montant = montant + :montantLigne
-                WHERE idEtat_de_besoin = :etatDeBesoinId
+                WHERE \"idEtat_de_besoin\" = :etatDeBesoinId
             ";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':montantLigne', $montantLigne, PDO::PARAM_STR);
@@ -2853,8 +2853,8 @@ public function getUserCount()
             $query = "
                 UPDATE etat_de_besoin
                 SET 
-                    libelle = :libelle, idLigne_depense = :ligne
-                WHERE idEtat_de_besoin = :etatDeBesoinId
+                    libelle = :libelle, \"idLigne_depense\" = :ligne
+                WHERE \"idEtat_de_besoin\" = :etatDeBesoinId
             ";
             $stmt = $this->db->prepare($query);
 
@@ -2878,13 +2878,13 @@ public function getUserCount()
             SELECT edb.*, 
                 s.designation AS serviceDesignation, 
                 st.designation AS structureDesignation,
-                st.idStructure,
-                u.nomUser AS userName
+                st.\"idStructure\",
+                u.\"nomUser\" AS userName
             FROM etat_de_besoin edb
-            INNER JOIN service s ON edb.Service_idService = s.idService
-            INNER JOIN structure st ON s.Structure_idStructure = st.idStructure
-            INNER JOIN t_users u ON edb.idUser = u.idUser
-            WHERE edb.idEtat_de_besoin = :etatDeBesoinId
+            INNER JOIN service s ON edb.\"Service_idService\" = s.\"idService\"
+            INNER JOIN structure st ON s.\"Structure_idStructure\" = st.\"idStructure\"
+            INNER JOIN t_users u ON edb.\"idUser\" = u.\"idUser\"
+            WHERE edb.\"idEtat_de_besoin\" = :etatDeBesoinId
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':etatDeBesoinId', $etatDeBesoinId, PDO::PARAM_INT);
@@ -2898,7 +2898,7 @@ public function getUserCount()
         $query = "
             UPDATE etat_de_besoin
             SET validation1 = :userId
-            WHERE idEtat_de_besoin = :etatId
+            WHERE \"idEtat_de_besoin\" = :etatId
         ";
 
         $stmt = $this->db->prepare($query);
@@ -2913,9 +2913,9 @@ public function getUserCount()
         $query = "
             SELECT d.*
             FROM depot d
-            INNER JOIN structure s ON d.Structure_idStructure = s.idStructure
-            INNER JOIN user_structure us ON s.idStructure = us.idStructure
-            WHERE us.idUser = :userId
+            INNER JOIN structure s ON d.\"Structure_idStructure\" = s.\"idStructure\"
+            INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+            WHERE us.\"idUser\" = :userId
         ";
         
         if (!empty($search)) {
@@ -2945,9 +2945,9 @@ public function getUserCount()
         $query = "
             SELECT u.*, ud.iduser_depot
             FROM user_depot ud
-            INNER JOIN t_users u ON ud.idUser = u.idUser
-            WHERE ud.Depot_idDepot = :depotId
-            ORDER BY u.nomUser ASC
+            INNER JOIN t_users u ON ud.\"idUser\" = u.\"idUser\"
+            WHERE ud.\"Depot_idDepot\" = :depotId
+            ORDER BY u.\"nomUser\" ASC
         ";
         
         $stmt = $this->db->prepare($query);
@@ -2959,7 +2959,7 @@ public function getUserCount()
 
     public function addUserToDepot($userId, $depotId)
     {
-        $query = "INSERT INTO user_depot (idUser, Depot_idDepot) VALUES (:userId, :depotId)";
+        $query = "INSERT INTO user_depot (\"idUser\", \"Depot_idDepot\") VALUES (:userId, :depotId)";
         $stmt = $this->db->prepare($query);
         
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -2979,7 +2979,7 @@ public function getUserCount()
 
     public function checkDuplicateDepot($designation, $structureId)
     {
-        $query = "SELECT COUNT(*) FROM depot WHERE designation = :designation AND Structure_idStructure = :structureId";
+        $query = "SELECT COUNT(*) FROM depot WHERE designation = :designation AND \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designation', $designation, PDO::PARAM_STR);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
@@ -2990,7 +2990,7 @@ public function getUserCount()
 
     public function addDepot($designation, $adresse, $typeDepot, $userId, $structureId)
     {
-        $query = "INSERT INTO depot (designation, adresse, typeDepot, dateEnregistrement, idUser, Structure_idStructure) 
+        $query = "INSERT INTO depot (designation, adresse, typeDepot, \"dateEnregistrement\", \"idUser\", \"Structure_idStructure\") 
                 VALUES (:designation, :adresse, :typeDepot, NOW(), :userId, :structureId)";
         
         $stmt = $this->db->prepare($query);
@@ -3007,8 +3007,8 @@ public function getUserCount()
 {
     $query = "SELECT COUNT(*) FROM depot 
               WHERE designation = :designation 
-              AND Structure_idStructure = :structureId 
-              AND idDepot != :idDepot";
+              AND \"Structure_idStructure\" = :structureId 
+              AND \"idDepot\" != :idDepot";
               
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':designation', $designation, PDO::PARAM_STR);
@@ -3025,9 +3025,9 @@ public function updateDepot($idDepot, $designation, $adresse, $typeDepot, $userI
               SET designation = :designation,
                   adresse = :adresse,
                   typeDepot = :typeDepot,
-                  idUser = :userId,
-                  Structure_idStructure = :structureId
-              WHERE idDepot = :idDepot";
+                  \"idUser\" = :userId,
+                  \"Structure_idStructure\" = :structureId
+              WHERE \"idDepot\" = :idDepot";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idDepot', $idDepot, PDO::PARAM_INT);
@@ -3047,7 +3047,7 @@ public function getEntreesByDepot($depotId)
                 f.nom as fournisseur
               FROM manifeste_entree me
               LEFT JOIN fournisseur f ON me.Fournisseur_idFournisseur = f.idFournisseur 
-              WHERE me.Depot_idDepot = :depotId
+              WHERE me.\"Depot_idDepot\" = :depotId
               ORDER BY me.dateOperation DESC";
               
     $stmt = $this->db->prepare($query);
@@ -3065,9 +3065,9 @@ public function getEntreesByUserAccess($userId, $search = '', $limit = 100)
             f.nom as fournisseur
         FROM manifeste_entree me
         LEFT JOIN fournisseur f ON me.Fournisseur_idFournisseur = f.idFournisseur
-        INNER JOIN depot d ON me.Depot_idDepot = d.idDepot
-        INNER JOIN user_depot ud ON d.idDepot = ud.Depot_idDepot
-        WHERE ud.idUser = :userId
+        INNER JOIN depot d ON me.\"Depot_idDepot\" = d.\"idDepot\"
+        INNER JOIN user_depot ud ON d.\"idDepot\" = ud.\"Depot_idDepot\"
+        WHERE ud.\"idUser\" = :userId
     ";
 
     if (!empty($search)) {
@@ -3118,9 +3118,9 @@ public function addEntreeDepot($dateOperation, $observation, $transporteur, $ref
             observation,
             transporteur, 
             reference_document,
-            dateEnregistrement, 
-            idUser, 
-            Depot_idDepot, 
+            \"dateEnregistrement\", 
+            \"idUser\", 
+            \"Depot_idDepot\", 
             Fournisseur_idFournisseur
         ) VALUES (
             :dateOperation,
@@ -3257,8 +3257,8 @@ public function getEntreeById($entryId)
             $query = "
                 SELECT me.*, d.*,u.*
                 FROM manifeste_entree me
-                INNER JOIN depot d ON me.Depot_idDepot = d.idDepot
-                INNER JOIN t_users u ON me.idUser = u.idUser
+                INNER JOIN depot d ON me.\"Depot_idDepot\" = d.\"idDepot\"
+                INNER JOIN t_users u ON me.\"idUser\" = u.\"idUser\"
                 WHERE me.idManifeste_entree = :entryId
             ";
             $stmt = $this->db->prepare($query);
@@ -3279,9 +3279,9 @@ public function getEntreeById($entryId)
             f.noms as client
         FROM manifeste_sortie ms
         LEFT JOIN client f ON ms.Client_idClient = f.idClient
-        INNER JOIN depot d ON ms.Depot_idDepot = d.idDepot
-        INNER JOIN user_depot ud ON d.idDepot = ud.Depot_idDepot
-        WHERE ud.idUser = :userId
+        INNER JOIN depot d ON ms.\"Depot_idDepot\" = d.\"idDepot\"
+        INNER JOIN user_depot ud ON d.\"idDepot\" = ud.\"Depot_idDepot\"
+        WHERE ud.\"idUser\" = :userId
     ";
 
     if (!empty($search)) {
@@ -3312,9 +3312,9 @@ public function getSortiesByUserAccess2($userId, $searchName = '', $startDate = 
             f.*,d.*
         FROM manifeste_sortie ms
         LEFT JOIN client f ON ms.Client_idClient = f.idClient
-        INNER JOIN depot d ON ms.Depot_idDepot = d.idDepot
-        INNER JOIN user_depot ud ON d.idDepot = ud.Depot_idDepot
-        WHERE ud.idUser = :userId
+        INNER JOIN depot d ON ms.\"Depot_idDepot\" = d.\"idDepot\"
+        INNER JOIN user_depot ud ON d.\"idDepot\" = ud.\"Depot_idDepot\"
+        WHERE ud.\"idUser\" = :userId
     ";
 
     // Add conditions for search parameters
@@ -3358,9 +3358,9 @@ public function getEntreesByUserAccess2($userId, $searchName = '', $startDate = 
             f.*,d.*
         FROM manifeste_entree me
         LEFT JOIN fournisseur f ON me.Fournisseur_idFournisseur = f.idFournisseur
-        INNER JOIN depot d ON me.Depot_idDepot = d.idDepot
-        INNER JOIN user_depot ud ON d.idDepot = ud.Depot_idDepot
-        WHERE ud.idUser = :userId
+        INNER JOIN depot d ON me.\"Depot_idDepot\" = d.\"idDepot\"
+        INNER JOIN user_depot ud ON d.\"idDepot\" = ud.\"Depot_idDepot\"
+        WHERE ud.\"idUser\" = :userId
     ";
 
     // Add conditions for search parameters
@@ -3423,8 +3423,8 @@ public function addSortieDepot($dateOperation, $observation, $transporteur, $ref
                 motif,
                 transporteur,
                 reference_document,
-                idUser,
-                Depot_idDepot,
+                \"idUser\",
+                \"Depot_idDepot\",
                 Client_idClient
             ) VALUES (
                 :dateOperation,
@@ -3462,8 +3462,8 @@ public function updateSortieDepot($idSortie, $dateOperation, $observation, $tran
                 motif = :observation,
                 transporteur = :transporteur,
                 reference_document = :referenceDocument,
-                idUser = :userId,
-                Depot_idDepot = :depotId,
+                \"idUser\" = :userId,
+                \"Depot_idDepot\" = :depotId,
                 Client_idClient = :clientId
             WHERE idManifeste_sortie = :idSortie
         ";
@@ -3583,8 +3583,8 @@ public function getSortieById($sortieId)
         $query = "
             SELECT ms.*, d.*, u.*, c.noms AS clientName
             FROM manifeste_sortie ms
-            INNER JOIN depot d ON ms.Depot_idDepot = d.idDepot
-            INNER JOIN t_users u ON ms.idUser = u.idUser
+            INNER JOIN depot d ON ms.\"Depot_idDepot\" = d.\"idDepot\"
+            INNER JOIN t_users u ON ms.\"idUser\" = u.\"idUser\"
             LEFT JOIN client c ON ms.Client_idClient = c.idClient
             WHERE ms.idManifeste_sortie = :sortieId
         ";
@@ -3604,10 +3604,10 @@ public function getEmailsByUserAccess($userId, $searchProvenance, $startDate, $e
         SELECT 
             cr.*
         FROM couriels_recu cr
-        INNER JOIN service s ON cr.Service_idService = s.idService
-        INNER JOIN structure str ON s.Structure_idStructure=str.idStructure
-        INNER JOIN user_structure as us ON us.idStructure=str.idStructure
-        WHERE us.idUser = :userId
+        INNER JOIN service s ON cr.\"Service_idService\" = s.\"idService\"
+        INNER JOIN structure str ON s.\"Structure_idStructure\"=str.\"idStructure\"
+        INNER JOIN user_structure as us ON us.\"idStructure\"=str.\"idStructure\"
+        WHERE us.\"idUser\" = :userId
     ";
 
     // Add conditions for search parameters
@@ -3615,10 +3615,10 @@ public function getEmailsByUserAccess($userId, $searchProvenance, $startDate, $e
         $query .= " AND cr.provenance LIKE :searchProvenance";
     }
     if (!empty($startDate)) {
-        $query .= " AND cr.dateEnregistrement >= :startDate";
+        $query .= " AND cr.\"dateEnregistrement\" >= :startDate";
     }
     if (!empty($endDate)) {
-        $query .= " AND cr.dateEnregistrement <= :endDate";
+        $query .= " AND cr.\"dateEnregistrement\" <= :endDate";
     }
 
     $query .= " ORDER BY cr.idcouriels_recu DESC LIMIT :limit";
@@ -3649,11 +3649,11 @@ public function getEmailsByUserAccess2($userId,$limit = 100)
         SELECT 
             cr.*,a.*
         FROM couriels_recu cr
-        INNER JOIN service s ON cr.Service_idService = s.idService
-        INNER JOIN agent a ON cr.userConcerne=a.idAgent
-        INNER JOIN structure str ON s.Structure_idStructure=str.idStructure
-        INNER JOIN user_structure as us ON us.idStructure=str.idStructure
-        WHERE us.idUser = :userId
+        INNER JOIN service s ON cr.\"Service_idService\" = s.\"idService\"
+        INNER JOIN agent a ON cr.userConcerne=a.\"idAgent\"
+        INNER JOIN structure str ON s.\"Structure_idStructure\"=str.\"idStructure\"
+        INNER JOIN user_structure as us ON us.\"idStructure\"=str.\"idStructure\"
+        WHERE us.\"idUser\" = :userId
     ";
 
    
@@ -3675,7 +3675,7 @@ public function addEmail($provenance, $depositaire, $dateArrive, $serviceId, $us
     try {
         $query = "
             INSERT INTO couriels_recu (
-                dateArrive, provenance, depositaire, objet, resumeCouriel, dateEnregistrement, idUser, userConcerne, Service_idService
+                \"dateArrive\", provenance, depositaire, objet, \"resumeCouriel\", \"dateEnregistrement\", \"idUser\", userConcerne, \"Service_idService\"
             ) VALUES (
                 :dateArrive, :provenance, :depositaire, :objet, :resumeCouriel, NOW(), :idUser, :userConcerne, :serviceId
             )
@@ -3719,9 +3719,9 @@ public function getCategoriesByUserAccess($userId, $search = '', $limit = 20)
     $query = "
         SELECT c.*
         FROM categories_doc c
-        INNER JOIN structure s ON c.idStructure = s.idStructure
-        INNER JOIN user_structure us ON s.idStructure = us.idStructure
-        WHERE us.idUser = :userId AND c.idUser= :userId
+        INNER JOIN structure s ON c.\"idStructure\" = s.\"idStructure\"
+        INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+        WHERE us.\"idUser\" = :userId AND c.\"idUser\"= :userId
     ";
 
     if (!empty($search)) {
@@ -3746,7 +3746,7 @@ public function getCategoriesByUserAccess($userId, $search = '', $limit = 20)
 
 public function addCategory($categoryData) {
     try {
-        $query = "INSERT INTO categories_doc (nom, description, idStructure, date_creation,idUser) 
+        $query = "INSERT INTO categories_doc (nom, description, \"idStructure\", date_creation,\"idUser\") 
                   VALUES (:nom, :description, :idStructure, :date_creation, :idUser)";
         
         $stmt = $this->db->prepare($query);
@@ -3772,7 +3772,7 @@ public function updateCategory($categoryData) {
         $query = "UPDATE categories_doc 
                   SET nom = :nom, 
                       description = :description, 
-                      idStructure = :idStructure 
+                      \"idStructure\" = :idStructure 
                   WHERE id_categorie = :id_categorie";
         
         $stmt = $this->db->prepare($query);
@@ -3807,9 +3807,9 @@ public function getPrivateDocumentsByUserAccess($userId, $search = '', $limit = 
     $query = "
         SELECT pd.*,u.*,c.*
         FROM documents_prive pd
-        INNER JOIN t_users u ON pd.idUser=u.idUser
+        INNER JOIN t_users u ON pd.\"idUser\"=u.\"idUser\"
         INNER JOIN categories_doc c ON pd.id_categorie = c.id_categorie
-        WHERE pd.idUser = :userId
+        WHERE pd.\"idUser\" = :userId
     ";
 
     if (!empty($search)) {
@@ -3838,9 +3838,9 @@ public function getPrivateDocumentsByUserAccess2($userId, $search = '', $limit =
         SELECT pd.*,tu.*,c.*
         FROM documents_prive pd
         INNER JOIN user_document u ON pd.id_document=u.id_document
-        INNER JOIN t_users tu ON pd.idUser=tu.idUser
+        INNER JOIN t_users tu ON pd.\"idUser\"=tu.\"idUser\"
         INNER JOIN categories_doc c ON pd.id_categorie = c.id_categorie
-        WHERE u.idUser = :userId
+        WHERE u.\"idUser\" = :userId
     ";
 
     if (!empty($search)) {
@@ -3868,9 +3868,9 @@ public function getPublicDocumentsByUserAccess($userId, $search = '', $limit = 1
     $query = "
         SELECT pd.*,u.*,c.*
         FROM documents_public pd
-        INNER JOIN t_users u ON pd.idUser=u.idUser
+        INNER JOIN t_users u ON pd.\"idUser\"=u.\"idUser\"
         INNER JOIN categories_doc c ON pd.id_categorie = c.id_categorie
-        WHERE pd.idUser = :userId
+        WHERE pd.\"idUser\" = :userId
     ";
 
     if (!empty($search)) {
@@ -3898,7 +3898,7 @@ public function getPublicDocumentsByUserAccess2($userId, $search = '', $limit = 
     $query = "
         SELECT pd.*,u.*,c.*
         FROM documents_public pd
-        INNER JOIN t_users u ON pd.idUser=u.idUser
+        INNER JOIN t_users u ON pd.\"idUser\"=u.\"idUser\"
         INNER JOIN categories_doc c ON pd.id_categorie = c.id_categorie
     ";
 
@@ -3925,7 +3925,7 @@ public function addDocument($title, $description, $filePath, $userId, $categoryI
 {
     try {
         $query = "
-            INSERT INTO documents_prive (titre, description, chemin_fichier, date_ajout, idUser, id_categorie)
+            INSERT INTO documents_prive (titre, description, chemin_fichier, date_ajout, \"idUser\", id_categorie)
             VALUES (:title, :description, :filePath, NOW(), :userId, :categoryId)
         ";
 
@@ -3949,7 +3949,7 @@ public function addDocument_public($title, $description, $filePath, $userId, $ca
 {
     try {
         $query = "
-            INSERT INTO documents_public (titre, description, chemin_fichier, date_ajout, idUser, id_categorie)
+            INSERT INTO documents_public (titre, description, chemin_fichier, date_ajout, \"idUser\", id_categorie)
             VALUES (:title, :description, :filePath, NOW(), :userId, :categoryId)
         ";
 
@@ -4024,7 +4024,7 @@ public function getUsersByDocumentId($documentId)
     $query = "
         SELECT u.*
         FROM t_users u
-        INNER JOIN user_document ud ON u.idUser = ud.idUser
+        INNER JOIN user_document ud ON u.\"idUser\" = ud.\"idUser\"
         WHERE ud.id_document = :documentId
     ";
     $stmt = $this->db->prepare($query);
@@ -4037,7 +4037,7 @@ public function getUsersByDocumentId($documentId)
 public function removeUserFromDocument($userId, $documentId)
 {
     try {
-        $query = "DELETE FROM user_document WHERE idUser = :userId AND id_document = :documentId";
+        $query = "DELETE FROM user_document WHERE \"idUser\" = :userId AND id_document = :documentId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':documentId', $documentId, PDO::PARAM_INT);
@@ -4051,7 +4051,7 @@ public function removeUserFromDocument($userId, $documentId)
 public function addUserToDocument($userId, $documentId)
 {
     try {
-        $query = "INSERT INTO user_document (idUser, id_document) VALUES (:userId, :documentId)";
+        $query = "INSERT INTO user_document (\"idUser\", id_document) VALUES (:userId, :documentId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':documentId', $documentId, PDO::PARAM_INT);
@@ -4065,7 +4065,7 @@ public function addUserToDocument($userId, $documentId)
 // Récupérer l'id d'un document privé par son nom de fichier et son propriétaire
 public function getPrivateDocumentIdByFilename($fileName, $userId)
 {
-    $query = "SELECT id_document FROM documents_prive WHERE chemin_fichier = :file AND idUser = :user LIMIT 1";
+    $query = "SELECT id_document FROM documents_prive WHERE chemin_fichier = :file AND \"idUser\" = :user LIMIT 1";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':file', $fileName, PDO::PARAM_STR);
     $stmt->bindParam(':user', $userId, PDO::PARAM_INT);
@@ -4079,16 +4079,16 @@ public function getDocumentsByCategory($categoryId, $userId, $limit = 100)
     $query = "
         SELECT d.*, c.*
         FROM (
-            SELECT id_document, titre, description, chemin_fichier, date_ajout, idUser, id_categorie
+            SELECT id_document, titre, description, chemin_fichier, date_ajout, \"idUser\", id_categorie
             FROM documents_prive
             WHERE id_categorie = :categoryId
             AND id_document IN (
                 SELECT id_document
                 FROM user_document
-                WHERE idUser = :userId
+                WHERE \"idUser\" = :userId
             )
             UNION ALL
-            SELECT id_document, titre, description, chemin_fichier, date_ajout, idUser, id_categorie
+            SELECT id_document, titre, description, chemin_fichier, date_ajout, \"idUser\", id_categorie
             FROM documents_public
             WHERE id_categorie = :categoryId
         ) AS d
@@ -4122,8 +4122,8 @@ public function getJournalEntries($userId, $structureId, $startDate, $endDate) {
     $query = "
         SELECT dateOperation, compte, libelle_compte, montant_debit, montant_credit, libele, numPiece
         FROM journal_automatique
-        WHERE Structure_idStructure = :structureId
-        AND idUser = :userId
+        WHERE \"Structure_idStructure\" = :structureId
+        AND \"idUser\" = :userId
         AND dateOperation BETWEEN :startDate AND :endDate
     ";
 
@@ -4142,8 +4142,8 @@ public function getInitialBalances($userId, $structureId, $startDate) {
     $query = "
         SELECT SUM(montant_debit) AS initial_debit, SUM(montant_credit) AS initial_credit
         FROM journal_automatique
-        WHERE Structure_idStructure = :structureId
-        AND idUser = :userId
+        WHERE \"Structure_idStructure\" = :structureId
+        AND \"idUser\" = :userId
         AND dateOperation < :startDate
     ";
 
@@ -4165,7 +4165,7 @@ public function getClientReceivables($structureId, $startDate, $endDate) {
             outstanding_amount FROM facture_client f 
             JOIN client c ON f.Client_idClient = c.idClient 
             LEFT JOIN paiement_client p ON f.idFacture_client = p.Facture_client_idFacture_client 
-            WHERE c.Structure_idStructure = :structureId 
+            WHERE c.\"Structure_idStructure\" = :structureId 
             AND f.dateFacture 
             BETWEEN :startDate AND :endDate
             GROUP BY f.idFacture_client, c.noms, f.numeroFacture, f.montant, f.dateFacture, f.statut
@@ -4200,7 +4200,7 @@ public function getSupplierDebts($structureId, $startDate, $endDate) {
             FROM facture_fournisseur ff
             JOIN fournisseur f ON ff.Fournisseur_idFournisseur = f.idFournisseur
             LEFT JOIN paiement_fournisseur pf ON ff.idFacture_fournisseur = pf.Facture_fournisseur_idFacture_fournisseur
-            WHERE f.Structure_idStructure = :structureId
+            WHERE f.\"Structure_idStructure\" = :structureId
             AND ff.dateFacture BETWEEN :startDate AND :endDate
             GROUP BY ff.idFacture_fournisseur, f.nom, ff.numeroFacture, ff.montant, ff.dateFacture, ff.statut
         ";
@@ -4225,18 +4225,18 @@ public function getPeriodicRevenues($structureId, $startDate, $endDate, $budgetI
             r.montantR, 
             r.depositaire, 
             r.dateOperation, 
-            r.dateEnregistrement,
+            r.\"dateEnregistrement\",
             g.*
         FROM 
             recette_structure r
         JOIN 
             ligne_recette_structure l ON r.ligne_recette_structure_idligne_recette_structure = l.idligne_recette_structure
         JOIN 
-            groupe_recette_structure g ON l.Groupe_recette_structure_idGroupe_recette_structure = g.idGroupe_recette_structure
+            groupe_recette_structure g ON l.Groupe_recette_structure_idGroupe_recette_structure = g.\"idGroupe_recette_structure\"
         JOIN 
-            budget_recette_structure b ON g.Budget_recette_structure_idBudget_recette_structure = b.idBudget_recette_structure
+            budget_recette_structure b ON g.\"Budget_recette_structure_idBudget_recette_structure\" = b.idBudget_recette_structure
         WHERE 
-            b.Structure_idStructure = :structureId
+            b.\"Structure_idStructure\" = :structureId
             AND r.dateOperation BETWEEN :startDate AND :endDate
     ";
 
@@ -4267,18 +4267,18 @@ public function getPeriodicExpenses($structureId, $startDate, $endDate, $budgetI
             d.montantD, 
             d.beneficiaire, 
             d.dateoperation, 
-            d.dateEnregistrement,
+            d.\"dateEnregistrement\",
             g.*
         FROM 
             depense_structure d
         JOIN 
             ligne_depense_structure l ON d.ligne_depense_structure_idligne_depense_structure = l.idligne_depense_structure
         JOIN 
-            groupe_depense_structure g ON l.Groupe_depense_structure_idGroupe_depense_structure = g.idGroupe_depense_structure
+            groupe_depense_structure g ON l.Groupe_depense_structure_idGroupe_depense_structure = g.\"idGroupe_depense_structure\"
         JOIN 
-            budget_depense_structure b ON g.Budget_depense_structure_idBudget_depense_structure = b.idBudget_depense_structure
+            budget_depense_structure b ON g.\"Budget_depense_structure_idBudget_depense_structure\" = b.idBudget_depense_structure
         WHERE 
-            b.Structure_idStructure = :structureId
+            b.\"Structure_idStructure\" = :structureId
             AND d.dateoperation BETWEEN :startDate AND :endDate
     ";
 
@@ -4311,9 +4311,9 @@ public function getAccountHistory($structureId, $accountId)
             journal_automatique t
         INNER JOIN 
             compte c ON t.compte = c.numeroCompte
-        INNER JOIN structure s ON t.Structure_idStructure=s.idStructure
+        INNER JOIN structure s ON t.\"Structure_idStructure\"=s.\"idStructure\"
         WHERE 
-            t.Structure_idStructure = :structureId
+            t.\"Structure_idStructure\" = :structureId
             AND c.idCompte = :accountId
         ORDER BY 
             t.dateOperation DESC
@@ -4328,18 +4328,18 @@ public function getAccountHistory($structureId, $accountId)
 }
 
 public function insertEcriture($montant, $dateEcriture, $numeroPiece, $description, $journalId, $userId) {
-    $stmt = $this->db->prepare("INSERT INTO ecriture (montant, dateEcriture, numeroPiece, description, Journaux_idJournaux, dateEnregistrement, idUser) VALUES (?, ?, ?, ?, ?, NOW(), ?)");
+    $stmt = $this->db->prepare("INSERT INTO ecriture (montant, \"dateEcriture\", \"numeroPiece\", description, \"Journaux_idJournaux\", \"dateEnregistrement\", \"idUser\") VALUES (?, ?, ?, ?, ?, NOW(), ?)");
     $stmt->execute([$montant, $dateEcriture, $numeroPiece, $description, $journalId, $userId]);
     return $this->db->lastInsertId();
 }
 
 public function insertEcritureDetail($ecritureId, $compteId, $montant, $typeCompte) {
-    $stmt = $this->db->prepare("INSERT INTO ecriture_detail (idEcriture, compteId, montant, typeCompte) VALUES (?, ?, ?, ?)");
+    $stmt = $this->db->prepare("INSERT INTO ecriture_detail (\"idEcriture\", compteId, montant, typeCompte) VALUES (?, ?, ?, ?)");
     $stmt->execute([$ecritureId, $compteId, $montant, $typeCompte]);
 }
 
 public function insertJournalAutomatique($dateOperation, $compte, $libelleCompte, $montantDebit, $montantCredit, $libele, $numPiece, $structureId, $userId) {
-    $stmt = $this->db->prepare("INSERT INTO journal_automatique (dateOperation, compte, libelle_compte, montant_debit, montant_credit, libele, numPiece, Structure_idStructure, idUser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $this->db->prepare("INSERT INTO journal_automatique (dateOperation, compte, libelle_compte, montant_debit, montant_credit, libele, numPiece, \"Structure_idStructure\", \"idUser\") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$dateOperation, $compte, $libelleCompte, $montantDebit, $montantCredit, $libele, $numPiece, $structureId, $userId]);
 }
 
@@ -4378,9 +4378,9 @@ public function logUserActivity($userId, $actionType, $description, $ipAddress, 
 public function getTeacherUsers() {
     $query = "SELECT u.* 
               FROM t_users u
-              JOIN agent a ON u.idAgent = a.idAgent
+              JOIN agent a ON u.\"idAgent\" = a.\"idAgent\"
               WHERE a.type_agent = 'Enseignant'
-              ORDER BY u.nomUser ASC";
+              ORDER BY u.\"nomUser\" ASC";
     $stmt = $this->db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);

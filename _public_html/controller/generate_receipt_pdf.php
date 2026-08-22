@@ -141,7 +141,7 @@ $stmt = $connexion->prepare("
            sc.date_ouverture as session_date_ouverture
     FROM transactions t
     LEFT JOIN caisses c ON t.source_id = c.id AND t.source = 'Caisse'
-    LEFT JOIN agent a ON t.idAgent = a.idAgent
+    LEFT JOIN agent a ON t.\"idAgent\" = a.\"idAgent\"
     LEFT JOIN categories_budget cb ON t.categorie_id = cb.id
     LEFT JOIN sessions_caisse sc ON t.session_caisse_id = sc.id
     WHERE t.id = :transaction_id

@@ -27,7 +27,7 @@ try {
     if (!$id) {
         $sql = "INSERT INTO caisses (
                     designation, description, devise, solde_initial, solde_actuel, 
-                    plafond_caisse, idAgent_responsable, localisation, est_actif, idUser
+                    plafond_caisse, \"idAgent_responsable\", localisation, est_actif, \"idUser\"
                 ) VALUES (
                     :designation, :description, :devise, :solde_initial, :solde_initial, 
                     :plafond_caisse, :idAgent_responsable, :localisation, :est_actif, :idUser
@@ -67,7 +67,7 @@ try {
                     solde_initial = :solde_initial,
                     solde_actuel = :solde_actuel,
                     plafond_caisse = :plafond_caisse,
-                    idAgent_responsable = :idAgent_responsable,
+                    \"idAgent_responsable\" = :idAgent_responsable,
                     localisation = :localisation,
                     est_actif = :est_actif
                 WHERE id = :id";

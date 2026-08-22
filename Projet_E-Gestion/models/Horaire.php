@@ -10,15 +10,15 @@ class Horaire {
 
     // Récupérer les horaires par promotion
     public function getHorairesByPromotion($idPromotion, $idAnneeAcad) {
-        $query = "SELECT h.*, e.designationECUE, u.designationUE, 
-                 s.numeroSemestre, p.designationPromotion, a.noms as enseignant_nom
+        $query = "SELECT h.*, e.\"designationECUE\", u.\"designationUE\", 
+                 s.\"numeroSemestre\", p.\"designationPromotion\", a.noms as enseignant_nom
                  FROM horaires_cours h
-                 JOIN ecue e ON h.idECUE = e.idECUE
-                 JOIN ue u ON e.UE_idUE = u.idUE
+                 JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
+                 JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                  JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                  JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-                 LEFT JOIN enseignant_ecue ee ON e.idECUE = ee.idECUE AND ee.anneeAcad = :idAnneeAcad
-                 LEFT JOIN agent a ON ee.idAgent = a.idAgent
+                 LEFT JOIN enseignant_ecue ee ON e.\"idECUE\" = ee.\"idECUE\" AND ee.\"anneeAcad\" = :idAnneeAcad
+                 LEFT JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
                  WHERE p.idpromotion = :idPromotion AND h.annee_acad_idannee_acad = :idAnneeAcad
                  ORDER BY h.jour, h.heure_debut";
         $stmt = $this->db->prepare($query);
@@ -31,13 +31,13 @@ class Horaire {
     
     // Obtenir les détails d'un horaire spécifique
 public function getHoraireById($idHoraire) {
-    $query = "SELECT h.*, e.designationECUE, u.designationUE, 
+    $query = "SELECT h.*, e.\"designationECUE\", u.\"designationUE\", 
              a.noms as enseignant_nom
              FROM horaires_cours h
-             JOIN ecue e ON h.idECUE = e.idECUE
-             JOIN ue u ON e.UE_idUE = u.idUE
-             LEFT JOIN enseignant_ecue ee ON e.idECUE = ee.idECUE AND ee.anneeAcad = h.annee_acad_idannee_acad
-             LEFT JOIN agent a ON ee.idAgent = a.idAgent
+             JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
+             JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
+             LEFT JOIN enseignant_ecue ee ON e.\"idECUE\" = ee.\"idECUE\" AND ee.\"anneeAcad\" = h.annee_acad_idannee_acad
+             LEFT JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
              WHERE h.idhoraire = :idHoraire";
     $stmt = $this->db->prepare($query);
     $stmt->execute(['idHoraire' => $idHoraire]);
@@ -99,8 +99,8 @@ public function getHoraireById($idHoraire) {
     }
 
     // Si aucun conflit ou cours en tronc commun, ajouter l'horaire
-    $query = "INSERT INTO horaires_cours (jour, heure_debut, heure_fin, salle, idECUE,
-             annee_acad_idannee_acad, idUser, type_cours, date_cours)
+    $query = "INSERT INTO horaires_cours (jour, heure_debut, heure_fin, salle, \"idECUE\",
+             annee_acad_idannee_acad, \"idUser\", type_cours, date_cours)
              VALUES (:jour, :heureDebut, :heureFin, :salle, :idECUE, :idAnneeAcad, :idUser, :typeCours, :date_cours)";
     $stmt = $this->db->prepare($query);
     $result = $stmt->execute([
@@ -151,7 +151,7 @@ public function updateHoraire($idHoraire, $jour, $heureDebut, $heureFin, $salle,
                  heure_debut = :heureDebut, 
                  heure_fin = :heureFin, 
                  salle = :salle, 
-                 idECUE = :idECUE,
+                 \"idECUE\" = :idECUE,
                  type_cours = :typeCours
              WHERE idhoraire = :idHoraire";
     $stmt = $this->db->prepare($query);
@@ -201,8 +201,8 @@ public function addHoraireWithDate($date_cours, $heureDebut, $heureFin, $salle, 
         return false;
     }
     
-    $query = "INSERT INTO horaires_cours (date_cours, jour, heure_debut, heure_fin, salle, idECUE, 
-             annee_acad_idannee_acad, idUser, type_cours) 
+    $query = "INSERT INTO horaires_cours (date_cours, jour, heure_debut, heure_fin, salle, \"idECUE\", 
+             annee_acad_idannee_acad, \"idUser\", type_cours) 
              VALUES (:date_cours, DAYNAME(:date_cours), :heureDebut, :heureFin, :salle, :idECUE, :idAnneeAcad, :idUser, :typeCours)";
     $stmt = $this->db->prepare($query);
     return $stmt->execute([
@@ -298,7 +298,7 @@ public function updateHoraireWithDate($idHoraire, $date_cours, $heureDebut, $heu
                  heure_debut = :heureDebut, 
                  heure_fin = :heureFin, 
                  salle = :salle, 
-                 idECUE = :idECUE,
+                 \"idECUE\" = :idECUE,
                  type_cours = :typeCours
              WHERE idhoraire = :idHoraire";
     $stmt = $this->db->prepare($query);
@@ -348,7 +348,7 @@ public function duplicateHoraire($idHoraire, $newDate) {
     
     // Dupliquer l'horaire
     $query = "INSERT INTO horaires_cours 
-              (date_cours, jour, heure_debut, heure_fin, salle, idECUE, annee_acad_idannee_acad, type_cours, idUser)
+              (date_cours, jour, heure_debut, heure_fin, salle, \"idECUE\", annee_acad_idannee_acad, type_cours, \"idUser\")
               VALUES 
               (:date_cours, :jour, :heure_debut, :heure_fin, :salle, :idECUE, :annee_acad_idannee_acad, :type_cours, :idUser)";
     
@@ -410,10 +410,10 @@ public function verifierChevauchementPromotion($jour, $heureDebut, $heureFin, $i
     // Requête pour obtenir la promotion associée à l'ECUE
     $queryPromotion = "SELECT p.idpromotion 
                        FROM ecue e 
-                       JOIN ue u ON e.UE_idUE = u.idUE 
+                       JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\" 
                        JOIN semestre s ON u.semestre_idsemestre = s.idsemestre 
                        JOIN promotion p ON s.promotion_idpromotion = p.idpromotion 
-                       WHERE e.idECUE = :idECUE";
+                       WHERE e.\"idECUE\" = :idECUE";
     
     $stmtPromotion = $this->db->prepare($queryPromotion);
     $stmtPromotion->execute(['idECUE' => $idECUE]);
@@ -426,10 +426,10 @@ public function verifierChevauchementPromotion($jour, $heureDebut, $heureFin, $i
     $idPromotion = $promotion['idpromotion'];
     
     // Vérifier si la promotion a déjà un cours à cet horaire
-    $queryConflit = "SELECT h.idhoraire, e.designationECUE 
+    $queryConflit = "SELECT h.idhoraire, e.\"designationECUE\" 
                      FROM horaires_cours h 
-                     JOIN ecue e ON h.idECUE = e.idECUE 
-                     JOIN ue u ON e.UE_idUE = u.idUE 
+                     JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\" 
+                     JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\" 
                      JOIN semestre s ON u.semestre_idsemestre = s.idsemestre 
                      JOIN promotion p ON s.promotion_idpromotion = p.idpromotion 
                      WHERE p.idpromotion = :idPromotion 
@@ -472,11 +472,11 @@ public function verifierChevauchementPromotion($jour, $heureDebut, $heureFin, $i
 // Nouvelle méthode pour vérifier les conflits d'enseignant
 public function verifierChevauchementEnseignant($jour, $heureDebut, $heureFin, $idECUE, $idAnneeAcad, $idHoraire = null) {
     // Trouver l'enseignant titulaire associé à cet ECUE
-    $queryEnseignant = "SELECT a.idAgent, a.noms 
+    $queryEnseignant = "SELECT a.\"idAgent\", a.noms 
                         FROM enseignant_ecue ee 
-                        JOIN agent a ON ee.idAgent = a.idAgent 
-                        WHERE ee.idECUE = :idECUE 
-                        AND ee.anneeAcad = :idAnneeAcad
+                        JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\" 
+                        WHERE ee.\"idECUE\" = :idECUE 
+                        AND ee.\"anneeAcad\" = :idAnneeAcad
                         AND ee.poste = 'Titulaire'";  // Ajouter cette condition pour ne récupérer que le titulaire
     
     $stmtEnseignant = $this->db->prepare($queryEnseignant);
@@ -495,11 +495,11 @@ public function verifierChevauchementEnseignant($jour, $heureDebut, $heureFin, $
     $nomEnseignant = $enseignant['noms'];
     
     // Vérifier si cet enseignant titulaire a déjà un cours à cet horaire
-    $queryConflit = "SELECT h.idhoraire, e.designationECUE 
+    $queryConflit = "SELECT h.idhoraire, e.\"designationECUE\" 
                      FROM horaires_cours h 
-                     JOIN ecue e ON h.idECUE = e.idECUE 
-                     JOIN enseignant_ecue ee ON e.idECUE = ee.idECUE AND ee.anneeAcad = h.annee_acad_idannee_acad 
-                     WHERE ee.idAgent = :idEnseignant 
+                     JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\" 
+                     JOIN enseignant_ecue ee ON e.\"idECUE\" = ee.\"idECUE\" AND ee.\"anneeAcad\" = h.annee_acad_idannee_acad 
+                     WHERE ee.\"idAgent\" = :idEnseignant 
                      AND ee.poste = 'Titulaire'
                      AND h.date_cours = :jour 
                      AND h.annee_acad_idannee_acad = :idAnneeAcad
@@ -548,10 +548,10 @@ public function verifierTempsTransition($jour, $heureDebut, $heureFin, $idECUE, 
     // Trouver la promotion associée à cet ECUE
     $queryPromotion = "SELECT p.idpromotion 
                        FROM ecue e 
-                       JOIN ue u ON e.UE_idUE = u.idUE 
+                       JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\" 
                        JOIN semestre s ON u.semestre_idsemestre = s.idsemestre 
                        JOIN promotion p ON s.promotion_idpromotion = p.idpromotion 
-                       WHERE e.idECUE = :idECUE";
+                       WHERE e.\"idECUE\" = :idECUE";
     
     $stmtPromotion = $this->db->prepare($queryPromotion);
     $stmtPromotion->execute(['idECUE' => $idECUE]);
@@ -568,10 +568,10 @@ public function verifierTempsTransition($jour, $heureDebut, $heureFin, $idECUE, 
     $heureFinMinutes = $this->heureEnMinutes($heureFin);
     
     // Vérifier les cours qui se terminent juste avant ce cours
-    $queryAvant = "SELECT h.idhoraire, e.designationECUE, h.heure_fin 
+    $queryAvant = "SELECT h.idhoraire, e.\"designationECUE\", h.heure_fin 
                    FROM horaires_cours h 
-                   JOIN ecue e ON h.idECUE = e.idECUE 
-                   JOIN ue u ON e.UE_idUE = u.idUE 
+                   JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\" 
+                   JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\" 
                    JOIN semestre s ON u.semestre_idsemestre = s.idsemestre 
                    JOIN promotion p ON s.promotion_idpromotion = p.idpromotion 
                    WHERE p.idpromotion = :idPromotion 
@@ -609,10 +609,10 @@ public function verifierTempsTransition($jour, $heureDebut, $heureFin, $idECUE, 
     }
     
     // Vérifier les cours qui commencent juste après ce cours
-    $queryApres = "SELECT h.idhoraire, e.designationECUE, h.heure_debut 
+    $queryApres = "SELECT h.idhoraire, e.\"designationECUE\", h.heure_debut 
                   FROM horaires_cours h 
-                  JOIN ecue e ON h.idECUE = e.idECUE 
-                  JOIN ue u ON e.UE_idUE = u.idUE 
+                  JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\" 
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\" 
                   JOIN semestre s ON u.semestre_idsemestre = s.idsemestre 
                   JOIN promotion p ON s.promotion_idpromotion = p.idpromotion 
                   WHERE p.idpromotion = :idPromotion 
@@ -662,32 +662,32 @@ public function heureEnMinutes($heure) {
 public function getHorairesByPromotionAndDates($idPromotion, $idAnneeAcad, $dateDebut = null, $dateFin = null) {
     // Modifier la requête pour ne sélectionner que l'enseignant titulaire (is_titulaire = 1)
     // ou prendre le premier enseignant si aucun titulaire n'est spécifié
-    $query = "SELECT h.*, e.designationECUE, u.designationUE, 
-             s.numeroSemestre, p.designationPromotion, a.noms as enseignant_nom,
+    $query = "SELECT h.*, e.\"designationECUE\", u.\"designationUE\", 
+             s.\"numeroSemestre\", p.\"designationPromotion\", a.noms as enseignant_nom,
              DATE_FORMAT(h.date_cours, '%Y-%m-%d') as date_cours,
              DAYNAME(h.date_cours) as jour_semaine
              FROM horaires_cours h
-             JOIN ecue e ON h.idECUE = e.idECUE
-             JOIN ue u ON e.UE_idUE = u.idUE
+             JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
+             JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
              JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
              JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
              LEFT JOIN (
-                 SELECT ee.idECUE, ee.anneeAcad, ee.idAgent
+                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", ee.\"idAgent\"
                  FROM enseignant_ecue ee
                  LEFT JOIN (
-                     SELECT idECUE, anneeAcad, MIN(idAgent) as idAgent
+                     SELECT \"idECUE\", \"anneeAcad\", MIN(\"idAgent\") as \"idAgent\"
                      FROM enseignant_ecue
                      WHERE poste = 'Titulaire'
-                     GROUP BY idECUE, anneeAcad
-                 ) tit ON ee.idECUE = tit.idECUE AND ee.anneeAcad = tit.anneeAcad
-                 WHERE tit.idAgent IS NOT NULL OR ee.idAgent = (
-                     SELECT MIN(idAgent) 
+                     GROUP BY \"idECUE\", \"anneeAcad\"
+                 ) tit ON ee.\"idECUE\" = tit.\"idECUE\" AND ee.\"anneeAcad\" = tit.\"anneeAcad\"
+                 WHERE tit.\"idAgent\" IS NOT NULL OR ee.\"idAgent\" = (
+                     SELECT MIN(\"idAgent\") 
                      FROM enseignant_ecue ee2 
-                     WHERE ee2.idECUE = ee.idECUE AND ee2.anneeAcad = ee.anneeAcad
+                     WHERE ee2.\"idECUE\" = ee.\"idECUE\" AND ee2.\"anneeAcad\" = ee.\"anneeAcad\"
                  )
-                 GROUP BY ee.idECUE, ee.anneeAcad
-             ) ee ON e.idECUE = ee.idECUE AND ee.anneeAcad = :idAnneeAcad
-             LEFT JOIN agent a ON ee.idAgent = a.idAgent
+                 GROUP BY ee.\"idECUE\", ee.\"anneeAcad\"
+             ) ee ON e.\"idECUE\" = ee.\"idECUE\" AND ee.\"anneeAcad\" = :idAnneeAcad
+             LEFT JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
              WHERE p.idpromotion = :idPromotion 
              AND h.annee_acad_idannee_acad = :idAnneeAcad";
     
@@ -821,22 +821,22 @@ private function detecterConflits($horaires) {
  * Récupère les horaires pour toutes les salles pour une période donnée
  */
 public function getOccupationSalles($idAnneeAcad, $dateDebut, $dateFin) {
-    $query = "SELECT h.*, e.designationECUE, u.designationUE, 
-             s.numeroSemestre, p.designationPromotion, a.noms as enseignant_nom,
+    $query = "SELECT h.*, e.\"designationECUE\", u.\"designationUE\", 
+             s.\"numeroSemestre\", p.\"designationPromotion\", a.noms as enseignant_nom,
              DATE_FORMAT(h.date_cours, '%Y-%m-%d') as date_cours,
              DAYNAME(h.date_cours) as jour_semaine
              FROM horaires_cours h
-             JOIN ecue e ON h.idECUE = e.idECUE
-             JOIN ue u ON e.UE_idUE = u.idUE
+             JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
+             JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
              JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
              JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
              LEFT JOIN (
-                 SELECT ee.idECUE, ee.anneeAcad, ee.idAgent
+                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", ee.\"idAgent\"
                  FROM enseignant_ecue ee
                  WHERE ee.poste = 'Titulaire'
-                 GROUP BY ee.idECUE, ee.anneeAcad
-             ) ee ON e.idECUE = ee.idECUE AND ee.anneeAcad = :idAnneeAcad
-             LEFT JOIN agent a ON ee.idAgent = a.idAgent
+                 GROUP BY ee.\"idECUE\", ee.\"anneeAcad\"
+             ) ee ON e.\"idECUE\" = ee.\"idECUE\" AND ee.\"anneeAcad\" = :idAnneeAcad
+             LEFT JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
              WHERE h.annee_acad_idannee_acad = :idAnneeAcad";
     
     // Ajouter la condition de date si nécessaire
@@ -896,23 +896,23 @@ public function getSallesOccupationRate($idAnneeAcad, $dateDebut, $dateFin) {
  * Récupère les horaires pour toutes les promotions pour une période donnée
  */
 public function getOccupationPromotions($idAnneeAcad, $dateDebut, $dateFin) {
-    $query = "SELECT h.*, e.designationECUE, u.designationUE, 
-             s.numeroSemestre, p.designationPromotion, p.idpromotion, p.cycle,
+    $query = "SELECT h.*, e.\"designationECUE\", u.\"designationUE\", 
+             s.\"numeroSemestre\", p.\"designationPromotion\", p.idpromotion, p.cycle,
              a.noms as enseignant_nom,
              DATE_FORMAT(h.date_cours, '%Y-%m-%d') as date_cours,
              DAYNAME(h.date_cours) as jour_semaine
              FROM horaires_cours h
-             JOIN ecue e ON h.idECUE = e.idECUE
-             JOIN ue u ON e.UE_idUE = u.idUE
+             JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
+             JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
              JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
              JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
              LEFT JOIN (
-                 SELECT ee.idECUE, ee.anneeAcad, ee.idAgent
+                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", ee.\"idAgent\"
                  FROM enseignant_ecue ee
                  WHERE ee.poste = 'Titulaire'
-                 GROUP BY ee.idECUE, ee.anneeAcad
-             ) ee ON e.idECUE = ee.idECUE AND ee.anneeAcad = :idAnneeAcad
-             LEFT JOIN agent a ON ee.idAgent = a.idAgent
+                 GROUP BY ee.\"idECUE\", ee.\"anneeAcad\"
+             ) ee ON e.\"idECUE\" = ee.\"idECUE\" AND ee.\"anneeAcad\" = :idAnneeAcad
+             LEFT JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
              WHERE h.annee_acad_idannee_acad = :idAnneeAcad";
     
     // Ajouter la condition de date si nécessaire
@@ -920,7 +920,7 @@ public function getOccupationPromotions($idAnneeAcad, $dateDebut, $dateFin) {
         $query .= " AND h.date_cours BETWEEN :dateDebut AND :dateFin";
     }
     
-    $query .= " ORDER BY p.cycle, p.designationPromotion, h.jour, h.heure_debut";
+    $query .= " ORDER BY p.cycle, p.\"designationPromotion\", h.jour, h.heure_debut";
     
     $stmt = $this->db->prepare($query);
     $params = [
@@ -940,13 +940,13 @@ public function getOccupationPromotions($idAnneeAcad, $dateDebut, $dateFin) {
  * Récupère le taux d'occupation des promotions pour une période donnée
  */
 public function getPromotionsOccupationRate($idAnneeAcad, $dateDebut, $dateFin) {
-    $query = "SELECT p.idpromotion, p.designationPromotion, p.cycle,
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
              COUNT(DISTINCT h.date_cours) as jours_occupes,
              SUM(TIMESTAMPDIFF(MINUTE, h.heure_debut, h.heure_fin)) as minutes_totales,
              COUNT(*) as nombre_cours
              FROM horaires_cours h
-             JOIN ecue e ON h.idECUE = e.idECUE
-             JOIN ue u ON e.UE_idUE = u.idUE
+             JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
+             JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
              JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
              JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
              WHERE h.annee_acad_idannee_acad = :idAnneeAcad";

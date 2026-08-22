@@ -11,23 +11,23 @@ $stmtAnneeAcadActive->execute();
 $anneeAcademique = $stmtAnneeAcadActive->fetch(PDO::FETCH_ASSOC);
 
 // Récupérer les promotions actives
-$queryPromotions = "SELECT p.idpromotion, p.designationPromotion, o.designationOrientation
+$queryPromotions = "SELECT p.idpromotion, p.\"designationPromotion\", o.\"designationOrientation\"
                     FROM promotion p
                     JOIN orientation o ON p.orientation_idorientation = o.idorientation
                     WHERE p.annee_acad_idannee_acad = :idannee_acad
-                    ORDER BY o.designationOrientation, p.designationPromotion";
+                    ORDER BY o.\"designationOrientation\", p.\"designationPromotion\"";
 $stmtPromotions = $db->prepare($queryPromotions);
 $stmtPromotions->bindParam(':idannee_acad', $anneeAcademique['idannee_acad'], PDO::PARAM_INT);
 $stmtPromotions->execute();
 $promotions = $stmtPromotions->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les évolutions en attente de validation
-$queryEvolutions = "SELECT se.*, e.designationECUE, ue.designationUE, 
-                           p.designationPromotion, o.designationOrientation,
+$queryEvolutions = "SELECT se.*, e.\"designationECUE\", ue.\"designationUE\", 
+                           p.\"designationPromotion\", o.\"designationOrientation\",
                            et.noms as chef_promotion_nom, et.matricule as chef_promotion_matricule
                     FROM suivi_enseignement_ecue se
-                    JOIN ecue e ON se.idECUE = e.idECUE
-                    JOIN ue ON e.UE_idUE = ue.idUE
+                    JOIN ecue e ON se.\"idECUE\" = e.\"idECUE\"
+                    JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
                     JOIN promotion p ON se.promotion_idpromotion = p.idpromotion
                     JOIN orientation o ON p.orientation_idorientation = o.idorientation
                     JOIN etudiant et ON se.chef_promotion_id = et.idetudiant
@@ -38,17 +38,17 @@ $stmtEvolutions->execute();
 $evolutionsEnAttente = $stmtEvolutions->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer toutes les évolutions (historique)
-$queryHistorique = "SELECT se.*, e.designationECUE, ue.designationUE, 
-                           p.designationPromotion, o.designationOrientation,
+$queryHistorique = "SELECT se.*, e.\"designationECUE\", ue.\"designationUE\", 
+                           p.\"designationPromotion\", o.\"designationOrientation\",
                            et.noms as chef_promotion_nom, et.matricule as chef_promotion_matricule,
                            ag.noms as appariteur_nom
                     FROM suivi_enseignement_ecue se
-                    JOIN ecue e ON se.idECUE = e.idECUE
-                    JOIN ue ON e.UE_idUE = ue.idUE
+                    JOIN ecue e ON se.\"idECUE\" = e.\"idECUE\"
+                    JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
                     JOIN promotion p ON se.promotion_idpromotion = p.idpromotion
                     JOIN orientation o ON p.orientation_idorientation = o.idorientation
                     JOIN etudiant et ON se.chef_promotion_id = et.idetudiant
-                    LEFT JOIN agent ag ON se.appariteur_id = ag.idAgent
+                    LEFT JOIN agent ag ON se.appariteur_id = ag.\"idAgent\"
                     ORDER BY se.date_encodage DESC
                     LIMIT 50";
 $stmtHistorique = $db->prepare($queryHistorique);
@@ -209,8 +209,8 @@ $historique = $stmtHistorique->fetchAll(PDO::FETCH_ASSOC);
                                                 <div class="card-body">
                                                     <div class="row mb-3">
                                                         <div class="col-md-6">
-                                                            <label for="idECUE" class="form-label">ECUE <span class="text-danger">*</span></label>
-                                                            <select class="form-select" id="idECUE" name="idECUE" required disabled>
+                                                            <label for=idECUE class="form-label">ECUE <span class="text-danger">*</span></label>
+                                                            <select class="form-select" id=idECUE name=idECUE required disabled>
                                                                 <option value="">Chargement...</option>
                                                             </select>
                                                             <small class="form-text text-muted">

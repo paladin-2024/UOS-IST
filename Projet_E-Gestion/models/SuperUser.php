@@ -14,13 +14,13 @@ class SuperUser
     {
         try {
             // Préparer la requête SQL avec des placeholders - Utiliser le rôle principal depuis t_user_roles
-            $stmt = $this->con->prepare("
-                SELECT u.*, r.idRole, r.nomRole 
-                FROM t_users u 
-                LEFT JOIN t_user_roles ur ON ur.idUser = u.idUser AND ur.isPrincipal = 1
-                LEFT JOIN t_roles r ON r.idRole = ur.idRole
-                WHERE u.loginUser = :loginUser AND u.etatUser = 1
-            ");
+            $stmt = $this->con->prepare('
+                SELECT u.*, r."idRole", r."nomRole"
+                FROM t_users u
+                LEFT JOIN t_user_roles ur ON ur."idUser" = u."idUser" AND ur."isPrincipal" = 1
+                LEFT JOIN t_roles r ON r."idRole" = ur."idRole"
+                WHERE u."loginUser" = :loginUser AND u."etatUser" = 1
+            ');
             
             // Associer le paramètre
             $stmt->bindParam(':loginUser', $log, PDO::PARAM_STR);
@@ -55,7 +55,7 @@ class SuperUser
     {
         try {
             // Préparer la requête SQL
-            $stmt = $this->con->prepare("UPDATE t_users SET dernier_connexion = NOW() WHERE idUser = :idUser");
+            $stmt = $this->con->prepare('UPDATE t_users SET dernier_connexion = NOW() WHERE "idUser" = :idUser');
             
             // Associer le paramètre
             $stmt->bindParam(':idUser', $userId, PDO::PARAM_INT);
@@ -102,12 +102,12 @@ class SuperUser
 {
     try {
         // Préparer la requête SQL pour vérifier si dernier_connexion est NULL ou si first_password_changed est à 0
-        $stmt = $this->con->prepare("
-            SELECT COUNT(*) as count 
-            FROM t_users 
-            WHERE idUser = :userId 
+        $stmt = $this->con->prepare('
+            SELECT COUNT(*) as count
+            FROM t_users
+            WHERE "idUser" = :userId
             AND (dernier_connexion IS NULL)
-        ");
+        ');
         
         // Associer le paramètre
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -135,11 +135,11 @@ public function changePassword($userId, $newPassword)
         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
         
         // Préparer la requête SQL
-        $stmt = $this->con->prepare("
-            UPDATE t_users 
-            SET pw = :password 
-            WHERE idUser = :userId
-        ");
+        $stmt = $this->con->prepare('
+            UPDATE t_users
+            SET pw = :password
+            WHERE "idUser" = :userId
+        ');
         
         // Associer les paramètres
         $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);

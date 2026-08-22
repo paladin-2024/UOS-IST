@@ -10,7 +10,7 @@ $stmt = $connexion->prepare("
     SELECT DISTINCT c.* 
     FROM caisses c
     LEFT JOIN droits_acces_finances d ON (d.entite_id = c.id OR d.entite_id IS NULL) AND d.type = 'Caisse'
-    WHERE d.idUser = :idUser AND d.est_actif = 1 
+    WHERE d.\"idUser\" = :idUser AND d.est_actif = 1 
     AND (d.date_debut IS NULL OR d.date_debut <= CURRENT_DATE) 
     AND (d.date_fin IS NULL OR d.date_fin >= CURRENT_DATE)
     ORDER BY c.designation ASC
@@ -40,7 +40,7 @@ if ($caisse_id) {
     $stmt = $connexion->prepare("
         SELECT niveau 
         FROM droits_acces_finances 
-        WHERE idUser = :idUser AND type = 'Caisse' 
+        WHERE \"idUser\" = :idUser AND type = 'Caisse' 
         AND (entite_id = :caisse_id OR entite_id IS NULL)
         AND est_actif = 1
         ORDER BY entite_id DESC, niveau DESC
@@ -64,7 +64,7 @@ if ($caisse_id) {
     $stmt = $connexion->prepare("
         SELECT niveau 
         FROM droits_acces_finances 
-        WHERE idUser = :idUser AND type = 'Caisse' 
+        WHERE \"idUser\" = :idUser AND type = 'Caisse' 
         AND (entite_id = :caisse_id OR entite_id IS NULL)
         AND est_actif = 1
         ORDER BY entite_id DESC, niveau DESC
@@ -82,7 +82,7 @@ if ($caisse_id) {
 
 // Récupérer les informations de l'agent connecté
 $agent_id = null;
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -102,8 +102,8 @@ if ($a_access && $caisse_id && $agent_id) {
     $stmt = $connexion->prepare("
         SELECT s.*, a.noms as agent_nom, a.matricule as agent_matricule
         FROM sessions_caisse s
-        LEFT JOIN agent a ON s.idAgent = a.idAgent
-        WHERE s.caisse_id = :caisse_id AND s.idAgent = :agent_id AND s.statut = 'Ouverte'
+        LEFT JOIN agent a ON s.\"idAgent\" = a.\"idAgent\"
+        WHERE s.caisse_id = :caisse_id AND s.\"idAgent\" = :agent_id AND s.statut = 'Ouverte'
         ORDER BY s.date_ouverture DESC
         LIMIT 1
     ");
@@ -143,8 +143,8 @@ if ($a_access && $caisse_id) {
                a.noms as agent_nom, a.matricule as agent_matricule,
                v.noms as validateur_nom, v.matricule as validateur_matricule
         FROM sessions_caisse s
-        LEFT JOIN agent a ON s.idAgent = a.idAgent
-        LEFT JOIN agent v ON s.idValidateur = v.idAgent
+        LEFT JOIN agent a ON s.\"idAgent\" = a.\"idAgent\"
+        LEFT JOIN agent v ON s.\"idValidateur\" = v.\"idAgent\"
         WHERE s.caisse_id = :caisse_id AND s.statut != 'Ouverte'
         ORDER BY s.date_ouverture DESC
         LIMIT 50
@@ -375,7 +375,7 @@ unset($_SESSION['message'], $_SESSION['messageType']);
             <form action="controller/session_caisse_operations.php" method="POST">
                 <input type="hidden" name="action" value="ouvrir">
                 <input type="hidden" name="caisse_id" value="<?= $caisse_id ?>">
-                <input type="hidden" name="idAgent" value="<?= $agent_id ?>">
+                <input type="hidden" name=idAgent value="<?= $agent_id ?>">
                 
                 <div class="modal-header">
                     <h5 class="modal-title" id="openSessionModalLabel">Ouvrir une nouvelle session de caisse</h5>

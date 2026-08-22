@@ -5,41 +5,41 @@ $db = new Connexion();
 $conn = $db->getInstance()->getPDO();
 
 // Déterminer l'année académique en cours (la plus récente)
-$query_annee_encours = "SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+$query_annee_encours = "SELECT idannee_acad, designation FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 $stmt_annee = $conn->prepare($query_annee_encours);
 $stmt_annee->execute();
 $annee_encours = $stmt_annee->fetch(PDO::FETCH_ASSOC);
 $id_annee_encours = $annee_encours['idannee_acad'];
 
 // Récupérer les sessions
-$query_sessions = "SELECT idsession, designSession, description FROM session ORDER BY idsession";
+$query_sessions = "SELECT idsession, \"designSession\", description FROM session ORDER BY idsession";
 $stmt_sessions = $conn->prepare($query_sessions);
 $stmt_sessions->execute();
 $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les années académiques
-$query_annees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC";
+$query_annees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY \"dateCreation\" DESC";
 $stmt_annees = $conn->prepare($query_annees);
 $stmt_annees->execute();
 $annees = $stmt_annees->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les ECUEs
-$query_ecues = "SELECT e.idECUE, e.designationECUE, u.designationUE 
+$query_ecues = "SELECT e.\"idECUE\", e.\"designationECUE\", u.\"designationUE\" 
                 FROM ecue e 
-                JOIN ue u ON e.UE_idUE = u.idUE 
-                WHERE e.estVisible = 1
-                ORDER BY u.designationUE, e.designationECUE";
+                JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\" 
+                WHERE e.\"estVisible\" = 1
+                ORDER BY u.\"designationUE\", e.\"designationECUE\"";
 $stmt_ecues = $conn->prepare($query_ecues);
 $stmt_ecues->execute();
 $ecues = $stmt_ecues->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les recours récemment encodés
 $query_recours = "SELECT r.id_recours, r.matricule, e.noms as nom_etudiant,
-                  ec.designationECUE, r.motif, r.date_creation, r.statut,
-                  s.designSession, a.designation as annee_acad
+                  ec.\"designationECUE\", r.motif, r.date_creation, r.statut,
+                  s.\"designSession\", a.designation as annee_acad
                   FROM recours r
                   LEFT JOIN etudiant e ON r.matricule = e.matricule
-                  LEFT JOIN ecue ec ON r.id_ecue = ec.idECUE
+                  LEFT JOIN ecue ec ON r.id_ecue = ec.\"idECUE\"
                   LEFT JOIN session s ON r.id_session = s.idsession
                   LEFT JOIN annee_acad a ON r.id_annee_acad = a.idannee_acad
                   WHERE r.id_annee_acad = :id_annee

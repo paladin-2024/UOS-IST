@@ -59,7 +59,7 @@ function getGradePrefix($grade) {
             try {
                 // Requête améliorée pour vérifier le chef de promotion
                 $queryChef = "SELECT cp.id_chef, cp.promotion_idpromotion, cp.annee_acad_idannee_acad,
-                                     e.noms as nom_etudiant, p.designationPromotion, aa.designation as annee_acad
+                                     e.noms as nom_etudiant, p.\"designationPromotion\", aa.designation as annee_acad
                               FROM chef_promotion cp 
                               INNER JOIN etudiant e ON cp.idetudiant = e.idetudiant 
                               INNER JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion
@@ -324,7 +324,7 @@ function getGradePrefix($grade) {
                                                         <?php
                                                         // Pour l'encadreur, tous les grades sont autorisés - récupérer tous les agents avec roles d'enseignement
                                                         $db = Connexion::getInstance()->getPDO();
-                                                        $queryEnseignants = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+                                                        $queryEnseignants = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                                                                             FROM agent a 
                                                                             LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                                             WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')
@@ -542,10 +542,10 @@ function getGradePrefix($grade) {
                                                                 <div class="p-3 bg-white rounded mb-2">
                                                                     <?= nl2br(htmlspecialchars($echange['commentaire'])) ?>
                                                                 </div>
-                                                                <?php if ($echange['fichierJoint']): ?>
+                                                                <?php if ($echange['"fichierJoint"']): ?>
                                                                     <div class="d-flex align-items-center">
                                                                         <i class="fas fa-paperclip text-muted me-2"></i>
-                                                                        <a href="../uploads/echanges/<?= htmlspecialchars($echange['fichierJoint']) ?>"
+                                                                        <a href="../uploads/echanges/<?= htmlspecialchars($echange['"fichierJoint"']) ?>"
                                                                             class="btn btn-sm btn-outline-secondary" target="_blank">
                                                                             <i class="fas fa-file-download me-1"></i>
                                                                             Voir le fichier joint
@@ -1267,15 +1267,15 @@ function getGradePrefix($grade) {
                                                 <option value="">Sélectionnez une matière</option>
                                                 <?php
                                                 // Récupérer les matières de la promotion de l'étudiant
-                                                $queryMatieres = "SELECT e.idECUE, e.designationECUE, u.designationUE
+                                                $queryMatieres = "SELECT e.\"idECUE\", e.\"designationECUE\", u.\"designationUE\"
                                                                  FROM ecue e
-                                                                 INNER JOIN ue u ON e.UE_idUE = u.idUE
+                                                                 INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                                                                  INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                                                                  INNER JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                                                                  INNER JOIN etudiant et ON et.promotion_idpromotion = p.idpromotion
                                                                  WHERE et.idetudiant = :student_id
                                                                  AND et.annee_acad_idannee_acad = :annee_acad
-                                                                 ORDER BY u.designationUE, e.designationECUE";
+                                                                 ORDER BY u.\"designationUE\", e.\"designationECUE\"";
                                                 $stmtMatieres = $connexion->prepare($queryMatieres);
                                                 $stmtMatieres->bindParam(':student_id', $studentId);
                                                 $stmtMatieres->bindParam(':annee_acad', $currentYear['idannee_acad']);
@@ -1323,7 +1323,7 @@ function getGradePrefix($grade) {
                                                 <option value="">Sélectionnez un enseignant (optionnel)</option>
                                                 <?php
                                                 // Récupérer la liste des enseignants
-                                                $queryEnseignants = "SELECT a.idAgent, a.noms, g.designation as grade
+                                                $queryEnseignants = "SELECT a.\"idAgent\", a.noms, g.designation as grade
                                                                     FROM agent a
                                                                     LEFT JOIN grade g ON a.grade_id = g.idgrade
                                                                     WHERE a.type_agent = 'Enseignant'
@@ -1603,13 +1603,13 @@ function getGradePrefix($grade) {
 
                         if (!empty($matricule)) {
                             // Requête pour récupérer les cotes de l'étudiant
-                            $query = "SELECT cg.*, e.designationECUE, s.designSession,s.description 
+                            $query = "SELECT cg.*, e.\"designationECUE\", s.\"designSession\",s.description 
                                         FROM cotes_grille cg
-                                        JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
+                                        JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
                                         JOIN session s ON cg.session_idsession = s.idsession
                                         WHERE cg.matricule = :matricule 
                                         AND cg.annee_acad_id = :annee_acad_id
-                                        ORDER BY s.designSession, e.designationECUE";
+                                        ORDER BY s.\"designSession\", e.\"designationECUE\"";
 
                             $stmt = $connexion->prepare($query);
                             $stmt->bindParam(':matricule', $matricule);
@@ -2321,11 +2321,11 @@ function getGradePrefix($grade) {
                                         $orientationInfo = $stmtOrientation->fetch(PDO::FETCH_ASSOC);
                                         $orientationId = $orientationInfo ? $orientationInfo['orientation_idorientation'] : 0;
 
-                                        $query = "SELECT s.*, ur.designation_UR 
+                                        $query = "SELECT s.*, ur.\"designation_UR\" 
                                                 FROM specialisation s 
-                                                JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+                                                JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
                                                 WHERE s.idorientation = :orientationId 
-                                                ORDER BY ur.designation_UR, s.designation ASC";
+                                                ORDER BY ur.\"designation_UR\", s.designation ASC";
                                         $stmt = $connexion->prepare($query);
                                         $stmt->bindParam(':orientationId', $orientationId, PDO::PARAM_INT);
                                         $stmt->execute();
@@ -2396,13 +2396,13 @@ function getGradePrefix($grade) {
                                         $cycle = isset($_SESSION['cycle']) ? $_SESSION['cycle'] : "";
 
                                         if (isset($estFinalistePremierCycle) && $estFinalistePremierCycle) {
-                                            $query = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+                                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                                                     FROM agent a 
                                                     LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                     WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')
                                                     ORDER BY g.designation, a.noms ASC";
                                         } else {
-                                            $query = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+                                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                                                     FROM agent a 
                                                     LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                     WHERE a.type_agent = 'Enseignant' 
@@ -2446,7 +2446,7 @@ function getGradePrefix($grade) {
                                         <option value="">Sélectionner un encadreur</option>
                                         <?php
                                         // Pour l'encadreur, récupérer tous les agents avec roles d'enseignement
-                                        $queryEnseignantsAll = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+                                        $queryEnseignantsAll = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                                                             FROM agent a 
                                                             LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                             WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')
@@ -2588,11 +2588,11 @@ function getGradePrefix($grade) {
                                         $orientationId = $orientationInfo ? $orientationInfo['orientation_idorientation'] : 0;
 
                                         // Requête pour obtenir les spécialisations de cette orientation
-                                        $query = "SELECT s.*, ur.designation_UR 
+                                        $query = "SELECT s.*, ur.\"designation_UR\" 
                                                     FROM specialisation s 
-                                                    JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+                                                    JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
                                                     WHERE s.idorientation = :orientationId 
-                                                    ORDER BY ur.designation_UR, s.designation ASC";
+                                                    ORDER BY ur.\"designation_UR\", s.designation ASC";
 
                                         $stmt = $connexion->prepare($query);
                                         $stmt->bindParam(':orientationId', $orientationId, PDO::PARAM_INT);
@@ -2642,7 +2642,7 @@ function getGradePrefix($grade) {
                                     // Récupération directe des enseignants depuis la base de données
                                     $cycle = isset($_SESSION['cycle']) ? $_SESSION['cycle'] : "";
 
-                                    $query = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+                                    $query = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                                                 FROM agent a 
                                                 LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                 WHERE a.type_agent = 'Enseignant' 
@@ -2688,7 +2688,7 @@ function getGradePrefix($grade) {
                                     <option value="">Sélectionner un encadreur</option>
                                     <?php
                                     // Récupérer tous les agents avec roles d'enseignement pour l'encadreur
-                                    $queryEnseignantsAll = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+                                    $queryEnseignantsAll = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                                                         FROM agent a 
                                                         LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                         WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')
@@ -2834,11 +2834,11 @@ function getGradePrefix($grade) {
                                 $orientationId = $orientationInfo ? $orientationInfo['orientation_idorientation'] : 0;
 
                                 // Requête pour obtenir les spécialisations de cette orientation
-                                $query = "SELECT s.*, ur.designation_UR 
+                                $query = "SELECT s.*, ur.\"designation_UR\" 
                                             FROM specialisation s 
-                                            JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+                                            JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
                                             WHERE s.idorientation = :orientationId 
-                                            ORDER BY ur.designation_UR, s.designation ASC";
+                                            ORDER BY ur.\"designation_UR\", s.designation ASC";
 
                                 $stmt = $connexion->prepare($query);
                                 $stmt->bindParam(':orientationId', $orientationId, PDO::PARAM_INT);
@@ -2906,7 +2906,7 @@ function getGradePrefix($grade) {
                             // Récupération directe des enseignants depuis la base de données
                             $cycle = isset($_SESSION['cycle']) ? $_SESSION['cycle'] : "";
 
-                            $query = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                                         FROM agent a 
                                         LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                         WHERE a.type_agent = 'Enseignant' 
@@ -2953,7 +2953,7 @@ function getGradePrefix($grade) {
                             <option value="">Sélectionner un encadrant</option>
                             <?php
                             // Récupérer tous les agents avec roles d'enseignement pour l'encadreur
-                            $queryEnseignantsAll2 = "SELECT a.idAgent, a.noms, g.designation as gradeDesignation 
+                            $queryEnseignantsAll2 = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
                                                 FROM agent a 
                                                 LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                 WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')

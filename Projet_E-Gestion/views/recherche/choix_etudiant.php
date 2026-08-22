@@ -18,7 +18,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -26,7 +26,7 @@ $stmtAnnee->execute();
 $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -39,7 +39,7 @@ $isAdmin = $_SESSION['idRole'] == 1;
 // Nous utilisons idUser pour identifier le responsable
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -86,22 +86,22 @@ function getSujets($pdo, $search, $sections = [], $filters = []) {
                 e.matricule as matricule_etudiant,
                 e.idetudiant as etudiant_idetudiant,
                 d.noms as directeur,
-                d.idAgent as idDirecteur,
+                d.\"idAgent\" as idDirecteur,
                 gr_d.designation as grade_directeur,
                 enc.noms as encadreur,
-                enc.idAgent as idEncadreur,
+                enc.\"idAgent\" as idEncadreur,
                 gr_e.designation as grade_encadreur,
                 spec.designation as specialisation,
-                sec.designationSection as section,
-                o.designationOrientation as orientation
+                sec.\"designationSection\" as section,
+                o.\"designationOrientation\" as orientation
             FROM sujets s
             LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad
             LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-            LEFT JOIN agent d ON s.idDirecteur = d.idAgent
+            LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
             LEFT JOIN grade gr_d ON d.grade_id = gr_d.idgrade
-            LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+            LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
             LEFT JOIN grade gr_e ON enc.grade_id = gr_e.idgrade
-            LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+            LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
             LEFT JOIN orientation o ON spec.idorientation = o.idorientation
             LEFT JOIN section sec ON o.section_idsection = sec.idsection
             WHERE 1=1";
@@ -204,7 +204,7 @@ function getSujets($pdo, $search, $sections = [], $filters = []) {
 function countSujetsByStatus($pdo, $status, $sections = [], $anneeId = null) {
     $query = "SELECT COUNT(*) as count 
               FROM sujets s
-              JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               JOIN orientation o ON spec.idorientation = o.idorientation
               WHERE s.statut_validation = :status";
     
@@ -351,7 +351,7 @@ if ($isResponsableSection) {
     $sections = $stmtSection->fetchAll(PDO::FETCH_ASSOC);
 } else {
     // Récupérer toutes les sections
-    $querySection = "SELECT * FROM section ORDER BY designationSection";
+    $querySection = "SELECT * FROM section ORDER BY \"designationSection\"";
     $stmtSection = $pdo->prepare($querySection);
     $stmtSection->execute();
     $sections = $stmtSection->fetchAll(PDO::FETCH_ASSOC);
@@ -508,7 +508,7 @@ if ($isResponsableSection) {
         function countSujetsByStatusAndCycle($pdo, $status, $cycle, $sections = [], $anneeId = null) {
             $query = "SELECT COUNT(*) as count 
                       FROM sujets s
-                      JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+                      JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
                       JOIN orientation o ON spec.idorientation = o.idorientation
                       WHERE s.statut_validation = :status AND s.cycle = :cycle";
             

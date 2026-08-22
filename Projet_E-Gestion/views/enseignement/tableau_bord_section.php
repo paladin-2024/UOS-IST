@@ -18,7 +18,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -26,7 +26,7 @@ $stmtAnnee->execute();
 $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -35,7 +35,7 @@ if (!$currentYear) {
 // Récupérer les sections dont l'utilisateur est responsable
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -69,7 +69,7 @@ function countSujetsBySection($pdo, $sectionId, $anneeId, $status = null) {
     
     $query = "SELECT COUNT(DISTINCT s.idsujets) as count
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               WHERE s.annee_acad_idannee_acad = :anneeId
               AND o.section_idsection = :sectionId";
@@ -94,11 +94,11 @@ function getStatistiquesPromotions($pdo, $userSections, $anneeId) {
     
     $query = "SELECT 
                 p.idpromotion,
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 p.cycle,
                 p.est_terminale,
-                o.designationOrientation,
-                s.designationSection,
+                o.\"designationOrientation\",
+                s.\"designationSection\",
                 s.idsection,
                 COUNT(DISTINCT e.idetudiant) as nb_etudiants_inscrits,
                 COUNT(DISTINCT CASE WHEN e.est_actif = 1 THEN e.idetudiant END) as nb_etudiants_actifs,
@@ -106,7 +106,7 @@ function getStatistiquesPromotions($pdo, $userSections, $anneeId) {
                     WHEN p.est_terminale = 1 THEN 
                         (SELECT COUNT(DISTINCT suj.idsujets) 
                          FROM sujets suj 
-                         JOIN specialisation spec ON suj.idSpecialisation = spec.idSpecialisation 
+                         JOIN specialisation spec ON suj.\"idSpecialisation\" = spec.\"idSpecialisation\" 
                          WHERE suj.annee_acad_idannee_acad = :anneeId 
                          AND spec.idorientation = o.idorientation 
                          AND suj.cycle = p.cycle)
@@ -116,16 +116,16 @@ function getStatistiquesPromotions($pdo, $userSections, $anneeId) {
                     WHEN p.est_terminale = 1 THEN 
                         (SELECT COUNT(DISTINCT suj.idsujets) 
                          FROM sujets suj 
-                         JOIN specialisation spec ON suj.idSpecialisation = spec.idSpecialisation 
+                         JOIN specialisation spec ON suj.\"idSpecialisation\" = spec.\"idSpecialisation\" 
                          WHERE suj.annee_acad_idannee_acad = :anneeId 
                          AND spec.idorientation = o.idorientation 
                          AND suj.cycle = p.cycle 
                          AND suj.statut_validation = 'Validé')
                     ELSE 0 
                 END) as nb_sujets_valides,
-                (SELECT COUNT(DISTINCT ag.idAgent) 
+                (SELECT COUNT(DISTINCT ag.\"idAgent\") 
                  FROM agent_section ags 
-                 JOIN agent ag ON ags.idAgent = ag.idAgent 
+                 JOIN agent ag ON ags.\"idAgent\" = ag.\"idAgent\" 
                  WHERE ags.idsection = s.idsection 
                  AND ag.type_agent = 'Enseignant') as nb_enseignants
               FROM promotion p
@@ -145,9 +145,9 @@ function getStatistiquesPromotions($pdo, $userSections, $anneeId) {
         $query .= " AND o.section_idsection IN (" . implode(',', $placeholders) . ")";
     }
     
-    $query .= " GROUP BY p.idpromotion, p.designationPromotion, p.cycle, p.est_terminale, 
-                         o.designationOrientation, s.designationSection, s.idsection
-                ORDER BY s.designationSection, p.cycle, p.designationPromotion";
+    $query .= " GROUP BY p.idpromotion, p.\"designationPromotion\", p.cycle, p.est_terminale, 
+                         o.\"designationOrientation\", s.\"designationSection\", s.idsection
+                ORDER BY s.\"designationSection\", p.cycle, p.\"designationPromotion\"";
     
     $stmt = $pdo->prepare($query);
     foreach ($params as $key => $value) {
@@ -163,12 +163,12 @@ function getAvancementCours($pdo, $userSections, $anneeId) {
     $params = [':anneeId' => $anneeId];
     
     $query = "SELECT 
-                s.designationSection,
-                p.designationPromotion,
-                COUNT(DISTINCT ecue.idECUE) as total_ecues,
-                SUM(CASE WHEN ecue.CMI > 0 THEN ecue.CMI ELSE 0 END) as total_heures_cm_prevues,
-                SUM(CASE WHEN ecue.TD > 0 THEN ecue.TD ELSE 0 END) as total_heures_td_prevues,
-                SUM(CASE WHEN ecue.TP > 0 THEN ecue.TP ELSE 0 END) as total_heures_tp_prevues,
+                s.\"designationSection\",
+                p.\"designationPromotion\",
+                COUNT(DISTINCT ecue.\"idECUE\") as total_ecues,
+                SUM(CASE WHEN ecue.\"CMI\" > 0 THEN ecue.\"CMI\" ELSE 0 END) as total_heures_cm_prevues,
+                SUM(CASE WHEN ecue.\"TD\" > 0 THEN ecue.\"TD\" ELSE 0 END) as total_heures_td_prevues,
+                SUM(CASE WHEN ecue.\"TP\" > 0 THEN ecue.\"TP\" ELSE 0 END) as total_heures_tp_prevues,
                 COALESCE(SUM(CASE WHEN se.type_cours = 'CM' THEN TIMESTAMPDIFF(HOUR, se.heure_debut, se.heure_fin) ELSE 0 END), 0) as heures_cm_realisees,
                 COALESCE(SUM(CASE WHEN se.type_cours = 'TD' THEN TIMESTAMPDIFF(HOUR, se.heure_debut, se.heure_fin) ELSE 0 END), 0) as heures_td_realisees,
                 COALESCE(SUM(CASE WHEN se.type_cours = 'TP' THEN TIMESTAMPDIFF(HOUR, se.heure_debut, se.heure_fin) ELSE 0 END), 0) as heures_tp_realisees
@@ -177,8 +177,8 @@ function getAvancementCours($pdo, $userSections, $anneeId) {
               JOIN section s ON o.section_idsection = s.idsection
               JOIN semestre sem ON p.idpromotion = sem.promotion_idpromotion
               JOIN ue ON sem.idsemestre = ue.semestre_idsemestre
-              JOIN ecue ON ue.idUE = ecue.UE_idUE AND ecue.estVisible = 1
-              LEFT JOIN suivi_enseignements se ON ecue.idECUE = se.idECUE 
+              JOIN ecue ON ue.\"idUE\" = ecue.\"UE_idUE\" AND ecue.\"estVisible\" = 1
+              LEFT JOIN suivi_enseignements se ON ecue.\"idECUE\" = se.\"idECUE\" 
                   AND se.annee_acad_idannee_acad = :anneeId
               WHERE p.annee_acad_idannee_acad = :anneeId";
     
@@ -193,7 +193,7 @@ function getAvancementCours($pdo, $userSections, $anneeId) {
     }
     
     $query .= " GROUP BY s.idsection, p.idpromotion
-                ORDER BY s.designationSection, p.designationPromotion";
+                ORDER BY s.\"designationSection\", p.\"designationPromotion\"";
     
     $stmt = $pdo->prepare($query);
     foreach ($params as $key => $value) {
@@ -209,8 +209,8 @@ function getStatistiquesPaiements($pdo, $userSections, $anneeId) {
     $params = [':anneeId' => $anneeId];
     
     $query = "SELECT 
-                s.designationSection,
-                p.designationPromotion,
+                s.\"designationSection\",
+                p.\"designationPromotion\",
                 COUNT(DISTINCT e.idetudiant) as nb_etudiants,
                 COUNT(DISTINCT CASE 
                     WHEN sf.solde <= 0 OR sf.solde IS NULL THEN e.idetudiant 
@@ -240,7 +240,7 @@ function getStatistiquesPaiements($pdo, $userSections, $anneeId) {
     }
     
     $query .= " GROUP BY s.idsection, p.idpromotion
-                ORDER BY s.designationSection, p.designationPromotion";
+                ORDER BY s.\"designationSection\", p.\"designationPromotion\"";
     
     $stmt = $pdo->prepare($query);
     foreach ($params as $key => $value) {

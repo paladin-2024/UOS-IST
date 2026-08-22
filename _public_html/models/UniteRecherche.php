@@ -15,10 +15,10 @@ class UniteRecherche
         $query = "SELECT ur.* FROM unite_recherche ur";
         
         if (!empty($search)) {
-            $query .= " WHERE ur.designation_UR LIKE :search";
+            $query .= " WHERE ur.\"designation_UR\" LIKE :search";
         }
         
-        $query .= " ORDER BY ur.designation_UR ASC";
+        $query .= " ORDER BY ur.\"designation_UR\" ASC";
         
         $stmt = $this->db->prepare($query);
         
@@ -38,7 +38,7 @@ class UniteRecherche
                   FROM section s
                   INNER JOIN unite_recherche_section urs ON s.idsection = urs.idsection
                   WHERE urs.idunite_recherche = :idUniteRecherche
-                  ORDER BY s.designationSection ASC";
+                  ORDER BY s.\"designationSection\" ASC";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idUniteRecherche', $idUniteRecherche, PDO::PARAM_INT);
@@ -50,11 +50,11 @@ class UniteRecherche
     // Récupérer les spécialisations par unité de recherche et section
     public function getSpecialisationsByResearchUnitAndSection($idUniteRecherche, $idSection)
     {
-        $query = "SELECT s.*, sec.idAnnee, a.designation as annee_designation 
+        $query = "SELECT s.*, sec.\"idAnnee\", a.designation as annee_designation 
           FROM specialisation s
           LEFT JOIN section sec ON s.idsection = sec.idsection
-          JOIN annee_acad a ON sec.idAnnee = a.idannee_acad
-          WHERE s.idUnite_recherche = :idUniteRecherche
+          JOIN annee_acad a ON sec.\"idAnnee\" = a.idannee_acad
+          WHERE s.\"idUnite_recherche\" = :idUniteRecherche
           AND s.idsection = :idSection
           ORDER BY s.designation ASC";
 
@@ -70,7 +70,7 @@ class UniteRecherche
     // Créer une unité de recherche
     public function createResearchUnit($designation, $description, $idUser)
     {
-        $query = "INSERT INTO unite_recherche (designation_UR, description, idUser, dateCreation) 
+        $query = "INSERT INTO unite_recherche (\"designation_UR\", description, \"idUser\", \"dateCreation\") 
                   VALUES (:designation, :description, :idUser, NOW())";
         
         $stmt = $this->db->prepare($query);
@@ -119,7 +119,7 @@ class UniteRecherche
     // Créer une spécialisation
     public function createSpecialisation($designation, $idUniteRecherche, $idSection)
     {
-        $query = "INSERT INTO specialisation (designation, dateCreation, idUnite_recherche, idsection) 
+        $query = "INSERT INTO specialisation (designation, \"dateCreation\", \"idUnite_recherche\", idsection) 
                   VALUES (:designation, NOW(), :idUniteRecherche, :idSection)";
         
         $stmt = $this->db->prepare($query);
@@ -134,7 +134,7 @@ class UniteRecherche
     public function updateResearchUnit($idUniteRecherche, $designation, $description)
     {
         $query = "UPDATE unite_recherche 
-                  SET designation_UR = :designation, description = :description 
+                  SET \"designation_UR\" = :designation, description = :description 
                   WHERE idunite_recherche = :idUniteRecherche";
         
         $stmt = $this->db->prepare($query);
@@ -154,7 +154,7 @@ class UniteRecherche
         $stmt1->execute(['idUniteRecherche' => $idUniteRecherche]);
         
         // Supprimer les spécialisations associées
-        $query2 = "DELETE FROM specialisation WHERE idUnite_recherche = :idUniteRecherche";
+        $query2 = "DELETE FROM specialisation WHERE \"idUnite_recherche\" = :idUniteRecherche";
         $stmt2 = $this->db->prepare($query2);
         $stmt2->execute(['idUniteRecherche' => $idUniteRecherche]);
         
@@ -169,7 +169,7 @@ class UniteRecherche
     {
         $query = "UPDATE specialisation 
                   SET designation = :designation 
-                  WHERE idSpecialisation = :idSpecialisation";
+                  WHERE \"idSpecialisation\" = :idSpecialisation";
         
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
@@ -182,12 +182,12 @@ class UniteRecherche
     public function deleteSpecialisation($idSpecialisation)
     {
         // Supprimer d'abord les associations avec les enseignants
-        $query1 = "DELETE FROM enseignant_specialisation WHERE idSpecialisation = :idSpecialisation";
+        $query1 = "DELETE FROM enseignant_specialisation WHERE \"idSpecialisation\" = :idSpecialisation";
         $stmt1 = $this->db->prepare($query1);
         $stmt1->execute(['idSpecialisation' => $idSpecialisation]);
         
         // Supprimer la spécialisation
-        $query2 = "DELETE FROM specialisation WHERE idSpecialisation = :idSpecialisation";
+        $query2 = "DELETE FROM specialisation WHERE \"idSpecialisation\" = :idSpecialisation";
         $stmt2 = $this->db->prepare($query2);
         return $stmt2->execute(['idSpecialisation' => $idSpecialisation]);
     }
@@ -197,7 +197,7 @@ class UniteRecherche
     {
         // Vérifier si l'affectation existe déjà
         $checkQuery = "SELECT COUNT(*) FROM enseignant_specialisation 
-                    WHERE idAgent = :idAgent AND idSpecialisation = :idSpecialisation";
+                    WHERE \"idAgent\" = :idAgent AND \"idSpecialisation\" = :idSpecialisation";
         
         $checkStmt = $this->db->prepare($checkQuery);
         $checkStmt->execute([
@@ -210,7 +210,7 @@ class UniteRecherche
         }
         
         // Créer l'affectation
-        $query = "INSERT INTO enseignant_specialisation (idAgent, idSpecialisation, dateAffectation, idUser) 
+        $query = "INSERT INTO enseignant_specialisation (\"idAgent\", \"idSpecialisation\", \"dateAffectation\", \"idUser\") 
                 VALUES (:idAgent, :idSpecialisation, NOW(), :idUser)";
         
         $stmt = $this->db->prepare($query);
@@ -227,13 +227,13 @@ class UniteRecherche
     // Récupérer les spécialisations d'un enseignant
     public function getTeacherSpecialisations($idAgent)
     {
-        $query = "SELECT s.*, ur.designation_UR, sec.designationSection, es.id as idAffectation
+        $query = "SELECT s.*, ur.\"designation_UR\", sec.\"designationSection\", es.id as \"idAffectation\"
                   FROM enseignant_specialisation es
-                  INNER JOIN specialisation s ON es.idSpecialisation = s.idSpecialisation
-                  INNER JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+                  INNER JOIN specialisation s ON es.\"idSpecialisation\" = s.\"idSpecialisation\"
+                  INNER JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
                   INNER JOIN section sec ON s.idsection = sec.idsection
-                  WHERE es.idAgent = :idAgent
-                  ORDER BY ur.designation_UR, s.designation";
+                  WHERE es.\"idAgent\" = :idAgent
+                  ORDER BY ur.\"designation_UR\", s.designation";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -253,10 +253,10 @@ class UniteRecherche
     // Récupérer les enseignants par spécialisation
     public function getTeachersBySpecialisation($idSpecialisation)
     {
-        $query = "SELECT a.*, es.dateAffectation, es.id as idAffectation
+        $query = "SELECT a.*, es.\"dateAffectation\", es.id as \"idAffectation\"
                   FROM agent a
-                  INNER JOIN enseignant_specialisation es ON a.idAgent = es.idAgent
-                  WHERE es.idSpecialisation = :idSpecialisation
+                  INNER JOIN enseignant_specialisation es ON a.\"idAgent\" = es.\"idAgent\"
+                  WHERE es.\"idSpecialisation\" = :idSpecialisation
                   ORDER BY a.noms";
         
         $stmt = $this->db->prepare($query);
@@ -279,16 +279,16 @@ class UniteRecherche
 public function getTeachersForExport($idUniteRecherche = 'all', $idSection = 'all')
 {
     $query = "SELECT a.*, g.designation as gradeDesignation, s.designation as serviceDesignation,
-              ur.idunite_recherche, ur.designation_UR, 
-              sec.idsection, sec.designationSection,
-              sp.idSpecialisation, sp.designation, es.dateAffectation
+              ur.idunite_recherche, ur.\"designation_UR\", 
+              sec.idsection, sec.\"designationSection\",
+              sp.\"idSpecialisation\", sp.designation, es.\"dateAffectation\"
               FROM enseignant_specialisation es
-              INNER JOIN agent a ON es.idAgent = a.idAgent
-              INNER JOIN specialisation sp ON es.idSpecialisation = sp.idSpecialisation
-              INNER JOIN unite_recherche ur ON sp.idUnite_recherche = ur.idunite_recherche
+              INNER JOIN agent a ON es.\"idAgent\" = a.\"idAgent\"
+              INNER JOIN specialisation sp ON es.\"idSpecialisation\" = sp.\"idSpecialisation\"
+              INNER JOIN unite_recherche ur ON sp.\"idUnite_recherche\" = ur.idunite_recherche
               INNER JOIN section sec ON sp.idsection = sec.idsection
               LEFT JOIN grade g ON a.grade_id = g.idgrade
-              LEFT JOIN service s ON a.idService = s.idService
+              LEFT JOIN service s ON a.\"idService\" = s.\"idService\"
               WHERE 1=1";
     
     $params = [];
@@ -305,7 +305,7 @@ public function getTeachersForExport($idUniteRecherche = 'all', $idSection = 'al
         $params['idSection'] = $idSection;
     }
     
-    $query .= " ORDER BY ur.designation_UR, sec.designationSection, sp.designation, a.noms";
+    $query .= " ORDER BY ur.\"designation_UR\", sec.\"designationSection\", sp.designation, a.noms";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute($params);

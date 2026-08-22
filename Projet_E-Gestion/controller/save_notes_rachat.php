@@ -64,7 +64,7 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
                     // Récupérer les informations de la dette
                     $db = Connexion::getInstance()->getPDO();
                     $stmt = $db->prepare("
-                        SELECT d.*, e.matricule, e.ECUE_idECUE 
+                        SELECT d.*, e.matricule, e.\"ECUE_idECUE\" 
                         FROM dette_etudiant d
                         WHERE d.id_dette = :dette
                     ");
@@ -75,8 +75,8 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
                         // Mettre à jour ou insérer dans cotes_grille
                         $stmt = $db->prepare("
                             INSERT INTO cotes_grille (
-                                CC, EX, MF, ECUE_idECUE, session_idsession, 
-                                matricule, annee_acad_id, idUser
+                                CC, EX, MF, \"ECUE_idECUE\", session_idsession, 
+                                matricule, annee_acad_id, \"idUser\"
                             ) VALUES (
                                 :cc, :ex, :mf, :ecue, :session, 
                                 :matricule, :annee, :user
@@ -84,7 +84,7 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
                                 CC = VALUES(CC), 
                                 EX = VALUES(EX), 
                                 MF = VALUES(MF),
-                                idUser = VALUES(idUser)
+                                \"idUser\" = VALUES(\"idUser\")
                         ");
                         
                         $stmt->execute([

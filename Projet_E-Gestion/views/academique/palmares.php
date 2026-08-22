@@ -17,10 +17,10 @@ $offset = ($page - 1) * $limit;
 // Requête pour récupérer les palmarès avec pagination
 $query = "SELECT pa.*, 
           COUNT(pe.id_palmares_etudiant) as nb_etudiants,
-          u.nomUser as nom_utilisateur
+          u.\"nomUser\" as nom_utilisateur
           FROM palmares_archive pa
           LEFT JOIN palmares_etudiant pe ON pa.id_palmares = pe.id_palmares
-          LEFT JOIN t_users u ON pa.idUser = u.idUser
+          LEFT JOIN t_users u ON pa.\"idUser\" = u.\"idUser\"
           WHERE (pa.designation LIKE :search 
                  OR pa.promotion LIKE :search 
                  OR pa.annee_academique LIKE :search)

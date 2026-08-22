@@ -25,8 +25,8 @@ $pdo = Connexion::getInstance()->getPDO();
 try {
     // Vérifier si l'étudiant existe
     $stmtStudent = $pdo->prepare("
-        SELECT e.*, p.idpromotion, p.designationPromotion, a.designation as annee_academique,
-               s.designationSection, o.designationOrientation
+        SELECT e.*, p.idpromotion, p.\"designationPromotion\", a.designation as annee_academique,
+               s.\"designationSection\", o.\"designationOrientation\"
         FROM etudiant e
         JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
         JOIN annee_acad a ON e.annee_acad_idannee_acad = a.idannee_acad

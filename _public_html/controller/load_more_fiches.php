@@ -26,7 +26,7 @@ $planTravailModel = new PlanTravail();
 // Fonctions utilitaires (reprises de fiches.php)
 function getUserSections($db, $userId, $anneeAcadId) {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     $stmt = $db->prepare($query);
     $stmt->execute(['userId' => $userId, 'anneeId' => $anneeAcadId]);
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -154,9 +154,9 @@ try {
 
     // Requête avec pagination
     $queryEtudiants = "SELECT DISTINCT e.idetudiant, e.matricule, e.noms, e.photo,
-                              p.designationPromotion as promotion, p.idpromotion, p.cycle,
-                              o.designationOrientation as orientation,
-                              sec.designationSection as section, sec.idsection,
+                              p.\"designationPromotion\" as promotion, p.idpromotion, p.cycle,
+                              o.\"designationOrientation\" as orientation,
+                              sec.\"designationSection\" as section, sec.idsection,
                               aa.designation as annee_academique,
                               s.idsujets, s.intitule as sujet_intitule, s.statut_validation as sujet_statut
                        FROM etudiant e

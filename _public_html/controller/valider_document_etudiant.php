@@ -54,7 +54,7 @@ if (isset($_GET['id']) && isset($_GET['idetudiant'])) {
         // Enregistrer l'historique
         $stmt = $conn->prepare("
             INSERT INTO etudiant_documents_historique 
-            (document_id, statut_precedent, nouveau_statut, commentaire, idUser)
+            (document_id, statut_precedent, nouveau_statut, commentaire, \"idUser\")
             VALUES (?, ?, 'Valide', ?, ?)
         ");
         $stmt->execute([
@@ -68,7 +68,7 @@ if (isset($_GET['id']) && isset($_GET['idetudiant'])) {
         $stmt = $conn->prepare("
             UPDATE etudiant_documents 
             SET statut = 'Valide', commentaire_validation = ?, 
-                date_validation = NOW(), idValidateur = ?
+                date_validation = NOW(), \"idValidateur\" = ?
             WHERE id = ?
         ");
         $stmt->execute([

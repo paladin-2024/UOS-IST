@@ -14,7 +14,7 @@ $hasFullAccess = $_SESSION['idRole'] == 1;
 // Récupérer les sections dont l'utilisateur est responsable
 $userSections = [];
 if ($anneeId) {
-    $stmtSec = $db->prepare("SELECT section_idsection FROM responsable_section WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId");
+    $stmtSec = $db->prepare("SELECT section_idsection FROM responsable_section WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId");
     $stmtSec->bindParam(':userId', $currentUserId);
     $stmtSec->bindParam(':anneeId', $anneeId);
     $stmtSec->execute();
@@ -25,11 +25,11 @@ if ($anneeId) {
 $seances = [];
 
 if ($anneeId) {
-    $baseQuery = "SELECT s.*, e.designationECUE, p.designationPromotion, sem.numeroSemestre, sec.designationSection,
+    $baseQuery = "SELECT s.*, e.\"designationECUE\", p.\"designationPromotion\", sem.\"numeroSemestre\", sec.\"designationSection\",
               (SELECT COUNT(*) FROM presence_cours WHERE idseance = s.idseance) as nb_presents
               FROM seance_cours s
-              JOIN ecue e ON s.idECUE = e.idECUE
-              JOIN ue ON e.UE_idUE = ue.idUE
+              JOIN ecue e ON s.\"idECUE\" = e.\"idECUE\"
+              JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
               JOIN semestre sem ON ue.semestre_idsemestre = sem.idsemestre
               JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
               JOIN orientation o ON p.orientation_idorientation = o.idorientation

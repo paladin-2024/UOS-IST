@@ -31,7 +31,7 @@ try {
     $pdo->beginTransaction();
     
     // Récupérer les informations de l'agent pour la redirection
-    $queryAgent = "SELECT codeAgent FROM agent WHERE idAgent = :idAgent";
+    $queryAgent = "SELECT \"codeAgent\" FROM agent WHERE \"idAgent\" = :idAgent";
     $stmtAgent = $pdo->prepare($queryAgent);
     $stmtAgent->bindParam(':idAgent', $agentId, PDO::PARAM_INT);
     $stmtAgent->execute();
@@ -42,7 +42,7 @@ try {
     }
     
     // Vérifier si la formation existe et appartient à l'agent
-    $queryCheck = "SELECT * FROM formation_agent WHERE idformation = :id AND idAgent = :idAgent";
+    $queryCheck = "SELECT * FROM formation_agent WHERE idformation = :id AND \"idAgent\" = :idAgent";
     $stmtCheck = $pdo->prepare($queryCheck);
     $stmtCheck->bindParam(':id', $formationId, PDO::PARAM_INT);
     $stmtCheck->bindParam(':idAgent', $agentId, PDO::PARAM_INT);

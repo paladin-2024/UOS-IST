@@ -10,7 +10,7 @@ $planTravailModel = new PlanTravail();
 function getUserSections($db, $userId, $anneeAcadId)
 {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     $stmt = $db->prepare($query);
     $stmt->execute(['userId' => $userId, 'anneeId' => $anneeAcadId]);
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -66,7 +66,7 @@ $filterStatutPlan = isset($_GET['filter_statut_plan']) ? $_GET['filter_statut_pl
 // Récupérer les sections accessibles pour le filtre
 $sectionsAccessibles = [];
 if ($hasFullAccess) {
-    $querySections = "SELECT idsection, designationSection FROM section ORDER BY designationSection";
+    $querySections = "SELECT idsection, \"designationSection\" FROM section ORDER BY \"designationSection\"";
     $stmtSections = $connexion->prepare($querySections);
     $stmtSections->execute();
     $sectionsAccessibles = $stmtSections->fetchAll(PDO::FETCH_ASSOC);
@@ -122,9 +122,9 @@ $limit = 20; // Nombre d'étudiants par page
 $whereClause = "WHERE " . implode(' AND ', $whereConditions);
 
 $queryEtudiants = "SELECT DISTINCT e.idetudiant, e.matricule, e.noms, e.photo,
-                          p.designationPromotion as promotion, p.idpromotion, p.cycle,
-                          o.designationOrientation as orientation,
-                          sec.designationSection as section, sec.idsection,
+                          p.\"designationPromotion\" as promotion, p.idpromotion, p.cycle,
+                          o.\"designationOrientation\" as orientation,
+                          sec.\"designationSection\" as section, sec.idsection,
                           aa.designation as annee_academique,
                           s.idsujets, s.intitule as sujet_intitule, s.statut_validation as sujet_statut
                    FROM etudiant e
@@ -214,9 +214,9 @@ foreach ($etudiants as $etudiant) {
                                dir.noms as directeur_nom, gd.designation as grade_directeur,
                                enc.noms as encadreur_nom, ge.designation as grade_encadreur
                         FROM sujets s
-                        LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
+                        LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
                         LEFT JOIN grade gd ON dir.grade_id = gd.idgrade
-                        LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+                        LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
                         LEFT JOIN grade ge ON enc.grade_id = ge.idgrade
                         WHERE s.idsujets = :idsujets";
         $stmtDetails = $connexion->prepare($queryDetails);
@@ -263,7 +263,7 @@ if ($countProgression > 0) {
 }
 
 // Récupérer les promotions pour le filtre (seulement celles avec sujets validés)
-$queryPromotions = "SELECT DISTINCT p.idpromotion, p.designationPromotion 
+$queryPromotions = "SELECT DISTINCT p.idpromotion, p.\"designationPromotion\" 
                    FROM promotion p
                    JOIN etudiant e ON p.idpromotion = e.promotion_idpromotion
                    JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -276,7 +276,7 @@ if (!$hasFullAccess) {
     $queryPromotions .= " AND sec.idsection IN ($sectionsParams)";
 }
 
-$queryPromotions .= " ORDER BY p.designationPromotion";
+$queryPromotions .= ' ORDER BY p."designationPromotion"';
 
 $stmtPromotions = $connexion->prepare($queryPromotions);
 if (!$hasFullAccess) {

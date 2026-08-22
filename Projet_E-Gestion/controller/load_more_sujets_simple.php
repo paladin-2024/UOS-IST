@@ -31,7 +31,7 @@ try {
                  s.statut_validation
               FROM sujets s
               LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation";
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"";
 
     $params = [];
 

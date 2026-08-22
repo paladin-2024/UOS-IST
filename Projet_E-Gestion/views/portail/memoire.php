@@ -19,7 +19,7 @@ try {
     
     // Récupérer la promotion de l'étudiant pour debug
     $connexion = Connexion::getInstance()->getPDO();
-    $query = "SELECT promotion_idpromotion, designationPromotion FROM etudiant e 
+    $query = "SELECT promotion_idpromotion, \"designationPromotion\" FROM etudiant e 
               JOIN promotion p ON e.promotion_idpromotion = p.idpromotion 
               WHERE e.idetudiant = :id";
     $stmt = $connexion->prepare($query);

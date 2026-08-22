@@ -5,8 +5,8 @@ require_once dirname(__DIR__) . '/config/Connexion.php';
 
 // Fonctions utilitaires pour le contrôle d'accès
 function getUserSections($db, $userId, $anneeAcadId) {
-    $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+    $query = 'SELECT section_idsection FROM responsable_section
+              WHERE "idUser" = :userId AND annee_acad_idannee_acad = :anneeId';
     $stmt = $db->prepare($query);
     $stmt->execute(['userId' => $userId, 'anneeId' => $anneeAcadId]);
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -32,7 +32,7 @@ function isSubjectAccessible($db, $sujetId, $userSections, $hasFullAccess) {
     $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
     $query = "SELECT COUNT(*) as count
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
               WHERE s.idsujets = ? AND sec.idsection IN ($sectionsParams)";
@@ -59,7 +59,7 @@ function isSpecialisationAccessible($db, $specialisationId, $userSections, $hasF
               FROM specialisation spec
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
-              WHERE spec.idSpecialisation = ? AND sec.idsection IN ($sectionsParams)";
+              WHERE spec.\"idSpecialisation\" = ? AND sec.idsection IN ($sectionsParams)";
     
     $params = array_merge([$specialisationId], $userSections);
     $stmt = $db->prepare($query);
@@ -134,8 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 if ($action === 'create') {
                     // Création du sujet avec requête directe
-                    $query = "INSERT INTO sujets (intitule, cycle, idSpecialisation, annee_acad_idannee_acad, 
-                              idUser, statut_validation, etudiant_idetudiant, idDirecteur, idEncadreur) 
+                    $query = "INSERT INTO sujets (intitule, cycle, \"idSpecialisation\", annee_acad_idannee_acad,
+                              \"idUser\", statut_validation, etudiant_idetudiant, \"idDirecteur\", \"idEncadreur\")
                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt = $pdo->prepare($query);
                     $result = $stmt->execute([$intitule, $cycle, $idSpecialisation, $anneeAcadId, 
@@ -173,15 +173,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
 
                     // Modification du sujet avec requête directe
-                    $query = "UPDATE sujets SET 
-                              intitule = ?, 
-                              cycle = ?, 
-                              idSpecialisation = ?, 
+                    $query = "UPDATE sujets SET
+                              intitule = ?,
+                              cycle = ?,
+                              \"idSpecialisation\" = ?,
                               annee_acad_idannee_acad = ?,
                               statut_validation = ?,
                               etudiant_idetudiant = ?,
-                              idDirecteur = ?,
-                              idEncadreur = ?
+                              \"idDirecteur\" = ?,
+                              \"idEncadreur\" = ?
                               WHERE idsujets = ?";
                     $stmt = $pdo->prepare($query);
                     $result = $stmt->execute([$intitule, $cycle, $idSpecialisation, $anneeAcadId, 
@@ -213,9 +213,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
 
                 // Récupérer l'ID de l'enseignant connecté
-                $query = "SELECT a.idAgent FROM agent a 
-                         INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                         WHERE u.idUser = ? AND a.type_agent = 'Enseignant'";
+                $query = "SELECT a.\"idAgent\" FROM agent a
+                         INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\"
+                         WHERE u.\"idUser\" = ? AND a.type_agent = 'Enseignant'";
                 $stmt = $pdo->prepare($query);
                 $stmt->execute([$idUser]);
                 $idEnseignant = $stmt->fetchColumn();
@@ -241,19 +241,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 if ($canModify) {
                     // Mettre à jour le sujet
-                    $query = "UPDATE sujets SET 
+                    $query = "UPDATE sujets SET
                              intitule = ?,
-                             idSpecialisation = ?,
-                             idEncadreur = ?,
+                             \"idSpecialisation\" = ?,
+                             \"idEncadreur\" = ?,
                              statut_validation = 'Modifié'
                              WHERE idsujets = ?";
                     $stmt = $pdo->prepare($query);
                     $result = $stmt->execute([$intitule, $idSpecialisation, $encadreurId, $idSujet]);
-                    
+
                     // Ajouter l'historique de la modification
                     if ($result) {
-                        $queryHistory = "INSERT INTO sujet_validation_history 
-                                        (idsujets, status, date_action, commentaire, idUser) 
+                        $queryHistory = "INSERT INTO sujet_validation_history
+                                        (idsujets, status, date_action, commentaire, \"idUser\")
                                         VALUES (?, 'Modifié', NOW(), 'Modification par le directeur', ?)";
                         $stmtHistory = $pdo->prepare($queryHistory);
                         $stmtHistory->execute([$idSujet, $idUser]);
@@ -338,9 +338,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             case 'commission_validation':
                 // Récupération de l'ID du validateur
-                $queryAgent = "SELECT a.idAgent FROM agent a 
-                              INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                              WHERE u.idUser = ?";
+                $queryAgent = "SELECT a.\"idAgent\" FROM agent a
+                              INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\"
+                              WHERE u.\"idUser\" = ?";
                 $stmtAgent = $pdo->prepare($queryAgent);
                 $stmtAgent->execute([$idUser]);
                 $idValidateur = $stmtAgent->fetchColumn();
@@ -408,8 +408,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 // Enregistrer l'historique de validation
                 if ($result) {
-                    $queryHistory = "INSERT INTO sujet_validation_history 
-                                    (idsujets, status, date_action, commentaire, idUser) 
+                    $queryHistory = "INSERT INTO sujet_validation_history
+                                    (idsujets, status, date_action, commentaire, \"idUser\")
                                     VALUES (?, ?, NOW(), ?, ?)";
                     $stmtHistory = $pdo->prepare($queryHistory);
                     $stmtHistory->execute([$idSujet, $statut_validation, $commentaire, $idUser]);

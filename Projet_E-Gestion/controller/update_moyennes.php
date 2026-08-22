@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $connexion->prepare("
                         SELECT SUM((e.CMI + e.TD + e.TP) /$heureCredit) as credits
                         FROM ecue e
-                        WHERE e.UE_idUE = :ueId
+                        WHERE e.\"UE_idUE\" = :ueId
                     ");
                     $stmt->execute([':ueId' => $ueId]);
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $connexion->prepare("
                         SELECT idmoyenne_ue FROM moyenne_ue 
                         WHERE matricule = :matricule 
-                        AND idUE = :ueId 
+                        AND \"idUE\" = :ueId 
                         AND session_idsession = :sessionId 
                         AND annee_acad_idannee_acad = :anneeId
                     ");
@@ -97,9 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 est_validee = :estValidee,
                                 credits_obtenus = :creditsObtenus,
                                 date_calcul = NOW(),
-                                idUser = :idUser
+                                \"idUser\" = :idUser
                             WHERE matricule = :matricule 
-                            AND idUE = :ueId 
+                            AND \"idUE\" = :ueId 
                             AND session_idsession = :sessionId 
                             AND annee_acad_idannee_acad = :anneeId
                         ");
@@ -107,9 +107,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Insertion
                         $stmt = $connexion->prepare("
                             INSERT INTO moyenne_ue 
-                            (matricule, idUE, session_idsession, annee_acad_idannee_acad, 
+                            (matricule, \"idUE\", session_idsession, annee_acad_idannee_acad, 
                              moyenne_brute, moyenne_deliberee, est_validee, credits_obtenus, 
-                             type_validation, date_calcul, idUser) 
+                             type_validation, date_calcul, \"idUser\") 
                             VALUES 
                             (:matricule, :ueId, :sessionId, :anneeId, 
                              :moyenne, :moyenne, :estValidee, :creditsObtenus, 
@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 credits_obtenus = :creditsObtenus,
                                 credits_total = :creditsTotal,
                                 date_calcul = NOW(),
-                                idUser = :idUser
+                                \"idUser\" = :idUser
                             WHERE matricule = :matricule 
                             AND idsemestre = :semId 
                             AND session_idsession = :sessionId 
@@ -185,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             INSERT INTO moyenne_semestre 
                             (matricule, idsemestre, session_idsession, annee_acad_idannee_acad, 
                              moyenne_brute, moyenne_deliberee, est_valide, credits_obtenus, 
-                             credits_total, date_calcul, idUser) 
+                             credits_total, date_calcul, \"idUser\") 
                             VALUES 
                             (:matricule, :semId, :sessionId, :anneeId, 
                              :moyenne, :moyenne, :estValide, :creditsObtenus, 
@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 // Récupérer les informations de la session
-                $stmt = $connexion->prepare("SELECT designSession FROM session WHERE idsession = :sessionId");
+                $stmt = $connexion->prepare("SELECT \"designSession\" FROM session WHERE idsession = :sessionId");
                 $stmt->execute([':sessionId' => $sessionId]);
                 $sessionInfo = $stmt->fetch(PDO::FETCH_ASSOC);
                 $isDeuxiemeSession = $sessionInfo && stripos($sessionInfo['designSession'], 'deuxième') !== false;
@@ -305,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             credits_total = :creditsTotal,
                             mention = :mention,
                             date_calcul = NOW(),
-                            idUser = :idUser
+                            \"idUser\" = :idUser
                         WHERE matricule = :matricule 
                         AND idpromotion = :promotionId 
                         AND session_idsession = :sessionId 
@@ -317,7 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         INSERT INTO moyenne_annuelle 
                         (matricule, idpromotion, session_idsession, annee_acad_idannee_acad, 
                          moyenne_brute, moyenne_deliberee, est_admis, credits_obtenus, 
-                         credits_total, mention, date_calcul, idUser) 
+                         credits_total, mention, date_calcul, \"idUser\") 
                         VALUES 
                         (:matricule, :promotionId, :sessionId, :anneeId, 
                          :moyenne, :moyenne, :estAdmis, :creditsObtenus, 
@@ -423,10 +423,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($decision === 'ADMIS AVEC RACHAT') {
                     // D'abord, récupérer toutes les UE non validées pour cet étudiant
                     $stmt = $connexion->prepare("
-                        SELECT DISTINCT u.idUE
+                        SELECT DISTINCT u.\"idUE\"
                         FROM ue u
                         INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
-                        LEFT JOIN moyenne_ue mu ON mu.idUE = u.idUE 
+                        LEFT JOIN moyenne_ue mu ON mu.\"idUE\" = u.\"idUE\" 
                             AND mu.matricule = :matricule 
                             AND mu.session_idsession = :sessionId 
                             AND mu.annee_acad_idannee_acad = :anneeId
@@ -448,24 +448,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $placeholders = implode(',', array_fill(0, count($uesNonValidees), '?'));
                         $stmt = $connexion->prepare("
                             SELECT DISTINCT 
-                                e.idECUE, 
-                                e.designationECUE,
-                                e.UE_idUE,
-                                u.codeUE, 
-                                u.designationUE, 
+                                e.\"idECUE\", 
+                                e.\"designationECUE\",
+                                e.\"UE_idUE\",
+                                u.\"codeUE\", 
+                                u.\"designationUE\", 
                                 s.idsemestre, 
-                                s.numeroSemestre,
+                                s.\"numeroSemestre\",
                                 cg.MF as note_obtenue,
                                 ((e.CMI + e.TD + e.TP) / ?) as credits_ecue
                             FROM ecue e
-                            INNER JOIN ue u ON e.UE_idUE = u.idUE
+                            INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                             INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
-                            LEFT JOIN cotes_grille cg ON cg.ECUE_idECUE = e.idECUE 
+                            LEFT JOIN cotes_grille cg ON cg.\"ECUE_idECUE\" = e.\"idECUE\" 
                                 AND cg.matricule = ? 
                                 AND cg.session_idsession = ? 
                                 AND cg.annee_acad_id = ?
-                            WHERE e.UE_idUE IN ($placeholders)
-                            ORDER BY s.numeroSemestre, u.codeUE, e.designationECUE
+                            WHERE e.\"UE_idUE\" IN ($placeholders)
+                            ORDER BY s.\"numeroSemestre\", u.\"codeUE\", e.\"designationECUE\"
                         ");
                         
                         $params = array_merge(
@@ -484,7 +484,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt = $connexion->prepare("
                             SELECT id_dette FROM dette_etudiant 
                             WHERE matricule = :matricule 
-                            AND ECUE_idECUE = :ecueId 
+                            AND \"ECUE_idECUE\" = :ecueId 
                             AND annee_acad_idannee_acad = :anneeId
                             AND statut = 'En cours'
                         ");
@@ -499,8 +499,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $stmt = $connexion->prepare("
                                 INSERT INTO dette_etudiant (
                                     matricule, 
-                                    ECUE_idECUE, 
-                                    UE_idUE, 
+                                    \"ECUE_idECUE\", 
+                                    \"UE_idUE\", 
                                     semestre_idsemestre, 
                                     promotion_idpromotion, 
                                     session_idsession, 
@@ -509,7 +509,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     credits_ecue, 
                                     statut, 
                                     date_creation, 
-                                    idUser
+                                    \"idUser\"
                                 ) VALUES (
                                     :matricule, 
                                     :ecue_id, 
@@ -548,7 +548,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         action, 
                                         details, 
                                         date_action, 
-                                        idUser
+                                        \"idUser\"
                                     ) VALUES (
                                         :id_dette, 
                                         'Creation', 
@@ -578,7 +578,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             // Récupérer les informations sur la promotion
             $stmt = $connexion->prepare("
-                SELECT p.designationPromotion, s.designationSection  
+                SELECT p.\"designationPromotion\", s.\"designationSection\"  
                 FROM promotion p
                 LEFT JOIN section s ON p.orientation_idorientation = s.idsection
                 WHERE p.idpromotion = :promotionId
@@ -587,7 +587,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $promotionInfo = $stmt->fetch(PDO::FETCH_ASSOC);
             
             // Récupérer les informations sur la session
-            $stmt = $connexion->prepare("SELECT designSession FROM session WHERE idsession = :sessionId");
+            $stmt = $connexion->prepare("SELECT \"designSession\" FROM session WHERE idsession = :sessionId");
             $stmt->execute([':sessionId' => $sessionId]);
             $sessionInfo = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -617,7 +617,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $connexion->prepare("
                     UPDATE palmares_archive SET
                     date_modification = NOW(),
-                    idUser = :idUser
+                    \"idUser\" = :idUser
                     WHERE id_palmares = :idPalmares
                 ");
                 $stmt->execute([
@@ -639,7 +639,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         promotion, 
                         session, 
                         date_creation,
-                        idUser,
+                        \"idUser\",
                         annee_acad_idannee_acad,
                         promotion_idpromotion,
                         session_idsession

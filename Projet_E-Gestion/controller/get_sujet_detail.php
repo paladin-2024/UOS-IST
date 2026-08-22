@@ -28,17 +28,17 @@ try {
                 s.idsujets,
                 s.intitule,
                 s.resume,
-                s.etatSujet,
+                s.\"etatSujet\",
                 s.cycle,
                 s.statut_validation,
                 s.commentaire_commission,
                 s.date_validation,
-                s.idDirecteur,
-                s.idEncadreur,
+                s.\"idDirecteur\",
+                s.\"idEncadreur\",
                 s.etudiant_idetudiant,
-                s.idSpecialisation,
-                s.idUser,
-                s.idValidateur,
+                s.\"idSpecialisation\",
+                s.\"idUser\",
+                s.\"idValidateur\",
                 
                 -- Informations de l'année académique
                 a.idannee_acad,
@@ -53,7 +53,7 @@ try {
                 e.sexe as sexe_etudiant,
                 
                 -- Informations du directeur
-                d.idAgent as id_directeur,
+                d.\"idAgent\" as id_directeur,
                 d.noms as directeur,
                 d.telephone as telephone_directeur,
                 d.email as email_directeur,
@@ -61,7 +61,7 @@ try {
                 gr_d.designation as grade_directeur,
                 
                 -- Informations de l'encadreur
-                enc.idAgent as id_encadreur,
+                enc.\"idAgent\" as id_encadreur,
                 enc.noms as encadreur,
                 enc.telephone as telephone_encadreur,
                 enc.email as email_encadreur,
@@ -69,33 +69,33 @@ try {
                 gr_e.designation as grade_encadreur,
                 
                 -- Informations de la spécialisation
-                spec.idSpecialisation,
+                spec.\"idSpecialisation\",
                 spec.designation as specialisation,
                 
                 -- Informations de l'orientation
                 o.idorientation,
-                o.designationOrientation as orientation,
+                o.\"designationOrientation\" as orientation,
                 
                 -- Informations de la section
                 sec.idsection,
-                sec.designationSection as section,
+                sec.\"designationSection\" as section,
                 
                 -- Informations de l'unité de recherche
                 ur.idunite_recherche,
-                ur.designation_UR as unite_recherche,
+                ur.\"designation_UR\" as unite_recherche,
                 ur.description as description_ur,
                 
                 -- Informations de la promotion
                 p.idpromotion,
-                p.designationPromotion as promotion,
+                p.\"designationPromotion\" as promotion,
                 
                 -- Informations du validateur
-                u.idUser as id_validateur,
-                u.nomUser as nom_validateur,
+                u.\"idUser\" as id_validateur,
+                u.\"nomUser\" as nom_validateur,
                 
                 -- Informations de création
-                u_creation.idUser as id_createur,
-                u_creation.nomUser as nom_createur,
+                u_creation.\"idUser\" as id_createur,
+                u_creation.\"nomUser\" as nom_createur,
                 
                 -- Formatage de la date de validation
                 CASE 
@@ -109,25 +109,25 @@ try {
               -- Jointures obligatoires
               LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               
               -- Jointures pour les agents (directeur et encadreur)
-              LEFT JOIN agent d ON s.idDirecteur = d.idAgent
+              LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
               LEFT JOIN grade gr_d ON d.grade_id = gr_d.idgrade
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent 
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\" 
               LEFT JOIN grade gr_e ON enc.grade_id = gr_e.idgrade
               
               -- Jointures pour la hiérarchie académique
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
-              LEFT JOIN unite_recherche ur ON spec.idUnite_recherche = ur.idunite_recherche
+              LEFT JOIN unite_recherche ur ON spec.\"idUnite_recherche\" = ur.idunite_recherche
               
               -- Jointure pour la promotion de l'étudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               
               -- Jointures pour les utilisateurs
-              LEFT JOIN t_users u ON s.idValidateur = u.idUser
-              LEFT JOIN t_users u_creation ON s.idUser = u_creation.idUser
+              LEFT JOIN t_users u ON s.\"idValidateur\" = u.\"idUser\"
+              LEFT JOIN t_users u_creation ON s.\"idUser\" = u_creation.\"idUser\"
               
               WHERE s.idsujets = ?";
     
@@ -150,11 +150,11 @@ try {
                         sh.status,
                         sh.commentaire,
                         sh.date_action,
-                        u.idUser,
-                        u.nomUser as nom_utilisateur,
+                        u.\"idUser\",
+                        u.\"nomUser\" as nom_utilisateur,
                         DATE_FORMAT(sh.date_action, '%d/%m/%Y à %H:%i') as date_formatee
                      FROM sujet_validation_history sh
-                     LEFT JOIN t_users u ON sh.idUser = u.idUser
+                     LEFT JOIN t_users u ON sh.\"idUser\" = u.\"idUser\"
                      WHERE sh.idsujets = ?
                      ORDER BY sh.date_action DESC";
     
@@ -168,17 +168,17 @@ try {
     // Récupérer les tâches associées au sujet
     $queryTasks = "SELECT 
                       t.idtaches,
-                      t.dateTache,
+                      t.\"dateTache\",
                       t.description,
-                      t.fichierTache,
+                      t.\"fichierTache\",
                       t.validation,
                       t.pourcentage_avancement,
                       t.date_validation,
                       t.commentaire_validation,
-                      DATE_FORMAT(t.dateTache, '%d/%m/%Y') as date_tache_formatee
+                      DATE_FORMAT(t.\"dateTache\", '%d/%m/%Y') as date_tache_formatee
                    FROM taches t
                    WHERE t.sujets_idsujets = ?
-                   ORDER BY t.dateTache DESC";
+                   ORDER BY t.\"dateTache\" DESC";
     
     $stmtTasks = $pdo->prepare($queryTasks);
     $stmtTasks->execute([$sujetId]);
@@ -189,14 +189,14 @@ try {
     
 // Récupérer les informations de dépôt de mémoire
     $queryMemoire = "SELECT 
-                        dm.idDepot,
-                        dm.dateDepot,
+                        dm.\"idDepot\",
+                        dm.\"dateDepot\",
                         dm.fichier,
                         dm.observation,
-                        DATE_FORMAT(dm.dateDepot, '%d/%m/%Y') as date_depot_formatee
+                        DATE_FORMAT(dm.\"dateDepot\", '%d/%m/%Y') as date_depot_formatee
                      FROM depot_memoire dm
                      WHERE dm.sujets_idsujets = ?
-                     ORDER BY dm.dateDepot DESC
+                     ORDER BY dm.\"dateDepot\" DESC
                      LIMIT 1";
     
     $stmtMemoire = $pdo->prepare($queryMemoire);

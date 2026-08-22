@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addResearchUnitBtn']))
     
     try {
         // 1. Insérer l'unité de recherche
-        $stmtUR = $db->prepare("INSERT INTO unite_recherche (designation_UR, description, idUser, dateCreation) VALUES (?, ?, ?, NOW())");
+        $stmtUR = $db->prepare("INSERT INTO unite_recherche (\"designation_UR\", description, \"idUser\", \"dateCreation\") VALUES (?, ?, ?, NOW())");
         $idUser = isset($_SESSION['id']) ? $_SESSION['id'] : null;
         $stmtUR->execute([$designationUR, $description, $idUser]);
         

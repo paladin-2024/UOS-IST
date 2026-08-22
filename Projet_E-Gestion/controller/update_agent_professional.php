@@ -64,14 +64,14 @@ try {
     // 1. Mettre à jour les informations professionnelles générales de l'agent
     $query = "UPDATE agent 
               SET grade_id = :gradeId, 
-                  idStructure = :idStructure, 
-                  idService = :idService,
+                  \"idStructure\" = :idStructure, 
+                  \"idService\" = :idService,
                   annee_engagement = :anneeEngagement,
                   reference_acte_engagement = :referenceActeEngagement,
                   prime_locale = :primeLocale,
                   salaire_etat = :salaireEtat,
                   prime_institutionnelle = :primeInstitutionnelle
-              WHERE idAgent = :idAgent";
+              WHERE \"idAgent\" = :idAgent";
     
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':gradeId', $gradeId, PDO::PARAM_INT);
@@ -86,7 +86,7 @@ try {
     $stmt->execute();
     
     // 2. Récupérer le type d'agent pour traiter les informations spécifiques
-    $queryType = "SELECT type_agent FROM agent WHERE idAgent = :idAgent";
+    $queryType = "SELECT type_agent FROM agent WHERE \"idAgent\" = :idAgent";
     $stmtType = $pdo->prepare($queryType);
     $stmtType->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
     $stmtType->execute();
@@ -95,7 +95,7 @@ try {
     // 3. Traiter les informations spécifiques selon le type d'agent
     if ($agentType == 'Administratif') {
         // Vérifier si l'entrée existe déjà
-        $checkQuery = "SELECT id FROM admin_info WHERE idAgent = :idAgent";
+        $checkQuery = "SELECT id FROM admin_info WHERE \"idAgent\" = :idAgent";
         $checkStmt = $pdo->prepare($checkQuery);
         $checkStmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $checkStmt->execute();
@@ -107,12 +107,12 @@ try {
                           division = :division, 
                           decision_grade = :decisionGrade, 
                           notification_grade = :notificationGrade,
-                          idUser = :idUser
-                      WHERE idAgent = :idAgent";
+                          \"idUser\" = :idUser
+                      WHERE \"idAgent\" = :idAgent";
         } else {
             // Insertion
             $query = "INSERT INTO admin_info 
-                      (idAgent, direction, division, decision_grade, notification_grade, idUser) 
+                      (\"idAgent\", direction, division, decision_grade, notification_grade, \"idUser\") 
                       VALUES 
                       (:idAgent, :direction, :division, :decisionGrade, :notificationGrade, :idUser)";
         }
@@ -128,7 +128,7 @@ try {
     } 
     elseif ($agentType == 'Enseignant') {
         // Vérifier si l'entrée existe déjà
-        $checkQuery = "SELECT id FROM teacher_info WHERE idAgent = :idAgent";
+        $checkQuery = "SELECT id FROM teacher_info WHERE \"idAgent\" = :idAgent";
         $checkStmt = $pdo->prepare($checkQuery);
         $checkStmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $checkStmt->execute();
@@ -138,12 +138,12 @@ try {
             $query = "UPDATE teacher_info 
                       SET specialisation = :specialisation, 
                           domaine_recherche = :domaineRecherche,
-                          idUser = :idUser
-                      WHERE idAgent = :idAgent";
+                          \"idUser\" = :idUser
+                      WHERE \"idAgent\" = :idAgent";
         } else {
             // Insertion
             $query = "INSERT INTO teacher_info 
-                      (idAgent, specialisation, domaine_recherche, idUser) 
+                      (\"idAgent\", specialisation, domaine_recherche, \"idUser\") 
                       VALUES 
                       (:idAgent, :specialisation, :domaineRecherche, :idUser)";
         }
@@ -157,7 +157,7 @@ try {
     } 
     elseif ($agentType == 'Recherche') {
         // Vérifier si l'entrée existe déjà
-        $checkQuery = "SELECT id FROM research_info WHERE idAgent = :idAgent";
+        $checkQuery = "SELECT id FROM research_info WHERE \"idAgent\" = :idAgent";
         $checkStmt = $pdo->prepare($checkQuery);
         $checkStmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $checkStmt->execute();
@@ -167,12 +167,12 @@ try {
             $query = "UPDATE research_info 
                       SET unite_recherche = :uniteRecherche, 
                           projet_recherche = :projetRecherche,
-                          idUser = :idUser
-                      WHERE idAgent = :idAgent";
+                          \"idUser\" = :idUser
+                      WHERE \"idAgent\" = :idAgent";
         } else {
             // Insertion
             $query = "INSERT INTO research_info 
-                      (idAgent, unite_recherche, projet_recherche, idUser) 
+                      (\"idAgent\", unite_recherche, projet_recherche, \"idUser\") 
                       VALUES 
                       (:idAgent, :uniteRecherche, :projetRecherche, :idUser)";
         }
@@ -186,7 +186,7 @@ try {
     }
     
     // 4. Récupérer le code de l'agent pour la redirection
-    $queryAgent = "SELECT codeAgent FROM agent WHERE idAgent = :idAgent";
+    $queryAgent = "SELECT \"codeAgent\" FROM agent WHERE \"idAgent\" = :idAgent";
     $stmtAgent = $pdo->prepare($queryAgent);
     $stmtAgent->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
     $stmtAgent->execute();

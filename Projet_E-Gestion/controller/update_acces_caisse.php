@@ -26,8 +26,8 @@ try {
     // Si c'est une création
     if (!$id) {
         $sql = "INSERT INTO droits_acces_finances (
-                    idUser, type, niveau, entite_id, date_debut, date_fin,
-                    est_actif, commentaire, idCreateur
+                    \"idUser\", type, niveau, entite_id, date_debut, date_fin,
+                    est_actif, commentaire, \"idCreateur\"
                 ) VALUES (
                     :idUser, :type, :niveau, :entite_id, :date_debut, :date_fin,
                     :est_actif, :commentaire, :idCreateur
@@ -52,7 +52,7 @@ try {
     // Si c'est une modification
     else {
         $sql = "UPDATE droits_acces_finances SET 
-                    idUser = :idUser,
+                    \"idUser\" = :idUser,
                     niveau = :niveau,
                     entite_id = :entite_id,
                     date_debut = :date_debut,

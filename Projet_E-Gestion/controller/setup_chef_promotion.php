@@ -80,7 +80,7 @@ try {
     // 3. Lister les étudiants disponibles pour être nommés chefs de promotion
     echo "<h3>3. Étudiants disponibles pour être nommés chefs de promotion</h3>";
     
-    $queryEtudiants = "SELECT e.idetudiant, e.matricule, e.noms, p.designationPromotion, aa.designation as annee_acad,
+    $queryEtudiants = "SELECT e.idetudiant, e.matricule, e.noms, p.\"designationPromotion\", aa.designation as annee_acad,
                               CASE WHEN cp.id_chef IS NOT NULL THEN 'OUI' ELSE 'NON' END as est_chef
                        FROM etudiant e
                        INNER JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -89,7 +89,7 @@ try {
                                                    AND cp.annee_acad_idannee_acad = e.annee_acad_idannee_acad 
                                                    AND cp.est_actif = 1
                        WHERE e.est_actif = 1
-                       ORDER BY p.designationPromotion, e.noms";
+                       ORDER BY p.\"designationPromotion\", e.noms";
 
     $stmtEtudiants = $connexion->prepare($queryEtudiants);
     $stmtEtudiants->execute();
@@ -166,7 +166,7 @@ try {
                 echo "<p style='color: red;'>❌ Cet étudiant est déjà chef de promotion!</p>";
             } else {
                 // Insérer le nouveau chef de promotion
-                $queryInsert = "INSERT INTO chef_promotion (idetudiant, promotion_idpromotion, annee_acad_idannee_acad, date_nomination, est_actif, idUser)
+                $queryInsert = "INSERT INTO chef_promotion (idetudiant, promotion_idpromotion, annee_acad_idannee_acad, date_nomination, est_actif, \"idUser\")
                                VALUES (:etudiant_id, :promotion_id, :annee_acad, CURDATE(), 1, :user_id)";
                 $stmtInsert = $connexion->prepare($queryInsert);
                 $stmtInsert->bindParam(':etudiant_id', $etudiantId);

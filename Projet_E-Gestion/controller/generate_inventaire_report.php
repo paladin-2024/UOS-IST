@@ -17,13 +17,13 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     
     try {
         // Récupérer les informations de l'inventaire
-        $stmt = $db->prepare("SELECT i.*, d.libelle_depot, 
-                                    u1.nomUser as user_creation_nom,
-                                    u2.nomUser as user_validation_nom
+        $stmt = $db->prepare("SELECT i.*, d.libelle_depot,
+                                    u1.\"nomUser\" as user_creation_nom,
+                                    u2.\"nomUser\" as user_validation_nom
                              FROM inventaire i
                              JOIN depot d ON i.id_depot = d.id_depot
-                             LEFT JOIN t_users u1 ON i.id_user_creation = u1.idUser
-                             LEFT JOIN t_users u2 ON i.id_user_validation = u2.idUser
+                             LEFT JOIN t_users u1 ON i.id_user_creation = u1.\"idUser\"
+                             LEFT JOIN t_users u2 ON i.id_user_validation = u2.\"idUser\"
                              WHERE i.id_inventaire = :id_inventaire");
         $stmt->bindParam(':id_inventaire', $idInventaire, PDO::PARAM_INT);
         $stmt->execute();

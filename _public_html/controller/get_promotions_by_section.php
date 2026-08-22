@@ -25,12 +25,12 @@ $hasFullAccess = $_SESSION['idRole'] == 1;
 
 try {
     // Récupérer les promotions de cette section pour cette année académique
-    $query = "SELECT DISTINCT p.idpromotion, p.designationPromotion, p.cycle
+    $query = "SELECT DISTINCT p.idpromotion, p.\"designationPromotion\", p.cycle
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               WHERE o.section_idsection = :section_id
               AND (:annee_id = 0 OR p.annee_acad_idannee_acad = :annee_id)
-              ORDER BY p.designationPromotion";
+              ORDER BY p.\"designationPromotion\"";
 
     $stmt = $connexion->prepare($query);
     $stmt->execute([

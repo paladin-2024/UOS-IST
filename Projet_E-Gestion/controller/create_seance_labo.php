@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Vérifier si l'agent est autorisé pour ce laboratoire
         $stmt = $db->prepare("SELECT COUNT(*) FROM autorisation_labo 
                               WHERE idlabo = :idlabo 
-                              AND idAgent = :idAgent 
+                              AND \"idAgent\" = :idAgent 
                               AND date_debut <= CURRENT_DATE()
                               AND (date_fin IS NULL OR date_fin >= CURRENT_DATE())");
         $stmt->bindParam(':idlabo', $idlabo, PDO::PARAM_INT);
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Insertion de la séance de laboratoire
         $stmt = $db->prepare("INSERT INTO seance_labo 
-            (titre, date_seance, heure_debut, heure_fin, description, qrcode, idlabo, idUser, annee_acad_id) 
+            (titre, date_seance, heure_debut, heure_fin, description, qrcode, idlabo, \"idUser\", annee_acad_id) 
             VALUES 
             (:titre, :date_seance, :heure_debut, :heure_fin, :description, :qrcode, :idlabo, :idUser, :annee_acad_id)");
         

@@ -50,8 +50,8 @@ try {
                       date_promotion = :date_promotion, 
                       reference_decision = :reference_decision, 
                       reference_notification = :reference_notification,
-                      idUser = :idUser
-                  WHERE idhistorique_grade = :idhistorique_grade AND idAgent = :idAgent";
+                      \"idUser\" = :idUser
+                  WHERE idhistorique_grade = :idhistorique_grade AND \"idAgent\" = :idAgent";
         
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(':idgrade', $idgrade, PDO::PARAM_INT);
@@ -67,7 +67,7 @@ try {
     } else {
         // Ajout d'un nouvel historique
         $query = "INSERT INTO historique_grade 
-                  (idAgent, idgrade, date_promotion, reference_decision, reference_notification, idUser) 
+                  (\"idAgent\", idgrade, date_promotion, reference_decision, reference_notification, \"idUser\") 
                   VALUES 
                   (:idAgent, :idgrade, :date_promotion, :reference_decision, :reference_notification, :idUser)";
         
@@ -85,7 +85,7 @@ try {
 
     // Mettre à jour le grade actuel de l'agent si c'est la promotion la plus récente
     $queryLatest = "SELECT idhistorique_grade, idgrade FROM historique_grade 
-                    WHERE idAgent = :idAgent 
+                    WHERE \"idAgent\" = :idAgent
                     ORDER BY date_promotion DESC 
                     LIMIT 1";
     $stmtLatest = $pdo->prepare($queryLatest);
@@ -94,7 +94,7 @@ try {
     $latestGrade = $stmtLatest->fetch(PDO::FETCH_ASSOC);
     
     if ($latestGrade && ($gradeHistoryId == 0 || $gradeHistoryId == $latestGrade['idhistorique_grade'])) {
-        $queryUpdateAgent = "UPDATE agent SET grade_id = :grade_id WHERE idAgent = :idAgent";
+        $queryUpdateAgent = "UPDATE agent SET grade_id = :grade_id WHERE \"idAgent\" = :idAgent";
         $stmtUpdateAgent = $pdo->prepare($queryUpdateAgent);
         $stmtUpdateAgent->bindParam(':grade_id', $latestGrade['idgrade'], PDO::PARAM_INT);
         $stmtUpdateAgent->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);

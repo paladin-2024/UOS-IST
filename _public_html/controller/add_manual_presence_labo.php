@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Insérer la présence
         $queryInsert = "INSERT INTO presence_labo (idseance_labo, idetudiant, heure_arrivee, statut, commentaire, 
-                        methode_enregistrement, idUser, date_enregistrement, ip_address) 
+                        methode_enregistrement, \"idUser\", date_enregistrement, ip_address) 
                         VALUES (:idSeance, :idEtudiant, :heureArrivee, 'Présent', :commentaire, 
                         'Manuel', :idUser, NOW(), :ipAddress)";
         

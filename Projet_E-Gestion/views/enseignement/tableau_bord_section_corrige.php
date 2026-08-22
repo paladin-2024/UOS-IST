@@ -11,7 +11,7 @@ $pdo = Connexion::getInstance()->getPDO();
 
 // Vérifier si la colonne est_active existe et récupérer l'année courante
 try {
-    $checkColumn = "SHOW COLUMNS FROM annee_acad LIKE 'est_active'";
+    $checkColumn = "SELECT column_name FROM information_schema.columns WHERE table_name = 'annee_acad' AND column_name = 'est_active'";
     $stmtCheck = $pdo->prepare($checkColumn);
     $stmtCheck->execute();
     $columnExists = $stmtCheck->fetch();
@@ -21,16 +21,16 @@ try {
         $stmtAnnee = $pdo->prepare($queryAnnee);
         $stmtAnnee->execute();
         $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
-        
+
         // Si aucune année active, prendre la plus récente
         if (!$currentYear) {
-            $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+            $queryAnnee = 'SELECT * FROM annee_acad ORDER BY "dateCreation" DESC LIMIT 1';
             $stmtAnnee = $pdo->prepare($queryAnnee);
             $stmtAnnee->execute();
             $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
         }
     } else {
-        $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+        $queryAnnee = 'SELECT * FROM annee_acad ORDER BY "dateCreation" DESC LIMIT 1';
         $stmtAnnee = $pdo->prepare($queryAnnee);
         $stmtAnnee->execute();
         $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -56,10 +56,10 @@ if (!$currentYear) {
 
 // Récupérer les sections dont l'utilisateur est responsable
 try {
-    $query = "SELECT section_idsection 
-              FROM responsable_section 
-              WHERE idUser = :userId 
-              AND annee_acad_idannee_acad = :anneeId";
+    $query = 'SELECT section_idsection
+              FROM responsable_section
+              WHERE "idUser" = :userId
+              AND annee_acad_idannee_acad = :anneeId';
 
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':userId', $currentUserId);
@@ -95,28 +95,28 @@ if (!$isResponsableSection && !$hasFullAccess) {
 function getStatistiquesPromotions($pdo, $userSections, $anneeId) {
     $params = [':anneeId' => $anneeId];
     
-    $query = "SELECT 
+    $query = 'SELECT
                 p.idpromotion,
-                p.designationPromotion,
+                p."designationPromotion",
                 p.cycle,
                 COALESCE(p.est_terminale, 0) as est_terminale,
-                o.designationOrientation,
-                s.designationSection,
+                o."designationOrientation",
+                s."designationSection",
                 COUNT(DISTINCT e.idetudiant) as nb_etudiants_inscrits,
                 COUNT(DISTINCT CASE WHEN e.est_actif = 1 THEN e.idetudiant END) as nb_etudiants_actifs,
                 COUNT(DISTINCT suj.idsujets) as nb_sujets_recherche,
-                COUNT(DISTINCT CASE WHEN suj.etatSujet IN ('Validé', 'Valide') THEN suj.idsujets END) as nb_sujets_valides,
-                COUNT(DISTINCT ag.idAgent) as nb_enseignants
+                COUNT(DISTINCT CASE WHEN suj."etatSujet" IN (\'Validé\', \'Valide\') THEN suj.idsujets END) as nb_sujets_valides,
+                COUNT(DISTINCT ag."idAgent") as nb_enseignants
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN section s ON o.section_idsection = s.idsection
-              LEFT JOIN etudiant e ON p.idpromotion = e.promotion_idpromotion 
+              LEFT JOIN etudiant e ON p.idpromotion = e.promotion_idpromotion
                   AND e.annee_acad_idannee_acad = :anneeId
-              LEFT JOIN sujets suj ON e.idetudiant = suj.etudiant_idetudiant 
+              LEFT JOIN sujets suj ON e.idetudiant = suj.etudiant_idetudiant
                   AND suj.annee_acad_idannee_acad = :anneeId
               LEFT JOIN enseignant_section es ON s.idsection = es.idsection
-              LEFT JOIN agent ag ON es.idenseignant = ag.idAgent
-              WHERE p.annee_acad_idannee_acad = :anneeId";
+              LEFT JOIN agent ag ON es.idenseignant = ag."idAgent"
+              WHERE p.annee_acad_idannee_acad = :anneeId';
     
     if (!empty($userSections)) {
         $placeholders = [];
@@ -128,9 +128,9 @@ function getStatistiquesPromotions($pdo, $userSections, $anneeId) {
         $query .= " AND o.section_idsection IN (" . implode(',', $placeholders) . ")";
     }
     
-    $query .= " GROUP BY p.idpromotion, p.designationPromotion, p.cycle, p.est_terminale, 
-                         o.designationOrientation, s.designationSection
-                ORDER BY s.designationSection, p.cycle, p.designationPromotion";
+    $query .= ' GROUP BY p.idpromotion, p."designationPromotion", p.cycle, p.est_terminale,
+                         o."designationOrientation", s."designationSection"
+                ORDER BY s."designationSection", p.cycle, p."designationPromotion"';
     
     try {
         $stmt = $pdo->prepare($query);
@@ -149,29 +149,29 @@ function getStatistiquesPromotions($pdo, $userSections, $anneeId) {
 function getAvancementCours($pdo, $userSections, $anneeId) {
     $params = [':anneeId' => $anneeId];
     
-    $query = "SELECT 
-                s.designationSection,
-                p.designationPromotion,
-                COUNT(DISTINCT ecue.idECUE) as total_ecues,
-                COALESCE(SUM(CASE WHEN ecue.CMI > 0 THEN ecue.CMI ELSE 0 END), 0) as total_heures_cm_prevues,
-                COALESCE(SUM(CASE WHEN ecue.TD > 0 THEN ecue.TD ELSE 0 END), 0) as total_heures_td_prevues,
-                COALESCE(SUM(CASE WHEN ecue.TP > 0 THEN ecue.TP ELSE 0 END), 0) as total_heures_tp_prevues,
-                COALESCE(SUM(CASE WHEN se.type_cours = 'CM' THEN 
-                    TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60.0 ELSE 0 END), 0) as heures_cm_realisees,
-                COALESCE(SUM(CASE WHEN se.type_cours = 'TD' THEN 
-                    TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60.0 ELSE 0 END), 0) as heures_td_realisees,
-                COALESCE(SUM(CASE WHEN se.type_cours = 'TP' THEN 
-                    TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60.0 ELSE 0 END), 0) as heures_tp_realisees
+    $query = 'SELECT
+                s."designationSection",
+                p."designationPromotion",
+                COUNT(DISTINCT ecue."idECUE") as total_ecues,
+                COALESCE(SUM(CASE WHEN ecue."CMI" > 0 THEN ecue."CMI" ELSE 0 END), 0) as total_heures_cm_prevues,
+                COALESCE(SUM(CASE WHEN ecue."TD" > 0 THEN ecue."TD" ELSE 0 END), 0) as total_heures_td_prevues,
+                COALESCE(SUM(CASE WHEN ecue."TP" > 0 THEN ecue."TP" ELSE 0 END), 0) as total_heures_tp_prevues,
+                COALESCE(SUM(CASE WHEN se.type_cours = \'CM\' THEN
+                    EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut)) / 3600.0 ELSE 0 END), 0) as heures_cm_realisees,
+                COALESCE(SUM(CASE WHEN se.type_cours = \'TD\' THEN
+                    EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut)) / 3600.0 ELSE 0 END), 0) as heures_td_realisees,
+                COALESCE(SUM(CASE WHEN se.type_cours = \'TP\' THEN
+                    EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut)) / 3600.0 ELSE 0 END), 0) as heures_tp_realisees
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN section s ON o.section_idsection = s.idsection
               JOIN semestre sem ON p.idpromotion = sem.promotion_idpromotion
               JOIN ue ON sem.idsemestre = ue.semestre_idsemestre
-              JOIN ecue ON ue.idUE = ecue.UE_idUE
-              LEFT JOIN suivi_enseignements se ON ecue.idECUE = se.idECUE 
+              JOIN ecue ON ue."idUE" = ecue."UE_idUE"
+              LEFT JOIN suivi_enseignements se ON ecue."idECUE" = se."idECUE"
                   AND se.annee_acad_idannee_acad = :anneeId
               WHERE p.annee_acad_idannee_acad = :anneeId
-              AND COALESCE(ecue.estVisible, 1) = 1";
+              AND COALESCE(ecue."estVisible", 1) = 1';
     
     if (!empty($userSections)) {
         $placeholders = [];
@@ -183,9 +183,9 @@ function getAvancementCours($pdo, $userSections, $anneeId) {
         $query .= " AND o.section_idsection IN (" . implode(',', $placeholders) . ")";
     }
     
-    $query .= " GROUP BY s.idsection, p.idpromotion
-                ORDER BY s.designationSection, p.designationPromotion";
-    
+    $query .= ' GROUP BY s.idsection, p.idpromotion
+                ORDER BY s."designationSection", p."designationPromotion"';
+
     try {
         $stmt = $pdo->prepare($query);
         foreach ($params as $key => $value) {
@@ -203,20 +203,20 @@ function getAvancementCours($pdo, $userSections, $anneeId) {
 function getStatistiquesPaiements($pdo, $userSections, $anneeId) {
     $params = [':anneeId' => $anneeId];
     
-    $query = "SELECT 
-                s.designationSection,
-                p.designationPromotion,
+    $query = 'SELECT
+                s."designationSection",
+                p."designationPromotion",
                 COUNT(DISTINCT e.idetudiant) as nb_etudiants,
                 COUNT(DISTINCT eo.idetudiant) as nb_etudiants_en_ordre,
                 ROUND((COUNT(DISTINCT eo.idetudiant) * 100.0 / NULLIF(COUNT(DISTINCT e.idetudiant), 0)), 1) as pourcentage_en_ordre
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN section s ON o.section_idsection = s.idsection
-              LEFT JOIN etudiant e ON p.idpromotion = e.promotion_idpromotion 
+              LEFT JOIN etudiant e ON p.idpromotion = e.promotion_idpromotion
                   AND e.annee_acad_idannee_acad = :anneeId
-              LEFT JOIN etudiant_en_ordre eo ON e.idetudiant = eo.idetudiant 
+              LEFT JOIN etudiant_en_ordre eo ON e.idetudiant = eo.idetudiant
                   AND eo.annee_acad_idannee_acad = :anneeId
-              WHERE p.annee_acad_idannee_acad = :anneeId";
+              WHERE p.annee_acad_idannee_acad = :anneeId';
     
     if (!empty($userSections)) {
         $placeholders = [];
@@ -228,9 +228,9 @@ function getStatistiquesPaiements($pdo, $userSections, $anneeId) {
         $query .= " AND o.section_idsection IN (" . implode(',', $placeholders) . ")";
     }
     
-    $query .= " GROUP BY s.idsection, p.idpromotion
-                ORDER BY s.designationSection, p.designationPromotion";
-    
+    $query .= ' GROUP BY s.idsection, p.idpromotion
+                ORDER BY s."designationSection", p."designationPromotion"';
+
     try {
         $stmt = $pdo->prepare($query);
         foreach ($params as $key => $value) {

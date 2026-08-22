@@ -23,14 +23,14 @@ $universiteModel = new Universite();
 
 // Récupérer les infos de l'ECUE
 $stmtEcue = $db->prepare("
-    SELECT e.designationECUE, p.designationPromotion, s.numeroSemestre, sec.designationSection
+    SELECT e.\"designationECUE\", p.\"designationPromotion\", s.\"numeroSemestre\", sec.\"designationSection\"
     FROM ecue e
-    JOIN ue u ON e.UE_idUE = u.idUE
+    JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
     JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
     JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
     JOIN orientation o ON p.orientation_idorientation = o.idorientation
     JOIN section sec ON o.section_idsection = sec.idsection
-    WHERE e.idECUE = :ecueId
+    WHERE e.\"idECUE\" = :ecueId
 ");
 $stmtEcue->bindParam(':ecueId', $ecue_id, PDO::PARAM_INT);
 $stmtEcue->execute();
@@ -48,7 +48,7 @@ $annee = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 $anneeDesignation = $annee ? $annee['designation'] : '';
 
 // Total séances
-$stmtSeances = $db->prepare("SELECT COUNT(*) FROM seance_cours WHERE idECUE = ? AND annee_acad_id = ?");
+$stmtSeances = $db->prepare("SELECT COUNT(*) FROM seance_cours WHERE \"idECUE\" = ? AND annee_acad_id = ?");
 $stmtSeances->execute([$ecue_id, $annee_id]);
 $total_seances = (int)$stmtSeances->fetchColumn();
 
@@ -56,9 +56,9 @@ $total_seances = (int)$stmtSeances->fetchColumn();
 $stmtPromo = $db->prepare("
     SELECT s.promotion_idpromotion
     FROM ecue e
-    JOIN ue u ON e.UE_idUE = u.idUE
+    JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
     JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
-    WHERE e.idECUE = ?
+    WHERE e.\"idECUE\" = ?
     LIMIT 1
 ");
 $stmtPromo->execute([$ecue_id]);
@@ -83,7 +83,7 @@ $total_etudiants = count($etudiants);
 $stmtPresEtudiant = $db->prepare("
     SELECT COUNT(*) FROM presence_cours pc
     JOIN seance_cours sc ON pc.idseance = sc.idseance
-    WHERE pc.idetudiant = ? AND sc.idECUE = ? AND sc.annee_acad_id = ?
+    WHERE pc.idetudiant = ? AND sc.\"idECUE\" = ? AND sc.annee_acad_id = ?
 ");
 
 $statsEtudiants = [];

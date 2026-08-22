@@ -14,10 +14,10 @@ try {
     
     $db = Connexion::getInstance()->getPDO();
     
-    $query = "SELECT e.idetudiant, e.matricule, e.noms, e.est_actif, e.dateEnregistrement,
-                     p.designationPromotion, 
-                     o.designationOrientation,
-                     s.designationSection,
+    $query = "SELECT e.idetudiant, e.matricule, e.noms, e.est_actif, e.\"dateEnregistrement\",
+                     p.\"designationPromotion\", 
+                     o.\"designationOrientation\",
+                     s.\"designationSection\",
                      a.designation as annee
               FROM etudiant e
               JOIN promotion p ON e.promotion_idpromotion = p.idpromotion

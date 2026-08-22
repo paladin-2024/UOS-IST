@@ -19,8 +19,8 @@ try {
                tr.designation as type_designation, 
                tr.couleur
         FROM rendez_vous rv
-        LEFT JOIN agent a ON rv.Agent_idAgent = a.idAgent
-        LEFT JOIN service s ON rv.Service_idService = s.idService
+        LEFT JOIN agent a ON rv.\"Agent_idAgent\" = a.\"idAgent\"
+        LEFT JOIN service s ON rv.\"Service_idService\" = s.\"idService\"
         LEFT JOIN type_rendez_vous tr ON rv.type_rendez_vous = tr.designation
         WHERE rv.idRendez_vous = ?
     ");

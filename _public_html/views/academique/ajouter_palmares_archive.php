@@ -15,7 +15,7 @@ $stmt->execute();
 $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les sections
-$query = "SELECT * FROM section ORDER BY designationSection";
+$query = "SELECT * FROM section ORDER BY \"designationSection\"";
 $stmt = $pdo->prepare($query);
 $stmt->execute();
 $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);

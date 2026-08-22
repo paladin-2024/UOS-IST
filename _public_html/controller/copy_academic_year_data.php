@@ -53,14 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // 1. Copier les sections si demandé (éviter les doublons)
         if (isset($_POST['copier_sections']) && $_POST['copier_sections'] == 1) {
             $stmt = $connexion->prepare("
-                INSERT INTO section (designationSection, dateCreation, idAnnee)
-                SELECT s.designationSection, NOW(), ?
+                INSERT INTO section (\"designationSection\", \"dateCreation\", \"idAnnee\")
+                SELECT s.\"designationSection\", NOW(), ?
                 FROM section s
-                WHERE s.idAnnee = ?
+                WHERE s.\"idAnnee\" = ?
                 AND NOT EXISTS (
                     SELECT 1 FROM section s2
-                    WHERE s2.designationSection = s.designationSection
-                    AND s2.idAnnee = ?
+                    WHERE s2.\"designationSection\" = s.\"designationSection\"
+                    AND s2.\"idAnnee\" = ?
                 )
             ");
             $stmt->execute([$targetYearId, $anneeSource, $targetYearId]);
@@ -82,9 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     INSERT INTO section_mapping_copy (old_id, new_id)
                     SELECT s_old.idsection, s_new.idsection
                     FROM section s_old
-                    JOIN section s_new ON s_new.designationSection = s_old.designationSection
-                                       AND s_new.idAnnee = {$targetYearId}
-                    WHERE s_old.idAnnee = {$anneeSource}
+                    JOIN section s_new ON s_new.\"designationSection\" = s_old.\"designationSection\"
+                                       AND s_new.\"idAnnee\" = {$targetYearId}
+                    WHERE s_old.\"idAnnee\" = {$anneeSource}
                 ");
             }
         }
@@ -94,13 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             isset($_POST['copier_sections']) && $_POST['copier_sections'] == 1) {
 
             $stmt = $connexion->prepare("
-                INSERT INTO orientation (designationOrientation, dateCreation, section_idsection)
-                SELECT o.designationOrientation, NOW(), sm.new_id
+                INSERT INTO orientation (\"designationOrientation\", \"dateCreation\", section_idsection)
+                SELECT o.\"designationOrientation\", NOW(), sm.new_id
                 FROM orientation o
                 JOIN section_mapping_copy sm ON o.section_idsection = sm.old_id
                 WHERE NOT EXISTS (
                     SELECT 1 FROM orientation o2
-                    WHERE o2.designationOrientation = o.designationOrientation
+                    WHERE o2.\"designationOrientation\" = o.\"designationOrientation\"
                     AND o2.section_idsection = sm.new_id
                 )
             ");
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     SELECT o_old.idorientation, o_new.idorientation
                     FROM orientation o_old
                     JOIN section_mapping_copy sm ON o_old.section_idsection = sm.old_id
-                    JOIN orientation o_new ON o_new.designationOrientation = o_old.designationOrientation
+                    JOIN orientation o_new ON o_new.\"designationOrientation\" = o_old.\"designationOrientation\"
                                            AND o_new.section_idsection = sm.new_id
                 ");
             }
@@ -135,14 +135,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             isset($_POST['copier_orientations']) && $_POST['copier_orientations'] == 1) {
 
             $stmt = $connexion->prepare("
-                INSERT INTO promotion (designationPromotion, dateCreation, cycle, orientation_idorientation, annee_acad_idannee_acad, est_terminale)
-                SELECT p.designationPromotion, NOW(), p.cycle, om.new_id, ?, p.est_terminale
+                INSERT INTO promotion (\"designationPromotion\", \"dateCreation\", cycle, orientation_idorientation, annee_acad_idannee_acad, est_terminale)
+                SELECT p.\"designationPromotion\", NOW(), p.cycle, om.new_id, ?, p.est_terminale
                 FROM promotion p
                 JOIN orientation_mapping_copy om ON p.orientation_idorientation = om.old_id
                 WHERE p.annee_acad_idannee_acad = ?
                 AND NOT EXISTS (
                     SELECT 1 FROM promotion p2
-                    WHERE p2.designationPromotion = p.designationPromotion
+                    WHERE p2.\"designationPromotion\" = p.\"designationPromotion\"
                     AND p2.orientation_idorientation = om.new_id
                     AND p2.annee_acad_idannee_acad = ?
                 )
@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     SELECT p_old.idpromotion, p_new.idpromotion
                     FROM promotion p_old
                     JOIN orientation_mapping_copy om ON p_old.orientation_idorientation = om.old_id
-                    JOIN promotion p_new ON p_new.designationPromotion = p_old.designationPromotion
+                    JOIN promotion p_new ON p_new.\"designationPromotion\" = p_old.\"designationPromotion\"
                                          AND p_new.annee_acad_idannee_acad = {$targetYearId}
                                          AND p_new.orientation_idorientation = om.new_id
                     WHERE p_old.annee_acad_idannee_acad = {$anneeSource}
@@ -180,13 +180,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             isset($_POST['copier_promotions']) && $_POST['copier_promotions'] == 1) {
 
             $stmt = $connexion->prepare("
-                INSERT INTO semestre (numeroSemestre, dateEnregistrement, promotion_idpromotion)
-                SELECT s.numeroSemestre, NOW(), pm.new_id
+                INSERT INTO semestre (\"numeroSemestre\", \"dateEnregistrement\", promotion_idpromotion)
+                SELECT s.\"numeroSemestre\", NOW(), pm.new_id
                 FROM semestre s
                 JOIN promotion_mapping_copy pm ON s.promotion_idpromotion = pm.old_id
                 WHERE NOT EXISTS (
                     SELECT 1 FROM semestre s2
-                    WHERE s2.numeroSemestre = s.numeroSemestre
+                    WHERE s2.\"numeroSemestre\" = s.\"numeroSemestre\"
                     AND s2.promotion_idpromotion = pm.new_id
                 )
             ");
@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     SELECT s_old.idsemestre, s_new.idsemestre
                     FROM semestre s_old
                     JOIN promotion_mapping_copy pm ON s_old.promotion_idpromotion = pm.old_id
-                    JOIN semestre s_new ON s_new.numeroSemestre = s_old.numeroSemestre
+                    JOIN semestre s_new ON s_new.\"numeroSemestre\" = s_old.\"numeroSemestre\"
                                         AND s_new.promotion_idpromotion = pm.new_id
                 ");
             }
@@ -221,13 +221,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             isset($_POST['copier_semestres']) && $_POST['copier_semestres'] == 1) {
 
             $stmt = $connexion->prepare("
-                INSERT INTO ue (codeUE, designationUE, description, semestre_idsemestre)
-                SELECT ue.codeUE, ue.designationUE, ue.description, sm.new_id
+                INSERT INTO ue (\"codeUE\", \"designationUE\", description, semestre_idsemestre)
+                SELECT ue.\"codeUE\", ue.\"designationUE\", ue.description, sm.new_id
                 FROM ue
                 JOIN semestre_mapping_copy sm ON ue.semestre_idsemestre = sm.old_id
                 WHERE NOT EXISTS (
                     SELECT 1 FROM ue ue2
-                    WHERE ue2.codeUE = ue.codeUE
+                    WHERE ue2.\"codeUE\" = ue.\"codeUE\"
                     AND ue2.semestre_idsemestre = sm.new_id
                 )
             ");
@@ -248,10 +248,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $connexion->exec("
                     INSERT INTO ue_mapping_copy (old_id, new_id)
-                    SELECT ue_old.idUE, ue_new.idUE
+                    SELECT ue_old.\"idUE\", ue_new.\"idUE\"
                     FROM ue ue_old
                     JOIN semestre_mapping_copy sm ON ue_old.semestre_idsemestre = sm.old_id
-                    JOIN ue ue_new ON ue_new.codeUE = ue_old.codeUE
+                    JOIN ue ue_new ON ue_new.\"codeUE\" = ue_old.\"codeUE\"
                                    AND ue_new.semestre_idsemestre = sm.new_id
                 ");
             }
@@ -262,14 +262,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             isset($_POST['copier_ue']) && $_POST['copier_ue'] == 1) {
 
             $stmt = $connexion->prepare("
-                INSERT INTO ecue (designationECUE, CMI, TD, TP, UE_idUE, idCreateur, estVisible)
-                SELECT e.designationECUE, e.CMI, e.TD, e.TP, um.new_id, e.idCreateur, e.estVisible
+                INSERT INTO ecue (\"designationECUE\", CMI, TD, TP, \"UE_idUE\", \"idCreateur\", \"estVisible\")
+                SELECT e.\"designationECUE\", e.CMI, e.TD, e.TP, um.new_id, e.\"idCreateur\", e.\"estVisible\"
                 FROM ecue e
-                JOIN ue_mapping_copy um ON e.UE_idUE = um.old_id
+                JOIN ue_mapping_copy um ON e.\"UE_idUE\" = um.old_id
                 WHERE NOT EXISTS (
                     SELECT 1 FROM ecue e2
-                    WHERE e2.designationECUE = e.designationECUE
-                    AND e2.UE_idUE = um.new_id
+                    WHERE e2.\"designationECUE\" = e.\"designationECUE\"
+                    AND e2.\"UE_idUE\" = um.new_id
                 )
             ");
             $stmt->execute();
@@ -302,19 +302,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 INSERT INTO section_mapping_ur (old_id, new_id)
                 SELECT s_old.idsection, s_new.idsection
                 FROM section s_old
-                JOIN section s_new ON s_new.designationSection = s_old.designationSection
-                                   AND s_new.idAnnee = {$targetYearId}
-                WHERE s_old.idAnnee = {$anneeSource}
+                JOIN section s_new ON s_new.\"designationSection\" = s_old.\"designationSection\"
+                                   AND s_new.\"idAnnee\" = {$targetYearId}
+                WHERE s_old.\"idAnnee\" = {$anneeSource}
             ");
 
             // Copier les UR (indépendamment des sections)
             $stmt = $connexion->prepare("
-                INSERT INTO unite_recherche (designation_UR, description)
-                SELECT ur.designation_UR, ur.description
+                INSERT INTO unite_recherche (\"designation_UR\", description)
+                SELECT ur.\"designation_UR\", ur.description
                 FROM unite_recherche ur
                 WHERE NOT EXISTS (
                     SELECT 1 FROM unite_recherche ur2
-                    WHERE ur2.designation_UR = ur.designation_UR
+                    WHERE ur2.\"designation_UR\" = ur.\"designation_UR\"
                 )
             ");
             $stmt->execute();
@@ -335,7 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 INSERT INTO ur_mapping_copy (old_id, new_id)
                 SELECT ur_old.idunite_recherche, ur_new.idunite_recherche
                 FROM unite_recherche ur_old
-                JOIN unite_recherche ur_new ON ur_new.designation_UR = ur_old.designation_UR
+                JOIN unite_recherche ur_new ON ur_new.\"designation_UR\" = ur_old.\"designation_UR\"
             ");
 
             // Copier les associations UR-Sections (si sections copiées ou déjà existantes dans année cible)
@@ -370,9 +370,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 INSERT INTO section_mapping_spec (old_id, new_id)
                 SELECT s_old.idsection, s_new.idsection
                 FROM section s_old
-                JOIN section s_new ON s_new.designationSection = s_old.designationSection
-                                   AND s_new.idAnnee = {$targetYearId}
-                WHERE s_old.idAnnee = {$anneeSource}
+                JOIN section s_new ON s_new.\"designationSection\" = s_old.\"designationSection\"
+                                   AND s_new.\"idAnnee\" = {$targetYearId}
+                WHERE s_old.\"idAnnee\" = {$anneeSource}
             ");
 
             $connexion->exec("DROP TEMPORARY TABLE IF EXISTS orientation_mapping_spec");
@@ -389,7 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 SELECT o_old.idorientation, o_new.idorientation
                 FROM orientation o_old
                 JOIN section_mapping_spec sm ON o_old.section_idsection = sm.old_id
-                JOIN orientation o_new ON o_new.designationOrientation = o_old.designationOrientation
+                JOIN orientation o_new ON o_new.\"designationOrientation\" = o_old.\"designationOrientation\"
                                        AND o_new.section_idsection = sm.new_id
             ");
 
@@ -406,20 +406,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 INSERT INTO ur_mapping_spec (old_id, new_id)
                 SELECT ur_old.idunite_recherche, ur_new.idunite_recherche
                 FROM unite_recherche ur_old
-                JOIN unite_recherche ur_new ON ur_new.designation_UR = ur_old.designation_UR
+                JOIN unite_recherche ur_new ON ur_new.\"designation_UR\" = ur_old.\"designation_UR\"
             ");
 
             // Copier les spécialisations (si UR et orientations sont copiées ou existantes)
             $stmt = $connexion->prepare("
-                INSERT INTO specialisation (designation, idUnite_recherche, idorientation)
+                INSERT INTO specialisation (designation, \"idUnite_recherche\", idorientation)
                 SELECT s.designation, um.new_id, om.new_id
                 FROM specialisation s
-                JOIN ur_mapping_spec um ON s.idUnite_recherche = um.old_id
+                JOIN ur_mapping_spec um ON s.\"idUnite_recherche\" = um.old_id
                 JOIN orientation_mapping_spec om ON s.idorientation = om.old_id
                 WHERE NOT EXISTS (
                     SELECT 1 FROM specialisation s2
                     WHERE s2.designation = s.designation
-                    AND s2.idUnite_recherche = um.new_id
+                    AND s2.\"idUnite_recherche\" = um.new_id
                     AND s2.idorientation = om.new_id
                 )
             ");

@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         
         // Enregistrer l'action dans l'historique avant de supprimer
         $query = "INSERT INTO palmares_historique 
-                 (id_palmares, action, details, idUser) 
+                 (id_palmares, action, details, \"idUser\") 
                  VALUES (?, 'Suppression', ?, ?)";
         
         $stmt = $pdo->prepare($query);

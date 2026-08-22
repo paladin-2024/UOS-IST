@@ -92,9 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Récupérer les informations de l'agent pour la journalisation
         $stmtAgent = $db->prepare("
-            SELECT a.idAgent, a.noms 
+            SELECT a.\"idAgent\", a.noms 
             FROM autorisation_labo al
-            JOIN agent a ON al.idAgent = a.idAgent
+            JOIN agent a ON al.\"idAgent\" = a.\"idAgent\"
             WHERE al.idautorisation = :idautorisation
         ");
         $stmtAgent->bindParam(':idautorisation', $idautorisation, PDO::PARAM_INT);

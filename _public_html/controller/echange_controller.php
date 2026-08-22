@@ -55,7 +55,7 @@ function addComment($pdo, $userId) {
     }
 
     // Vérifier que la tâche existe
-    $query = "SELECT t.*, s.idsujets, s.idDirecteur, s.idEncadreur, s.etudiant_idetudiant 
+    $query = "SELECT t.*, s.idsujets, s.\"idDirecteur\", s.\"idEncadreur\", s.etudiant_idetudiant 
               FROM taches t
               INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
               WHERE t.idtaches = ?";
@@ -76,10 +76,10 @@ function addComment($pdo, $userId) {
 
     // Vérifier si l'utilisateur est un enseignant (directeur ou encadreur)
     if ($typeAuteur == 'Directeur' || $typeAuteur == 'Encadreur') {
-        $query = "SELECT a.idAgent 
+        $query = "SELECT a.\"idAgent\" 
                   FROM agent a 
-                  INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                  WHERE u.idUser = ? AND a.type_agent = 'Enseignant'";
+                  INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                  WHERE u.\"idUser\" = ? AND a.type_agent = 'Enseignant'";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$userId]);
         $idEnseignant = $stmt->fetchColumn();
@@ -95,8 +95,8 @@ function addComment($pdo, $userId) {
     else if ($typeAuteur == 'Etudiant') {
         $query = "SELECT e.idetudiant 
                   FROM etudiant e 
-                  INNER JOIN t_users u ON e.idUser = u.idUser 
-                  WHERE u.idUser = ?";
+                  INNER JOIN t_users u ON e.\"idUser\" = u.\"idUser\" 
+                  WHERE u.\"idUser\" = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$userId]);
         $idEtudiant = $stmt->fetchColumn();
@@ -146,7 +146,7 @@ function addComment($pdo, $userId) {
 
     try {
         // Insérer le commentaire dans la base de données
-        $query = "INSERT INTO echanges_taches (dateEchange, commentaire, fichierJoint, taches_idtaches, type_auteur, idAuteur) 
+        $query = "INSERT INTO echanges_taches (\"dateEchange\", commentaire, \"fichierJoint\", taches_idtaches, type_auteur, \"idAuteur\") 
                   VALUES (NOW(), ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($query);
         $result = $stmt->execute([$commentaire, $fichierJoint, $tacheId, $typeAuteur, $idAuteur]);
@@ -200,10 +200,10 @@ function updateComment($pdo, $userId) {
     $hasRight = false;
 
     if ($echange['type_auteur'] == 'Directeur' || $echange['type_auteur'] == 'Encadreur') {
-        $query = "SELECT a.idAgent 
+        $query = "SELECT a.\"idAgent\" 
                   FROM agent a 
-                  INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                  WHERE u.idUser = ? AND a.idAgent = ?";
+                  INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                  WHERE u.\"idUser\" = ? AND a.\"idAgent\" = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$userId, $echange['idAuteur']]);
         if ($stmt->fetchColumn()) {
@@ -212,8 +212,8 @@ function updateComment($pdo, $userId) {
     } else if ($echange['type_auteur'] == 'Etudiant') {
         $query = "SELECT e.idetudiant 
                   FROM etudiant e 
-                  INNER JOIN t_users u ON e.idUser = u.idUser 
-                  WHERE u.idUser = ? AND e.idetudiant = ?";
+                  INNER JOIN t_users u ON e.\"idUser\" = u.\"idUser\" 
+                  WHERE u.\"idUser\" = ? AND e.idetudiant = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$userId, $echange['idAuteur']]);
         if ($stmt->fetchColumn()) {
@@ -267,11 +267,11 @@ function updateComment($pdo, $userId) {
     try {
         // Mettre à jour le commentaire
         if ($fichierJoint !== null) {
-            $query = "UPDATE echanges_taches SET commentaire = ?, fichierJoint = ?, dateEchange = NOW() WHERE idechange = ?";
+            $query = "UPDATE echanges_taches SET commentaire = ?, \"fichierJoint\" = ?, \"dateEchange\" = NOW() WHERE idechange = ?";
             $stmt = $pdo->prepare($query);
             $result = $stmt->execute([$commentaire, $fichierJoint, $echangeId]);
         } else {
-            $query = "UPDATE echanges_taches SET commentaire = ?, dateEchange = NOW() WHERE idechange = ?";
+            $query = "UPDATE echanges_taches SET commentaire = ?, \"dateEchange\" = NOW() WHERE idechange = ?";
             $stmt = $pdo->prepare($query);
             $result = $stmt->execute([$commentaire, $echangeId]);
         }
@@ -325,10 +325,10 @@ function deleteComment($pdo, $userId) {
 
     // Si l'utilisateur est l'auteur du commentaire
     if ($echange['type_auteur'] == 'Directeur' || $echange['type_auteur'] == 'Encadreur') {
-        $query = "SELECT a.idAgent 
+        $query = "SELECT a.\"idAgent\" 
                   FROM agent a 
-                  INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                  WHERE u.idUser = ? AND a.idAgent = ?";
+                  INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                  WHERE u.\"idUser\" = ? AND a.\"idAgent\" = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$userId, $echange['idAuteur']]);
         if ($stmt->fetchColumn()) {
@@ -337,8 +337,8 @@ function deleteComment($pdo, $userId) {
     } else if ($echange['type_auteur'] == 'Etudiant') {
         $query = "SELECT e.idetudiant 
                   FROM etudiant e 
-                  INNER JOIN t_users u ON e.idUser = u.idUser 
-                  WHERE u.idUser = ? AND e.idetudiant = ?";
+                  INNER JOIN t_users u ON e.\"idUser\" = u.\"idUser\" 
+                  WHERE u.\"idUser\" = ? AND e.idetudiant = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$userId, $echange['idAuteur']]);
         if ($stmt->fetchColumn()) {
@@ -348,12 +348,12 @@ function deleteComment($pdo, $userId) {
 
     // Si l'utilisateur est le directeur du sujet (peut supprimer tous les commentaires)
     if (!$hasRight) {
-        $query = "SELECT a.idAgent 
+        $query = "SELECT a.\"idAgent\" 
                   FROM agent a 
-                  INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                  INNER JOIN sujets s ON s.idDirecteur = a.idAgent
+                  INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                  INNER JOIN sujets s ON s.\"idDirecteur\" = a.\"idAgent\"
                   INNER JOIN taches t ON t.sujets_idsujets = s.idsujets
-                  WHERE u.idUser = ? AND t.idtaches = ?";
+                  WHERE u.\"idUser\" = ? AND t.idtaches = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$userId, $echange['taches_idtaches']]);
         if ($stmt->fetchColumn()) {

@@ -62,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insérer la proposition de reformulation
         $insertQuery = "INSERT INTO sujet_reformulations 
-                       (idsujets, etudiant_idetudiant, intitule_propose, idSpecialisation_propose, 
-                        idDirecteur_propose, idEncadreur_propose, justification_etudiant, 
+                       (idsujets, etudiant_idetudiant, intitule_propose, \"idSpecialisation_propose\", 
+                        \"idDirecteur_propose\", \"idEncadreur_propose\", justification_etudiant, 
                         commentaire_commission_original, date_proposition) 
                        VALUES 
                        (:sujet_id, :etudiant_id, :intitule_propose, :specialisation_propose, 
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Enregistrer dans l'historique
         $historiqueQuery = "INSERT INTO sujet_historique 
                            (idsujets, action, intitule_avant, intitule_apres, statut_avant, statut_apres, 
-                            commentaire, idUser, type_utilisateur, details_modification) 
+                            commentaire, \"idUser\", type_utilisateur, details_modification) 
                            VALUES 
                            (:sujet_id, 'Reformulation demandée', :intitule_avant, :intitule_apres, 
                             'A reformulé', 'A reformulé', :justification, :user_id, 'Etudiant', :details)";

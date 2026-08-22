@@ -7,12 +7,12 @@ $userId = $_SESSION['id'];
 
 // Récupérer les agents avec accès
 $stmtAgents = $db->prepare("
-    SELECT DISTINCT a.idAgent, a.noms 
+    SELECT DISTINCT a.\"idAgent\", a.noms 
     FROM agent a 
-    INNER JOIN service s ON a.idService = s.idService 
-    WHERE a.idStructure IN (
-        SELECT DISTINCT idStructure FROM agent WHERE idAgent = 
-        (SELECT idAgent FROM t_users WHERE idUser = ?)
+    INNER JOIN service s ON a.\"idService\" = s.\"idService\" 
+    WHERE a.\"idStructure\" IN (
+        SELECT DISTINCT \"idStructure\" FROM agent WHERE \"idAgent\" = 
+        (SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = ?)
     )
     ORDER BY a.noms
 ");
@@ -21,11 +21,11 @@ $agents = $stmtAgents->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les services
 $stmtServices = $db->prepare("
-    SELECT s.idService, s.designation 
+    SELECT s.\"idService\", s.designation 
     FROM service s 
-    WHERE s.Structure_idStructure IN (
-        SELECT DISTINCT idStructure FROM agent WHERE idAgent = 
-        (SELECT idAgent FROM t_users WHERE idUser = ?)
+    WHERE s.\"Structure_idStructure\" IN (
+        SELECT DISTINCT \"idStructure\" FROM agent WHERE \"idAgent\" = 
+        (SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = ?)
     )
     ORDER BY s.designation
 ");
@@ -44,8 +44,8 @@ if (isset($_GET['searchNom']) && !empty($_GET['searchNom'])) {
 $stmtVisites = $db->prepare("
     SELECT v.*, a.noms as nom_agent, s.designation as nom_service
     FROM visites v
-    LEFT JOIN agent a ON v.Agent_idAgent = a.idAgent
-    LEFT JOIN service s ON v.Service_idService = s.idService
+    LEFT JOIN agent a ON v.\"Agent_idAgent\" = a.\"idAgent\"
+    LEFT JOIN service s ON v.\"Service_idService\" = s.\"idService\"
     WHERE v.cree_par = ? {$searchFilter}
     ORDER BY v.date_visite DESC, v.heure_debut DESC
 ");
@@ -207,7 +207,7 @@ $visites = $stmtVisites->fetchAll(PDO::FETCH_ASSOC);
                                                     <div class="row mb-3">
                                                         <div class="col-md-6">
                                                             <label for="agent" class="form-label">Agent à visiter <span class="text-danger">*</span></label>
-                                                            <select class="form-select" id="agent" name="Agent_idAgent" required>
+                                                            <select class="form-select" id="agent" name=Agent_idAgent required>
                                                                 <option value="">Sélectionner un agent</option>
                                                                 <?php foreach ($agents as $agent): ?>
                                                                     <option value="<?= $agent['idAgent'] ?>"><?= htmlspecialchars($agent['noms']) ?></option>
@@ -216,7 +216,7 @@ $visites = $stmtVisites->fetchAll(PDO::FETCH_ASSOC);
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="service" class="form-label">Service <span class="text-danger">*</span></label>
-                                                            <select class="form-select" id="service" name="Service_idService" required>
+                                                            <select class="form-select" id="service" name=Service_idService required>
                                                                 <option value="">Sélectionner un service</option>
                                                                 <?php foreach ($services as $service): ?>
                                                                     <option value="<?= $service['idService'] ?>"><?= htmlspecialchars($service['designation']) ?></option>

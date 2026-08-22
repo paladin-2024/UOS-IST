@@ -19,12 +19,12 @@ $allSpecialisations = $stmtAllSpecialisations->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les travaux avec recherche si nécessaire
 $queryTravaux = "SELECT t.*, 
-                o.designationOrientation, 
+                o.\"designationOrientation\", 
                 s.designation as specialisation,
                 aa.designation as annee
             FROM travaux_scientifiques t
             LEFT JOIN orientation o ON t.orientation_id = o.idorientation
-            LEFT JOIN specialisation s ON t.specialisation_id = s.idSpecialisation
+            LEFT JOIN specialisation s ON t.specialisation_id = s.\"idSpecialisation\"
             LEFT JOIN annee_acad aa ON t.annee_academique_id = aa.idannee_acad
             WHERE 1=1";
 
@@ -33,10 +33,10 @@ if (!empty($search)) {
                    OR t.mots_cles LIKE :search 
                    OR t.resume LIKE :search
                    OR t.nom_auteur LIKE :search
-                   OR o.designationOrientation LIKE :search
-                   OR t.universiteThese LIKE :search
-                   OR t.faculteThese LIKE :search
-                   OR t.specialisationThese LIKE :search)";
+                   OR o.\"designationOrientation\" LIKE :search
+                   OR t.\"universiteThese\" LIKE :search
+                   OR t.\"faculteThese\" LIKE :search
+                   OR t.\"specialisationThese\" LIKE :search)";
 }
 
 $queryTravaux .= " ORDER BY t.date_depot DESC";

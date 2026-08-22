@@ -13,7 +13,7 @@ if (!$hasFullAccess) {
     try {
         $connexion = Connexion::getInstance()->getPDO();
         $query = "SELECT DISTINCT section_idsection FROM responsable_section 
-                  WHERE idUser = :userId";
+                  WHERE \"idUser\" = :userId";
         $stmt = $connexion->prepare($query);
         $stmt->execute(['userId' => $userId]);
         $userResponsibilities = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -68,7 +68,7 @@ try {
                   LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
                   LEFT JOIN section sec ON o.section_idsection = sec.idsection
                   WHERE sec.idsection IN ($sectionsParams)
-                  ORDER BY p.designationPromotion";
+                  ORDER BY p.\"designationPromotion\"";
         $stmt = $connexion->prepare($query);
         $stmt->execute($userResponsibilities);
         $promotions = $stmt->fetchAll(PDO::FETCH_ASSOC);

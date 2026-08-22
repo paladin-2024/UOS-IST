@@ -53,14 +53,14 @@ try {
                       statut_validation = 'Validé',
                       commentaire_commission = ?,
                       date_validation = NOW(),
-                      idValidateur = ?
+                      \"idValidateur\" = ?
                       WHERE idsujets = ?";
             $stmt = $pdo->prepare($query);
             $stmt->execute([$commentaire, $userId, $sujetId]);
             
             // Enregistrer l'action dans l'historique des validations
             $queryHistory = "INSERT INTO sujet_validation_history 
-                           (idsujets, status, date_action, commentaire, idUser) 
+                           (idsujets, status, date_action, commentaire, \"idUser\") 
                            VALUES (?, 'Validé', NOW(), ?, ?)";
             $stmtHistory = $pdo->prepare($queryHistory);
             $stmtHistory->execute([$sujetId, $commentaire, $userId]);
@@ -81,14 +81,14 @@ try {
                       statut_validation = 'A reformulé',
                       commentaire_commission = ?,
                       date_validation = NOW(),
-                      idValidateur = ?
+                      \"idValidateur\" = ?
                       WHERE idsujets = ?";
             $stmt = $pdo->prepare($query);
             $stmt->execute([$commentaire, $userId, $sujetId]);
             
             // Enregistrer l'action dans l'historique des validations
             $queryHistory = "INSERT INTO sujet_validation_history 
-                           (idsujets, status, date_action, commentaire, idUser) 
+                           (idsujets, status, date_action, commentaire, \"idUser\") 
                            VALUES (?, 'A reformulé', NOW(), ?, ?)";
             $stmtHistory = $pdo->prepare($queryHistory);
             $stmtHistory->execute([$sujetId, $commentaire, $userId]);

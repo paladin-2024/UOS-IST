@@ -28,10 +28,10 @@ if (!$labo) {
 }
 
 // Récupérer les séances du laboratoire
-$querySeances = "SELECT sl.*, u.nomUser as responsable_nom, 
+$querySeances = "SELECT sl.*, u.\"nomUser\" as responsable_nom, 
                  (SELECT COUNT(*) FROM presence_labo pl WHERE pl.idseance_labo = sl.idseance_labo) as nb_presents
                  FROM seance_labo sl
-                 LEFT JOIN t_users u ON sl.idUser = u.idUser
+                 LEFT JOIN t_users u ON sl.\"idUser\" = u.\"idUser\"
                  WHERE sl.idlabo = :idLabo
                  ORDER BY sl.date_seance DESC, sl.heure_debut DESC";
 

@@ -16,7 +16,7 @@ $idUser = $_SESSION['id'];
 $journal = new JournalServeur();
 
 // Récupérer l'idAgent
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -136,7 +136,7 @@ try {
         // Créer la transaction
         $stmt = $connexion->prepare("
             INSERT INTO transactions (reference, date_transaction, montant, devise, type, 
-                                     source, source_id, idAgent, idUser, description)
+                                     source, source_id, \"idAgent\", \"idUser\", description)
             VALUES (:reference, :date_transaction, :montant, :devise, 'Recette', 
                     :source, :source_id, :idAgent, :idUser, :description)
         ");

@@ -4,7 +4,7 @@ include_once "./views/include/header.php";
 $conn = Connexion::getInstance()->getPDO();
 
 // Déterminer l'année académique en cours
-$query_annee_encours = "SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+$query_annee_encours = 'SELECT idannee_acad, designation FROM annee_acad ORDER BY "dateCreation" DESC LIMIT 1';
 $stmt_annee = $conn->prepare($query_annee_encours);
 $stmt_annee->execute();
 $annee_encours = $stmt_annee->fetch(PDO::FETCH_ASSOC);
@@ -16,7 +16,7 @@ $userId = $_SESSION['id'];
 
 
 // Récupérer les sessions
-$query_sessions = "SELECT idsession, designSession, description FROM session ORDER BY idsession";
+$query_sessions = 'SELECT idsession, "designSession", description FROM session ORDER BY idsession';
 $stmt_sessions = $conn->prepare($query_sessions);
 $stmt_sessions->execute();
 $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
@@ -92,8 +92,8 @@ if ($isAdmin && $selectedJury == 0) {
               LEFT JOIN promotion p ON bjp.idpromotion = p.idpromotion
               LEFT JOIN semestre s ON p.idpromotion = s.promotion_idpromotion
               LEFT JOIN ue u ON s.idsemestre = u.semestre_idsemestre
-              LEFT JOIN ecue e ON u.idUE = e.UE_idUE
-              LEFT JOIN recours r ON r.id_ecue = e.idECUE AND r.id_annee_acad = :anneeId
+              LEFT JOIN ecue e ON u.\"idUE\" = e.\"UE_idUE\"
+              LEFT JOIN recours r ON r.id_ecue = e.\"idECUE\" AND r.id_annee_acad = :anneeId
               WHERE bjd.annee_acad_idannee_acad = :anneeId
               AND bjd.est_actif = 1";
     
@@ -133,8 +133,8 @@ if ($isAdmin && $selectedJury == 0) {
                 LEFT JOIN promotion p ON bjp.idpromotion = p.idpromotion
                 LEFT JOIN semestre s ON p.idpromotion = s.promotion_idpromotion
                 LEFT JOIN ue u ON s.idsemestre = u.semestre_idsemestre
-                LEFT JOIN ecue e ON u.idUE = e.UE_idUE
-                LEFT JOIN recours r ON r.id_ecue = e.idECUE AND r.id_annee_acad = :anneeId
+                LEFT JOIN ecue e ON u.\"idUE\" = e.\"UE_idUE\"
+                LEFT JOIN recours r ON r.id_ecue = e.\"idECUE\" AND r.id_annee_acad = :anneeId
                 WHERE bjd.idbureau = :juryId
                 AND bjd.annee_acad_idannee_acad = :anneeId
                 AND bjd.est_actif = 1";
@@ -159,22 +159,22 @@ if ($isAdmin && $selectedJury == 0) {
     $stats = $stmt_stats->fetchAll(PDO::FETCH_ASSOC);
         
     // Récupérer les détails des ECUEs avec recours pour ce jury
-    $ecueStatsQuery = "SELECT 
-                        e.idECUE,
-                        e.designationECUE,
-                        u.designationUE,
+    $ecueStatsQuery = "SELECT
+                        e.\"idECUE\",
+                        e.\"designationECUE\",
+                        u.\"designationUE\",
                         COUNT(DISTINCT r.id_recours) as total_recours,
                         SUM(CASE WHEN r.statut = 'En attente' THEN 1 ELSE 0 END) as en_attente,
                         SUM(CASE WHEN r.statut = 'En traitement' THEN 1 ELSE 0 END) as en_traitement,
                         SUM(CASE WHEN r.statut = 'Approuvé' THEN 1 ELSE 0 END) as approuve,
                         SUM(CASE WHEN r.statut = 'Rejeté' THEN 1 ELSE 0 END) as rejete
                     FROM ecue e
-                    JOIN ue u ON e.UE_idUE = u.idUE
+                    JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                     JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                     JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                     JOIN bureau_jury_promotion bjp ON p.idpromotion = bjp.idpromotion
                     JOIN bureau_jury_deliberation bjd ON bjp.idbureau = bjd.idbureau
-                    LEFT JOIN recours r ON r.id_ecue = e.idECUE AND r.id_annee_acad = :anneeId";
+                    LEFT JOIN recours r ON r.id_ecue = e.\"idECUE\" AND r.id_annee_acad = :anneeId";
 
     // J'ai également corrigé ici une erreur dans la requête originale (manquait JOIN bureau_jury_promotion)
 
@@ -186,9 +186,9 @@ if ($isAdmin && $selectedJury == 0) {
     $ecueStatsQuery .= " WHERE bjd.idbureau = :juryId 
                     AND bjd.annee_acad_idannee_acad = :anneeId
                     AND bjd.est_actif = 1
-                    GROUP BY e.idECUE, e.designationECUE, u.designationUE
+                    GROUP BY e.\"idECUE\", e.\"designationECUE\", u.\"designationUE\"
                     HAVING COUNT(r.id_recours) > 0
-                    ORDER BY u.designationUE, e.designationECUE";
+                    ORDER BY u.\"designationUE\", e.\"designationECUE\"";
         
     $stmt_ecue_stats = $conn->prepare($ecueStatsQuery);
     $stmt_ecue_stats->bindParam(':juryId', $juryId);

@@ -33,15 +33,15 @@ if ($selectedAnneeSource == 0 && count($annees_academiques) > 1) {
 $promotions_sources = [];
 if ($selectedAnneeSource > 0) {
     $stmt = $connexion->prepare("
-        SELECT p.idpromotion, p.designationPromotion, p.cycle,
-               o.designationOrientation, s.designationSection,
+        SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
+               o.\"designationOrientation\", s.\"designationSection\",
                aa.designation as annee_academique
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation
         JOIN section s ON o.section_idsection = s.idsection
         JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
         WHERE aa.idannee_acad = ?
-        ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion
+        ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"
     ");
     $stmt->execute([$selectedAnneeSource]);
     $promotions_sources = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -51,15 +51,15 @@ if ($selectedAnneeSource > 0) {
 $promotions_cibles = [];
 if ($selectedAnneeCible > 0) {
     $stmt = $connexion->prepare("
-        SELECT p.idpromotion, p.designationPromotion, p.cycle,
-               o.designationOrientation, s.designationSection,
+        SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
+               o.\"designationOrientation\", s.\"designationSection\",
                aa.designation as annee_academique
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation
         JOIN section s ON o.section_idsection = s.idsection
         JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
         WHERE aa.idannee_acad = ?
-        ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion
+        ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"
     ");
     $stmt->execute([$selectedAnneeCible]);
     $promotions_cibles = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -88,8 +88,8 @@ if ($selectedPromoSource > 0) {
 $promoSourceInfo = null;
 if ($selectedPromoSource > 0) {
     $stmt = $connexion->prepare("
-        SELECT p.idpromotion, p.designationPromotion, p.cycle, 
-               o.designationOrientation, s.designationSection,
+        SELECT p.idpromotion, p.\"designationPromotion\", p.cycle, 
+               o.\"designationOrientation\", s.\"designationSection\",
                aa.designation as annee_academique
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -105,8 +105,8 @@ if ($selectedPromoSource > 0) {
 $promoCibleInfo = null;
 if ($selectedPromoCible > 0) {
     $stmt = $connexion->prepare("
-        SELECT p.idpromotion, p.designationPromotion, p.cycle, 
-               o.designationOrientation, s.designationSection,
+        SELECT p.idpromotion, p.\"designationPromotion\", p.cycle, 
+               o.\"designationOrientation\", s.\"designationSection\",
                aa.designation as annee_academique
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -122,7 +122,7 @@ if ($selectedPromoCible > 0) {
 function getHistoriqueEtudiant($connexion, $matricule) {
     // Récupérer les moyennes annuelles
     $stmt = $connexion->prepare("
-        SELECT ma.idpromotion, p.designationPromotion, aa.designation as annee_academique,
+        SELECT ma.idpromotion, p.\"designationPromotion\", aa.designation as annee_academique,
                ma.moyenne_deliberee, ma.est_admis, ma.credits_obtenus, ma.credits_total,
                ma.mention
         FROM moyenne_annuelle ma
@@ -136,7 +136,7 @@ function getHistoriqueEtudiant($connexion, $matricule) {
     
     // Récupérer les moyennes par semestre
     $stmt = $connexion->prepare("
-        SELECT ms.idsemestre, s.numeroSemestre, p.designationPromotion,
+        SELECT ms.idsemestre, s.\"numeroSemestre\", p.\"designationPromotion\",
                aa.designation as annee_academique, ms.moyenne_deliberee,
                ms.est_valide, ms.credits_obtenus, ms.credits_total
         FROM moyenne_semestre ms
@@ -144,7 +144,7 @@ function getHistoriqueEtudiant($connexion, $matricule) {
         JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
         JOIN annee_acad aa ON ms.annee_acad_idannee_acad = aa.idannee_acad
         WHERE ms.matricule = ?
-        ORDER BY aa.designation DESC, s.numeroSemestre
+        ORDER BY aa.designation DESC, s.\"numeroSemestre\"
     ");
     $stmt->execute([$matricule]);
     $moyennes_semestres = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -175,23 +175,23 @@ function getCreditsValidesPromotion($connexion, $matricule, $idPromotion, $annee
     // Crédits UE = SUM(CMI + TD + TP) / creditHeure
     try {
         $stmt = $connexion->prepare("
-            SELECT sub.idUE, sub.moyenne_ue, sub.credits_ue
+            SELECT sub.\"idUE\", sub.moyenne_ue, sub.credits_ue
             FROM (
-                SELECT ue.idUE,
-                       SUM(bn.best_mf * (ec.CMI + ec.TD + ec.TP)) / NULLIF(SUM(ec.CMI + ec.TD + ec.TP), 0) as moyenne_ue,
-                       SUM(ec.CMI + ec.TD + ec.TP) / ? as credits_ue,
-                       (SELECT COUNT(*) FROM ecue e2 WHERE e2.UE_idUE = ue.idUE) as nb_ecue_total,
-                       COUNT(ec.idECUE) as nb_ecue_inscrites,
+                SELECT ue.\"idUE\",
+                       SUM(bn.best_mf * (ec.\"CMI\" + ec.\"TD\" + ec.\"TP\")) / NULLIF(SUM(ec.\"CMI\" + ec.\"TD\" + ec.\"TP\"), 0) as moyenne_ue,
+                       SUM(ec.\"CMI\" + ec.\"TD\" + ec.\"TP\") / ? as credits_ue,
+                       (SELECT COUNT(*) FROM ecue e2 WHERE e2.\"UE_idUE\" = ue.\"idUE\") as nb_ecue_total,
+                       COUNT(ec.\"idECUE\") as nb_ecue_inscrites,
                        SUM(CASE WHEN bn.best_mf IS NOT NULL THEN 1 ELSE 0 END) as nb_ecue_avec_note
                 FROM ecue ec
-                JOIN ue ON ec.UE_idUE = ue.idUE
+                JOIN ue ON ec.\"UE_idUE\" = ue.\"idUE\"
                 JOIN (
-                    SELECT cg.ECUE_idECUE, MAX(cg.MF) as best_mf
+                    SELECT cg.\"ECUE_idECUE\", MAX(cg.\"MF\") as best_mf
                     FROM cotes_grille cg
                     WHERE cg.matricule = ?
-                    GROUP BY cg.ECUE_idECUE
-                ) bn ON bn.ECUE_idECUE = ec.idECUE
-                GROUP BY ue.idUE
+                    GROUP BY cg.\"ECUE_idECUE\"
+                ) bn ON bn.\"ECUE_idECUE\" = ec.\"idECUE\"
+                GROUP BY ue.\"idUE\"
             ) as sub
             WHERE sub.nb_ecue_avec_note = GREATEST(sub.nb_ecue_total, sub.nb_ecue_inscrites)
             AND sub.moyenne_ue >= 10

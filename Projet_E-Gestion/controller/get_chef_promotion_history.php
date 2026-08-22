@@ -34,7 +34,7 @@ try {
                 e.noms as chef_nom,
                 e.matricule as chef_matricule,
                 e.idetudiant as chef_id,
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 aa.designation as annee_designation,
                 u_assign.nom as assigneur_nom,
                 u_assign.prenom as assigneur_prenom,
@@ -44,8 +44,8 @@ try {
               LEFT JOIN etudiant e ON cp.idetudiant = e.idetudiant
               LEFT JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion
               LEFT JOIN annee_acad aa ON cp.annee_acad_idannee_acad = aa.idannee_acad
-              LEFT JOIN user u_assign ON cp.user_assigneur = u_assign.idUser
-              LEFT JOIN user u_retrait ON cp.user_retireur = u_retrait.idUser
+              LEFT JOIN user u_assign ON cp.user_assigneur = u_assign.\"idUser\"
+              LEFT JOIN user u_retrait ON cp.user_retireur = u_retrait.\"idUser\"
               WHERE cp.promotion_idpromotion = :promotionId";
     
     $params = [':promotionId' => $promotionId];

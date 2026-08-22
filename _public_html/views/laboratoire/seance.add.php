@@ -29,9 +29,9 @@ if (!$labo) {
 }
 
 // Récupérer les responsables potentiels (agents autorisés)
-$queryResponsables = "SELECT a.idAgent, a.noms 
+$queryResponsables = "SELECT a.\"idAgent\", a.noms 
                       FROM agent a 
-                      JOIN autorisation_labo al ON a.idAgent = al.idAgent
+                      JOIN autorisation_labo al ON a.\"idAgent\" = al.\"idAgent\"
                       WHERE al.idlabo = :idLabo 
                       AND al.est_active = 1
                       AND (al.date_fin IS NULL OR al.date_fin >= CURDATE())

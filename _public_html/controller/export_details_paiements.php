@@ -38,8 +38,8 @@ try {
                 f.devise, 
                 f.est_obligatoire,
                 cf.designation as categorie,
-                p.designationPromotion as promotion,
-                s.designationSection as section,
+                p.\"designationPromotion\" as promotion,
+                s.\"designationSection\" as section,
                 a.designation as annee_academique
             FROM frais f
             JOIN categories_frais cf ON f.categorie_id = cf.id

@@ -11,14 +11,14 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Construire la requête SQL de base
 $query = "SELECT t.*, 
-    o.designationOrientation, 
+    o.\"designationOrientation\", 
     s.designation as specialisation,
     aa.designation as annee,
-    e.nomEnseignant as directeur,
+    e.\"nomEnseignant\" as directeur,
     COUNT(c.id) as nb_consultations
 FROM travaux_scientifiques t
 LEFT JOIN orientation o ON t.orientation_id = o.idorientation
-LEFT JOIN specialisation s ON t.specialisation_id = s.idSpecialisation
+LEFT JOIN specialisation s ON t.specialisation_id = s.\"idSpecialisation\"
 LEFT JOIN annee_acad aa ON t.annee_academique_id = aa.idannee_acad
 LEFT JOIN enseignant e ON t.directeur_id = e.idenseignant
 LEFT JOIN consultations c ON t.id = c.travail_id
@@ -53,8 +53,8 @@ $query .= " GROUP BY t.id, t.titre, t.type_document, t.nom_auteur, t.type_auteur
             t.orientation_id, t.specialisation_id, t.annee_academique_id, 
             t.directeur_id, t.mots_cles, t.resume, t.fichier_path, 
             t.date_depot, t.statut, t.est_public, 
-            t.anneeThese, t.universiteThese, t.faculteThese, t.specialisationThese,
-            o.designationOrientation, s.designation, aa.designation, e.nomEnseignant";
+            t.\"anneeThese\", t.\"universiteThese\", t.\"faculteThese\", t.\"specialisationThese\",
+            o.\"designationOrientation\", s.designation, aa.designation, e.\"nomEnseignant\"";
 
 // Trier par date de dépôt décroissante (plus récent en premier)
 $query .= " ORDER BY t.date_depot DESC";
@@ -69,7 +69,7 @@ $projets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les données pour les filtres
 // Orientations
-$queryOrientations = "SELECT * FROM orientation ORDER BY designationOrientation";
+$queryOrientations = "SELECT * FROM orientation ORDER BY \"designationOrientation\"";
 $stmtOrientations = $db->prepare($queryOrientations);
 $stmtOrientations->execute();
 $orientations = $stmtOrientations->fetchAll(PDO::FETCH_ASSOC);

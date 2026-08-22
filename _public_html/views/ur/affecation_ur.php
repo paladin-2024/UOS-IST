@@ -10,7 +10,7 @@ $db = Connexion::getInstance()->getPDO();
 // Fonctions utilitaires pour le contrôle d'accès
 function getUserSections($db, $userId, $anneeAcadId = null) {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId";
+              WHERE \"idUser\" = :userId";
     
     $params = ['userId' => $userId];
     
@@ -67,9 +67,9 @@ if ($hasFullAccess) {
     // Admin - toutes les sections
     $querySections = "SELECT DISTINCT s.* FROM section s";
     if ($selectedAnnee > 0) {
-        $querySections .= " WHERE s.idAnnee = :idAnnee";
+        $querySections .= " WHERE s.\"idAnnee\" = :idAnnee";
     }
-    $querySections .= " ORDER BY s.designationSection";
+    $querySections .= " ORDER BY s.\"designationSection\"";
     $stmtSections = $db->prepare($querySections);
     if ($selectedAnnee > 0) {
         $stmtSections->bindParam(':idAnnee', $selectedAnnee, PDO::PARAM_INT);
@@ -110,11 +110,11 @@ if ($hasFullAccess) {
     }
     
     if ($selectedAnnee > 0) {
-        $querySections .= " AND s.idAnnee = ?";
+        $querySections .= " AND s.\"idAnnee\" = ?";
         $params[$paramIndex] = $selectedAnnee;
     }
     
-    $querySections .= " ORDER BY s.designationSection";
+    $querySections .= " ORDER BY s.\"designationSection\"";
     $stmtSections = $db->prepare($querySections);
     
     foreach ($params as $i => $value) {
@@ -144,7 +144,7 @@ if ($selectedSection > 0) {
         FROM unite_recherche ur
         JOIN unite_recherche_section urs ON ur.idunite_recherche = urs.idunite_recherche
         WHERE urs.idsection = :idsection
-        ORDER BY ur.designation_UR
+        ORDER BY ur.\"designation_UR\"
     ");
     $stmtUnites->bindParam(':idsection', $selectedSection, PDO::PARAM_INT);
     $stmtUnites->execute();
@@ -157,7 +157,7 @@ if ($selectedSection > 0) {
             SELECT a.*, g.designation as gradeDesignation, s.designation as serviceDesignation
             FROM agent a
             LEFT JOIN grade g ON a.grade_id = g.idgrade
-            LEFT JOIN service s ON a.idService = s.idservice
+            LEFT JOIN service s ON a.\"idService\" = s.idservice
             WHERE a.type_agent = 'Enseignant'
         ";
         
@@ -183,9 +183,9 @@ if ($selectedSection > 0) {
             SELECT DISTINCT a.*, g.designation as gradeDesignation, s.designation as serviceDesignation
             FROM agent a
             LEFT JOIN grade g ON a.grade_id = g.idgrade
-            LEFT JOIN service s ON a.idService = s.idservice
-            INNER JOIN enseignant_specialisation es ON a.idAgent = es.idAgent
-            INNER JOIN specialisation sp ON es.idSpecialisation = sp.idSpecialisation
+            LEFT JOIN service s ON a.\"idService\" = s.idservice
+            INNER JOIN enseignant_specialisation es ON a.\"idAgent\" = es.\"idAgent\"
+            INNER JOIN specialisation sp ON es.\"idSpecialisation\" = sp.\"idSpecialisation\"
             INNER JOIN orientation o ON sp.idorientation = o.idorientation
             INNER JOIN section sec ON o.section_idsection = sec.idsection
             WHERE a.type_agent = 'Enseignant' AND sec.idsection IN ($sectionsParams)
@@ -225,7 +225,7 @@ if ($selectedSection > 0) {
         SELECT o.*
         FROM orientation o
         WHERE o.section_idsection = :idSection
-        ORDER BY o.designationOrientation
+        ORDER BY o.\"designationOrientation\"
     ");
     $stmtOrientations->bindParam(':idSection', $selectedSection, PDO::PARAM_INT);
     $stmtOrientations->execute();
@@ -237,10 +237,10 @@ if ($selectedSection > 0) {
         
         foreach ($orientations as $orientation) {
             $stmtAllSpecs = $db->prepare("
-                SELECT s.*, o.designationOrientation
+                SELECT s.*, o.\"designationOrientation\"
                 FROM specialisation s
                 JOIN orientation o ON s.idorientation = o.idorientation
-                WHERE s.idUnite_recherche = :idUr AND s.idorientation = :idOrientation
+                WHERE s.\"idUnite_recherche\" = :idUr AND s.idorientation = :idOrientation
                 ORDER BY s.designation
             ");
             $stmtAllSpecs->bindParam(':idUr', $ur['idunite_recherche'], PDO::PARAM_INT);
@@ -268,17 +268,17 @@ if ($selectedSection > 0) {
     $teacherSpecialisationsMap = [];
     foreach ($enseignants as $ens) {
         $stmtSpecs = $db->prepare("
-            SELECT es.id as idAffectation, ur.designation_UR, ur.idunite_recherche, 
-                   s.designation, s.idSpecialisation, s.idorientation, 
-                   o.designationOrientation,
-                   sec.designationSection, es.dateAffectation
+            SELECT es.id as \"idAffectation\", ur.\"designation_UR\", ur.idunite_recherche, 
+                   s.designation, s.\"idSpecialisation\", s.idorientation, 
+                   o.\"designationOrientation\",
+                   sec.\"designationSection\", es.\"dateAffectation\"
             FROM enseignant_specialisation es
-            JOIN specialisation s ON es.idSpecialisation = s.idSpecialisation
-            JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+            JOIN specialisation s ON es.\"idSpecialisation\" = s.\"idSpecialisation\"
+            JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
             JOIN orientation o ON s.idorientation = o.idorientation
             JOIN section sec ON o.section_idsection = sec.idsection
-            WHERE es.idAgent = :idAgent AND sec.idsection = :idSection
-            ORDER BY ur.designation_UR, o.designationOrientation, s.designation
+            WHERE es.\"idAgent\" = :idAgent AND sec.idsection = :idSection
+            ORDER BY ur.\"designation_UR\", o.\"designationOrientation\", s.designation
         ");
         $stmtSpecs->bindParam(':idAgent', $ens['idAgent'], PDO::PARAM_INT);
         $stmtSpecs->bindParam(':idSection', $selectedSection, PDO::PARAM_INT);
@@ -477,12 +477,12 @@ if ($selectedSection > 0) {
             </div>
             <div class="modal-body">
                 <form id="affectationForm" method="POST" action="controller/create_affectation.php" class="needs-validation" novalidate>
-                    <input type="hidden" id="idAgent" name="idAgent">
-                    <input type="hidden" id="idSection" name="idSection" value="<?= $selectedSection ?>">
+                    <input type="hidden" id=idAgent name=idAgent>
+                    <input type="hidden" id=idSection name=idSection value="<?= $selectedSection ?>">
                     
                     <div class="mb-3">
-                        <label for="nomEnseignant" class="form-label">Enseignant</label>
-                        <input type="text" id="nomEnseignant" class="form-control" readonly>
+                        <label for=nomEnseignant class="form-label">Enseignant</label>
+                        <input type="text" id=nomEnseignant class="form-control" readonly>
                     </div>
 
                     <div class="mb-3">
@@ -536,7 +536,7 @@ if ($selectedSection > 0) {
             </div>
             <div class="modal-body">
                 <form id="batchAffectationForm" method="POST" action="controller/create_batch_affectation.php" class="needs-validation" novalidate>
-                    <input type="hidden" name="idSection" value="<?= $selectedSection ?>">
+                    <input type="hidden" name=idSection value="<?= $selectedSection ?>">
                     
                     <div class="row mb-3">
                         <div class="col-md-6">

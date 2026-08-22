@@ -639,7 +639,7 @@ if (!empty($gradesHistory)) {
 // Informations spécifiques selon le type d'agent
 if ($agent['type_agent'] == 'Administratif') {
     // Récupérer les informations administratives
-    $queryAdmin = "SELECT * FROM admin_info WHERE idAgent = :idAgent";
+    $queryAdmin = "SELECT * FROM admin_info WHERE \"idAgent\" = :\"idAgent\"";
     $stmtAdmin = Connexion::getInstance()->getPDO()->prepare($queryAdmin);
     $stmtAdmin->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
     $stmtAdmin->execute();
@@ -697,7 +697,7 @@ if ($agent['type_agent'] == 'Administratif') {
     }
 } elseif ($agent['type_agent'] == 'Enseignant') {
     // Récupérer les informations d'enseignant
-    $queryTeacher = "SELECT * FROM teacher_info WHERE idAgent = :idAgent";
+    $queryTeacher = "SELECT * FROM teacher_info WHERE \"idAgent\" = :\"idAgent\"";
     $stmtTeacher = Connexion::getInstance()->getPDO()->prepare($queryTeacher);
     $stmtTeacher->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
     $stmtTeacher->execute();
@@ -755,7 +755,7 @@ if ($agent['type_agent'] == 'Administratif') {
     }
 } elseif ($agent['type_agent'] == 'Recherche') {
     // Récupérer les informations de recherche
-    $queryResearch = "SELECT * FROM research_info WHERE idAgent = :idAgent";
+    $queryResearch = "SELECT * FROM research_info WHERE \"idAgent\" = :\"idAgent\"";
     $stmtResearch = Connexion::getInstance()->getPDO()->prepare($queryResearch);
     $stmtResearch->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
     $stmtResearch->execute();

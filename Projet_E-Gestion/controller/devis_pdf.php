@@ -19,11 +19,11 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
     try {
         // Récupérer les informations du devis
         $queryDevis = "SELECT d.*, c.nom_client, c.code_client, c.adresse, c.telephone, c.email, c.nif, c.rccm,
-                        u.nomUser as user_creation, v.nomUser as user_validation
+                        u.\"nomUser\" as user_creation, v.\"nomUser\" as user_validation
                         FROM devis d
                         LEFT JOIN client c ON d.id_client = c.id_client
-                        LEFT JOIN t_users u ON d.id_user_creation = u.idUser
-                        LEFT JOIN t_users v ON d.id_user_validation = v.idUser
+                        LEFT JOIN t_users u ON d.id_user_creation = u.\"idUser\"
+                        LEFT JOIN t_users v ON d.id_user_validation = v.\"idUser\"
                         WHERE d.id_devis = :id_devis";
         $stmtDevis = $db->prepare($queryDevis);
         $stmtDevis->bindParam(':id_devis', $idDevis, PDO::PARAM_INT);

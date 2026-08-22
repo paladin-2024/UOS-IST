@@ -28,7 +28,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -42,7 +42,7 @@ $isResponsableSection = false;
 
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -57,18 +57,18 @@ $hasFullAccess = $_SESSION['idRole'] == 1;
 // Construire la requête
 $params = [];
 $query = "SELECT se.*, 
-                 e.designationECUE,
-                 tu.nomUser as user_nom,
+                 e.\"designationECUE\",
+                 tu.\"nomUser\" as user_nom,
                  a.noms as enseignant_nom,
                  gr.designation as grade_enseignant,
-                 p.designationPromotion,
-                 sec.designationSection as section
+                 p.\"designationPromotion\",
+                 sec.\"designationSection\" as section
           FROM suivi_enseignements se
-          JOIN ecue e ON se.idECUE = e.idECUE
-          LEFT JOIN t_users tu ON se.idUser = tu.idUser
-          LEFT JOIN agent a ON se.enseignant_id = a.idAgent
+          JOIN ecue e ON se.\"idECUE\" = e.\"idECUE\"
+          LEFT JOIN t_users tu ON se.\"idUser\" = tu.\"idUser\"
+          LEFT JOIN agent a ON se.enseignant_id = a.\"idAgent\"
           LEFT JOIN grade gr ON a.grade_id = gr.idgrade
-          LEFT JOIN ue u ON e.UE_idUE = u.idUE
+          LEFT JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
           LEFT JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
           LEFT JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
           LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -93,7 +93,7 @@ if ($promotionFilter > 0) {
 }
 
 if ($ecueFilter > 0) {
-    $query .= " AND se.idECUE = :ecue";
+    $query .= " AND se.\"idECUE\" = :ecue";
     $params[':ecue'] = $ecueFilter;
 }
 
@@ -113,8 +113,8 @@ if (!empty($dateFin)) {
 }
 
 if (!empty($search)) {
-    $query .= " AND (e.designationECUE LIKE :search 
-                    OR p.designationPromotion LIKE :search 
+    $query .= " AND (e.\"designationECUE\" LIKE :search 
+                    OR p.\"designationPromotion\" LIKE :search 
                     OR a.noms LIKE :search 
                     OR se.commentaire LIKE :search)";
     $params[':search'] = "%{$search}%";
@@ -149,7 +149,7 @@ echo '<h2>Suivi des Enseignements - ' . $currentYear['designation'] . '</h2>';
 // Informations de filtrage
 echo '<p>';
 if ($promotionFilter > 0) {
-    $stmtPromo = $pdo->prepare("SELECT designationPromotion FROM promotion WHERE idpromotion = ?");
+    $stmtPromo = $pdo->prepare("SELECT \"designationPromotion\" FROM promotion WHERE idpromotion = ?");
     $stmtPromo->execute([$promotionFilter]);
     $promo = $stmtPromo->fetchColumn();
     echo '<strong>Promotion :</strong> ' . htmlspecialchars($promo) . '<br>';

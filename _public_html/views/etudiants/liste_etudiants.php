@@ -18,7 +18,7 @@ $anneesAcademiques = $stmtAnnees->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer toutes les sections (filtrées par année si sélectionnée)
 $sqlSections = "
-    SELECT DISTINCT sec.idsection, sec.designationSection
+    SELECT DISTINCT sec.idsection, sec.\"designationSection\"
     FROM section sec
     JOIN orientation o ON sec.idsection = o.section_idsection
     JOIN promotion p ON o.idorientation = p.orientation_idorientation
@@ -31,7 +31,7 @@ if ($anneeId > 0) {
     $paramsSections[] = $anneeId;
 }
 
-$sqlSections .= " ORDER BY sec.designationSection";
+$sqlSections .= " ORDER BY sec.\"designationSection\"";
 
 $stmtSections = $connexion->prepare($sqlSections);
 $stmtSections->execute($paramsSections);
@@ -58,7 +58,7 @@ if ($sectionId > 0) {
     $paramsPromotions[] = $sectionId;
 }
 
-$sqlPromotions .= " ORDER BY p.designationPromotion";
+$sqlPromotions .= " ORDER BY p.\"designationPromotion\"";
 
 $stmt = $connexion->prepare($sqlPromotions);
 $stmt->execute($paramsPromotions);
@@ -70,7 +70,7 @@ $recherche = isset($_GET['recherche']) ? trim($_GET['recherche']) : '';
 
 // Construire la requête SQL en fonction des filtres
 $sql = "
-    SELECT e.*, p.designationPromotion, aa.designation as annee_academique, e.dateEnregistrement as date_inscription
+    SELECT e.*, p.\"designationPromotion\", aa.designation as annee_academique, e.\"dateEnregistrement\" as date_inscription
     FROM etudiant e
     LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
     LEFT JOIN annee_acad aa ON e.annee_acad_idannee_acad = aa.idannee_acad

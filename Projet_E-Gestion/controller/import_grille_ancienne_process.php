@@ -1,4 +1,7 @@
 <?php
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+
 session_start();
 header('Content-Type: application/json');
 
@@ -32,9 +35,6 @@ try {
 
     require_once '../vendor/autoload.php';
     require_once '../models/GrilleAncienne.php';
-    
-    use PhpOffice\PhpSpreadsheet\IOFactory;
-    use PhpOffice\PhpSpreadsheet\Shared\Date;
 
     $grilleAncienne = new GrilleAncienne();
     

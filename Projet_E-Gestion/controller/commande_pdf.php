@@ -19,11 +19,11 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
     try {
         // Récupérer les informations de la commande
         $queryCommande = "SELECT cf.*, f.nom_fournisseur, f.code_fournisseur, f.adresse, f.telephone, f.email, f.nif, f.rccm,
-                        u.nomUser as user_creation, v.nomUser as user_validation
+                        u.\"nomUser\" as user_creation, v.\"nomUser\" as user_validation
                         FROM commande_fournisseur cf
                         LEFT JOIN fournisseur f ON cf.id_fournisseur = f.id_fournisseur
-                        LEFT JOIN t_users u ON cf.id_user_creation = u.idUser
-                        LEFT JOIN t_users v ON cf.id_user_validation = v.idUser
+                        LEFT JOIN t_users u ON cf.id_user_creation = u.\"idUser\"
+                        LEFT JOIN t_users v ON cf.id_user_validation = v.\"idUser\"
                         WHERE cf.id_commande = :id_commande";
         $stmtCommande = $db->prepare($queryCommande);
         $stmtCommande->bindParam(':id_commande', $idCommande, PDO::PARAM_INT);

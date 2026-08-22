@@ -64,10 +64,10 @@ try {
     if ($row && intval($row['c']) > 0) { $hasType = true; }
 
     if ($hasType) {
-        $sql = "INSERT INTO palmares_archives (designation, description, fichier_scanne, annee_academique, section, promotion, session, type_palmares, date_creation, idUser)
+        $sql = "INSERT INTO palmares_archives (designation, description, fichier_scanne, annee_academique, section, promotion, session, type_palmares, date_creation, \"idUser\")
                 VALUES (:designation, :description, :fichier_scanne, :annee_academique, :section, :promotion, :session, :type_palmares, NOW(), :idUser)";
     } else {
-        $sql = "INSERT INTO palmares_archives (designation, description, fichier_scanne, annee_academique, section, promotion, session, date_creation, idUser)
+        $sql = "INSERT INTO palmares_archives (designation, description, fichier_scanne, annee_academique, section, promotion, session, date_creation, \"idUser\")
                 VALUES (:designation, :description, :fichier_scanne, :annee_academique, :section, :promotion, :session, NOW(), :idUser)";
     }
     $st = $pdo->prepare($sql);

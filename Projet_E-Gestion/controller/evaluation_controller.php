@@ -89,8 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         try {
             // Préparation de la requête SQL
-            $sql = "INSERT INTO evaluations (titre, description, date_evaluation, idECUE, idType, 
-                    ponderation, note_max, session_idsession, est_visible, annee_acad_id, idUser) 
+            $sql = "INSERT INTO evaluations (titre, description, date_evaluation, \"idECUE\", \"idType\", 
+                    ponderation, note_max, session_idsession, est_visible, annee_acad_id, \"idUser\") 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             $stmt = $pdo->prepare($sql);
@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     titre = ?, 
                     description = ?, 
                     date_evaluation = ?, 
-                    idType = ?, 
+                    \"idType\" = ?, 
                     ponderation = ?, 
                     note_max = ?,
                     session_idsession = ?, 
@@ -268,20 +268,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Préparer la requête pour insérer/mettre à jour les notes
             $sqlCheckExist = "SELECT COUNT(*) FROM points 
-                              WHERE matricule = ? AND ECUE_idECUE = ? AND typeEvaluation = ? AND session_idsession = ? AND annee_acad_id = ?";
+                              WHERE matricule = ? AND \"ECUE_idECUE\" = ? AND \"typeEvaluation\" = ? AND session_idsession = ? AND annee_acad_id = ?";
             $stmtCheckExist = $pdo->prepare($sqlCheckExist);
             
-            $sqlInsert = "INSERT INTO points (coteObtenu, typeEvaluation, ECUE_idECUE, session_idsession, matricule, annee_acad_id) 
+            $sqlInsert = "INSERT INTO points (\"coteObtenu\", \"typeEvaluation\", \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id) 
                          VALUES (?, ?, ?, ?, ?, ?)";
             $stmtInsert = $pdo->prepare($sqlInsert);
             
-            $sqlUpdate = "UPDATE points SET coteObtenu = ? 
-                         WHERE matricule = ? AND ECUE_idECUE = ? AND typeEvaluation = ? AND session_idsession = ? AND annee_acad_id = ?";
+            $sqlUpdate = "UPDATE points SET \"coteObtenu\" = ? 
+                         WHERE matricule = ? AND \"ECUE_idECUE\" = ? AND \"typeEvaluation\" = ? AND session_idsession = ? AND annee_acad_id = ?";
             $stmtUpdate = $pdo->prepare($sqlUpdate);
             
             // Récupérer l'année académique actuelle
             $sqlAnnee = "SELECT * FROM annee_acad 
-              WHERE dateCreation = (SELECT MAX(dateCreation) FROM annee_acad)";
+              WHERE \"dateCreation\" = (SELECT MAX(\"dateCreation\") FROM annee_acad)";
             $stmtAnnee = $pdo->prepare($sqlAnnee);
             $stmtAnnee->execute();
             $annee = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -383,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                             // Vérifier si une configuration existe déjà pour cette session
                             $sqlCheckConfig = "SELECT id FROM configuration_moyenne 
-                                             WHERE idECUE = ? AND session_idsession = ? AND annee_acad_id = ?";
+                                             WHERE \"idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?";
                             $stmtCheckConfig = $pdo->prepare($sqlCheckConfig);
                             $stmtCheckConfig->execute([$idECUE, $sessionId, $annee_acad_id]);
                             $configId = $stmtCheckConfig->fetchColumn();
@@ -391,15 +391,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             if ($configId) {
                                 // Mettre à jour la configuration existante
                                 $sqlUpdateConfig = "UPDATE configuration_moyenne 
-                                                  SET ponderation_cc = ?, ponderation_ex = ?, idUser = ?, dateCreation = NOW() 
+                                                  SET ponderation_cc = ?, ponderation_ex = ?, \"idUser\" = ?, \"dateCreation\" = NOW() 
                                                   WHERE id = ?";
                                 $stmtUpdateConfig = $pdo->prepare($sqlUpdateConfig);
                                 $stmtUpdateConfig->execute([$ponderationCC, $ponderationEX, $userId, $configId]);
                             } else {
                                 // Insérer une nouvelle configuration
                                 $sqlInsertConfig = "INSERT INTO configuration_moyenne 
-                                                  (idECUE, session_idsession, annee_acad_id, formule_cc, formule_ex, 
-                                                   ponderation_cc, ponderation_ex, idUser, dateCreation) 
+                                                  (\"idECUE\", session_idsession, annee_acad_id, formule_cc, formule_ex, 
+                                                   ponderation_cc, ponderation_ex, \"idUser\", \"dateCreation\") 
                                                   VALUES (?, ?, ?, 'moyenne', 'derniere', ?, ?, ?, NOW())";
                                 $stmtInsertConfig = $pdo->prepare($sqlInsertConfig);
                                 $stmtInsertConfig->execute([$idECUE, $sessionId, $annee_acad_id, $ponderationCC, $ponderationEX, $userId]);
@@ -510,7 +510,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         // Supprimer d'abord les notes associées à cette évaluation
                         $sqlDeleteNotes = "DELETE FROM points 
-                                          WHERE typeEvaluation = ? AND ECUE_idECUE = ? AND session_idsession = ? AND annee_acad_id = ?";
+                                          WHERE \"typeEvaluation\" = ? AND \"ECUE_idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?";
                         $stmtDeleteNotes = $pdo->prepare($sqlDeleteNotes);
                         $stmtDeleteNotes->execute([
                             $evaluation['idType'], 

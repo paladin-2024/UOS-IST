@@ -127,7 +127,7 @@ try {
         $stmt = $connexion->prepare("
             INSERT INTO transactions (
                 reference, date_transaction, montant, devise, type,
-                source, source_id, idUser, commentaire, statut
+                source, source_id, \"idUser\", commentaire, statut
             ) VALUES (
                 :reference, NOW(), :montant, :devise, 'Extourne',
                 :source, :source_id, :idUser, :commentaire, 'Confirmée'

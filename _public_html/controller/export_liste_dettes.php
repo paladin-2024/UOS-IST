@@ -30,54 +30,54 @@ $session = $sessionId ? $universite->getSessionById($sessionId) : null;
 $sql = "SELECT 
             COUNT(DISTINCT d.matricule) as nb_etudiants,
             COUNT(DISTINCT CASE WHEN (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) < 10 OR (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) IS NULL THEN d.id_dette END) as nb_dettes,
             SUM(CASE WHEN (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) >= 10 THEN 1 ELSE 0 END) as validees,
             SUM(CASE WHEN (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) < 10 OR (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) IS NULL THEN 1 ELSE 0 END) as en_cours,
             SUM(CASE WHEN (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) < 10 OR (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
@@ -93,54 +93,54 @@ $sql = "SELECT
             d.matricule,
             (SELECT e.noms FROM etudiant e WHERE e.matricule = d.matricule LIMIT 1) as noms,
             SUM(CASE WHEN (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) < 10 OR (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) IS NULL THEN 1 ELSE 0 END) as nb_dettes,
             SUM(CASE WHEN (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) < 10 OR (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) IS NULL THEN d.credits_ecue ELSE 0 END) as credits,
             SUM(CASE WHEN (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) >= 10 THEN 1 ELSE 0 END) as validees,
             SUM(CASE WHEN (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
             ) < 10 OR (
-                SELECT cg.MF FROM cotes_grille cg 
+                SELECT cg.\"MF\" FROM cotes_grille cg 
                 WHERE cg.matricule = d.matricule 
-                AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                 AND cg.annee_acad_id = d.annee_acad_idannee_acad
                 ORDER BY cg.session_idsession DESC 
                 LIMIT 1
@@ -165,31 +165,31 @@ if ($showDetails) {
     $sqlDetails = "SELECT 
                 d.matricule, 
                 -- Utiliser la note de la dernière session
-                (SELECT cg.MF FROM cotes_grille cg 
+                (SELECT cg.\"MF\" FROM cotes_grille cg 
                  WHERE cg.matricule = d.matricule 
-                 AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                 AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                  AND cg.annee_acad_id = d.annee_acad_idannee_acad
                  ORDER BY cg.session_idsession DESC 
                  LIMIT 1) as note_obtenue,
                 d.note_rachat, d.credits_ecue, d.statut,
-                ec.designationECUE, ue.codeUE, ue.designationUE, s.numeroSemestre
+                ec.\"designationECUE\", ue.\"codeUE\", ue.\"designationUE\", s.\"numeroSemestre\"
             FROM dette_etudiant d
-            LEFT JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
-            LEFT JOIN ue ON d.UE_idUE = ue.idUE
+            LEFT JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
+            LEFT JOIN ue ON d.\"UE_idUE\" = ue.\"idUE\"
             LEFT JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
             WHERE d.promotion_idpromotion = :promotion AND d.annee_acad_idannee_acad = :annee
             AND (
                 -- Afficher seulement si la note de la dernière session est < 10 ou NULL (pas de note)
-                (SELECT cg.MF FROM cotes_grille cg 
+                (SELECT cg.\"MF\" FROM cotes_grille cg 
                  WHERE cg.matricule = d.matricule 
-                 AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                 AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                  AND cg.annee_acad_id = d.annee_acad_idannee_acad
                  ORDER BY cg.session_idsession DESC 
                  LIMIT 1) < 10
                 OR
-                (SELECT cg.MF FROM cotes_grille cg 
+                (SELECT cg.\"MF\" FROM cotes_grille cg 
                  WHERE cg.matricule = d.matricule 
-                 AND cg.ECUE_idECUE = d.ECUE_idECUE 
+                 AND cg.\"ECUE_idECUE\" = d.\"ECUE_idECUE\" 
                  AND cg.annee_acad_id = d.annee_acad_idannee_acad
                  ORDER BY cg.session_idsession DESC 
                  LIMIT 1) IS NULL
@@ -200,7 +200,7 @@ if ($showDetails) {
         $sqlDetails .= " AND d.session_idsession = :session";
         $paramsDetails['session'] = $sessionId;
     }
-    $sqlDetails .= " ORDER BY d.matricule, s.numeroSemestre, ue.codeUE";
+    $sqlDetails .= " ORDER BY d.matricule, s.\"numeroSemestre\", ue.\"codeUE\"";
     
     $stmtDetails = $db->prepare($sqlDetails);
     $stmtDetails->execute($paramsDetails);

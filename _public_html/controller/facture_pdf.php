@@ -23,11 +23,11 @@ $db = Connexion::getInstance()->getPDO();
 
 $query = "SELECT f.*, 
           four.code_fournisseur, four.nom_fournisseur, four.adresse, four.telephone, four.email, four.nif, four.rccm,
-          u_creation.nomUser as user_creation, u_validation.nomUser as user_validation
+          u_creation.\"nomUser\" as user_creation, u_validation.\"nomUser\" as user_validation
           FROM facture_fournisseur f
           JOIN fournisseur four ON f.id_fournisseur = four.id_fournisseur
-          JOIN t_users u_creation ON f.id_user_creation = u_creation.idUser
-          LEFT JOIN t_users u_validation ON f.id_user_validation = u_validation.idUser
+          JOIN t_users u_creation ON f.id_user_creation = u_creation.\"idUser\"
+          LEFT JOIN t_users u_validation ON f.id_user_validation = u_validation.\"idUser\"
           WHERE f.id_facture = :id";
 
 $stmt = $db->prepare($query);

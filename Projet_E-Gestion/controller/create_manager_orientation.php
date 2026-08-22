@@ -63,7 +63,7 @@ if (isset($_POST['addManagerBtn'])) {
         
         // Insertion du nouveau responsable
         $query = "INSERT INTO responsable_orientation 
-                  (noms, fonction, signature, idUser, orientation_idorientation, annee_acad_idannee_acad, 
+                  (noms, fonction, signature, \"idUser\", orientation_idorientation, annee_acad_idannee_acad, 
                    est_chef, telephone, email, date_debut, date_fin) 
                   VALUES 
                   (:noms, :fonction, :signature, :idUser, :orientationId, :anneeAcadId, 

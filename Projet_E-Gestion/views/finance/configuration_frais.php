@@ -16,12 +16,12 @@ $stmt->execute();
 $annees_academiques = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les promotions avec leurs orientations et sections
-$stmt = $connexion->prepare("SELECT p.idpromotion, p.designationPromotion, 
-                           CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte 
+$stmt = $connexion->prepare("SELECT p.idpromotion, p.\"designationPromotion\", 
+                           CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte 
                            FROM promotion p 
                            LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
                            LEFT JOIN section s ON o.section_idsection = s.idsection
-                           ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion");
+                           ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"");
 $stmt->execute();
 $promotions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -40,7 +40,7 @@ $frais = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt = $connexion->prepare("
     SELECT niveau 
     FROM droits_acces_finances 
-    WHERE idUser = :idUser AND type = 'Validation' 
+    WHERE \"idUser\" = :idUser AND type = 'Validation' 
     AND est_actif = 1
     ORDER BY niveau DESC
     LIMIT 1
@@ -328,8 +328,8 @@ unset($_SESSION['message'], $_SESSION['messageType']);
                         $promotion_filtre = isset($_GET['promotion_filtre']) ? intval($_GET['promotion_filtre']) : null;
                         $query = "
     SELECT a.*, f.designation AS frais_designation, f.montant AS frais_montant, 
-        f.devise, p.designationPromotion AS promotion_nom, 
-        CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte_nom,
+        f.devise, p.\"designationPromotion\" AS promotion_nom, 
+        CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte_nom,
         aa.designation AS annee_academique
     FROM affectation_frais a
     INNER JOIN frais f ON a.frais_id = f.id

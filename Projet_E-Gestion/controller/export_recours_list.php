@@ -34,17 +34,17 @@ if (!$annee) {
 // Récupérer les informations
 // Construire la requête pour récupérer les recours selon les filtres
 $query_recours = "
-    SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p.designationPromotion,
-           ec.designationECUE, u.designationUE, r.motif, r.date_creation, r.statut,
-           s.designSession, r.est_paye, r.description,
-           CONCAT(us.nomUser) as encodeur
+    SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p.\"designationPromotion\",
+           ec.\"designationECUE\", u.\"designationUE\", r.motif, r.date_creation, r.statut,
+           s.\"designSession\", r.est_paye, r.description,
+           CONCAT(us.\"nomUser\") as encodeur
     FROM recours r
     JOIN etudiant e ON r.matricule = e.matricule
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-    JOIN ecue ec ON r.id_ecue = ec.idECUE
-    JOIN ue u ON ec.UE_idUE = u.idUE
+    JOIN ecue ec ON r.id_ecue = ec.\"idECUE\"
+    JOIN ue u ON ec.\"UE_idUE\" = u.\"idUE\"
     JOIN session s ON r.id_session = s.idsession
-    LEFT JOIN t_users us ON r.id_createur = us.idUser
+    LEFT JOIN t_users us ON r.id_createur = us.\"idUser\"
     WHERE r.id_annee_acad = :id_annee
     AND r.date_creation BETWEEN :date_debut AND :date_fin";
 
@@ -207,7 +207,7 @@ $pdf->Cell(0, 6, $statut_recours_text, 0, 1, 'L');
 
 if ($id_session > 0) {
     // Récupérer le nom de la session
-    $query_session = "SELECT designSession, description FROM session WHERE idsession = :id_session";
+    $query_session = 'SELECT "designSession", description FROM session WHERE idsession = :id_session';
     $stmt_session = $conn->prepare($query_session);
     $stmt_session->bindParam(':id_session', $id_session);
     $stmt_session->execute();

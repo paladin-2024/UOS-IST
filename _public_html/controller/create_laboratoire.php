@@ -43,9 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Insertion du laboratoire
         $stmt = $db->prepare("INSERT INTO laboratoire 
-            (nom, description, localisation, responsable_id, annee_acad_id, idUser) 
+            (nom, description, localisation, responsable_id, annee_acad_id, \"idUser\") 
             VALUES 
-            (:nom, :description, :localisation, :responsable_id, :annee_acad_id, :idUser)");
+            (:nom, :description, :localisation, :responsable_id, :annee_acad_id, :\"idUser\")");
         
         $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
         $stmt->bindParam(':description', $description, PDO::PARAM_STR);
@@ -59,9 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Ajouter une autorisation pour le responsable
         $stmt = $db->prepare("INSERT INTO autorisation_labo 
-            (idlabo, idAgent, date_debut, niveau_autorisation, idUser) 
+            (idlabo, \"idAgent\", date_debut, niveau_autorisation, \"idUser\") 
             VALUES 
-            (:idlabo, :idAgent, CURRENT_DATE(), 'Admin', :idUser)");
+            (:idlabo, :\"idAgent\", CURRENT_DATE(), 'Admin', :\"idUser\")");
         
         $stmt->bindParam(':idlabo', $idLabo, PDO::PARAM_INT);
         $stmt->bindParam(':idAgent', $responsable_id, PDO::PARAM_INT);
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute();
         
         // Récupérer le nom du responsable pour le journal
-        $stmtResp = $db->prepare("SELECT noms FROM agent WHERE idAgent = :idAgent");
+        $stmtResp = $db->prepare("SELECT noms FROM agent WHERE \"idAgent\" = :\"idAgent\"");
         $stmtResp->bindParam(':idAgent', $responsable_id, PDO::PARAM_INT);
         $stmtResp->execute();
         $responsable = $stmtResp->fetch(PDO::FETCH_ASSOC);

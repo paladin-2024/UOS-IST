@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmtConflict = $db->prepare("
             SELECT COUNT(*) as conflicts 
             FROM rendez_vous 
-            WHERE Agent_idAgent = ? 
+            WHERE \"Agent_idAgent\" = ? 
             AND date_rendez_vous = ? 
             AND idRendez_vous != ?
             AND statut_rendez_vous NOT IN ('annule', 'termine')
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Mise à jour du rendez-vous
         $stmt = $db->prepare("
             UPDATE rendez_vous SET 
-                Agent_idAgent = ?, Service_idService = ?, contact_externe = ?, 
+                \"Agent_idAgent\" = ?, \"Service_idService\" = ?, contact_externe = ?, 
                 email_externe = ?, telephone_externe = ?, date_rendez_vous = ?, 
                 heure_debut = ?, heure_fin = ?, objet = ?, description = ?, 
                 lieu = ?, statut_rendez_vous = ?, type_rendez_vous = ?, 

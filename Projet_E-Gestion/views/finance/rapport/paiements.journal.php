@@ -7,7 +7,7 @@ $connexion = Connexion::getInstance()->getPDO();
 $idUser = $_SESSION['id'];
 
 // Récupérer l'idAgent de l'utilisateur connecté
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -30,12 +30,12 @@ $categories = $connexion->query("SELECT id, designation FROM categories_frais OR
 $promotions = [];
 if (!empty($anneeAcad)) {
     $stmtPromotions = $connexion->prepare("
-        SELECT p.idpromotion, p.designationPromotion, s.designationSection 
+        SELECT p.idpromotion, p.\"designationPromotion\", s.\"designationSection\" 
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation
         JOIN section s ON o.section_idsection = s.idsection
         WHERE p.annee_acad_idannee_acad = :anneeId
-        ORDER BY s.designationSection, p.designationPromotion
+        ORDER BY s.\"designationSection\", p.\"designationPromotion\"
     ");
     $stmtPromotions->bindParam(':anneeId', $anneeAcad, PDO::PARAM_INT);
     $stmtPromotions->execute();
@@ -49,8 +49,8 @@ $sql = "
         pf.montant, pf.devise, pf.mode_paiement, pf.reference_externe,
         pf.est_confirme, pf.date_confirmation,
         e.matricule, e.noms as nom_etudiant,
-        p.designationPromotion as promotion,
-        s.designationSection as section,
+        p.\"designationPromotion\" as promotion,
+        s.\"designationSection\" as section,
         f.designation as designation_frais,
         cf.designation as categorie_frais
     FROM paiements_frais pf
@@ -189,16 +189,16 @@ $montantMoyen = isset($totaux_par_devise['USD']) ? $totaux_par_devise['USD']['mo
                                         <form id="filterForm" method="GET" action="" class="row g-3">
                                             <input type="hidden" name="page" value="finance/rapport/paiements.journal">
                                             <div class="col-md-3">
-                                                <label for="dateDebut" class="form-label">Date début</label>
-                                                <input type="date" class="form-control" id="dateDebut" name="dateDebut" value="<?php echo $dateDebut; ?>">
+                                                <label for=dateDebut class="form-label">Date début</label>
+                                                <input type="date" class="form-control" id=dateDebut name=dateDebut value="<?php echo $dateDebut; ?>">
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="dateFin" class="form-label">Date fin</label>
-                                                <input type="date" class="form-control" id="dateFin" name="dateFin" value="<?php echo $dateFin; ?>">
+                                                <label for=dateFin class="form-label">Date fin</label>
+                                                <input type="date" class="form-control" id=dateFin name=dateFin value="<?php echo $dateFin; ?>">
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="modePaiement" class="form-label">Mode de paiement</label>
-                                                <select class="form-select" id="modePaiement" name="modePaiement">
+                                                <label for=modePaiement class="form-label">Mode de paiement</label>
+                                                <select class="form-select" id=modePaiement name=modePaiement>
                                                     <option value="">Tous</option>
                                                     <option value="Espèces" <?php echo $modePaiement === 'Espèces' ? 'selected' : ''; ?>>Espèces</option>
                                                     <option value="Chèque" <?php echo $modePaiement === 'Chèque' ? 'selected' : ''; ?>>Chèque</option>
@@ -217,8 +217,8 @@ $montantMoyen = isset($totaux_par_devise['USD']) ? $totaux_par_devise['USD']['mo
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="anneeAcad" class="form-label">Année académique</label>
-                                                <select class="form-select" id="anneeAcad" name="anneeAcad" onchange="this.form.submit()">
+                                                <label for=anneeAcad class="form-label">Année académique</label>
+                                                <select class="form-select" id=anneeAcad name=anneeAcad onchange="this.form.submit()">
                                                     <option value="">Toutes</option>
                                                     <?php
                                                     while ($annee = $annees->fetch()) {

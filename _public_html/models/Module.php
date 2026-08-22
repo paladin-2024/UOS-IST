@@ -29,31 +29,31 @@ class Module
         $limit = intval($limit); // S'assurer que $limit est un entier
 
         // Construire la requête avec la limite directement injectée
-        $query = "
-            SELECT 
-                m.idMod,
-                m.nomMod,
-                p.idPerm,
+        $query = '
+            SELECT
+                m."idMod",
+                m."nomMod",
+                p."idPerm",
                 m.package,
-                p.codePerm,
-                p.nomPerm,
-                p.descPerm
-            FROM 
+                p."codePerm",
+                p."nomPerm",
+                p."descPerm"
+            FROM
                 t_modules m
-            INNER JOIN 
-                t_permissions p 
-                ON m.idMod = p.idMod
-            WHERE 
-                p.idMod = ? 
+            INNER JOIN
+                t_permissions p
+                ON m."idMod" = p."idMod"
+            WHERE
+                p."idMod" = ?
                 AND (
-                    p.codePerm LIKE ? OR 
-                    p.nomPerm LIKE ? OR 
-                    p.descPerm LIKE ?
+                    p."codePerm" LIKE ? OR
+                    p."nomPerm" LIKE ? OR
+                    p."descPerm" LIKE ?
                 )
-            ORDER BY 
-                p.idPerm DESC
-            LIMIT $limit
-        ";
+            ORDER BY
+                p."idPerm" DESC
+            LIMIT ' . $limit . '
+        ';
 
         // Préparer les paramètres pour la requête
         $searchTerm = "%$search%";
@@ -69,42 +69,42 @@ class Module
 
     function getModuleListe($offset = 0, $limit = 10, $search = '') {
         $query = "SELECT * FROM t_modules";
-        
+
         if (!empty($search)) {
-            $query .= " WHERE (nomMod LIKE :search)";
+            $query .= ' WHERE ("nomMod" LIKE :search)';
         }
-        
-        $query .= " ORDER BY idMod DESC LIMIT :limit OFFSET :offset";
-        
+
+        $query .= ' ORDER BY "idMod" DESC LIMIT :limit OFFSET :offset';
+
         $stmt = $this->db->prepare($query);
-        
+
         if (!empty($search)) {
             $searchParam = "%$search%";
             $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
         }
-        
+
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     // Nouvelle méthode pour compter le total
     function countModule($search = '') {
         $query = "SELECT COUNT(*) FROM t_modules";
-                  
+
         if (!empty($search)) {
-            $query .= " WHERE (nomMod LIKE :search)";
+            $query .= ' WHERE ("nomMod" LIKE :search)';
         }
-        
+
         $stmt = $this->db->prepare($query);
-        
+
         if (!empty($search)) {
             $searchParam = "%$search%";
             $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
         }
-        
+
         $stmt->execute();
         return $stmt->fetchColumn();
     }
@@ -113,7 +113,7 @@ class Module
     //GEt Module by id
     function getModuleById($id)
     {
-        $stmt = $this->db->prepare("SELECT * FROM t_modules WHERE idMod = :idMod");
+        $stmt = $this->db->prepare('SELECT * FROM t_modules WHERE "idMod" = :idMod');
         $stmt->bindParam(':idMod', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -121,52 +121,52 @@ class Module
 
     //GEt Module by id
     function getModulePermissionByModule($idMod, $offset = 0, $limit = 10, $search = '') {
-        $query = "SELECT  
-                            m.idMod,
-                            m.nomMod,
-                            p.idPerm,
+        $query = 'SELECT
+                            m."idMod",
+                            m."nomMod",
+                            p."idPerm",
                             m.package,
-                            p.codePerm,
-                            p.nomPerm,
-                            p.descPerm
+                            p."codePerm",
+                            p."nomPerm",
+                            p."descPerm"
                         FROM t_modules m
-                        INNER JOIN t_permissions p ON m.idMod = p.idMod
-                        WHERE p.idMod = :idMod ";
-        
+                        INNER JOIN t_permissions p ON m."idMod" = p."idMod"
+                        WHERE p."idMod" = :idMod ';
+
         if (!empty($search)) {
-            $query .= " AND (m.nomMod LIKE :search OR p.nomPerm LIKE :search)";
+            $query .= ' AND (m."nomMod" LIKE :search OR p."nomPerm" LIKE :search)';
         }
-        
-        $query .= " ORDER BY p.nomPerm ASC LIMIT :limit OFFSET :offset";
-        
+
+        $query .= ' ORDER BY p."nomPerm" ASC LIMIT :limit OFFSET :offset';
+
         $stmt = $this->db->prepare($query);
-        
+
         if (!empty($search)) {
             $searchParam = "%$search%";
             $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
         }
-        
+
         $stmt->bindParam(':idMod', $idMod, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     // Nouvelle méthode pour compter le total
     function countPermUserModule($idMod, $search = '') {
-        $query = "SELECT DISTINCT COUNT(*)
+        $query = 'SELECT DISTINCT COUNT(*)
                         FROM t_modules m
-                        INNER JOIN t_permissions p ON m.idMod = p.idMod
-                        WHERE p.idMod = :idMod ";
-        
+                        INNER JOIN t_permissions p ON m."idMod" = p."idMod"
+                        WHERE p."idMod" = :idMod ';
+
         if (!empty($search)) {
-            $query .= " AND (m.nomMod LIKE :search OR p.nomPerm LIKE :search)";
+            $query .= ' AND (m."nomMod" LIKE :search OR p."nomPerm" LIKE :search)';
         }
-        
+
         $stmt = $this->db->prepare($query);
-        
+
         if (!empty($search)) {
             $searchParam = "%$search%";
             $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
@@ -181,18 +181,18 @@ class Module
     {
         try {
             // Préparer la requête SQL pour récupérer les permissions par module
-            $sql = "SELECT DISTINCT 
-                            m.idMod,
-                            m.nomMod,
-                            p.idPerm,
+            $sql = 'SELECT DISTINCT
+                            m."idMod",
+                            m."nomMod",
+                            p."idPerm",
                             m.package,
-                            p.codePerm,
-                            p.nomPerm,
-                            p.descPerm
+                            p."codePerm",
+                            p."nomPerm",
+                            p."descPerm"
                         FROM t_modules m
-                        INNER JOIN t_permissions p ON m.idMod = p.idMod
-                        WHERE p.idMod = :idMod 
-                        ORDER BY p.nomPerm DESC";
+                        INNER JOIN t_permissions p ON m."idMod" = p."idMod"
+                        WHERE p."idMod" = :idMod
+                        ORDER BY p."nomPerm" DESC';
             $stmt = $this->db->prepare($sql);
 
             // Lier le paramètre :idMod à la valeur fournie
@@ -216,7 +216,7 @@ class Module
     public function checkDuplicateModule($nomMod, $package)
     {
         try {
-            $sql = "SELECT COUNT(*) AS count FROM t_modules WHERE nomMod = :nomMod AND package = :package";
+            $sql = 'SELECT COUNT(*) AS count FROM t_modules WHERE "nomMod" = :nomMod AND package = :package';
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':nomMod', $nomMod, PDO::PARAM_STR);
             $stmt->bindParam(':package', $package, PDO::PARAM_STR);
@@ -234,7 +234,7 @@ class Module
     // Ajouter un module
     public function addModule($nomMod, $package)
     {
-        $query = "INSERT INTO t_modules (nomMod, package) VALUES (:nomMod, :package)";
+        $query = 'INSERT INTO t_modules ("nomMod", package) VALUES (:nomMod, :package)';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nomMod', $nomMod);
         $stmt->bindParam(':package', $package);
@@ -244,7 +244,7 @@ class Module
     // Modifier un module
     public function updateModule($idMod, $nomMod, $package)
     {
-        $query = "UPDATE t_modules SET nomMod = :nomMod, package = :package WHERE idMod = :idMod";
+        $query = 'UPDATE t_modules SET "nomMod" = :nomMod, package = :package WHERE "idMod" = :idMod';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nomMod', $nomMod);
         $stmt->bindParam(':package', $package);
@@ -256,9 +256,9 @@ class Module
     public function checkDuplicatePermission($codePerm, $nomPerm)
     {
         try {
-            $sql = "SELECT COUNT(*) AS count 
-                    FROM t_permissions 
-                    WHERE (codePerm = :codePerm AND nomPerm = :nomPerm)";
+            $sql = 'SELECT COUNT(*) AS count
+                    FROM t_permissions
+                    WHERE ("codePerm" = :codePerm AND "nomPerm" = :nomPerm)';
 
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':codePerm', $codePerm, PDO::PARAM_STR);
@@ -277,8 +277,8 @@ class Module
     public function addPermission($idMod, $codePerm, $nomPerm, $descPerm)
     {
         try {
-            $sql = "INSERT INTO t_permissions (idMod, codePerm, nomPerm, descPerm) 
-                VALUES (:idMod, :codePerm, :nomPerm, :descPerm)";
+            $sql = 'INSERT INTO t_permissions ("idMod", "codePerm", "nomPerm", "descPerm")
+                VALUES (:idMod, :codePerm, :nomPerm, :descPerm)';
 
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':idMod', $idMod, PDO::PARAM_INT);
@@ -295,12 +295,12 @@ class Module
 
     public function updatePermission($idPerm, $idMod, $codePerm, $nomPerm, $descPerm)
     {
-        $query = "UPDATE t_permissions SET 
-                idMod = :idMod,
-                codePerm = :codePerm,
-                nomPerm = :nomPerm,
-                descPerm = :descPerm
-              WHERE idPerm = :idPerm";
+        $query = 'UPDATE t_permissions SET
+                "idMod" = :idMod,
+                "codePerm" = :codePerm,
+                "nomPerm" = :nomPerm,
+                "descPerm" = :descPerm
+              WHERE "idPerm" = :idPerm';
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idPerm', $idPerm);
@@ -313,87 +313,89 @@ class Module
     }
 
     public function getPermissionsByRole($idRole){
-        $query = "SELECT  
-                    m.idMod,
-                    m.nomMod,
-                    p.idPerm,
+        $query = 'SELECT
+                    m."idMod",
+                    m."nomMod",
+                    p."idPerm",
                     m.package,
-                    p.codePerm,
-                    p.nomPerm,
-                    p.descPerm,
-                    CASE 
+                    p."codePerm",
+                    p."nomPerm",
+                    p."descPerm",
+                    CASE
                         WHEN EXISTS (
-                            SELECT 1 
+                            SELECT 1
                             FROM t_user_permissions up
-                            WHERE up.idPerm = p.idPerm 
-                            AND up.idRole = '$idRole'
-                        ) THEN 1 
-                        ELSE 0 
+                            WHERE up."idPerm" = p."idPerm"
+                            AND up."idRole" = :idRole
+                        ) THEN 1
+                        ELSE 0
                     END as is_checked
                 FROM t_modules m
-                INNER JOIN t_permissions p ON m.idMod = p.idMod
-                ORDER BY m.nomMod, p.idPerm";
-        $stmt = $this->db->query($query);
+                INNER JOIN t_permissions p ON m."idMod" = p."idMod"
+                ORDER BY m."nomMod", p."idPerm"';
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':idRole', $idRole, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt;
     }
 
     // Fonction pour la liste permission d'un role
     public function getUserAllPermissionsByRoleListe($idRole, $offset = 0, $limit=20, $search = '') {
-        $query = "SELECT  
-                    m.idMod,
-                    m.nomMod,
-                    p.idPerm,
+        $query = 'SELECT
+                    m."idMod",
+                    m."nomMod",
+                    p."idPerm",
                     m.package,
-                    p.codePerm,
-                    p.nomPerm,
-                    p.descPerm,
-                    CASE 
+                    p."codePerm",
+                    p."nomPerm",
+                    p."descPerm",
+                    CASE
                         WHEN EXISTS (
-                            SELECT 1 
+                            SELECT 1
                             FROM t_user_permissions up
-                            WHERE up.idPerm = p.idPerm 
-                            AND up.idRole = :idRole
-                        ) THEN 1 
-                        ELSE 0 
+                            WHERE up."idPerm" = p."idPerm"
+                            AND up."idRole" = :idRole
+                        ) THEN 1
+                        ELSE 0
                     END as is_checked
                 FROM t_modules m
-                INNER JOIN t_permissions p ON m.idMod = p.idMod";
-        
-       
+                INNER JOIN t_permissions p ON m."idMod" = p."idMod"';
+
+
         if (!empty($search)) {
-            $query .= " WHERE (m.nomMod LIKE :search OR p.nomPerm LIKE :search)";
+            $query .= ' WHERE (m."nomMod" LIKE :search OR p."nomPerm" LIKE :search)';
         }
-        
-        $query .= " ORDER BY p.nomPerm ASC LIMIT :limit OFFSET :offset";
-        
+
+        $query .= ' ORDER BY p."nomPerm" ASC LIMIT :limit OFFSET :offset';
+
         $stmt = $this->db->prepare($query);
-        
+
         if (!empty($search)) {
             $searchParam = "%$search%";
             $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
         }
-        
+
         $stmt->bindParam(':idRole', $idRole, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     function countUserAllPermissionsByRole($idRole, $search = '') {
-        $query = "SELECT DISTINCT COUNT(*)
+        $query = 'SELECT DISTINCT COUNT(*)
                         FROM t_modules m
-                        INNER JOIN t_permissions p ON m.idMod = p.idMod
-                        INNER JOIN t_user_permissions up ON up.idPerm = p.idPerm 
-                        WHERE up.idRole = :idRole";
-        
+                        INNER JOIN t_permissions p ON m."idMod" = p."idMod"
+                        INNER JOIN t_user_permissions up ON up."idPerm" = p."idPerm"
+                        WHERE up."idRole" = :idRole';
+
         if (!empty($search)) {
-            $query .= " AND (m.nomMod LIKE :search OR p.nomPerm LIKE :search)";
+            $query .= ' AND (m."nomMod" LIKE :search OR p."nomPerm" LIKE :search)';
         }
-        
+
         $stmt = $this->db->prepare($query);
-        
+
         if (!empty($search)) {
             $searchParam = "%$search%";
             $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
@@ -409,26 +411,26 @@ class Module
      */
     public function getUserAllPermissionsByRole($idRole)
     {
-        $query = "SELECT DISTINCT 
-                m.idMod,
-                m.nomMod,
-                p.idPerm,
+        $query = 'SELECT DISTINCT
+                m."idMod",
+                m."nomMod",
+                p."idPerm",
                 m.package,
-                p.codePerm,
-                p.nomPerm,
-                p.descPerm,
-                CASE 
+                p."codePerm",
+                p."nomPerm",
+                p."descPerm",
+                CASE
                     WHEN EXISTS (
-                        SELECT 1 
+                        SELECT 1
                         FROM t_user_permissions up
-                        WHERE up.idPerm = p.idPerm 
-                        AND up.idRole = :idRole
-                    ) THEN 1 
-                    ELSE 0 
+                        WHERE up."idPerm" = p."idPerm"
+                        AND up."idRole" = :idRole
+                    ) THEN 1
+                    ELSE 0
                 END as is_checked
              FROM t_permissions p
-             INNER JOIN t_modules m ON m.idMod = p.idMod
-             ORDER BY m.idMod, p.idPerm";
+             INNER JOIN t_modules m ON m."idMod" = p."idMod"
+             ORDER BY m."idMod", p."idPerm"';
 
         $stmt = $this->db->prepare($query);
         $stmt->execute(['idRole' => $idRole]);
@@ -445,18 +447,18 @@ class Module
     $roles = [$roles]; // Si un seul rôle, convertir en array
     }
     $placeholders = str_repeat('?,', count($roles) - 1) . '?';
-    $query = "SELECT 
-    m.idMod,
-    m.nomMod,
+    $query = 'SELECT
+    m."idMod",
+    m."nomMod",
        m.package,
-       p.codePerm,
-       p.nomPerm,
-       p.descPerm
+       p."codePerm",
+       p."nomPerm",
+       p."descPerm"
     FROM t_user_permissions up
-             INNER JOIN t_permissions p ON up.idPerm = p.idPerm
-         INNER JOIN t_modules m ON m.idMod = p.idMod
-         WHERE up.idRole IN ($placeholders)
-             ORDER BY m.idMod, p.descPerm";
+             INNER JOIN t_permissions p ON up."idPerm" = p."idPerm"
+         INNER JOIN t_modules m ON m."idMod" = p."idMod"
+         WHERE up."idRole" IN (' . $placeholders . ')
+             ORDER BY m."idMod", p."descPerm"';
 
         $stmt = $this->db->prepare($query);
         $stmt->execute($roles);
@@ -531,17 +533,17 @@ class Module
         }
 
         $html = '<li class="nav-item">
-                    <a class="nav-link ' . ($isActive ? '' : 'collapsed') . '" 
-                       data-bs-target="#' . $moduleId . '-nav" 
-                       data-bs-toggle="collapse" 
+                    <a class="nav-link ' . ($isActive ? '' : 'collapsed') . '"
+                       data-bs-target="#' . $moduleId . '-nav"
+                       data-bs-toggle="collapse"
                        href="#"
                        aria-expanded="' . ($isActive ? 'true' : 'false') . '">
                         <i class="bi bi-menu-app-fill"></i>
                         <span>' . htmlspecialchars($module['nom']) . '</span>
                         <i class="bi bi-chevron-down ms-auto"></i>
                     </a>
-                    <ul id="' . $moduleId . '-nav" 
-                        class="nav-content collapse ' . ($isActive ? 'show' : '') . '" 
+                    <ul id="' . $moduleId . '-nav"
+                        class="nav-content collapse ' . ($isActive ? 'show' : '') . '"
                         data-bs-parent="#sidebar-nav">';
 
         foreach ($module['permissions'] as $perm) {
@@ -549,7 +551,7 @@ class Module
             $isCurrentView = ($current_view === $permView);
 
             $html .= '<li>
-                        <a href="' . $permView . '" 
+                        <a href="' . $permView . '"
                            class="' . ($isCurrentView ? 'active' : '') . '">
                             <i class="bi bi-circle"></i>
                             <span>' . htmlspecialchars($perm['description']) . '</span>
@@ -568,7 +570,7 @@ class Module
         $isCurrentView = ($current_view === $permView);
 
         return '<li class="nav-item">
-                    <a class="nav-link ' . ($isCurrentView ? 'active' : 'collapsed') . '" 
+                    <a class="nav-link ' . ($isCurrentView ? 'active' : 'collapsed') . '"
                        href="' . $permView . '">
                         <i class="bi bi-menu-app-fill"></i>
                         <span>' . htmlspecialchars($module['nom']) . '</span>
@@ -579,7 +581,7 @@ class Module
     public function deletePermission($idPerm)
     {
         try {
-            $sql = "DELETE FROM t_permissions WHERE idPerm = :idPerm";
+            $sql = 'DELETE FROM t_permissions WHERE "idPerm" = :idPerm';
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':idPerm', $idPerm, PDO::PARAM_INT);
             return $stmt->execute();
@@ -589,11 +591,11 @@ class Module
         }
     }
 
-   
+
     public function getModuleIdByPermission($idPerm)
     {
         try {
-            $sql = "SELECT idMod FROM t_permissions WHERE idPerm = :idPerm";
+            $sql = 'SELECT "idMod" FROM t_permissions WHERE "idPerm" = :idPerm';
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':idPerm', $idPerm, PDO::PARAM_INT);
             $stmt->execute();

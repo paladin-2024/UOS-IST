@@ -19,9 +19,9 @@ if ($depotId <= 0) {
 }
 
 // Récupération des détails du dépôt
-$query = "SELECT d.*, u.nomUser as nom_createur 
+$query = "SELECT d.*, u.\"nomUser\" as nom_createur 
           FROM depot d 
-          LEFT JOIN t_users u ON d.id_user_creation = u.idUser 
+          LEFT JOIN t_users u ON d.id_user_creation = u.\"idUser\" 
           WHERE d.id_depot = :id";
 $stmt = $db->prepare($query);
 $stmt->bindParam(':id', $depotId, PDO::PARAM_INT);

@@ -1,4 +1,10 @@
 <?php
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+
 session_start();
 
 // Vérifier les droits d'accès
@@ -12,12 +18,6 @@ try {
     require_once '../vendor/autoload.php';
     require_once '../models/GrilleAncienne.php';
     require_once '../models/Universite.php';
-    
-    use PhpOffice\PhpSpreadsheet\Spreadsheet;
-    use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-    use PhpOffice\PhpSpreadsheet\Style\Alignment;
-    use PhpOffice\PhpSpreadsheet\Style\Border;
-    use PhpOffice\PhpSpreadsheet\Style\Fill;
 
     $grilleAncienne = new GrilleAncienne();
     $universite = new Universite();

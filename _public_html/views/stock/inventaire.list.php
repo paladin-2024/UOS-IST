@@ -10,12 +10,12 @@ $depots = $stmtDepots->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupération des 50 derniers inventaires
 $query = "SELECT i.*, d.libelle_depot, 
-           u1.nomUser as user_creation_nom, 
-           u2.nomUser as user_validation_nom
+           u1.\"nomUser\" as user_creation_nom, 
+           u2.\"nomUser\" as user_validation_nom
            FROM inventaire i
            LEFT JOIN depot d ON i.id_depot = d.id_depot
-           LEFT JOIN t_users u1 ON i.id_user_creation = u1.idUser
-           LEFT JOIN t_users u2 ON i.id_user_validation = u2.idUser
+           LEFT JOIN t_users u1 ON i.id_user_creation = u1.\"idUser\"
+           LEFT JOIN t_users u2 ON i.id_user_validation = u2.\"idUser\"
            ORDER BY i.date_inventaire DESC, i.id_inventaire DESC
            LIMIT 50";
 $stmt = $db->prepare($query);

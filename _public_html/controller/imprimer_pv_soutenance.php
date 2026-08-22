@@ -85,8 +85,8 @@ $query = "SELECT j.*,
           p.noms as president_nom, p.grade_id as president_grade_id, pg.designation as president_grade,
           s.noms as secretaire_nom, s.grade_id as secretaire_grade_id, sg.designation as secretaire_grade
           FROM jury j
-          JOIN agent p ON j.id_president = p.idAgent
-          JOIN agent s ON j.id_secretaire = s.idAgent
+          JOIN agent p ON j.id_president = p.\"idAgent\"
+          JOIN agent s ON j.id_secretaire = s.\"idAgent\"
           LEFT JOIN grade pg ON p.grade_id = pg.idgrade
           LEFT JOIN grade sg ON s.grade_id = sg.idgrade
           WHERE j.idjury = :idJury";

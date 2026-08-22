@@ -24,9 +24,9 @@ try {
     // Récupérer les informations de l'étudiant
     $stmt = $connexion->prepare("
         SELECT e.*, 
-               p.designationPromotion, 
-               o.designationOrientation, 
-               s.designationSection
+               p.\"designationPromotion\", 
+               o.\"designationOrientation\", 
+               s.\"designationSection\"
         FROM etudiant e
         LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
         LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation

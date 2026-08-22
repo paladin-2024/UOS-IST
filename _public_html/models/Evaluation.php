@@ -9,8 +9,8 @@ class Evaluation {
     // Ajouter une évaluation
     public function addEvaluation($titre, $description, $dateEvaluation, $idECUE, $idType, 
                                  $ponderation, $idSession, $estVisible, $idUser) {
-        $query = "INSERT INTO evaluations (titre, description, date_evaluation, idECUE, 
-                 idType, ponderation, session_idsession, est_visible, idUser) 
+        $query = "INSERT INTO evaluations (titre, description, date_evaluation, \"idECUE\", 
+                 \"idType\", ponderation, session_idsession, est_visible, \"idUser\") 
                  VALUES (:titre, :description, :dateEvaluation, :idECUE, :idType, 
                  :ponderation, :idSession, :estVisible, :idUser)";
         $stmt = $this->db->prepare($query);
@@ -31,7 +31,7 @@ class Evaluation {
     public function addPoint($coteObtenu, $idEvaluation, $idECUE, $idSession, $matricule, $idAnneeAcad) {
         // Vérifier si le point existe déjà
         $query = "SELECT COUNT(*) as count FROM points 
-                 WHERE typeEvaluation = :idEvaluation AND ECUE_idECUE = :idECUE 
+                 WHERE typeEvaluation = :idEvaluation AND \"ECUE_idECUE\" = :idECUE 
                  AND session_idsession = :idSession AND matricule = :matricule
                  AND annee_acad_id = :idAnneeAcad";
         $stmt = $this->db->prepare($query);
@@ -46,13 +46,13 @@ class Evaluation {
         
         if ($result['count'] > 0) {
             // Mettre à jour le point existant
-            $query = "UPDATE points SET coteObtenu = :coteObtenu 
-                     WHERE typeEvaluation = :idEvaluation AND ECUE_idECUE = :idECUE 
+            $query = "UPDATE points SET \"coteObtenu\" = :coteObtenu 
+                     WHERE typeEvaluation = :idEvaluation AND \"ECUE_idECUE\" = :idECUE 
                      AND session_idsession = :idSession AND matricule = :matricule
                      AND annee_acad_id = :idAnneeAcad";
         } else {
             // Ajouter un nouveau point
-            $query = "INSERT INTO points (coteObtenu, typeEvaluation, ECUE_idECUE, 
+            $query = "INSERT INTO points (\"coteObtenu\", typeEvaluation, \"ECUE_idECUE\", 
                      session_idsession, matricule, annee_acad_id) 
                      VALUES (:coteObtenu, :idEvaluation, :idECUE, :idSession, :matricule, :idAnneeAcad)";
         }
@@ -71,14 +71,14 @@ class Evaluation {
     // Configurer les formules de calcul des moyennes
     public function configureFormules($idECUE, $idSession, $idAnneeAcad, $formuleCC, 
                                     $formuleEX, $ponderationCC, $ponderationEX, $idUser) {
-        $query = "INSERT INTO configuration_moyenne (idECUE, session_idsession, annee_acad_id, 
-                 formule_cc, formule_ex, ponderation_cc, ponderation_ex, idUser) 
+        $query = "INSERT INTO configuration_moyenne (\"idECUE\", session_idsession, annee_acad_id, 
+                 formule_cc, formule_ex, ponderation_cc, ponderation_ex, \"idUser\") 
                  VALUES (:idECUE, :idSession, :idAnneeAcad, :formuleCC, :formuleEX, 
                  :ponderationCC, :ponderationEX, :idUser) 
                  ON DUPLICATE KEY UPDATE 
                  formule_cc = :formuleCC, formule_ex = :formuleEX, 
                  ponderation_cc = :ponderationCC, ponderation_ex = :ponderationEX, 
-                 idUser = :idUser";
+                 \"idUser\" = :idUser";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
             'idECUE' => $idECUE,
@@ -96,7 +96,7 @@ class Evaluation {
     public function calculateMoyenne($matricule, $idECUE, $idSession, $idAnneeAcad) {
         // Récupérer la configuration
         $query = "SELECT * FROM configuration_moyenne 
-                 WHERE idECUE = :idECUE AND session_idsession = :idSession 
+                 WHERE \"idECUE\" = :idECUE AND session_idsession = :idSession 
                  AND annee_acad_id = :idAnneeAcad";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -141,8 +141,8 @@ class Evaluation {
         
         // Récupérer les points
         $placeholders = implode(',', array_fill(0, count($evalIds), '?'));
-        $query = "SELECT typeEvaluation, coteObtenu FROM points 
-                 WHERE matricule = ? AND ECUE_idECUE = ? 
+        $query = "SELECT typeEvaluation, \"coteObtenu\" FROM points 
+                 WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                  AND session_idsession = ? AND annee_acad_id = ? 
                  AND typeEvaluation IN ($placeholders)";
         

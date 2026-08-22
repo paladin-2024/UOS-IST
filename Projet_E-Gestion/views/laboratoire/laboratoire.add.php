@@ -9,7 +9,7 @@ $anneeEnCours = $universite->getCurrentAcademicYear();
 $anneeId = $anneeEnCours['idannee_acad'];
 
 // Récupérer la liste des agents pour le choix du responsable
-$query = "SELECT a.idAgent, a.noms 
+$query = "SELECT a.\"idAgent\", a.noms 
           FROM agent a 
           WHERE a.type_agent IN ('Enseignant', 'Recherche')
           ORDER BY a.noms";

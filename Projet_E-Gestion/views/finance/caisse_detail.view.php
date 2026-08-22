@@ -16,7 +16,7 @@ $connexion = Connexion::getInstance()->getPDO();
 $stmt = $connexion->prepare("
     SELECT c.*, a.noms as responsable_nom 
     FROM caisses c
-    LEFT JOIN agent a ON c.idAgent_responsable = a.idAgent
+    LEFT JOIN agent a ON c.\"idAgent_responsable\" = a.\"idAgent\"
     WHERE c.id = :id
 ");
 $stmt->bindParam(':id', $id_caisse);
@@ -36,8 +36,8 @@ $stmt = $connexion->prepare("
            a1.noms as agent_nom,
            a2.noms as validateur_nom
     FROM sessions_caisse sc
-    LEFT JOIN agent a1 ON sc.idAgent = a1.idAgent
-    LEFT JOIN agent a2 ON sc.idValidateur = a2.idAgent
+    LEFT JOIN agent a1 ON sc.\"idAgent\" = a1.\"idAgent\"
+    LEFT JOIN agent a2 ON sc.\"idValidateur\" = a2.\"idAgent\"
     WHERE sc.caisse_id = :id
     ORDER BY sc.date_ouverture DESC
     LIMIT 10
@@ -50,7 +50,7 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt = $connexion->prepare("
     SELECT t.*, a.noms as agent_nom
     FROM transactions t
-    LEFT JOIN agent a ON t.idAgent = a.idAgent
+    LEFT JOIN agent a ON t.\"idAgent\" = a.\"idAgent\"
     WHERE t.source = 'Caisse' AND t.source_id = :id
     ORDER BY t.date_transaction DESC
     LIMIT 20

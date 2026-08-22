@@ -121,9 +121,9 @@ try {
             // Insérer un nouveau document
             $stmt = $pdo->prepare("
                 INSERT INTO etudiant_documents 
-                (idetudiant, matricule, document_obligatoire_id, type_document, titre, description, chemin_fichier, date_ajout, annee_acad_id, idUser, statut)
+                (idetudiant, matricule, document_obligatoire_id, type_document, titre, description, chemin_fichier, date_ajout, annee_acad_id, \"idUser\", statut)
                 VALUES 
-                (:studentId, :matricule, :docId, :typeDocument, :titre, :description, :cheminFichier, NOW(), :anneeAcadId, :idUser, 'En attente de validation')
+                (:studentId, :matricule, :docId, :typeDocument, :titre, :description, :cheminFichier, NOW(), :anneeAcadId, :\"idUser\", 'En attente de validation')
             ");
             
             $stmt->execute([

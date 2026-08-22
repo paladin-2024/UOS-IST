@@ -27,11 +27,11 @@ try {
     $pdo = Connexion::getInstance()->getPDO();
 
     // Fetch orientations tied to the selected academic year through sections
-    $sql = "SELECT o.idorientation, o.designationOrientation
+    $sql = "SELECT o.idorientation, o.\"designationOrientation\"
             FROM orientation o
             INNER JOIN section s ON o.section_idsection = s.idsection
-            WHERE s.idAnnee = :anneeId
-            ORDER BY o.designationOrientation ASC";
+            WHERE s.\"idAnnee\" = :anneeId
+            ORDER BY o.\"designationOrientation\" ASC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':anneeId', $anneeId, PDO::PARAM_INT);

@@ -53,7 +53,7 @@ $stmtLignes->execute();
 $lignes = $stmtLignes->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupération des informations sur les utilisateurs (création et validation)
-$queryUserCreation = "SELECT nomUser FROM t_users WHERE idUser = :id";
+$queryUserCreation = "SELECT \"nomUser\" FROM t_users WHERE \"idUser\" = :id";
 $stmtUserCreation = $db->prepare($queryUserCreation);
 $stmtUserCreation->bindParam(':id', $devis['id_user_creation'], PDO::PARAM_INT);
 $stmtUserCreation->execute();
@@ -61,7 +61,7 @@ $userCreation = $stmtUserCreation->fetch(PDO::FETCH_ASSOC);
 
 $userValidation = null;
 if ($devis['id_user_validation']) {
-    $queryUserValidation = "SELECT nomUser FROM t_users WHERE idUser = :id";
+    $queryUserValidation = "SELECT \"nomUser\" FROM t_users WHERE \"idUser\" = :id";
     $stmtUserValidation = $db->prepare($queryUserValidation);
     $stmtUserValidation->bindParam(':id', $devis['id_user_validation'], PDO::PARAM_INT);
     $stmtUserValidation->execute();

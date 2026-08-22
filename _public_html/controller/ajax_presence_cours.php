@@ -27,7 +27,7 @@ try {
             $stmtCheck->execute(['s' => $idSeance, 'e' => $idEtudiant]);
             if ($stmtCheck->fetch()) throw new Exception('Étudiant déjà enregistré.');
 
-            $stmt = $db->prepare("INSERT INTO presence_cours (idseance, idetudiant, heure_arrivee, statut, commentaire, methode_enregistrement, ip_address, idUser, date_enregistrement) VALUES (:s, :e, NOW(), :st, :c, 'Manuel', :ip, :u, NOW())");
+            $stmt = $db->prepare("INSERT INTO presence_cours (idseance, idetudiant, heure_arrivee, statut, commentaire, methode_enregistrement, ip_address, \"idUser\", date_enregistrement) VALUES (:s, :e, NOW(), :st, :c, 'Manuel', :ip, :u, NOW())");
             $stmt->execute([
                 's' => $idSeance, 'e' => $idEtudiant, 'st' => $statut,
                 'c' => $commentaire, 'ip' => $_SERVER['REMOTE_ADDR'], 'u' => $idUser

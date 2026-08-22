@@ -103,23 +103,23 @@ $agents = $agentModel->getAgents($search); // Retrieve agents based on search te
                                             <tr>
                                                 <td>{$member['noms']}</td>
                                                 <td>{$member['sexe']}</td>
-                                                <td>{$member['dateNaissance']}</td>
+                                                <td>{$member['\"dateNaissance\"']}</td>
                                                 <td>{$age}</td>
                                                 <td>{$member['typeLiaison']}</td>
                                                 <td>
                                                     <button type='button' class='btn btn-warning btn-sm' 
                                                             data-bs-toggle='modal' 
                                                             data-bs-target='#editFamilyMemberModal' 
-                                                            data-member-id='{$member['idDossier_famille']}'
+                                                            data-member-id='{$member['\"idDossier_famille\"']}'
                                                             data-noms='{$member['noms']}'
                                                             data-sexe='{$member['sexe']}'
-                                                            data-date-naissance='{$member['dateNaissance']}'
-                                                            data-lieu-naissance='{$member['lieuNaissance']}'
+                                                            data-date-naissance='{$member['\"dateNaissance\"']}'
+                                                            data-lieu-naissance='{$member['\"lieuNaissance\"']}'
                                                             data-type-liaison='{$member['typeLiaison']}'>
                                                         Modifier
                                                     </button>
                                                     <form action='controller/delete_membre.php' method='POST' class='delete-family-member-form' style='display:inline;'>
-                                                        <input type='hidden' name='idDossierFamille' value='{$member['idDossier_famille']}'>
+                                                        <input type='hidden' name='idDossierFamille' value='{$member['\"idDossier_famille\"']}'>
                                                         <button type='button' class='btn btn-danger btn-sm delete-family-member-btn'>Supprimer</button>
                                                     </form>
                                                 </td>
@@ -170,12 +170,12 @@ $agents = $agentModel->getAgents($search); // Retrieve agents based on search te
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="dateNaissance" class="form-label">Date de Naissance</label>
-                                                <input type="date" class="form-select" id="dateNaissance" name="dateNaissance" required>
+                                                <label for=dateNaissance class="form-label">Date de Naissance</label>
+                                                <input type="date" class="form-select" id=dateNaissance name=dateNaissance required>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="lieuNaissance" class="form-label">Lieu de Naissance</label>
-                                                <input type="text" class="form-control" id="lieuNaissance" name="lieuNaissance" required>
+                                                <label for=lieuNaissance class="form-label">Lieu de Naissance</label>
+                                                <input type="text" class="form-control" id=lieuNaissance name=lieuNaissance required>
                                             </div>
                                         </div>
                                         <div class="mb-3">
@@ -224,11 +224,11 @@ $agents = $agentModel->getAgents($search); // Retrieve agents based on search te
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="editDateNaissance" class="form-label">Date de Naissance</label>
-                            <input type="date" class="form-control" id="editDateNaissance" name="dateNaissance" required>
+                            <input type="date" class="form-control" id="editDateNaissance" name=dateNaissance required>
                         </div>
                         <div class="col-md-6">
                             <label for="editLieuNaissance" class="form-label">Lieu de Naissance</label>
-                            <input type="text" class="form-control" id="editLieuNaissance" name="lieuNaissance" required>
+                            <input type="text" class="form-control" id="editLieuNaissance" name=lieuNaissance required>
                         </div>
                     </div>
                     <div class="mb-3">

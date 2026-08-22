@@ -19,7 +19,7 @@ $anneeActive = $stmtActiveYear->fetch(PDO::FETCH_ASSOC);
 
 // Si aucune année active, prendre la plus récente
 if (!$anneeActive) {
-    $queryLatestYear = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryLatestYear = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtLatestYear = $pdo->prepare($queryLatestYear);
     $stmtLatestYear->execute();
     $anneeActive = $stmtLatestYear->fetch(PDO::FETCH_ASSOC);
@@ -44,10 +44,10 @@ if ($selectedYear) {
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Récupérer l'ID de l'agent enseignant associé à l'utilisateur connecté
-$query = "SELECT a.idAgent 
+$query = "SELECT a.\"idAgent\" 
           FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ? AND a.type_agent = 'Enseignant'";
+          INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+          WHERE u.\"idUser\" = ? AND a.type_agent = 'Enseignant'";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $idAgent = $stmt->fetchColumn();
@@ -69,14 +69,14 @@ $query = "SELECT s.*,
           e.adressemail as etudiant_email,
           e.idetudiant as etudiant_idetudiant,
           spe.designation as specialisation,
-          c.designationSection as cycle
+          c.\"designationSection\" as cycle
           FROM sujets s
           LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad
           LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-          LEFT JOIN specialisation spe ON s.idSpecialisation = spe.idSpecialisation
+          LEFT JOIN specialisation spe ON s.\"idSpecialisation\" = spe.\"idSpecialisation\"
           LEFT JOIN orientation o ON spe.idorientation = o.idorientation
           LEFT JOIN section c ON o.section_idsection = c.idsection
-          WHERE (s.idDirecteur = ? OR s.idEncadreur = ?)
+          WHERE (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)
           AND s.annee_acad_idannee_acad = ?";
 
 if (!empty($search)) {
@@ -105,7 +105,7 @@ $basicStatsQuery = "SELECT
                      AVG(t.pourcentage_avancement) as avancement_moyen
                    FROM sujets s
                    LEFT JOIN taches t ON s.idsujets = t.sujets_idsujets
-                   WHERE (s.idDirecteur = ? OR s.idEncadreur = ?)
+                   WHERE (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)
                    AND s.annee_acad_idannee_acad = ?";
 $basicStatsStmt = $pdo->prepare($basicStatsQuery);
 $basicStatsStmt->execute([$idAgent, $idAgent, $selectedYear]);
@@ -118,7 +118,7 @@ $exchangeStatsQuery = "SELECT
                       FROM sujets s
                       JOIN taches t ON s.idsujets = t.sujets_idsujets
                       JOIN echanges_taches e ON t.idtaches = e.taches_idtaches
-                      WHERE (s.idDirecteur = ? OR s.idEncadreur = ?)
+                      WHERE (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)
                       AND s.annee_acad_idannee_acad = ?";
 $exchangeStatsStmt = $pdo->prepare($exchangeStatsQuery);
 $exchangeStatsStmt->execute([$idAgent, $idAgent, $selectedYear]);
@@ -134,7 +134,7 @@ $stats['echanges_par_tache'] = ($stats['taches_avec_echanges'] > 0) ?
 
 // Récupérer les activités récentes (5 derniers échanges)
 $recentActivityQuery = "SELECT 
-                          e.idechange, e.dateEchange, e.commentaire, e.type_auteur,
+                          e.idechange, e.\"dateEchange\", e.commentaire, e.type_auteur,
                           t.idtaches, t.description as tache_description,
                           s.idsujets, s.intitule as sujet_intitule,
                           CASE 
@@ -145,11 +145,11 @@ $recentActivityQuery = "SELECT
                         FROM echanges_taches e
                         JOIN taches t ON e.taches_idtaches = t.idtaches
                         JOIN sujets s ON t.sujets_idsujets = s.idsujets
-                        LEFT JOIN etudiant et ON (e.type_auteur = 'Etudiant' AND e.idAuteur = et.idetudiant)
-                        LEFT JOIN agent a ON (e.type_auteur IN ('Directeur', 'Encadreur') AND e.idAuteur = a.idAgent)
-                        WHERE (s.idDirecteur = ? OR s.idEncadreur = ?)
+                        LEFT JOIN etudiant et ON (e.type_auteur = 'Etudiant' AND e.\"idAuteur\" = et.idetudiant)
+                        LEFT JOIN agent a ON (e.type_auteur IN ('Directeur', 'Encadreur') AND e.\"idAuteur\" = a.\"idAgent\")
+                        WHERE (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)
                         AND s.annee_acad_idannee_acad = ?
-                        ORDER BY e.dateEchange DESC
+                        ORDER BY e.\"dateEchange\" DESC
                         LIMIT 5";
 $recentActivityStmt = $pdo->prepare($recentActivityQuery);
 $recentActivityStmt->execute([$idAgent, $idAgent, $selectedYear]);
@@ -456,7 +456,7 @@ $recentActivities = $recentActivityStmt->fetchAll(PDO::FETCH_ASSOC);
                                     $role = ($sujet['idDirecteur'] == $idAgent) ? 'Directeur' : 'Encadreur';
                                     
                                     // Récupérer les tâches du sujet
-                                    $queryTaches = "SELECT * FROM taches WHERE sujets_idsujets = ? ORDER BY dateTache DESC";
+                                    $queryTaches = "SELECT * FROM taches WHERE sujets_idsujets = ? ORDER BY \"dateTache\" DESC";
                                     $stmtTaches = $pdo->prepare($queryTaches);
                                     $stmtTaches->execute([$sujet['idsujets']]);
                                     $taches = $stmtTaches->fetchAll(PDO::FETCH_ASSOC);
@@ -809,8 +809,8 @@ $recentActivities = $recentActivityStmt->fetchAll(PDO::FETCH_ASSOC);
                                                                                                      ELSE 'Inconnu'
                                                                                                    END as nom_auteur
                                                                                                    FROM echange_chapitre ec
-                                                                                                   LEFT JOIN etudiant et ON (ec.type_auteur = 'Etudiant' AND ec.idAuteur = et.idetudiant)
-                                                                                                   LEFT JOIN agent a ON (ec.type_auteur IN ('Directeur', 'Encadreur') AND ec.idAuteur = a.idAgent)
+                                                                                                   LEFT JOIN etudiant et ON (ec.type_auteur = 'Etudiant' AND ec.\"idAuteur\" = et.idetudiant)
+                                                                                                   LEFT JOIN agent a ON (ec.type_auteur IN ('Directeur', 'Encadreur') AND ec.\"idAuteur\" = a.\"idAgent\")
                                                                                                    WHERE ec.idchapitre_plan = ?
                                                                                                    ORDER BY ec.date_echange ASC";
                                                                         $stmtEchangesChapitre = $pdo->prepare($queryEchangesChapitre);
@@ -938,7 +938,7 @@ $recentActivities = $recentActivityStmt->fetchAll(PDO::FETCH_ASSOC);
                                                         // Récupérer les échanges de la tâche
                                                         $queryEchanges = "SELECT * FROM echanges_taches
                                                                           WHERE taches_idtaches = ?
-                                                                          ORDER BY dateEchange ASC";
+                                                                          ORDER BY \"dateEchange\" ASC";
                                                         $stmtEchanges = $pdo->prepare($queryEchanges);
                                                         $stmtEchanges->execute([$tache['idtaches']]);
                                                         $echanges = $stmtEchanges->fetchAll(PDO::FETCH_ASSOC);

@@ -11,11 +11,11 @@ $dateFin = isset($_GET['date_fin']) ? $_GET['date_fin'] : date('Y-m-d');
 $query = "SELECT t.*, 
            d1.libelle_depot as depot_source_nom,
            d2.libelle_depot as depot_destination_nom,
-           u1.nomUser as user_creation_nom
+           u1.\"nomUser\" as user_creation_nom
            FROM transfert_stock t
            LEFT JOIN depot d1 ON t.id_depot_source = d1.id_depot
            LEFT JOIN depot d2 ON t.id_depot_destination = d2.id_depot
-           LEFT JOIN t_users u1 ON t.id_user_creation = u1.idUser
+           LEFT JOIN t_users u1 ON t.id_user_creation = u1.\"idUser\"
            WHERE t.date_transfert BETWEEN :date_debut AND :date_fin";
 
 if ($etat !== 'all') {

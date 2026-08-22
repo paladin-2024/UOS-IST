@@ -127,7 +127,7 @@ $orientations = $universite->getOrientations('', $anneeActuelle ? $anneeActuelle
                                     <tbody>
                                         <?php
                                         // Construire la requête avec filtres
-                                        $query = "SELECT p.*, o.designationOrientation as orientationDesignation, aa.designation as anneeDesignation
+                                        $query = "SELECT p.*, o.\"designationOrientation\" as orientationDesignation, aa.designation as anneeDesignation
                                                    FROM promotion p
                                                    LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
                                                    LEFT JOIN section sec ON o.section_idsection = sec.idsection
@@ -137,7 +137,7 @@ $orientations = $universite->getOrientations('', $anneeActuelle ? $anneeActuelle
                                         $params = [];
 
                                         if (!empty($search)) {
-                                            $query .= " AND p.designationPromotion LIKE ?";
+                                            $query .= " AND p.\"designationPromotion\" LIKE ?";
                                             $params[] = '%' . $search . '%';
                                         }
 
@@ -151,7 +151,7 @@ $orientations = $universite->getOrientations('', $anneeActuelle ? $anneeActuelle
                                             $params[] = $filterSection;
                                         }
 
-                                        $query .= " ORDER BY p.designationPromotion";
+                                        $query .= " ORDER BY p.\"designationPromotion\"";
 
                                         $stmt = $connexion->prepare($query);
                                         $stmt->execute($params);

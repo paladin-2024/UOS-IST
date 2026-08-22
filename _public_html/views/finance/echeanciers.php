@@ -6,7 +6,7 @@ $connexion = Connexion::getInstance()->getPDO();
 $idUser = $_SESSION['id'];
 
 // Récupérer l'idAgent de l'utilisateur connecté
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -33,8 +33,8 @@ $annees_academiques = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les promotions filtrées par année académique si nécessaire
 $promotionQuery = "
-    SELECT p.idpromotion, p.designationPromotion, 
-           CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte,
+    SELECT p.idpromotion, p.\"designationPromotion\", 
+           CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte,
            aa.designation AS annee_academique,
            aa.idannee_acad
     FROM promotion p
@@ -48,7 +48,7 @@ if (!empty($annee_acad_id)) {
     $promotionQuery .= " WHERE aa.idannee_acad = :annee_acad_id";
 }
 
-$promotionQuery .= " ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion";
+$promotionQuery .= " ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"";
 
 $stmt = $connexion->prepare($promotionQuery);
 if (!empty($annee_acad_id)) {
@@ -129,8 +129,8 @@ if (!empty($_GET)) {
             cf.designation AS categorie_nom,
             e.matricule,
             e.noms,
-            CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte,
-            p.designationPromotion,
+            CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte,
+            p.\"designationPromotion\",
             aa.designation AS annee_academique,
             (ep.montant - COALESCE(ep.montant_paye, 0)) AS solde,
             CASE 
@@ -147,7 +147,7 @@ if (!empty($_GET)) {
         LEFT JOIN section s ON o.section_idsection = s.idsection
         LEFT JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
         $where_clause
-        ORDER BY ep.date_echeance, s.designationSection, p.designationPromotion, e.noms
+        ORDER BY ep.date_echeance, s.\"designationSection\", p.\"designationPromotion\", e.noms
     ";
     
     $stmt = $connexion->prepare($query);

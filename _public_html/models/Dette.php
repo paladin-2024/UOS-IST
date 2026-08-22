@@ -31,7 +31,7 @@ class Dette {
                 $params['statut'] = $statut;
             }
             
-            $sql .= " ORDER BY annee_academique DESC, numeroSemestre ASC";
+            $sql .= " ORDER BY annee_academique DESC, \"numeroSemestre\" ASC";
             
         } else {
             // Requête directe si la vue n'existe pas
@@ -39,14 +39,14 @@ class Dette {
                         d.id_dette,
                         d.matricule,
                         e.noms as nom_etudiant,
-                        d.ECUE_idECUE,
-                        ec.designationECUE,
-                        d.UE_idUE,
-                        ue.designationUE,
+                        d.\"ECUE_idECUE\",
+                        ec.\"designationECUE\",
+                        d.\"UE_idUE\",
+                        ue.\"designationUE\",
                         d.semestre_idsemestre,
-                        COALESCE(s.numeroSemestre, d.semestre_idsemestre) as numeroSemestre,
+                        COALESCE(s.\"numeroSemestre\", d.semestre_idsemestre) as \"numeroSemestre\",
                         d.promotion_idpromotion,
-                        COALESCE(p.designationPromotion, 'N/A') as designationPromotion,
+                        COALESCE(p.\"designationPromotion\", 'N/A') as \"designationPromotion\",
                         d.session_idsession,
                         d.annee_acad_idannee_acad,
                         COALESCE(aa.designation, 'N/A') as annee_academique,
@@ -58,8 +58,8 @@ class Dette {
                         d.session_rachat
                     FROM dette_etudiant d
                     LEFT JOIN etudiant e ON d.matricule = e.matricule
-                    LEFT JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
-                    LEFT JOIN ue ue ON d.UE_idUE = ue.idUE
+                    LEFT JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
+                    LEFT JOIN ue ue ON d.\"UE_idUE\" = ue.\"idUE\"
                     LEFT JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
                     LEFT JOIN promotion p ON d.promotion_idpromotion = p.idpromotion
                     LEFT JOIN annee_acad aa ON d.annee_acad_idannee_acad = aa.idannee_acad
@@ -72,7 +72,7 @@ class Dette {
                 $params['statut'] = $statut;
             }
             
-            $sql .= " ORDER BY aa.designation DESC, s.numeroSemestre ASC";
+            $sql .= " ORDER BY aa.designation DESC, s.\"numeroSemestre\" ASC";
         }
         
         $stmt = $this->db->prepare($sql);
@@ -116,9 +116,9 @@ class Dette {
     public function enregistrerDette($data) {
         try {
             $sql = "INSERT INTO dette_etudiant (
-                        matricule, ECUE_idECUE, UE_idUE, semestre_idsemestre,
+                        matricule, \"ECUE_idECUE\", \"UE_idUE\", semestre_idsemestre,
                         promotion_idpromotion, session_idsession, annee_acad_idannee_acad,
-                        note_obtenue, credits_ecue, statut, idUser
+                        note_obtenue, credits_ecue, statut, \"idUser\"
                     ) VALUES (
                         :matricule, :ecue, :ue, :semestre,
                         :promotion, :session, :annee,
@@ -152,7 +152,7 @@ class Dette {
             if ($noteCC !== null) {
                 $sql = "INSERT INTO dette_evaluation (
                             id_dette, type_evaluation, note, date_evaluation,
-                            session_idsession, annee_acad_idannee_acad, idUser
+                            session_idsession, annee_acad_idannee_acad, \"idUser\"
                         ) VALUES (
                             :dette, 'CC', :note, CURDATE(),
                             :session, :annee, :user
@@ -171,7 +171,7 @@ class Dette {
             if ($noteEX !== null) {
                 $sql = "INSERT INTO dette_evaluation (
                             id_dette, type_evaluation, note, date_evaluation,
-                            session_idsession, annee_acad_idannee_acad, idUser
+                            session_idsession, annee_acad_idannee_acad, \"idUser\"
                         ) VALUES (
                             :dette, 'EX', :note, CURDATE(),
                             :session, :annee, :user
@@ -296,9 +296,9 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
      * Récupérer l'historique d'une dette
      */
     public function getHistoriqueDette($detteId) {
-        $sql = "SELECT h.*, u.nomUser 
+        $sql = "SELECT h.*, u.\"nomUser\" 
                 FROM dette_historique h
-                JOIN t_users u ON h.idUser = u.idUser
+                JOIN t_users u ON h.\"idUser\" = u.\"idUser\"
                 WHERE h.id_dette = :dette
                 ORDER BY h.date_action DESC";
         
@@ -311,7 +311,7 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
      * Ajouter une entrée à l'historique
      */
     private function ajouterHistorique($detteId, $action, $details, $userId) {
-        $sql = "INSERT INTO dette_historique (id_dette, action, details, idUser)
+        $sql = "INSERT INTO dette_historique (id_dette, action, details, \"idUser\")
                 VALUES (:dette, :action, :details, :user)";
         
         $stmt = $this->db->prepare($sql);
@@ -328,17 +328,17 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
      */
     public function getDettesParSemestre($matricule, $anneeId) {
         $sql = "SELECT 
-                    s.numeroSemestre,
+                    s.\"numeroSemestre\",
                     s.idsemestre,
                     COUNT(d.id_dette) as nombre_dettes,
                     SUM(d.credits_ecue) as total_credits,
-                    GROUP_CONCAT(d.designationECUE SEPARATOR ', ') as ecues
+                    GROUP_CONCAT(d.\"designationECUE\" SEPARATOR ', ') as ecues
                 FROM v_dettes_etudiants d
                 JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
                 WHERE d.matricule = :matricule
                 AND d.annee_acad_idannee_acad = :annee
                 AND d.statut = 'En cours'
-                GROUP BY s.idsemestre, s.numeroSemestre
+                GROUP BY s.idsemestre, s.\"numeroSemestre\"
                 ORDER BY s.numeroSemestre";
         
         $stmt = $this->db->prepare($sql);

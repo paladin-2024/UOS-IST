@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Insertion de la nouvelle catégorie
                 $stmt = $connexion->prepare("
                     INSERT INTO categories_frais 
-                    (designation, description, est_obligatoire, est_echelonnable, est_remboursable, compte_comptable, idUser) 
+                    (designation, description, est_obligatoire, est_echelonnable, est_remboursable, compte_comptable, \"idUser\") 
                     VALUES 
                     (:designation, :description, :est_obligatoire, :est_echelonnable, :est_remboursable, :compte_comptable, :idUser)
                 ");

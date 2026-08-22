@@ -4,7 +4,7 @@ include "./views/include/header.php";
 $connexion = Connexion::getInstance()->getPDO();
 $idUser = $_SESSION['id'];
 
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -26,7 +26,7 @@ $filtre_source = isset($_GET['filtre_source']) ? $_GET['filtre_source'] : '';
 $filtre_devise = isset($_GET['filtre_devise']) ? $_GET['filtre_devise'] : '';
 
 $agents_list = [];
-$stmt = $connexion->prepare("SELECT idAgent, noms FROM agent ORDER BY noms");
+$stmt = $connexion->prepare("SELECT \"idAgent\", noms FROM agent ORDER BY noms");
 $stmt->execute();
 $agents_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -45,13 +45,13 @@ $sql = "
         f.designation AS frais_designation,
         cf.designation AS categorie_frais,
         aa.designation AS annee_academique,
-        p.designationPromotion AS promotion_nom,
-        CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte_nom,
+        p.\"designationPromotion\" AS promotion_nom,
+        CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte_nom,
         t.reference AS transaction_reference,
         t.date_transaction,
         t.source,
         t.source_id,
-        u.nomUser AS agent_nom,
+        u.\"nomUser\" AS agent_nom,
         CASE 
             WHEN t.source = 'Caisse' THEN (SELECT designation FROM caisses WHERE id = t.source_id)
             WHEN t.source = 'Banque' THEN (SELECT CONCAT(nom_banque, ' - ', intitule_compte) FROM comptes_bancaires WHERE id = t.source_id)
@@ -67,7 +67,7 @@ $sql = "
     LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
     LEFT JOIN section s ON o.section_idsection = s.idsection
     LEFT JOIN transactions t ON pf.transaction_id = t.id
-    LEFT JOIN t_users u ON t.idUser = u.idUser
+    LEFT JOIN t_users u ON t.\"idUser\" = u.\"idUser\"
     WHERE pf.date_valeur BETWEEN :date_debut AND :date_fin
     AND pf.est_confirme = 1
 ";
@@ -78,7 +78,7 @@ $params = [
 ];
 
 if (!empty($filtre_agent)) {
-    $sql .= " AND t.idAgent = :filtre_agent";
+    $sql .= " AND t.\"idAgent\" = :filtre_agent";
     $params[':filtre_agent'] = $filtre_agent;
 }
 

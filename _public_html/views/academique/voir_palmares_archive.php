@@ -11,9 +11,9 @@ $idPalmares = intval($_GET['id']);
 $pdo = Connexion::getInstance()->getPDO();
 
 // RÃ©cupÃ©rer les informations du palmarÃ¨s
-$query = "SELECT p.*, u.nomUser 
+$query = "SELECT p.*, u.\"nomUser\" 
           FROM palmares_archives p 
-          LEFT JOIN t_users u ON p.idUser = u.idUser 
+          LEFT JOIN t_users u ON p.\"idUser\" = u.\"idUser\" 
           WHERE p.idpalmares = :id";
 $stmt = $pdo->prepare($query);
 $stmt->bindParam(':id', $idPalmares, PDO::PARAM_INT);

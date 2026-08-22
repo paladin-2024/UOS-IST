@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             reference, titre, description, promotion_id, annee_acad_id, 
             token_unique, url_complete, date_debut, date_fin, max_inscriptions,
             utiliser_docs_defaut, documents_personnalises, message_accueil, 
-            message_succes, couleur_theme, logo_personnalise, idUser
+            message_succes, couleur_theme, logo_personnalise, \"idUser\"
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     

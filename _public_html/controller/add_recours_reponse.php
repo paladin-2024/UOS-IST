@@ -58,7 +58,7 @@ if ($id_recours <= 0 || empty($commentaire)) {
 // Si l'utilisateur est un enseignant, récupérer son ID d'agent
 if (!$id_enseignant) {
     $conn = Connexion::getInstance()->getPDO();
-    $query_agent = "SELECT idAgent FROM t_users WHERE idUser = :id_user";
+    $query_agent = "SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :id_user";
     $stmt_agent = $conn->prepare($query_agent);
     $stmt_agent->bindParam(':id_user', $_SESSION['id']);
     $stmt_agent->execute();
@@ -99,12 +99,12 @@ $conn = Connexion::getInstance()->getPDO();
 
 try {
     // Vérifier si l'enseignant a le droit de répondre à ce recours (enseigne l'ECUE concerné)
-    $query_check_ecue = "SELECT ec.idECUE
+    $query_check_ecue = "SELECT ec.\"idECUE\"
                        FROM recours r
-                       JOIN ecue ec ON r.id_ecue = ec.idECUE
-                       JOIN enseignant_ecue ee ON ec.idECUE = ee.idECUE
+                       JOIN ecue ec ON r.id_ecue = ec.\"idECUE\"
+                       JOIN enseignant_ecue ee ON ec.\"idECUE\" = ee.\"idECUE\"
                        WHERE r.id_recours = :id_recours
-                       AND ee.idAgent = :id_enseignant";
+                       AND ee.\"idAgent\" = :id_enseignant";
     
     $stmt_check_ecue = $conn->prepare($query_check_ecue);
     $stmt_check_ecue->bindParam(':id_recours', $id_recours);
@@ -172,10 +172,10 @@ try {
                                   COALESCE(CM.ponderation_ex, (SELECT ponderation_ex_defaut FROM configuration_universite LIMIT 1)) as ponderation_ex
                            FROM cotes_grille CG
                            LEFT JOIN configuration_moyenne CM ON 
-                               CG.ECUE_idECUE = CM.idECUE AND 
+                               CG.\"ECUE_idECUE\" = CM.\"idECUE\" AND 
                                CG.session_idsession = CM.session_idsession AND 
                                CG.annee_acad_id = CM.annee_acad_id
-                           WHERE CG.ECUE_idECUE = :id_ecue
+                           WHERE CG.\"ECUE_idECUE\" = :id_ecue
                            AND CG.session_idsession = :id_session
                            AND CG.matricule = :matricule
                            AND CG.annee_acad_id = :id_annee";

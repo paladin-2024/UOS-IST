@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['exportBtn'])) {
         $stmtSection = $db->prepare("
             SELECT s.*, a.designation as anneeDesignation
             FROM section s
-            LEFT JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+            LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
             WHERE s.idsection = ?
         ");
         $stmtSection->execute([$idsection]);
@@ -99,14 +99,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['exportBtn'])) {
         
         // Récupérer les données
         $query = "
-            SELECT a.idAgent, a.noms, g.designation as gradeDesignation, 
-                   ur.designation_UR, s.designation as specialisationName, 
-                   es.dateAffectation
+            SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation, 
+                   ur.\"designation_UR\", s.designation as specialisationName, 
+                   es.\"dateAffectation\"
             FROM enseignant_specialisation es
-            JOIN agent a ON es.idAgent = a.idAgent
+            JOIN agent a ON es.\"idAgent\" = a.\"idAgent\"
             LEFT JOIN grade g ON a.grade_id = g.idgrade
-            JOIN specialisation s ON es.idSpecialisation = s.idSpecialisation
-            JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+            JOIN specialisation s ON es.\"idSpecialisation\" = s.\"idSpecialisation\"
+            JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
             WHERE s.idsection = ?
         ";
         
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['exportBtn'])) {
             $params[] = $idUniteRecherche;
         }
         
-        $query .= " ORDER BY ur.designation_UR, s.designation, a.noms";
+        $query .= " ORDER BY ur.\"designation_UR\", s.designation, a.noms";
         
         $stmt = $db->prepare($query);
         $stmt->execute($params);

@@ -34,13 +34,13 @@ try {
     $pdo->beginTransaction();
     
     // Récupérer quelques ECUE existants
-    $queryEcue = "SELECT e.idECUE, e.designationECUE, p.idpromotion
+    $queryEcue = "SELECT e.\"idECUE\", e.\"designationECUE\", p.idpromotion
                   FROM ecue e
-                  JOIN ue u ON e.UE_idUE = u.idUE
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                   JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                   WHERE p.annee_acad_idannee_acad = :anneeId
-                  AND e.estVisible = 1
+                  AND e.\"estVisible\" = 1
                   LIMIT 10";
     
     $stmtEcue = $pdo->prepare($queryEcue);
@@ -53,7 +53,7 @@ try {
     }
     
     // Récupérer quelques enseignants
-    $queryEnseignants = "SELECT idAgent, noms FROM agent WHERE type_agent = 'Enseignant' LIMIT 5";
+    $queryEnseignants = "SELECT \"idAgent\", noms FROM agent WHERE type_agent = 'Enseignant' LIMIT 5";
     $stmtEnseignants = $pdo->prepare($queryEnseignants);
     $stmtEnseignants->execute();
     $enseignants = $stmtEnseignants->fetchAll(PDO::FETCH_ASSOC);
@@ -104,9 +104,9 @@ try {
             
             // Insérer l'enregistrement
             $insertQuery = "INSERT INTO suivi_enseignements 
-                           (idECUE, enseignant_id, date_cours, heure_debut, heure_fin, 
+                           (\"idECUE\", enseignant_id, date_cours, heure_debut, heure_fin, 
                             type_cours, salle, commentaire, annee_acad_idannee_acad, 
-                            idUser, date_creation)
+                            \"idUser\", date_creation)
                            VALUES 
                            (:idECUE, :enseignant_id, :date_cours, :heure_debut, :heure_fin,
                             :type_cours, :salle, :commentaire, :annee_acad_id,

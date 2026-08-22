@@ -30,7 +30,7 @@ try {
     
     if (!$anneeActive) {
         // Prendre la plus récente si aucune n'est active
-        $stmtAnnee = $pdo->query("SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC LIMIT 1");
+        $stmtAnnee = $pdo->query("SELECT idannee_acad, designation FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1");
         $anneeActive = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
     }
     
@@ -59,8 +59,8 @@ try {
         FROM soutenance so
         INNER JOIN sujets sj ON so.sujets_idsujets = sj.idsujets
         INNER JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-        LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-        LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+        LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+        LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
         LEFT JOIN annee_acad aa ON so.annee_acad_idannee_acad = aa.idannee_acad
         WHERE e.matricule = :matricule
         AND so.annee_acad_idannee_acad = :annee_id

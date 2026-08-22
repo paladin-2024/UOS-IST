@@ -69,7 +69,7 @@ try {
     // Récupérer l'adresse IP
     $ipAddress = $_SERVER['REMOTE_ADDR'];
     
-    $stmt = $db->prepare("INSERT INTO presence_cours (idseance, idetudiant, heure_arrivee, statut, commentaire, methode_enregistrement, ip_address, idUser, date_enregistrement) 
+    $stmt = $db->prepare("INSERT INTO presence_cours (idseance, idetudiant, heure_arrivee, statut, commentaire, methode_enregistrement, ip_address, \"idUser\", date_enregistrement) 
                           VALUES (:idSeance, :idEtudiant, :heureArrivee, :statut, :commentaire, :methodeEnregistrement, :ipAddress, :idUser, NOW())");
     
     $stmt->bindParam(':idSeance', $idSeance);

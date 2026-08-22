@@ -38,14 +38,14 @@ try {
                 e.idetudiant,
                 e.matricule,
                 e.noms as nom_etudiant,
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 enc.noms as encadreur_nom,
                 lect.noms as lecteur_nom
             FROM stage_assignments s
             JOIN etudiant e ON s.idetudiant = e.idetudiant
             JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-            LEFT JOIN agent enc ON s.idencadreur = enc.idAgent
-            LEFT JOIN agent lect ON s.idlecteur = lect.idAgent
+            LEFT JOIN agent enc ON s.idencadreur = enc.\"idAgent\"
+            LEFT JOIN agent lect ON s.idlecteur = lect.\"idAgent\"
             WHERE s.idstage = :stage_id";
     
     $stmt = $db->prepare($query);

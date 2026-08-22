@@ -19,9 +19,9 @@ if ($idPalmares <= 0) {
 }
 
 // Récupérer les données du palmarès
-$query = "SELECT pa.*, u.nomUser as nom_utilisateur 
+$query = "SELECT pa.*, u.\"nomUser\" as nom_utilisateur 
           FROM palmares_archive pa
-          LEFT JOIN t_users u ON pa.idUser = u.idUser
+          LEFT JOIN t_users u ON pa.\"idUser\" = u.\"idUser\"
           WHERE pa.id_palmares = ?";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$idPalmares]);

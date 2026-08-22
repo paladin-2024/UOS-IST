@@ -11,7 +11,7 @@ $currentUserId = $_SESSION['id'];
 $pdo = Connexion::getInstance()->getPDO();
 
 // Vérifier si la colonne est_active existe
-$checkColumn = "SHOW COLUMNS FROM annee_acad LIKE 'est_active'";
+$checkColumn = "SELECT column_name FROM information_schema.columns WHERE table_name = 'annee_acad' AND column_name = 'est_active'";
 $stmtCheck = $pdo->prepare($checkColumn);
 $stmtCheck->execute();
 $columnExists = $stmtCheck->fetch();
@@ -21,7 +21,7 @@ if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
     // La colonne n'existe pas, prendre la dernière année
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = 'SELECT * FROM annee_acad ORDER BY "dateCreation" DESC LIMIT 1';
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -30,17 +30,17 @@ $currentYearActive = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYearActive) {
     // Si aucune année trouvée, prendre la dernière année
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = 'SELECT * FROM annee_acad ORDER BY "dateCreation" DESC LIMIT 1';
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYearActive = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 }
 
 // Récupérer les sections dont l'utilisateur est responsable
-$query = "SELECT section_idsection 
-          FROM responsable_section 
-          WHERE idUser = :userId 
-          AND annee_acad_idannee_acad = :anneeId";
+$query = 'SELECT section_idsection
+          FROM responsable_section
+          WHERE "idUser" = :userId
+          AND annee_acad_idannee_acad = :anneeId';
 
 $stmt = $pdo->prepare($query);
 $stmt->bindParam(':userId', $currentUserId);
@@ -174,7 +174,7 @@ if (!empty($sections) && $currentYear) {
             $sectionNames = [];
             if (!empty($userSections)) {
                 $placeholders = implode(',', array_fill(0, count($userSections), '?'));
-                $querySections = "SELECT designationSection FROM section WHERE idsection IN ($placeholders)";
+                $querySections = 'SELECT "designationSection" FROM section WHERE idsection IN (' . $placeholders . ')';
                 $stmtSections = $pdo->prepare($querySections);
                 $stmtSections->execute($userSections);
                 $sectionNames = $stmtSections->fetchAll(PDO::FETCH_COLUMN);

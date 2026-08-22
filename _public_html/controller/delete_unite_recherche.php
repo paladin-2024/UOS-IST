@@ -12,19 +12,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['idunite_recherche'])) {
     
     try {
         // 1. Récupérer toutes les spécialisations associées à cette unité de recherche
-        $stmtSpec = $db->prepare("SELECT idSpecialisation FROM specialisation WHERE idUnite_recherche = ?");
+        $stmtSpec = $db->prepare("SELECT \"idSpecialisation\" FROM specialisation WHERE \"idUnite_recherche\" = ?");
         $stmtSpec->execute([$idUniteRecherche]);
         $specialisations = $stmtSpec->fetchAll(PDO::FETCH_COLUMN);
         
         // 2. Supprimer les enseignants affectés à ces spécialisations
         if (!empty($specialisations)) {
             $placeholders = implode(',', array_fill(0, count($specialisations), '?'));
-            $stmtDeleteTeachers = $db->prepare("DELETE FROM enseignant_specialisation WHERE idSpecialisation IN ($placeholders)");
+            $stmtDeleteTeachers = $db->prepare("DELETE FROM enseignant_specialisation WHERE \"idSpecialisation\" IN ($placeholders)");
             $stmtDeleteTeachers->execute($specialisations);
         }
         
         // 3. Supprimer les spécialisations associées
-        $stmtDeleteSpec = $db->prepare("DELETE FROM specialisation WHERE idUnite_recherche = ?");
+        $stmtDeleteSpec = $db->prepare("DELETE FROM specialisation WHERE \"idUnite_recherche\" = ?");
         $stmtDeleteSpec->execute([$idUniteRecherche]);
         
         // 4. Supprimer les associations avec les sections

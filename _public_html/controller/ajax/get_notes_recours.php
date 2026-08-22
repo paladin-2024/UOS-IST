@@ -37,7 +37,7 @@ try {
     // Récupérer les notes actuelles
     $query_notes = "SELECT CG.CC, CG.EX, CG.MF
                     FROM cotes_grille CG
-                    WHERE CG.ECUE_idECUE = :id_ecue
+                    WHERE CG.\"ECUE_idECUE\" = :id_ecue
                     AND CG.session_idsession = :id_session
                     AND CG.matricule = :matricule
                     AND CG.annee_acad_id = :id_annee_acad";

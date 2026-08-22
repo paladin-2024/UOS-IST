@@ -98,7 +98,7 @@ try {
                 $descriptionPaiement = "Paiement FlexPay - " . $transaction['reference'];
                 $modePaiement = $transaction['type_paiement'] === 'carte' ? 'Carte bancaire' : 'Mobile Money';
 
-                $stmtTransaction = $connexion->prepare("
+                $stmtTransaction = $connexion->prepare('
                     INSERT INTO transactions (
                         reference,
                         type,
@@ -109,24 +109,24 @@ try {
                         source_id,
                         description,
                         statut,
-                        idAgent,
+                        "idAgent",
                         date_creation,
-                        idUser
+                        "idUser"
                     ) VALUES (
                         :reference,
-                        'Recette',
+                        \'Recette\',
                         :montant,
                         :devise,
                         NOW(),
-                        'Banque',
+                        \'Banque\',
                         1,
                         :description,
-                        'Confirmée',
+                        \'Confirmée\',
                         0,
                         NOW(),
                         0
                     )
-                ");
+                ');
 
                 $stmtTransaction->bindParam(':reference', $refTransaction);
                 $stmtTransaction->bindParam(':montant', $transaction['montant']);

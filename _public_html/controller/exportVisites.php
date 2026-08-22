@@ -37,8 +37,8 @@ try {
                 ELSE v.type_visite
             END as type_libelle
         FROM visites v
-        LEFT JOIN agent a ON v.Agent_idAgent = a.idAgent
-        LEFT JOIN service s ON v.Service_idService = s.idService
+        LEFT JOIN agent a ON v.\"Agent_idAgent\" = a.\"idAgent\"
+        LEFT JOIN service s ON v.\"Service_idService\" = s.\"idService\"
         WHERE v.cree_par = ? 
         AND v.date_visite BETWEEN ? AND ?
         ORDER BY v.date_visite DESC, v.heure_debut DESC

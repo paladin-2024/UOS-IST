@@ -10,7 +10,7 @@ $stmt = $connexion->prepare("
     SELECT DISTINCT c.* 
     FROM caisses c
     LEFT JOIN droits_acces_finances d ON (d.entite_id = c.id OR d.entite_id IS NULL) AND d.type = 'Caisse'
-    WHERE d.idUser = :idUser AND d.est_actif = 1 
+    WHERE d.\"idUser\" = :idUser AND d.est_actif = 1 
     AND (d.date_debut IS NULL OR d.date_debut <= CURRENT_DATE) 
     AND (d.date_fin IS NULL OR d.date_fin >= CURRENT_DATE)
     ORDER BY c.designation ASC
@@ -40,7 +40,7 @@ if ($caisse_id) {
     $stmt = $connexion->prepare("
         SELECT niveau 
         FROM droits_acces_finances 
-        WHERE idUser = :idUser AND type = 'Caisse' 
+        WHERE \"idUser\" = :idUser AND type = 'Caisse' 
         AND (entite_id = :caisse_id OR entite_id IS NULL)
         AND est_actif = 1
         ORDER BY entite_id DESC, niveau DESC
@@ -64,7 +64,7 @@ if ($caisse_id) {
     $stmt = $connexion->prepare("
         SELECT niveau 
         FROM droits_acces_finances 
-        WHERE idUser = :idUser AND type = 'Caisse' 
+        WHERE \"idUser\" = :idUser AND type = 'Caisse' 
         AND (entite_id = :caisse_id OR entite_id IS NULL)
         AND est_actif = 1
         ORDER BY entite_id DESC, niveau DESC
@@ -81,7 +81,7 @@ if ($caisse_id) {
 }
 
 // Récupérer l'idAgent de l'utilisateur connecté
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -93,8 +93,8 @@ if ($a_access && $caisse_id && $idAgent) {
     $stmt = $connexion->prepare("
         SELECT s.*, a.noms as agent_nom
         FROM sessions_caisse s
-        LEFT JOIN agent a ON s.idAgent = a.idAgent
-        WHERE s.caisse_id = :caisse_id AND s.idAgent = :idAgent AND s.statut = 'Ouverte'
+        LEFT JOIN agent a ON s.\"idAgent\" = a.\"idAgent\"
+        WHERE s.caisse_id = :caisse_id AND s.\"idAgent\" = :idAgent AND s.statut = 'Ouverte'
         ORDER BY s.date_ouverture DESC
         LIMIT 1
     ");
@@ -158,7 +158,7 @@ if ($a_access && $caisse_id) {
                cb.designation as categorie_nom,
                sc.id as session_caisse_id
         FROM transactions t
-        LEFT JOIN agent a ON t.idAgent = a.idAgent
+        LEFT JOIN agent a ON t.\"idAgent\" = a.\"idAgent\"
         LEFT JOIN categories_budget cb ON t.categorie_id = cb.id
         LEFT JOIN sessions_caisse sc ON t.session_caisse_id = sc.id
         WHERE t.source = 'Caisse' 
@@ -413,7 +413,7 @@ unset($_SESSION['message'], $_SESSION['messageType']);
                 <input type="hidden" name="source" value="Caisse">
                 <input type="hidden" name="source_id" value="<?= $caisse_id ?>">
                 <input type="hidden" name="session_caisse_id" value="<?= $session_active ? $session_active['id'] : '' ?>">
-                <input type="hidden" name="idAgent" value="<?= $idAgent ?>">
+                <input type="hidden" name=idAgent value="<?= $idAgent ?>">
                 
                 <div class="modal-header">
                     <h5 class="modal-title" id="recetteModalLabel">Enregistrer une recette</h5>
@@ -498,7 +498,7 @@ unset($_SESSION['message'], $_SESSION['messageType']);
                 <input type="hidden" name="source" value="Caisse">
                 <input type="hidden" name="source_id" value="<?= $caisse_id ?>">
                 <input type="hidden" name="session_caisse_id" value="<?= $session_active ? $session_active['id'] : '' ?>">
-                <input type="hidden" name="idAgent" value="<?= $idAgent ?>">
+                <input type="hidden" name=idAgent value="<?= $idAgent ?>">
                 
                 <div class="modal-header">
                     <h5 class="modal-title" id="depenseModalLabel">Enregistrer une dépense</h5>
@@ -581,7 +581,7 @@ unset($_SESSION['message'], $_SESSION['messageType']);
                 <input type="hidden" name="source" value="Caisse">
                 <input type="hidden" name="source_id" value="<?= $caisse_id ?>">
                 <input type="hidden" name="session_caisse_id" value="<?= $session_active ? $session_active['id'] : '' ?>">
-                <input type="hidden" name="idAgent" value="<?= $idAgent ?>">
+                <input type="hidden" name=idAgent value="<?= $idAgent ?>">
                 
                 <div class="modal-header">
                     <h5 class="modal-title" id="transfertModalLabel">Effectuer un transfert</h5>

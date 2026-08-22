@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         // Vérifier si l'agent a déjà une autorisation pour ce laboratoire
-        $stmt = $db->prepare("SELECT COUNT(*) FROM autorisation_labo WHERE idlabo = :idlabo AND idAgent = :idAgent");
+        $stmt = $db->prepare("SELECT COUNT(*) FROM autorisation_labo WHERE idlabo = :idlabo AND \"idAgent\" = :idAgent");
         $stmt->bindParam(':idlabo', $idlabo, PDO::PARAM_INT);
         $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $stmt->execute();
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $activeColumnExists = $checkActiveColumn->rowCount() > 0;
         
         // Construire la requête SQL d'insertion en fonction des colonnes existantes
-        $sql = "INSERT INTO autorisation_labo (idlabo, idAgent, date_debut, date_fin, niveau_autorisation";
+        $sql = "INSERT INTO autorisation_labo (idlabo, \"idAgent\", date_debut, date_fin, niveau_autorisation";
         
         if ($commentColumnExists) {
             $sql .= ", commentaire";

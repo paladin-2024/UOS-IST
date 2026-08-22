@@ -23,9 +23,9 @@ class Frais
     {
         $query = "SELECT 
                 f.*, 
-                p.designationPromotion, 
-                o.designationOrientation,
-                s.designationSection 
+                p.\"designationPromotion\", 
+                o.\"designationOrientation\",
+                s.\"designationSection\" 
             FROM frais AS f
             INNER JOIN promotion AS p ON f.promotion_idpromotion = p.idpromotion
             INNER JOIN orientation AS o ON p.orientation_idorientation = o.idorientation
@@ -33,10 +33,10 @@ class Frais
             WHERE f.annee_acad_idannee_acad = :anneeAcadId";
         
         if (!empty($search)) {
-            $query .= " AND (f.designation LIKE :search OR p.designationPromotion LIKE :search OR s.designationSection LIKE :search)";
+            $query .= " AND (f.designation LIKE :search OR p.\"designationPromotion\" LIKE :search OR s.\"designationSection\" LIKE :search)";
         }
         
-        $query .= " ORDER BY s.designationSection, p.designationPromotion, f.designation";
+        $query .= " ORDER BY s.\"designationSection\", p.\"designationPromotion\", f.designation";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -61,9 +61,9 @@ class Frais
     {
         $query = "SELECT 
                 f.*, 
-                p.designationPromotion, 
-                o.designationOrientation,
-                s.designationSection 
+                p.\"designationPromotion\", 
+                o.\"designationOrientation\",
+                s.\"designationSection\" 
             FROM frais AS f
             INNER JOIN promotion AS p ON f.promotion_idpromotion = p.idpromotion
             INNER JOIN orientation AS o ON p.orientation_idorientation = o.idorientation
@@ -72,10 +72,10 @@ class Frais
             AND s.idsection = :sectionId";
         
         if (!empty($search)) {
-            $query .= " AND (f.designation LIKE :search OR p.designationPromotion LIKE :search)";
+            $query .= " AND (f.designation LIKE :search OR p.\"designationPromotion\" LIKE :search)";
         }
         
-        $query .= " ORDER BY p.designationPromotion, f.designation";
+        $query .= " ORDER BY p.\"designationPromotion\", f.designation";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -141,8 +141,8 @@ class Frais
      */
     public function createFrais($designation, $montant, $devise, $description, $estObligatoire, $promotionId, $anneeAcadId)
     {
-        $query = "INSERT INTO frais (designation, montant, devise, description, estObligatoire, 
-                  dateCreation, promotion_idpromotion, annee_acad_idannee_acad) 
+        $query = "INSERT INTO frais (designation, montant, devise, description, \"estObligatoire\", 
+                  \"dateCreation\", promotion_idpromotion, annee_acad_idannee_acad) 
                   VALUES (:designation, :montant, :devise, :description, :estObligatoire, 
                   NOW(), :promotionId, :anneeAcadId)";
         
@@ -176,7 +176,7 @@ class Frais
                       montant = :montant, 
                       devise = :devise, 
                       description = :description, 
-                      estObligatoire = :estObligatoire, 
+                      \"estObligatoire\" = :estObligatoire, 
                       promotion_idpromotion = :promotionId 
                   WHERE idfrais = :idFrais";
         
@@ -243,7 +243,7 @@ class Frais
     public function checkDuplicateReference($referencePaiement)
     {
         $query = "SELECT COUNT(*) FROM paiement 
-                  WHERE referencePaiement = :reference";
+                  WHERE \"referencePaiement\" = :reference";
         
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -262,18 +262,18 @@ class Frais
     {
         $query = "SELECT 
                 fs.*,
-                s.designationSection,
-                u.nomUser as nomUtilisateur
+                s.\"designationSection\",
+                u.\"nomUser\" as nomUtilisateur
             FROM frais_soutenance AS fs
-            LEFT JOIN t_users AS u ON fs.user_id = u.idUser
+            LEFT JOIN t_users AS u ON fs.user_id = u.\"idUser\"
             LEFT JOIN section AS s ON fs.section_id = s.idsection
             WHERE fs.annee_acad_id = :anneeAcadId";
         
         if (!empty($search)) {
-            $query .= " AND (fs.designation LIKE :search OR s.designationSection LIKE :search)";
+            $query .= " AND (fs.designation LIKE :search OR s.\"designationSection\" LIKE :search)";
         }
         
-        $query .= " ORDER BY s.designationSection, fs.designation";
+        $query .= " ORDER BY s.\"designationSection\", fs.designation";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -292,16 +292,16 @@ class Frais
     {
         $query = "SELECT 
                 fs.*,
-                s.designationSection,
-                u.nomUser as nomUtilisateur
+                s.\"designationSection\",
+                u.\"nomUser\" as nomUtilisateur
             FROM frais_soutenance AS fs
-            LEFT JOIN t_users AS u ON fs.user_id = u.idUser
+            LEFT JOIN t_users AS u ON fs.user_id = u.\"idUser\"
             LEFT JOIN section AS s ON fs.section_id = s.idsection
             WHERE fs.annee_acad_id = :anneeAcadId 
             AND fs.section_id = :sectionId";
         
         if (!empty($search)) {
-            $query .= " AND (fs.designation LIKE :search OR s.designationSection LIKE :search)";
+            $query .= " AND (fs.designation LIKE :search OR s.\"designationSection\" LIKE :search)";
         }
         
         $query .= " ORDER BY fs.designation";
@@ -322,7 +322,7 @@ class Frais
 
     public function getFraisSoutenanceById($idFraisSoutenance)
     {
-        $query = "SELECT fs.*, s.designationSection
+        $query = "SELECT fs.*, s.\"designationSection\"
                   FROM frais_soutenance fs
                   LEFT JOIN section s ON fs.section_id = s.idsection
                   WHERE fs.idfrais_soutenance = :idFraisSoutenance";
@@ -337,7 +337,7 @@ class Frais
     public function createFraisSoutenance($designation, $montant, $devise, $description, $anneeAcadId, $sectionId, $estObligatoire = true, $idUser = null) 
 {
     $query = "INSERT INTO frais_soutenance 
-              (designation, montant, devise, description, estObligatoire, dateCreation, section_id, annee_acad_id, user_id) 
+              (designation, montant, devise, description, \"estObligatoire\", \"dateCreation\", section_id, annee_acad_id, user_id) 
               VALUES (:designation, :montant, :devise, :description, :estObligatoire, NOW(), :sectionId, :anneeAcadId, :idUser)";
     
     $stmt = $this->db->prepare($query);
@@ -360,7 +360,7 @@ public function updateFraisSoutenance($idFraisSoutenance, $designation, $montant
                   montant = :montant, 
                   devise = :devise, 
                   description = :description, 
-                  estObligatoire = :estObligatoire,
+                  \"estObligatoire\" = :estObligatoire,
                   section_id = :sectionId
               WHERE idfrais_soutenance = :idFraisSoutenance";
     
@@ -434,16 +434,16 @@ $query = "SELECT
       f.devise,
       e.noms as nom_etudiant,
       e.matricule,
-      pr.designationPromotion,
-      s.designationSection,
-      u.nomUser as nom_utilisateur
+      pr.\"designationPromotion\",
+      s.\"designationSection\",
+      u.\"nomUser\" as nom_utilisateur
   FROM paiement AS p
   INNER JOIN frais AS f ON p.frais_idfrais = f.idfrais
   INNER JOIN etudiant AS e ON p.etudiant_idetudiant = e.idetudiant
   INNER JOIN promotion AS pr ON e.promotion_idpromotion = pr.idpromotion
   INNER JOIN orientation AS o ON pr.orientation_idorientation = o.idorientation
   INNER JOIN section AS s ON o.section_idsection = s.idsection
-  INNER JOIN t_users AS u ON p.idUser = u.idUser
+  INNER JOIN t_users AS u ON p.\"idUser\" = u.\"idUser\"
   WHERE 1=1";
 
 // Appliquer les filtres
@@ -456,14 +456,14 @@ if (isset($filters['promotionId'])) {
 }
 
 if (isset($filters['estComplet'])) {
-  $query .= " AND p.estComplet = :estComplet";
+  $query .= " AND p.\"estComplet\" = :estComplet";
 }
 
 if (!empty($search)) {
   $query .= " AND (e.noms LIKE :search OR e.matricule LIKE :search OR f.designation LIKE :search)";
 }
 
-$query .= " ORDER BY p.datePaiement DESC";
+$query .= " ORDER BY p.\"datePaiement\" DESC";
 
 $stmt = $this->db->prepare($query);
 
@@ -502,13 +502,13 @@ $query = "SELECT
       f.designation as designation_frais,
       f.montant as montant_total,
       f.devise,
-      u.nomUser as nom_utilisateur
+      u.\"nomUser\" as nom_utilisateur
   FROM paiement AS p
   INNER JOIN frais AS f ON p.frais_idfrais = f.idfrais
-  INNER JOIN t_users AS u ON p.idUser = u.idUser
+  INNER JOIN t_users AS u ON p.\"idUser\" = u.\"idUser\"
   WHERE p.etudiant_idetudiant = :etudiantId
   AND p.annee_acad_idannee_acad = :anneeAcadId
-  ORDER BY p.datePaiement DESC";
+  ORDER BY p.\"datePaiement\" DESC";
 
 $stmt = $this->db->prepare($query);
 $stmt->bindParam(':etudiantId', $etudiantId, PDO::PARAM_INT);
@@ -532,14 +532,14 @@ $query = "SELECT
       e.matricule,
       f.montant as montant_total,
       f.devise,
-      u.nomUser as nom_utilisateur
+      u.\"nomUser\" as nom_utilisateur
   FROM paiement AS p
   INNER JOIN frais AS f ON p.frais_idfrais = f.idfrais
   INNER JOIN etudiant AS e ON p.etudiant_idetudiant = e.idetudiant
-  INNER JOIN t_users AS u ON p.idUser = u.idUser
+  INNER JOIN t_users AS u ON p.\"idUser\" = u.\"idUser\"
   WHERE p.frais_idfrais = :fraisId
   AND p.annee_acad_idannee_acad = :anneeAcadId
-  ORDER BY p.datePaiement DESC";
+  ORDER BY p.\"datePaiement\" DESC";
 
 $stmt = $this->db->prepare($query);
 $stmt->bindParam(':fraisId', $fraisId, PDO::PARAM_INT);
@@ -572,8 +572,8 @@ if (!$frais) {
 // Vérifier si le paiement est complet
 $estComplet = (float)$montantPaye >= (float)$frais['montant'];
 
-$query = "INSERT INTO paiement (etudiant_idetudiant, frais_idfrais, montantPaye, referencePaiement, 
-        datePaiement, estComplet, modePaiement, commentaire, annee_acad_idannee_acad, idUser) 
+$query = "INSERT INTO paiement (etudiant_idetudiant, frais_idfrais, \"montantPaye\", \"referencePaiement\", 
+        \"datePaiement\", \"estComplet\", \"modePaiement\", commentaire, annee_acad_idannee_acad, \"idUser\") 
         VALUES (:etudiantId, :fraisId, :montantPaye, :referencePaiement, 
         NOW(), :estComplet, :modePaiement, :commentaire, :anneeAcadId, :idUser)";
 
@@ -621,10 +621,10 @@ if (!$paiement) {
 $estComplet = (float)$montantPaye >= (float)$paiement['montant_total'];
 
 $query = "UPDATE paiement 
-        SET montantPaye = :montantPaye, 
-            referencePaiement = :referencePaiement, 
-            estComplet = :estComplet, 
-            modePaiement = :modePaiement, 
+        SET \"montantPaye\" = :montantPaye, 
+            \"referencePaiement\" = :referencePaiement, 
+            \"estComplet\" = :estComplet, 
+            \"modePaiement\" = :modePaiement, 
             commentaire = :commentaire 
         WHERE idpaiement = :idPaiement";
 
@@ -670,8 +670,8 @@ $query = "SELECT
       fs.devise,
       e.noms as nom_etudiant,
       e.matricule,
-      pr.designationPromotion,
-      s.designationSection,
+      pr.\"designationPromotion\",
+      s.\"designationSection\",
       u.nom as nom_utilisateur
   FROM paiement_soutenance AS ps
   INNER JOIN frais_soutenance AS fs ON ps.idfrais_soutenance = fs.idfrais_soutenance
@@ -679,7 +679,7 @@ $query = "SELECT
   INNER JOIN promotion AS pr ON e.promotion_idpromotion = pr.idpromotion
   INNER JOIN orientation AS o ON pr.orientation_idorientation = o.idorientation
   INNER JOIN section AS s ON o.section_idsection = s.idsection
-  INNER JOIN t_users AS u ON ps.idUser = u.idUser
+  INNER JOIN t_users AS u ON ps.\"idUser\" = u.\"idUser\"
   WHERE 1=1";
 
 // Appliquer les filtres
@@ -738,13 +738,13 @@ $query = "SELECT
       fs.designation as designation_frais,
       fs.montant as montant_total,
       fs.devise,
-      u.nomUser as nom_utilisateur
+      u.\"nomUser\" as nom_utilisateur
   FROM paiement_soutenance AS ps
   INNER JOIN frais_soutenance AS fs ON ps.frais_soutenance_id = fs.idfrais_soutenance
-  INNER JOIN t_users AS u ON ps.user_id = u.idUser
+  INNER JOIN t_users AS u ON ps.user_id = u.\"idUser\"
   WHERE ps.etudiant_id = :etudiantId
   AND ps.annee_acad_id = :anneeAcadId
-  ORDER BY ps.datePaiement DESC";
+  ORDER BY ps.\"datePaiement\" DESC";
 
 $stmt = $this->db->prepare($query);
 $stmt->bindParam(':etudiantId', $etudiantId, PDO::PARAM_INT);
@@ -769,7 +769,7 @@ public function getPaiementsByFraisSoutenance($fraisSoutenanceId, $anneeAcadId)
             u.nom as nom_utilisateur
         FROM paiement_soutenance AS ps
         INNER JOIN etudiant AS e ON ps.idetudiant = e.idetudiant
-        INNER JOIN t_users AS u ON ps.idUser = u.idUser
+        INNER JOIN t_users AS u ON ps.\"idUser\" = u.\"idUser\"
         WHERE ps.idfrais_soutenance = :fraisSoutenanceId
         AND ps.annee_acad_idannee_acad = :anneeAcadId
         ORDER BY ps.date_paiement DESC";
@@ -808,11 +808,11 @@ public function enregistrerPaiementSoutenance($fraisSoutenanceId, $etudiantId, $
     $query = "INSERT INTO paiement_soutenance (
                 frais_soutenance_id, 
                 etudiant_id, 
-                montantPaye, 
-                referencePaiement, 
-                datePaiement, 
-                estComplet, 
-                modePaiement, 
+                \"montantPaye\", 
+                \"referencePaiement\", 
+                \"datePaiement\", 
+                \"estComplet\", 
+                \"modePaiement\", 
                 commentaire, 
                 annee_acad_id, 
                 user_id
@@ -874,10 +874,10 @@ public function updatePaiementSoutenance($idPaiement, $montantPaye, $referencePa
     
     // Mettre à jour le paiement
     $query = "UPDATE paiement_soutenance 
-              SET montantPaye = :montantPaye, 
-                  referencePaiement = :referencePaiement, 
-                  estComplet = :estComplet, 
-                  modePaiement = :modePaiement, 
+              SET \"montantPaye\" = :montantPaye, 
+                  \"referencePaiement\" = :referencePaiement, 
+                  \"estComplet\" = :estComplet, 
+                  \"modePaiement\" = :modePaiement, 
                   commentaire = :commentaire 
               WHERE idpaiement_soutenance = :idPaiement";
     
@@ -913,11 +913,11 @@ public function getPaiementSoutenanceById($idPaiement) {
                      fs.devise,
                      e.noms as nom_etudiant,
                      e.matricule,
-                     u.nomUser as nom_utilisateur
+                     u.\"nomUser\" as nom_utilisateur
               FROM paiement_soutenance ps
               JOIN frais_soutenance fs ON ps.frais_soutenance_id = fs.idfrais_soutenance
               JOIN etudiant e ON ps.etudiant_id = e.idetudiant
-              JOIN t_users u ON ps.user_id = u.idUser
+              JOIN t_users u ON ps.user_id = u.\"idUser\"
               WHERE ps.idpaiement_soutenance = :idPaiement";
     
     $stmt = $this->db->prepare($query);
@@ -943,14 +943,14 @@ public function getStatistiquesPaiement($anneeAcadId, $sectionId = null, $promot
     // Total des frais par promotion
     $query = "SELECT 
             p.promotion_idpromotion,
-            p.designationPromotion,
-            o.designationOrientation,
-            s.designationSection,
+            p.\"designationPromotion\",
+            o.\"designationOrientation\",
+            s.\"designationSection\",
             COUNT(f.idfrais) as nb_frais,
             SUM(f.montant) as montant_total,
             f.devise,
             COUNT(DISTINCT e.idetudiant) as nb_etudiants,
-            SUM(IF(pay.estComplet, 1, 0)) as frais_payes_complet
+            SUM(IF(pay.\"estComplet\", 1, 0)) as frais_payes_complet
         FROM promotion AS p
         INNER JOIN orientation AS o ON p.orientation_idorientation = o.idorientation
         INNER JOIN section AS s ON o.section_idsection = s.idsection
@@ -968,7 +968,7 @@ public function getStatistiquesPaiement($anneeAcadId, $sectionId = null, $promot
     }
     
     $query .= " GROUP BY p.idpromotion, f.devise
-               ORDER BY s.designationSection, p.designationPromotion";
+               ORDER BY s.\"designationSection\", p.designationPromotion";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -995,7 +995,7 @@ public function getStatistiquesPaiementSoutenance($anneeAcadId, $sectionId = nul
 {
     $query = "SELECT 
             s.idsection,
-            s.designationSection,
+            s.\"designationSection\",
             COUNT(fs.idfrais_soutenance) as nb_frais,
             SUM(fs.montant) as montant_total,
             fs.devise,
@@ -1050,7 +1050,7 @@ public function etudiantEnRegle($etudiantId, $anneeAcadId)
              FROM frais AS f 
              WHERE f.promotion_idpromotion = :promotionId 
              AND f.annee_acad_idannee_acad = :anneeAcadId 
-             AND f.estObligatoire = 1";
+             AND f.\"estObligatoire\" = 1";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':promotionId', $promotionId, PDO::PARAM_INT);
@@ -1068,7 +1068,7 @@ public function etudiantEnRegle($etudiantId, $anneeAcadId)
                  FROM paiement 
                  WHERE etudiant_idetudiant = :etudiantId 
                  AND frais_idfrais = :fraisId 
-                 AND estComplet = 1";
+                 AND \"estComplet\" = 1";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':etudiantId', $etudiantId, PDO::PARAM_INT);
@@ -1098,7 +1098,7 @@ public function marquerEtudiantsEnOrdre($etudiantIds, $fraisId, $anneeAcadId, $i
     $count = 0;
     
     foreach ($etudiantIds as $etudiantId) {
-        $query = "INSERT INTO etudiant_en_ordre (idetudiant, idfrais, annee_acad_idannee_acad, date_enregistrement, idimport, idUser) 
+        $query = "INSERT INTO etudiant_en_ordre (idetudiant, idfrais, annee_acad_idannee_acad, date_enregistrement, idimport, \"idUser\") 
                   VALUES (:etudiantId, :fraisId, :anneeAcadId, NOW(), :idImport, :idUser)";
         
         $stmt = $this->db->prepare($query);
@@ -1127,7 +1127,7 @@ public function etudiantEnOrdrePourFrais($etudiantId, $fraisId, $anneeAcadId)
             WHERE etudiant_idetudiant = :etudiantId 
             AND frais_idfrais = :fraisId 
             AND annee_acad_idannee_acad = :anneeAcadId
-            AND estComplet = 1";
+            AND \"estComplet\" = 1";
    
    $stmt = $this->db->prepare($query);
    $stmt->bindParam(':etudiantId', $etudiantId, PDO::PARAM_INT);
@@ -1172,7 +1172,7 @@ public function getEtudiantsEnOrdrePourFrais($fraisId, $anneeAcadId)
                    SELECT etudiant_idetudiant FROM paiement 
                    WHERE frais_idfrais = :fraisId 
                    AND annee_acad_idannee_acad = :anneeAcadId 
-                   AND estComplet = 1
+                   AND \"estComplet\" = 1
                )
                OR
                e.idetudiant IN (
@@ -1202,7 +1202,7 @@ public function getEtudiantsEnOrdrePourFrais($fraisId, $anneeAcadId)
 */
 public function enregistrerImportEtudiantsOrdre($fichier, $fraisId, $anneeAcadId, $sectionId, $idUser)
 {
-   $query = "INSERT INTO import_etudiants_ordre (fichier, date_import, idfrais, annee_acad_idannee_acad, idsection, idUser) 
+   $query = "INSERT INTO import_etudiants_ordre (fichier, date_import, idfrais, annee_acad_idannee_acad, idsection, \"idUser\") 
              VALUES (:fichier, NOW(), :fraisId, :anneeAcadId, :sectionId, :idUser)";
    
    $stmt = $this->db->prepare($query);
@@ -1227,13 +1227,13 @@ public function getImportationsEtudiantsOrdre($fraisId = null, $anneeAcadId = nu
 {
    $query = "SELECT i.*, 
            f.designation as designation_frais,
-           s.designationSection,
+           s.\"designationSection\",
            u.nom as nom_utilisateur,
            COUNT(e.idetudiant) as nb_etudiants
        FROM import_etudiants_ordre i
        LEFT JOIN frais f ON i.idfrais = f.idfrais
        LEFT JOIN section s ON i.idsection = s.idsection
-       LEFT JOIN t_users u ON i.idUser = u.idUser
+       LEFT JOIN t_users u ON i.\"idUser\" = u.\"idUser\"
        LEFT JOIN etudiant_en_ordre e ON e.idimport = i.idimport
        WHERE 1=1";
    
@@ -1276,8 +1276,8 @@ public function getPaiementsEnAttente($anneeAcadId, $sectionId = null)
            f.devise,
            e.noms as nom_etudiant,
            e.matricule,
-           pr.designationPromotion,
-           s.designationSection
+           pr.\"designationPromotion\",
+           s.\"designationSection\"
        FROM paiement AS p
        INNER JOIN frais AS f ON p.frais_idfrais = f.idfrais
        INNER JOIN etudiant AS e ON p.etudiant_idetudiant = e.idetudiant
@@ -1291,7 +1291,7 @@ public function getPaiementsEnAttente($anneeAcadId, $sectionId = null)
        $query .= " AND s.idsection = :sectionId";
    }
    
-   $query .= " ORDER BY p.datePaiement DESC";
+   $query .= " ORDER BY p.\"datePaiement\" DESC";
    
    $stmt = $this->db->prepare($query);
    $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -1314,7 +1314,7 @@ public function validerPaiement($idPaiement, $idUser)
 {
    $query = "UPDATE paiement 
              SET valide = 1, 
-                 idValidateur = :idUser, 
+                 \"idValidateur\" = :idUser, 
                  dateValidation = NOW() 
              WHERE idpaiement = :idPaiement";
    
@@ -1336,7 +1336,7 @@ public function rejeterPaiement($idPaiement, $motifRejet, $idUser)
 {
    $query = "UPDATE paiement 
              SET valide = 2, 
-                 idValidateur = :idUser, 
+                 \"idValidateur\" = :idUser, 
                  dateValidation = NOW(),
                  commentaire = CONCAT(commentaire, '\nRejet: ', :motifRejet)
              WHERE idpaiement = :idPaiement";
@@ -1400,7 +1400,7 @@ public function getStatistiquesGlobales($anneeAcadId)
    $stats['total_etudiants'] = $result['count'];
    
    // Nombre total de paiements et montant payé
-   $query = "SELECT COUNT(*) as count, SUM(p.montantPaye) as total, f.devise
+   $query = "SELECT COUNT(*) as count, SUM(p.\"montantPaye\") as total, f.devise
             FROM paiement p
             INNER JOIN frais f ON p.frais_idfrais = f.idfrais
             WHERE p.annee_acad_idannee_acad = :anneeAcadId
@@ -1467,11 +1467,11 @@ public function getFraisSoutenanceForEtudiant($etudiantId, $anneeAcadId) {
     
     // Récupérer tous les frais de soutenance pour cette section
     $query = "SELECT fs.*, 
-                     COALESCE((SELECT SUM(ps.montantPaye) 
+                     COALESCE((SELECT SUM(ps.\"montantPaye\") 
                               FROM paiement_soutenance ps 
                               WHERE ps.frais_soutenance_id = fs.idfrais_soutenance 
-                              AND ps.etudiant_id = :etudiantId), 0) as montantPaye,
-                     fs.montant - COALESCE((SELECT SUM(ps.montantPaye) 
+                              AND ps.etudiant_id = :etudiantId), 0) as \"montantPaye\",
+                     fs.montant - COALESCE((SELECT SUM(ps.\"montantPaye\") 
                                           FROM paiement_soutenance ps 
                                           WHERE ps.frais_soutenance_id = fs.idfrais_soutenance 
                                           AND ps.etudiant_id = :etudiantId), 0) as montantRestant
@@ -1548,7 +1548,7 @@ public function getEtatPaiementEtudiant($etudiantId, $fraisId, $typeFrais = 'fra
                       FROM frais f 
                       WHERE f.idfrais = :fraisId";
         
-        $queryPaiement = "SELECT SUM(p.montantPaye) as montant_paye
+        $queryPaiement = "SELECT SUM(p.\"montantPaye\") as montant_paye
                          FROM paiement p
                          WHERE p.etudiant_idetudiant = :etudiantId
                          AND p.frais_idfrais = :fraisId";
@@ -1610,13 +1610,13 @@ public function getEtudiantsEligiblesSoutenance($sectionId = null, $promotionId 
                 e.idetudiant,
                 e.matricule,
                 e.noms,
-                p.designationPromotion,
-                s.designationSection,
+                p.\"designationPromotion\",
+                s.\"designationSection\",
                 fs.designation as designation_frais,
                 COUNT(DISTINCT fs.idfrais_soutenance) as total_frais,
-                COUNT(DISTINCT CASE WHEN ps.estComplet = 1 THEN fs.idfrais_soutenance END) as frais_payes,
-                SUM(ps.montantPaye) as montant_total_paye,
-                MAX(ps.datePaiement) as date_dernier_paiement,
+                COUNT(DISTINCT CASE WHEN ps.\"estComplet\" = 1 THEN fs.idfrais_soutenance END) as frais_payes,
+                SUM(ps.\"montantPaye\") as montant_total_paye,
+                MAX(ps.\"datePaiement\") as date_dernier_paiement,
                 fs.devise
             FROM etudiant e
             JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -1639,8 +1639,8 @@ public function getEtudiantsEligiblesSoutenance($sectionId = null, $promotionId 
     
     // Grouper et filtrer pour n'avoir que les étudiants en ordre
     $query .= " GROUP BY e.idetudiant, fs.devise
-                HAVING COUNT(DISTINCT fs.idfrais_soutenance) = COUNT(DISTINCT CASE WHEN ps.estComplet = 1 THEN fs.idfrais_soutenance END)
-                ORDER BY s.designationSection, p.designationPromotion, e.noms";
+                HAVING COUNT(DISTINCT fs.idfrais_soutenance) = COUNT(DISTINCT CASE WHEN ps.\"estComplet\" = 1 THEN fs.idfrais_soutenance END)
+                ORDER BY s.\"designationSection\", p.\"designationPromotion\", e.noms";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -1668,14 +1668,14 @@ public function getEtudiantsLitigesSoutenance($sectionId = null, $promotionId = 
                 e.idetudiant,
                 e.matricule,
                 e.noms,
-                p.designationPromotion,
-                s.designationSection,
+                p.\"designationPromotion\",
+                s.\"designationSection\",
                 fs.designation as designation_frais,
                 COUNT(DISTINCT fs.idfrais_soutenance) as total_frais,
-                COUNT(DISTINCT CASE WHEN ps.estComplet = 1 THEN fs.idfrais_soutenance END) as frais_payes,
-                COUNT(DISTINCT fs.idfrais_soutenance) - COUNT(DISTINCT CASE WHEN ps.estComplet = 1 THEN fs.idfrais_soutenance END) as frais_manquants,
-                GROUP_CONCAT(DISTINCT CASE WHEN (ps.estComplet IS NULL OR ps.estComplet = 0) THEN fs.designation END SEPARATOR ', ') as frais_manquants_liste,
-                SUM(CASE WHEN ps.montantPaye IS NULL THEN fs.montant ELSE fs.montant - ps.montantPaye END) as montant_restant,
+                COUNT(DISTINCT CASE WHEN ps.\"estComplet\" = 1 THEN fs.idfrais_soutenance END) as frais_payes,
+                COUNT(DISTINCT fs.idfrais_soutenance) - COUNT(DISTINCT CASE WHEN ps.\"estComplet\" = 1 THEN fs.idfrais_soutenance END) as frais_manquants,
+                GROUP_CONCAT(DISTINCT CASE WHEN (ps.\"estComplet\" IS NULL OR ps.\"estComplet\" = 0) THEN fs.designation END SEPARATOR ', ') as frais_manquants_liste,
+                SUM(CASE WHEN ps.\"montantPaye\" IS NULL THEN fs.montant ELSE fs.montant - ps.\"montantPaye\" END) as montant_restant,
                 fs.devise,
                 CASE 
                     WHEN COUNT(DISTINCT CASE WHEN ps.idpaiement_soutenance IS NULL THEN fs.idfrais_soutenance END) > 0 THEN 'Non payé'
@@ -1702,8 +1702,8 @@ public function getEtudiantsLitigesSoutenance($sectionId = null, $promotionId = 
     
     // Grouper et filtrer pour n'avoir que les étudiants avec litiges
     $query .= " GROUP BY e.idetudiant, fs.devise
-                HAVING COUNT(DISTINCT fs.idfrais_soutenance) > COUNT(DISTINCT CASE WHEN ps.estComplet = 1 THEN fs.idfrais_soutenance END)
-                ORDER BY s.designationSection, p.designationPromotion, e.noms";
+                HAVING COUNT(DISTINCT fs.idfrais_soutenance) > COUNT(DISTINCT CASE WHEN ps.\"estComplet\" = 1 THEN fs.idfrais_soutenance END)
+                ORDER BY s.\"designationSection\", p.\"designationPromotion\", e.noms";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);

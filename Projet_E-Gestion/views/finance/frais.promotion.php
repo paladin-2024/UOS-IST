@@ -7,7 +7,7 @@ $connexion = Connexion::getInstance()->getPDO();
 $idUser = $_SESSION['id'];
 
 // Récupérer l'idAgent de l'utilisateur connecté
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -26,12 +26,12 @@ $categories = $connexion->query("SELECT id, designation FROM categories_frais OR
 $promotions = [];
 if (!empty($anneeAcad)) {
     $stmtPromotions = $connexion->prepare("
-        SELECT p.idpromotion, p.designationPromotion, s.designationSection 
+        SELECT p.idpromotion, p.\"designationPromotion\", s.\"designationSection\" 
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation
         JOIN section s ON o.section_idsection = s.idsection
         WHERE p.annee_acad_idannee_acad = :anneeId
-        ORDER BY s.designationSection, p.designationPromotion
+        ORDER BY s.\"designationSection\", p.\"designationPromotion\"
     ");
     $stmtPromotions->bindParam(':anneeId', $anneeAcad, PDO::PARAM_INT);
     $stmtPromotions->execute();
@@ -43,9 +43,9 @@ $sql = "
     SELECT 
         f.id, f.designation, f.montant, f.devise, f.est_obligatoire,
         cf.designation as categorie_frais,
-        p.designationPromotion as promotion,
+        p.\"designationPromotion\" as promotion,
         p.idpromotion,
-        s.designationSection as section,
+        s.\"designationSection\" as section,
         a.designation as annee_academique,
         COUNT(DISTINCT e.idetudiant) as nb_etudiants,
         COUNT(DISTINCT pf.id) as nb_paiements,
@@ -79,7 +79,7 @@ if (!empty($categoriesFrais)) {
 }
 
 // Grouper par frais et promotion
-$sql .= " GROUP BY f.id, p.idpromotion ORDER BY s.designationSection, p.designationPromotion, cf.designation, f.designation";
+$sql .= " GROUP BY f.id, p.idpromotion ORDER BY s.\"designationSection\", p.\"designationPromotion\", cf.designation, f.designation";
 
 // Exécution de la requête
 $stmt = $connexion->prepare($sql);
@@ -158,8 +158,8 @@ $totalMontantPercu = isset($totaux_par_devise['USD']) ? $totaux_par_devise['USD'
                                         <form id="filterForm" method="GET" action="" class="row g-3">
                                             <input type="hidden" name="page" value="finance/frais.promotion">
                                             <div class="col-md-4">
-                                                <label for="anneeAcad" class="form-label">Année académique</label>
-                                                <select class="form-select" id="anneeAcad" name="anneeAcad" onchange="this.form.submit()">
+                                                <label for=anneeAcad class="form-label">Année académique</label>
+                                                <select class="form-select" id=anneeAcad name=anneeAcad onchange="this.form.submit()">
                                                     <option value="">Toutes</option>
                                                     <?php
                                                     while ($annee = $annees->fetch()) {

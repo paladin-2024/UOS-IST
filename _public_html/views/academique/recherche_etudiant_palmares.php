@@ -35,7 +35,7 @@ usort($annees, function($a, $b) {
 });
 
 // Récupérer les sessions présentes dans les palmarès pour le filtre
-$querySessions = "SELECT DISTINCT session_idsession as idsession, session as designSession 
+$querySessions = "SELECT DISTINCT session_idsession as idsession, session as \"designSession\" 
                   FROM palmares_archive 
                   WHERE session_idsession IS NOT NULL 
                   ORDER BY session";
@@ -44,7 +44,7 @@ $stmtSessions->execute();
 $sessions = $stmtSessions->fetchAll(PDO::FETCH_ASSOC);
 
 // Pour récupérer aussi les sessions qui n'ont que le champ textuel rempli
-$querySessionsText = "SELECT DISTINCT 0 as idsession, session as designSession 
+$querySessionsText = "SELECT DISTINCT 0 as idsession, session as \"designSession\" 
                       FROM palmares_archive 
                       WHERE session_idsession IS NULL 
                       ORDER BY session";

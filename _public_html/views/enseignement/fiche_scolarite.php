@@ -25,12 +25,12 @@ if ($idEtudiant <= 0) {
 }
 
 // Récupérer les informations de base de l'étudiant
-$stmt = $connexion->prepare("
-    SELECT e.*, p.designationPromotion, p.idpromotion
+$stmt = $connexion->prepare('
+    SELECT e.*, p."designationPromotion", p.idpromotion
     FROM etudiant e
     LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
     WHERE e.idetudiant = ?
-");
+');
 $stmt->execute([$idEtudiant]);
 $etudiant = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -48,39 +48,39 @@ if (!$etudiant) {
 }
 
 // Récupérer l'historique des promotions de l'étudiant
-$stmt = $connexion->prepare("
-    SELECT p.designationPromotion, p.idpromotion, aa.designation as annee_academique, 
-           e.dateEnregistrement, e.annee_acad_idannee_acad
+$stmt = $connexion->prepare('
+    SELECT p."designationPromotion", p.idpromotion, aa.designation as annee_academique,
+           e."dateEnregistrement", e.annee_acad_idannee_acad
     FROM etudiant_historique eh
     JOIN promotion p ON eh.idpromotion = p.idpromotion
     JOIN etudiant e ON eh.idetudiant = e.idetudiant
     JOIN annee_acad aa ON eh.idannee_acad = aa.idannee_acad
     WHERE eh.idetudiant = ?
     ORDER BY aa.idannee_acad DESC
-");
+');
 $stmt->execute([$idEtudiant]);
 $historiquePromotions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer l'année académique actuelle
-$stmt = $connexion->query("SELECT * FROM annee_acad WHERE dateCreation = (SELECT MAX(dateCreation) FROM annee_acad)");
+$stmt = $connexion->query('SELECT * FROM annee_acad WHERE "dateCreation" = (SELECT MAX("dateCreation") FROM annee_acad)');
 $anneeActuelle = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Récupérer le matricule de l'étudiant
 $matricule = $etudiant['matricule'];
 
 // Récupérer les moyennes par année académique
-$stmt = $connexion->prepare("
+$stmt = $connexion->prepare('
     SELECT cg.*, aa.designation as annee_academique, s.description as session_nom,
-           e.designationECUE, ue.designationUE, sem.numeroSemestre
+           e."designationECUE", ue."designationUE", sem."numeroSemestre"
     FROM cotes_grille cg
     JOIN annee_acad aa ON cg.annee_acad_id = aa.idannee_acad
     JOIN session s ON cg.session_idsession = s.idsession
-    JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-    JOIN ue ON e.UE_idUE = ue.idUE
+    JOIN ecue e ON cg."ECUE_idECUE" = e."idECUE"
+    JOIN ue ON e."UE_idUE" = ue."idUE"
     JOIN semestre sem ON ue.semestre_idsemestre = sem.idsemestre
     WHERE cg.matricule = ?
-    ORDER BY aa.idannee_acad DESC, sem.numeroSemestre ASC, ue.designationUE ASC
-");
+    ORDER BY aa.idannee_acad DESC, sem."numeroSemestre" ASC, ue."designationUE" ASC
+');
 $stmt->execute([$matricule]);
 $moyennes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -90,34 +90,34 @@ $moyennes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // 1) Prendre la meilleure note (MAX MF) par ECUE toutes sessions confondues
 // 2) Comparer le nb d'ECUEs avec note au nb total d'ECUEs de l'UE
 // 3) Si une ECUE manque de note → UE non validée
-$stmt = $connexion->prepare("
-    SELECT ue.idUE, ue.designationUE, sem.numeroSemestre, p.designationPromotion,
+$stmt = $connexion->prepare('
+    SELECT ue."idUE", ue."designationUE", sem."numeroSemestre", p."designationPromotion",
            bn.annee_acad_id,
            aa.designation as annee_academique,
-           SUM(bn.best_mf * (ec.CMI + ec.TD + ec.TP)) / NULLIF(SUM(ec.CMI + ec.TD + ec.TP), 0) as moyenne_ue,
-           SUM(ec.CMI + ec.TD + ec.TP) / ? as credits_ue,
-           (SELECT COUNT(*) FROM ecue e2 WHERE e2.UE_idUE = ue.idUE) as nb_ecue_total,
-           COUNT(ec.idECUE) as nb_ecue_inscrites,
+           SUM(bn.best_mf * (ec."CMI" + ec."TD" + ec."TP")) / NULLIF(SUM(ec."CMI" + ec."TD" + ec."TP"), 0) as moyenne_ue,
+           SUM(ec."CMI" + ec."TD" + ec."TP") / ? as credits_ue,
+           (SELECT COUNT(*) FROM ecue e2 WHERE e2."UE_idUE" = ue."idUE") as nb_ecue_total,
+           COUNT(ec."idECUE") as nb_ecue_inscrites,
            SUM(CASE WHEN bn.best_mf IS NOT NULL THEN 1 ELSE 0 END) as nb_ecue_avec_note,
            MAX(bn.session_id) as session_id,
            s.description as session_nom
     FROM ecue ec
-    JOIN ue ON ec.UE_idUE = ue.idUE
+    JOIN ue ON ec."UE_idUE" = ue."idUE"
     JOIN semestre sem ON ue.semestre_idsemestre = sem.idsemestre
     JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
     JOIN (
-        SELECT cg.ECUE_idECUE, cg.annee_acad_id,
-               MAX(cg.MF) as best_mf,
+        SELECT cg."ECUE_idECUE", cg.annee_acad_id,
+               MAX(cg."MF") as best_mf,
                MAX(cg.session_idsession) as session_id
         FROM cotes_grille cg
         WHERE cg.matricule = ?
-        GROUP BY cg.ECUE_idECUE, cg.annee_acad_id
-    ) bn ON bn.ECUE_idECUE = ec.idECUE
+        GROUP BY cg."ECUE_idECUE", cg.annee_acad_id
+    ) bn ON bn."ECUE_idECUE" = ec."idECUE"
     LEFT JOIN annee_acad aa ON bn.annee_acad_id = aa.idannee_acad
     LEFT JOIN session s ON bn.session_id = s.idsession
-    GROUP BY ue.idUE, bn.annee_acad_id
-    ORDER BY bn.annee_acad_id DESC, sem.numeroSemestre ASC, ue.designationUE ASC
-");
+    GROUP BY ue."idUE", bn.annee_acad_id
+    ORDER BY bn.annee_acad_id DESC, sem."numeroSemestre" ASC, ue."designationUE" ASC
+');
 $stmt->execute([$creditHeure, $matricule]);
 $ueStatus = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

@@ -21,7 +21,7 @@ $anneeEnCours = $stmtCurrentYear->fetch(PDO::FETCH_ASSOC);
 
 // Si aucune année active, prendre la plus récente
 if (!$anneeEnCours) {
-    $queryLastYear = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryLastYear = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtLastYear = $pdo->prepare($queryLastYear);
     $stmtLastYear->execute();
     $anneeEnCours = $stmtLastYear->fetch(PDO::FETCH_ASSOC);
@@ -44,9 +44,9 @@ if ($selectedYear) {
 }
 
 // Vérifier si l'utilisateur est un enseignant
-$query = "SELECT a.idAgent FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ? AND a.type_agent = 'Enseignant'";
+$query = "SELECT a.\"idAgent\" FROM agent a 
+          INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+          WHERE u.\"idUser\" = ? AND a.type_agent = 'Enseignant'";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $isEnseignant = $stmt->rowCount() > 0;
@@ -57,9 +57,9 @@ if (!$userId || !$isEnseignant) {
 }
 
 // Récupérer l'ID de l'agent (enseignant)
-$query = "SELECT a.idAgent FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ?";
+$query = "SELECT a.\"idAgent\" FROM agent a 
+          INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+          WHERE u.\"idUser\" = ?";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $idEnseignant = $stmt->fetchColumn();
@@ -73,8 +73,8 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Récupérer les informations de l'enseignant
 $query = "SELECT a.* FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ?";
+          INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+          WHERE u.\"idUser\" = ?";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -94,12 +94,12 @@ $specialisations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les statistiques pour l'année sélectionnée
 $query = "SELECT 
-            SUM(CASE WHEN idDirecteur = ? THEN 1 ELSE 0 END) as directeur,
-            SUM(CASE WHEN idEncadreur = ? THEN 1 ELSE 0 END) as encadreur,
+            SUM(CASE WHEN \"idDirecteur\" = ? THEN 1 ELSE 0 END) as directeur,
+            SUM(CASE WHEN \"idEncadreur\" = ? THEN 1 ELSE 0 END) as encadreur,
             SUM(CASE WHEN (statut_validation = 'Validé') THEN 1 ELSE 0 END) as valide,
             COUNT(*) as total
           FROM sujets 
-          WHERE (idDirecteur = ? OR idEncadreur = ?) 
+          WHERE (\"idDirecteur\" = ? OR \"idEncadreur\" = ?) 
           AND annee_acad_idannee_acad = ?";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$idEnseignant, $idEnseignant, $idEnseignant, $idEnseignant, $anneeId]);
@@ -110,9 +110,9 @@ $query = "SELECT s.*,
           spec.designation as specialisation,
           e.noms as etudiant
           FROM sujets s
-          LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+          LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
           LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-          WHERE (s.idDirecteur = ? OR s.idEncadreur = ?)
+          WHERE (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)
           AND s.annee_acad_idannee_acad = ?";
 
 if (!empty($search)) {
@@ -145,8 +145,8 @@ $enseignants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $query = "SELECT s.idsoutenance, s.date_soutenance, s.lieu, s.statut,
           suj.intitule, e.noms as etudiant,
           CASE 
-            WHEN suj.idDirecteur = ? THEN 'Directeur'
-            WHEN suj.idEncadreur = ? THEN 'Encadreur'
+            WHEN suj.\"idDirecteur\" = ? THEN 'Directeur'
+            WHEN suj.\"idEncadreur\" = ? THEN 'Encadreur'
             WHEN js.idenseignant = ? THEN js.role
             ELSE 'Membre'
           END as role
@@ -154,7 +154,7 @@ $query = "SELECT s.idsoutenance, s.date_soutenance, s.lieu, s.statut,
           INNER JOIN sujets suj ON s.sujets_idsujets = suj.idsujets
           LEFT JOIN etudiant e ON suj.etudiant_idetudiant = e.idetudiant
           LEFT JOIN jury_soutenance js ON s.idsoutenance = js.idsoutenance AND js.idenseignant = ?
-          WHERE (suj.idDirecteur = ? OR suj.idEncadreur = ? OR js.idenseignant = ?)
+          WHERE (suj.\"idDirecteur\" = ? OR suj.\"idEncadreur\" = ? OR js.idenseignant = ?)
           AND suj.annee_acad_idannee_acad = ?
           ORDER BY s.date_soutenance DESC";
 $stmt = $pdo->prepare($query);

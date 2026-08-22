@@ -38,11 +38,11 @@ try {
     
     // Vérifier que l'agent connecté est bien l'agent concerné par le rendez-vous
     $checkQuery = $db->prepare("
-        SELECT rv.Agent_idAgent, a.idAgent 
+        SELECT rv.\"Agent_idAgent\", a.\"idAgent\" 
         FROM rendez_vous rv
-        INNER JOIN agent a ON rv.Agent_idAgent = a.idAgent
-        INNER JOIN t_users u ON a.idAgent = u.idAgent
-        WHERE rv.idRendez_vous = ? AND u.idUser = ?
+        INNER JOIN agent a ON rv.\"Agent_idAgent\" = a.\"idAgent\"
+        INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\"
+        WHERE rv.idRendez_vous = ? AND u.\"idUser\" = ?
     ");
     $checkQuery->execute([$rdvId, $userId]);
     

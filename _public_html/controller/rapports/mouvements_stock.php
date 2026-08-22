@@ -87,7 +87,7 @@ try {
             des.montant_total,
             lp.numero_lot,
             lp.date_peremption,
-            CONCAT(u.nomUser) as utilisateur,
+            CONCAT(u.\"nomUser\") as utilisateur,
             es.observation
         FROM entree_stock es
         JOIN detail_entree_stock des ON es.id_entree = des.id_entree
@@ -95,7 +95,7 @@ try {
         JOIN produit p ON des.id_produit = p.id_produit
         JOIN unite_mesure um ON p.id_unite_stockage = um.id_unite
         JOIN lot_produit lp ON des.id_detail_entree = lp.id_detail_entree
-        JOIN t_users u ON es.id_user_creation = u.idUser
+        JOIN t_users u ON es.id_user_creation = u.\"idUser\"
         WHERE es.etat = 'Validé'
         AND es.date_entree BETWEEN :date_debut_entree AND :date_fin_entree
     ";
@@ -120,7 +120,7 @@ try {
             dss.montant_total,
             lp.numero_lot,
             lp.date_peremption,
-            CONCAT(u.nomUser) as utilisateur,
+            CONCAT(u.\"nomUser\") as utilisateur,
             ss.observation
         FROM sortie_stock ss
         JOIN detail_sortie_stock dss ON ss.id_sortie = dss.id_sortie
@@ -129,7 +129,7 @@ try {
         JOIN unite_mesure um ON p.id_unite_stockage = um.id_unite
         JOIN detail_sortie_lot dsl ON dss.id_detail_sortie = dsl.id_detail_sortie
         JOIN lot_produit lp ON dsl.id_lot = lp.id_lot
-        JOIN t_users u ON ss.id_user_creation = u.idUser
+        JOIN t_users u ON ss.id_user_creation = u.\"idUser\"
         WHERE ss.etat = 'Validé'
         AND ss.date_sortie BETWEEN :date_debut_sortie AND :date_fin_sortie
     ";
@@ -154,7 +154,7 @@ try {
             (dts.quantite * lp.prix_unitaire_achat) as montant_total,
             lp.numero_lot,
             lp.date_peremption,
-            CONCAT(u.nomUser) as utilisateur,
+            CONCAT(u.\"nomUser\") as utilisateur,
             ts.observation
         FROM transfert_stock ts
         JOIN detail_transfert_stock dts ON ts.id_transfert = dts.id_transfert
@@ -163,7 +163,7 @@ try {
         JOIN produit p ON dts.id_produit = p.id_produit
         JOIN unite_mesure um ON p.id_unite_stockage = um.id_unite
         JOIN lot_produit lp ON dts.id_lot = lp.id_lot
-        JOIN t_users u ON ts.id_user_creation = u.idUser
+        JOIN t_users u ON ts.id_user_creation = u.\"idUser\"
         WHERE ts.etat = 'Validé'
         AND ts.date_transfert BETWEEN :date_debut_transfert AND :date_fin_transfert
     ";

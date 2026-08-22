@@ -20,7 +20,7 @@ if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
     // La colonne n'existe pas, prendre la dernière année
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -29,7 +29,7 @@ $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
     // Si aucune année trouvée, prendre la dernière année
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -38,7 +38,7 @@ if (!$currentYear) {
 // Récupérer les sections dont l'utilisateur est responsable
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -93,7 +93,7 @@ function getPromotionsAccessibles($pdo, $userSections, $anneeId) {
         $query .= " AND o.section_idsection IN (" . implode(',', $placeholders) . ")";
     }
     
-    $query .= " ORDER BY p.designationPromotion";
+    $query .= " ORDER BY p.\"designationPromotion\"";
     
     $stmt = $pdo->prepare($query);
     foreach ($params as $key => $value) {
@@ -108,11 +108,11 @@ function getPromotionsAccessibles($pdo, $userSections, $anneeId) {
 function getECUEsByPromotion($pdo, $promotionId) {
     $query = "SELECT DISTINCT e.* 
               FROM ecue e
-              JOIN ue u ON e.UE_idUE = u.idUE
+              JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
               JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
               WHERE s.promotion_idpromotion = :promotionId
-              AND e.estVisible = 1
-              ORDER BY e.designationECUE";
+              AND e.\"estVisible\" = 1
+              ORDER BY e.\"designationECUE\"";
     
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':promotionId', $promotionId);
@@ -126,19 +126,19 @@ function getSuivisEnseignement($pdo, $filters, $userSections = []) {
     $params = [];
     
     $query = "SELECT se.*, 
-                     e.designationECUE,
-                     tu.nomUser as user_nom,
+                     e.\"designationECUE\",
+                     tu.\"nomUser\" as user_nom,
                      a.noms as enseignant_nom,
                      gr.designation as grade_enseignant,
-                     p.designationPromotion,
-                     sec.designationSection as section
+                     p.\"designationPromotion\",
+                     sec.\"designationSection\" as section
               FROM suivi_enseignements se
-              JOIN ecue e ON se.idECUE = e.idECUE
-              LEFT JOIN t_users tu ON se.idUser = tu.idUser
-              LEFT JOIN agent a ON se.enseignant_id = a.idAgent
+              JOIN ecue e ON se.\"idECUE\" = e.\"idECUE\"
+              LEFT JOIN t_users tu ON se.\"idUser\" = tu.\"idUser\"
+              LEFT JOIN agent a ON se.enseignant_id = a.\"idAgent\"
               LEFT JOIN grade gr ON a.grade_id = gr.idgrade
               -- Jointure pour récupérer la promotion via l'ECUE
-              LEFT JOIN ue u ON e.UE_idUE = u.idUE
+              LEFT JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
               LEFT JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
               LEFT JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -315,7 +315,7 @@ foreach ($suivis as $suivi) {
             $sectionNames = [];
             if (!empty($userSections)) {
                 $placeholders = implode(',', array_fill(0, count($userSections), '?'));
-                $querySections = "SELECT designationSection FROM section WHERE idsection IN ($placeholders)";
+                $querySections = "SELECT \"designationSection\" FROM section WHERE idsection IN ($placeholders)";
                 $stmtSections = $pdo->prepare($querySections);
                 $stmtSections->execute($userSections);
                 $sectionNames = $stmtSections->fetchAll(PDO::FETCH_COLUMN);

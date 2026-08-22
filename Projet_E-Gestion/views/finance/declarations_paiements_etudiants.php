@@ -9,7 +9,7 @@ $connexion = Connexion::getInstance()->getPDO();
 $idUser = $_SESSION['id'];
 
 // Récupérer l'idAgent de l'utilisateur connecté
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -19,7 +19,7 @@ $idAgent = $user_agent['idAgent'] ?? null;
 $stmt_sections = $connexion->prepare("
     SELECT DISTINCT section_idsection 
     FROM responsable_section 
-    WHERE idUser = :idUser
+    WHERE \"idUser\" = :idUser
 ");
 $stmt_sections->bindParam(':idUser', $idUser);
 $stmt_sections->execute();
@@ -68,8 +68,8 @@ $sql = "
            f.montant AS montant_frais,
            f.devise AS devise_frais,
            aa.designation AS annee_academique,
-           p.designationPromotion AS promotion_nom,
-           u.nomUser AS validateur_nom,
+           p.\"designationPromotion\" AS promotion_nom,
+           u.\"nomUser\" AS validateur_nom,
            (SELECT COALESCE(SUM(pf.montant), 0) 
             FROM paiements_frais pf 
             WHERE pf.affectation_id = af.id 
@@ -85,7 +85,7 @@ $sql = "
     INNER JOIN frais f ON af.frais_id = f.id
     LEFT JOIN annee_acad aa ON f.annee_acad_id = aa.idannee_acad
     LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-    LEFT JOIN t_users u ON dp.valide_par = u.idUser";
+    LEFT JOIN t_users u ON dp.valide_par = u.\"idUser\"";
 
 // Si l'utilisateur a des responsabilités de section, filtrer par ces sections
 if ($has_section_responsibility) {
@@ -203,7 +203,7 @@ $stats = [
 
         <?php if ($has_section_responsibility): 
             // Récupérer les noms des sections
-            $sections_names_sql = "SELECT designationSection FROM section WHERE idsection IN (" . implode(',', array_map('intval', $user_sections)) . ")";
+            $sections_names_sql = "SELECT \"designationSection\" FROM section WHERE idsection IN (" . implode(',', array_map('intval', $user_sections)) . ")";
             $stmt_names = $connexion->prepare($sections_names_sql);
             $stmt_names->execute();
             $sections_names = $stmt_names->fetchAll(PDO::FETCH_COLUMN);

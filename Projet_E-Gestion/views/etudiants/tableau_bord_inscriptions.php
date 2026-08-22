@@ -18,7 +18,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -26,7 +26,7 @@ $stmtAnnee->execute();
 $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -35,7 +35,7 @@ if (!$currentYear) {
 // Récupérer les sections dont l'utilisateur est responsable
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -57,10 +57,10 @@ function getStatistiquesInscriptions($pdo, $sections = [], $anneeId = null, $cyc
     
     $query = "SELECT 
                 p.idpromotion,
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 p.cycle,
-                o.designationOrientation as orientation,
-                s.designationSection as section,
+                o.\"designationOrientation\" as orientation,
+                s.\"designationSection\" as section,
                 COUNT(e.idetudiant) as total_inscrits,
                 COUNT(CASE WHEN e.est_actif = 1 THEN 1 END) as inscrits_actifs,
                 COUNT(CASE WHEN e.est_actif = 0 THEN 1 END) as inscrits_inactifs,
@@ -104,8 +104,8 @@ function getStatistiquesInscriptions($pdo, $sections = [], $anneeId = null, $cyc
         $params[':cycle'] = $cycleFilter;
     }
     
-    $query .= " GROUP BY p.idpromotion, p.designationPromotion, p.cycle, o.designationOrientation, s.designationSection
-                ORDER BY s.designationSection, p.cycle, p.designationPromotion";
+    $query .= " GROUP BY p.idpromotion, p.\"designationPromotion\", p.cycle, o.\"designationOrientation\", s.\"designationSection\"
+                ORDER BY s.\"designationSection\", p.cycle, p.\"designationPromotion\"";
     
     try {
         $stmt = $pdo->prepare($query);
@@ -244,7 +244,7 @@ if ($isResponsableSection) {
         $sections = $stmtSection->fetchAll(PDO::FETCH_ASSOC);
     }
 } else {
-    $querySection = "SELECT * FROM section ORDER BY designationSection";
+    $querySection = "SELECT * FROM section ORDER BY \"designationSection\"";
     $stmtSection = $pdo->prepare($querySection);
     $stmtSection->execute();
     $sections = $stmtSection->fetchAll(PDO::FETCH_ASSOC);

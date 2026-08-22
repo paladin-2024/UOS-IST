@@ -32,19 +32,19 @@ try {
     $sessions = $stmtSessions->fetchAll(PDO::FETCH_ASSOC);
     
     // Récupérer les sessions principale (pour savoir quelle est la première/deuxième session)
-    $sqlSessionsPremiere = "SELECT idsession FROM session WHERE designSession LIKE '%Première%' LIMIT 1";
+    $sqlSessionsPremiere = "SELECT idsession FROM session WHERE \"designSession\" LIKE '%Première%' LIMIT 1";
     $stmtSessionsPremiere = $pdo->query($sqlSessionsPremiere);
     $sessionPremiere = $stmtSessionsPremiere->fetchColumn();
     
-    $sqlSessionsDeuxieme = "SELECT idsession FROM session WHERE designSession LIKE '%Deuxième%' LIMIT 1";
+    $sqlSessionsDeuxieme = "SELECT idsession FROM session WHERE \"designSession\" LIKE '%Deuxième%' LIMIT 1";
     $stmtSessionsDeuxieme = $pdo->query($sqlSessionsDeuxieme);
     $sessionDeuxieme = $stmtSessionsDeuxieme->fetchColumn();
     
     // Récupérer la configuration des pondérations
     $sqlConfig = "SELECT ponderation_cc, ponderation_ex 
                  FROM configuration_moyenne 
-                 WHERE idECUE = ? AND session_idsession = ? AND annee_acad_id = ?
-                 ORDER BY dateCreation DESC LIMIT 1";
+                 WHERE \"idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?
+                 ORDER BY \"dateCreation\" DESC LIMIT 1";
                  
     $stmtConfig = $pdo->prepare($sqlConfig);
     $stmtConfig->execute([$idECUE, $sessionPremiere, $anneeId]);
@@ -61,7 +61,7 @@ try {
                         SELECT promotion_idpromotion 
                         FROM semestre s 
                         JOIN ue u ON s.idsemestre = u.semestre_idsemestre
-                        WHERE u.idUE IN (SELECT UE_idUE FROM ecue WHERE idECUE = ?)
+                        WHERE u.\"idUE\" IN (SELECT \"UE_idUE\" FROM ecue WHERE \"idECUE\" = ?)
                     )
                     ORDER BY e.noms";
                     
@@ -71,11 +71,11 @@ try {
     
     // Récupérer toutes les évaluations définies pour cet ECUE
     $sqlAllEvals = "SELECT e.idevaluation, e.titre, e.note_max, e.ponderation, 
-                   t.idType, t.designationT, t.categorie, s.idsession, s.description
+                   t.\"idType\", t.\"designationT\", t.categorie, s.idsession, s.description
                    FROM evaluations e
-                   JOIN typeevaluation t ON e.idType = t.idType
+                   JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
                    JOIN session s ON e.session_idsession = s.idsession
-                   WHERE e.idECUE = ? AND e.annee_acad_id = ?
+                   WHERE e.\"idECUE\" = ? AND e.annee_acad_id = ?
                    ORDER BY s.idsession, e.date_evaluation";
     
     $stmtAllEvals = $pdo->prepare($sqlAllEvals);
@@ -93,8 +93,8 @@ try {
             
             // Pour la deuxième session, vérifier si l'étudiant a réussi en première session
             if ($isDeuxiemeSession) {
-                $sqlCheckPremiere = "SELECT MF FROM cotes_grille 
-                                    WHERE matricule = ? AND ECUE_idECUE = ? AND annee_acad_id = ? 
+                $sqlCheckPremiere = "SELECT \"MF\" FROM cotes_grille 
+                                    WHERE matricule = ? AND \"ECUE_idECUE\" = ? AND annee_acad_id = ? 
                                     AND session_idsession = ?";
                                     
                 $stmtCheckPremiere = $pdo->prepare($sqlCheckPremiere);
@@ -108,9 +108,9 @@ try {
             }
             
             // Récupérer toutes les notes de l'étudiant pour cet ECUE
-            $sqlNotes = "SELECT p.coteObtenu, p.typeEvaluation, p.session_idsession
+            $sqlNotes = "SELECT p.\"coteObtenu\", p.\"typeEvaluation\", p.session_idsession
                         FROM points p
-                        WHERE p.matricule = ? AND p.ECUE_idECUE = ? AND p.annee_acad_id = ?";
+                        WHERE p.matricule = ? AND p.\"ECUE_idECUE\" = ? AND p.annee_acad_id = ?";
             
             $stmtNotes = $pdo->prepare($sqlNotes);
             $stmtNotes->execute([$matricule, $idECUE, $anneeId]);
@@ -202,7 +202,7 @@ try {
                 if ($moyenneCC !== null || $noteExamenSur20 !== null) {
                     // Vérifier si une entrée existe déjà
                     $sqlCheck = "SELECT COUNT(*) FROM cotes_grille 
-                                WHERE matricule = ? AND ECUE_idECUE = ? 
+                                WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                                 AND session_idsession = ? AND annee_acad_id = ?";
                     $stmtCheck = $pdo->prepare($sqlCheck);
                     $stmtCheck->execute([$matricule, $idECUE, $currentSessionId, $anneeId]);
@@ -210,8 +210,8 @@ try {
                     
                     if ($exists) {
                         $sqlUpdate = "UPDATE cotes_grille 
-                                    SET CC = ?, EX = ?, MF = ?, date_compilation = NOW(), idUser = ?
-                                    WHERE matricule = ? AND ECUE_idECUE = ? 
+                                    SET \"CC\" = ?, \"EX\" = ?, \"MF\" = ?, date_compilation = NOW(), \"idUser\" = ?
+                                    WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                                     AND session_idsession = ? AND annee_acad_id = ?";
                         $stmtUpdate = $pdo->prepare($sqlUpdate);
                         $stmtUpdate->execute([
@@ -221,7 +221,7 @@ try {
                         ]);
                     } else {
                         $sqlInsert = "INSERT INTO cotes_grille 
-                                    (CC, EX, MF, ECUE_idECUE, session_idsession, matricule, annee_acad_id, date_compilation, idUser)
+                                    (\"CC\", \"EX\", \"MF\", \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id, date_compilation, \"idUser\")
                                     VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)";
                         $stmtInsert = $pdo->prepare($sqlInsert);
                         $stmtInsert->execute([
@@ -255,7 +255,7 @@ try {
                                 if ($noteExamenSur20 !== null) {
                                     // Vérifier si une entrée existe déjà
                                     $sqlCheck = "SELECT COUNT(*) FROM cotes_grille 
-                                                WHERE matricule = ? AND ECUE_idECUE = ? 
+                                                WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                                                 AND session_idsession = ? AND annee_acad_id = ?";
                                     $stmtCheck = $pdo->prepare($sqlCheck);
                                     $stmtCheck->execute([$matricule, $idECUE, $currentSessionId, $anneeId]);
@@ -263,8 +263,8 @@ try {
                                     
                                     if ($exists) {
                                         $sqlUpdate = "UPDATE cotes_grille 
-                                                    SET CC = ?, EX = ?, MF = ?, date_compilation = NOW(), idUser = ?
-                                                    WHERE matricule = ? AND ECUE_idECUE = ? 
+                                                    SET \"CC\" = ?, \"EX\" = ?, \"MF\" = ?, date_compilation = NOW(), \"idUser\" = ?
+                                                    WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                                                     AND session_idsession = ? AND annee_acad_id = ?";
                                         $stmtUpdate = $pdo->prepare($sqlUpdate);
                                         $stmtUpdate->execute([
@@ -274,7 +274,7 @@ try {
                                         ]);
                                     } else {
                                         $sqlInsert = "INSERT INTO cotes_grille 
-                                                    (CC, EX, MF, ECUE_idECUE, session_idsession, matricule, annee_acad_id, date_compilation, idUser)
+                                                    (\"CC\", \"EX\", \"MF\", \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id, date_compilation, \"idUser\")
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)";
                                         $stmtInsert = $pdo->prepare($sqlInsert);
                                         $stmtInsert->execute([
@@ -288,11 +288,11 @@ try {
                             else {
                                 // Pour les autres sessions éventuelles (si elles existent)
                                 // Récupérer toutes les évaluations avec leurs types et notes pour cet étudiant dans cette session
-                                $sqlSessionEvals = "SELECT p.coteObtenu, e.note_max, e.ponderation, t.categorie
+                                $sqlSessionEvals = "SELECT p.\"coteObtenu\", e.note_max, e.ponderation, t.categorie
                                                    FROM points p
-                                                   JOIN evaluations e ON p.typeEvaluation = e.idType AND p.session_idsession = e.session_idsession
-                                                   JOIN typeevaluation t ON e.idType = t.idType
-                                                   WHERE p.matricule = ? AND p.ECUE_idECUE = ? 
+                                                   JOIN evaluations e ON p.\"typeEvaluation\" = e.\"idType\" AND p.session_idsession = e.session_idsession
+                                                   JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
+                                                   WHERE p.matricule = ? AND p.\"ECUE_idECUE\" = ? 
                                                    AND p.session_idsession = ? AND p.annee_acad_id = ?";
                                 
                                 $stmtSessionEvals = $pdo->prepare($sqlSessionEvals);
@@ -351,8 +351,8 @@ try {
                                 // Récupérer la configuration spécifique à cette session ou utiliser des valeurs par défaut
                                 $sqlSessionConfig = "SELECT ponderation_cc, ponderation_ex 
                                                      FROM configuration_moyenne 
-                                                     WHERE idECUE = ? AND session_idsession = ? AND annee_acad_id = ?
-                                                     ORDER BY dateCreation DESC LIMIT 1";
+                                                     WHERE \"idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?
+                                                     ORDER BY \"dateCreation\" DESC LIMIT 1";
                                 $stmtSessionConfig = $pdo->prepare($sqlSessionConfig);
                                 $stmtSessionConfig->execute([$idECUE, $currentSessionId, $anneeId]);
                                 $sessionConfig = $stmtSessionConfig->fetch(PDO::FETCH_ASSOC);
@@ -374,7 +374,7 @@ try {
                                 if ($moyenneCC !== null || $noteExamenSur20 !== null) {
                                     // Vérifier si une entrée existe déjà
                                     $sqlCheck = "SELECT COUNT(*) FROM cotes_grille 
-                                                WHERE matricule = ? AND ECUE_idECUE = ? 
+                                                WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                                                 AND session_idsession = ? AND annee_acad_id = ?";
                                     $stmtCheck = $pdo->prepare($sqlCheck);
                                     $stmtCheck->execute([$matricule, $idECUE, $currentSessionId, $anneeId]);
@@ -382,8 +382,8 @@ try {
                                     
                                     if ($exists) {
                                         $sqlUpdate = "UPDATE cotes_grille 
-                                                    SET CC = ?, EX = ?, MF = ?, date_compilation = NOW(), idUser = ?
-                                                    WHERE matricule = ? AND ECUE_idECUE = ? 
+                                                    SET \"CC\" = ?, \"EX\" = ?, \"MF\" = ?, date_compilation = NOW(), \"idUser\" = ?
+                                                    WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                                                     AND session_idsession = ? AND annee_acad_id = ?";
                                         $stmtUpdate = $pdo->prepare($sqlUpdate);
                                         $stmtUpdate->execute([
@@ -393,7 +393,7 @@ try {
                                         ]);
                                     } else {
                                         $sqlInsert = "INSERT INTO cotes_grille 
-                                                    (CC, EX, MF, ECUE_idECUE, session_idsession, matricule, annee_acad_id, date_compilation, idUser)
+                                                    (\"CC\", \"EX\", \"MF\", \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id, date_compilation, \"idUser\")
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)";
                                         $stmtInsert = $pdo->prepare($sqlInsert);
                                         $stmtInsert->execute([
