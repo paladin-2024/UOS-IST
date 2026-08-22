@@ -1,0 +1,34 @@
+# Ignorer tout par défaut
+/*
+
+# Ne PAS ignorer ces dossiers/fichiers de l'application
+!/api_controller/
+!/assets/
+!/config/
+!/controller/
+!/dossiers/
+!/models/
+!/utils/
+!/views/
+!api_controller/**
+!assets/**
+!config/**
+!controller/**
+!dossiers/**
+!models/**
+!utils/**
+!views/**
+!/*.php
+!/composer.json
+!/composer.lock
+!/.htaccess
+!/.env.example
+
+# Secrets réels : jamais suivis, même sous les dossiers ré-inclus ci-dessus
+config/.env
+config/flexpay.php
+config/Config.php
+dossiers/uploads/*
+
+# Ne pas ignorer le fichier .gitignore lui-même
+!.gitignore

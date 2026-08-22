@@ -1,0 +1,145 @@
+/* Styles pour le wrapper des notifications */
+.notification-icon-wrapper {
+    position: relative;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 1002;
+}
+
+/* Styles pour le dropdown des notifications */
+.notification-dropdown {
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1002;
+    min-width: 300px;
+    max-width: 350px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+/* Animation pour le dropdown */
+.notification-dropdown.show {
+    display: block;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* En-tête des notifications */
+.notification-dropdown h6 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Items de notification */
+.notification-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    color: #2c3e50;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Icônes dans les notifications */
+.notification-item i {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    border-radius: 50%;
+    font-size: 12px;
+}
+
+/* Couleurs spécifiques pour les icônes */
+.notification-item i.fa-tasks {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.notification-item i.fa-clock {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.notification-item i.fa-check {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+.notification-item i.fa-comment {
+    background-color: #e1f5fe;
+    color: #0288d1;
+}
+
+/* Texte des notifications */
+.notification-item span {
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+/* Badge de notification */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 10px;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.notification-item i.fa-pause {
+    background-color: #f5f5f5;
+    color: #757575;
+}
+
+/* Scrollbar personnalisée */
+.notification-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

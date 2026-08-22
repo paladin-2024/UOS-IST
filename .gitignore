@@ -1,0 +1,18 @@
+# Claude Code project state (not part of the codebase)
+.claude/
+.claude.json
+/CLAUDE.md
+
+# Database dumps (production data, too large for GitHub anyway)
+*.sql
+
+# Remaining hardcoded/plaintext secrets not yet migrated to .env
+**/config/flexpay.php
+**/config/Config.php
+
+# Environment files (local secrets/config, never committed)
+**/.env
+
+# Student-submitted documents
+Projet_E-Gestion/dossiers/uploads/*
+!Projet_E-Gestion/dossiers/uploads/.gitkeep
