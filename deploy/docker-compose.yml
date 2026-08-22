@@ -1,3 +1,14 @@
+# Shared-VPS layout: this box already runs its own nginx (host-level,
+# serving other unrelated projects) and its own Postgres for other projects,
+# so this stack does NOT run nginx or expose Postgres to the host at all --
+# only two PHP-FPM containers, reachable from the *existing* host nginx via
+# 127.0.0.1:9101 / 127.0.0.1:9102, plus a Postgres container fully isolated
+# on the internal compose network (no host port published, so it can't
+# collide with the other Postgres already running here).
+#
+# Assumes this repo is checked out at /opt/ucg-butembo on the host (adjust
+# every "/opt/ucg-butembo" below AND in ../nginx-host/*.conf together if you
+# used a different path).
 services:
   postgres:
     image: postgres:17-alpine
@@ -19,12 +30,16 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
-      args:
-        APP_DIR: Projet_E-Gestion
     restart: unless-stopped
     env_file: ../Projet_E-Gestion/.env
     volumes:
-      - ../Projet_E-Gestion/uploads:/var/www/html/uploads
+      # Bind-mounted at the SAME absolute path the host uses, so nginx's
+      # $document_root (host-side path) and php-fpm's own filesystem view
+      # (container-side) resolve to the identical string -- no path
+      # translation needed in the fastcgi_param SCRIPT_FILENAME line.
+      - /opt/ucg-butembo/Projet_E-Gestion:/opt/ucg-butembo/Projet_E-Gestion
+    ports:
+      - "127.0.0.1:9101:9000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -33,28 +48,15 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
-      args:
-        APP_DIR: projet_website
     restart: unless-stopped
     env_file: ../projet_website/.env
     volumes:
-      - ../projet_website/uploads:/var/www/html/uploads
+      - /opt/ucg-butembo/projet_website:/opt/ucg-butembo/projet_website
+    ports:
+      - "127.0.0.1:9102:9000"
     depends_on:
       postgres:
         condition: service_healthy
-
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ../Projet_E-Gestion:/var/www/gestion:ro
-      - ../projet_website:/var/www/portail:ro
-    depends_on:
-      - gestion
-      - portail
 
 volumes:
   pgdata:
