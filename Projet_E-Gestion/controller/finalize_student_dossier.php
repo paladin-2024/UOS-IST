@@ -356,7 +356,7 @@ function sendConfirmationEmail($student, $documents, $universite) {
     // Email headers
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: " . htmlspecialchars($universite['nom'] ?? $universite['sigle']) . " <" . htmlspecialchars($universite['email'] ?? 'no-reply@inbtpkinshasa.info') . ">" . "\r\n";
+    $headers .= "From: " . htmlspecialchars($universite['nom'] ?? $universite['sigle']) . " <" . htmlspecialchars($universite['email'] ?? 'no-reply@istmbeni.ac.cd') . ">" . "\r\n";
     
     // Envoyer l'email
     return mail($to, $subject, $htmlMessage, $headers);

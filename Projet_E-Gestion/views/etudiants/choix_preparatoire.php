@@ -447,7 +447,7 @@ $configUniversite = $universite->getConfigurationUniversite();
                             <button type="submit" class="btn btn-primary btn-lg w-100">
                                 <i class="bi bi-search me-2"></i> Vérifier mon statut
                             </button>
-                            <a href="https://inbtpkinshasa.info/etudiants/presence_qrcode" class="btn btn-secondary btn-lg w-100 mt-2">
+                            <a href="etudiants/presence_qrcode" class="btn btn-secondary btn-lg w-100 mt-2">
                                 <i class="bi bi-search me-2"></i> Signer la Présence
                             </a>
                         </form>

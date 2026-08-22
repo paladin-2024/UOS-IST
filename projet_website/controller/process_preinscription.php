@@ -327,7 +327,7 @@ try {
     // En-têtes pour l'email HTML
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= 'From: INBTP <info@inbtpkinshasa.info>' . "\r\n";
+    $headers .= 'From: ISTM-BENI <scolarite@istmbeni.ac.cd>' . "\r\n";
     
     // Envoyer l'email
     mail($to, $subject, $message, $headers);

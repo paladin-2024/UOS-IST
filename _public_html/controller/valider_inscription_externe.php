@@ -206,7 +206,7 @@ function envoyerEmailValidation($inscription, $matricule, $idEtudiant) {
         // Configuration de l'entreprise
         $entreprise = [
             'nom' => 'INBTP Kinshasa',
-            'email' => 'info@inbtpkinshasa.info'
+            'email' => 'scolarite@istmbeni.ac.cd'
         ];
         
         // Email headers
@@ -225,7 +225,7 @@ function envoyerEmailValidation($inscription, $matricule, $idEtudiant) {
 
 // Fonction pour générer le corps de l'email de validation en HTML
 function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
-    $urlPortail = "https://inbtpkinshasa.info/portail/login";
+    $urlPortail = "https://std-ucg-butembo.wscsarl.info/login";
     
     $htmlMessage = '<!DOCTYPE html>
     <html>
@@ -404,8 +404,8 @@ function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
                 <div class="footer">
                     <p><strong>Institut National du Bâtiment et des Travaux Publics</strong></p>
                     <p>INBTP Kinshasa</p>
-                    <p>Email: <a href="mailto:info@inbtpkinshasa.info" style="color: #4299e1; text-decoration: none;">info@inbtpkinshasa.info</a></p>
-                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">inbtpkinshasa.info/portail</a></p>
+                    <p>Email: <a href="mailto:scolarite@istmbeni.ac.cd" style="color: #4299e1; text-decoration: none;">scolarite@istmbeni.ac.cd</a></p>
+                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">std-ucg-butembo.wscsarl.info</a></p>
                     <p>&copy; ' . date('Y') . ' INBTP Kinshasa. Tous droits réservés.</p>
                 </div>
             </div>

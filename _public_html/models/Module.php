@@ -446,6 +446,10 @@ class Module
     if (!is_array($roles)) {
     $roles = [$roles]; // Si un seul rôle, convertir en array
     }
+    $roles = array_values(array_filter($roles, function ($r) { return $r !== null && $r !== ''; }));
+    if (empty($roles)) {
+        return [];
+    }
     $placeholders = str_repeat('?,', count($roles) - 1) . '?';
     $query = 'SELECT
     m."idMod",
