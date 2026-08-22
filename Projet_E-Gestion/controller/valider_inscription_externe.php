@@ -198,14 +198,14 @@ try {
 function envoyerEmailValidation($inscription, $matricule, $idEtudiant) {
     try {
         $to = $inscription['email'];
-        $subject = 'Inscription validée - Bienvenue à l\'INBTP Kinshasa';
+        $subject = 'Inscription validée - Bienvenue à l\'ISTM-BENI';
         
         // Construire le contenu HTML de l'email
         $htmlMessage = genererCorpsEmailValidation($inscription, $matricule, $idEtudiant);
         
         // Configuration de l'entreprise
         $entreprise = [
-            'nom' => 'INBTP Kinshasa',
+            'nom' => 'ISTM-BENI',
             'email' => 'scolarite@istmbeni.ac.cd'
         ];
         
@@ -354,7 +354,7 @@ function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
                     
                     <div class="success-box">
                         <h3>✅ Inscription Validée avec Succès</h3>
-                        <p>Nous avons le plaisir de vous informer que votre demande d\'inscription à l\'<strong>INBTP Kinshasa</strong> a été validée avec succès !</p>
+                        <p>Nous avons le plaisir de vous informer que votre demande d\'inscription à l\'<strong>ISTM-BENI</strong> a été validée avec succès !</p>
                     </div>
                     
                     <div class="matricule-box">
@@ -394,19 +394,19 @@ function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
                         <p style="margin-bottom: 0;">Si vous avez des questions ou besoin d\'assistance, n\'hésitez pas à contacter notre service des admissions ou à vous rendre directement sur le campus.</p>
                     </div>
                     
-                    <p>Nous vous souhaitons la bienvenue dans la famille INBTP Kinshasa et vous souhaitons une excellente année académique !</p>
+                    <p>Nous vous souhaitons la bienvenue dans la famille ISTM-BENI et vous souhaitons une excellente année académique !</p>
                     
                     <p>Cordialement,<br>
                     Le Service des Admissions<br>
-                    <strong>INBTP Kinshasa</strong></p>
+                    <strong>ISTM-BENI</strong></p>
                 </div>
                 
                 <div class="footer">
                     <p><strong>Institut National du Bâtiment et des Travaux Publics</strong></p>
-                    <p>INBTP Kinshasa</p>
+                    <p>ISTM-BENI</p>
                     <p>Email: <a href="mailto:scolarite@istmbeni.ac.cd" style="color: #4299e1; text-decoration: none;">scolarite@istmbeni.ac.cd</a></p>
                     <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">std-ucg-butembo.wscsarl.info</a></p>
-                    <p>&copy; ' . date('Y') . ' INBTP Kinshasa. Tous droits réservés.</p>
+                    <p>&copy; ' . date('Y') . ' ISTM-BENI. Tous droits réservés.</p>
                 </div>
             </div>
         </div>

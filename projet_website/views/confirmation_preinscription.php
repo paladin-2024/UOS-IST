@@ -44,7 +44,7 @@ include "include/head.php";
                 <div class="confirmation-message">
                     <p>Cher(e) <strong><?php echo htmlspecialchars($preinscription['prenom'] . ' ' . $preinscription['nom']); ?></strong>,</p>
                     
-                    <p>Nous vous remercions pour votre demande de pré-inscription à l'Institut National du Bâtiment et des Travaux Publics (INBTP).</p>
+                    <p>Nous vous remercions pour votre demande de pré-inscription à l'Institut Supérieur des Techniques Médicales de Beni (ISTM-BENI).</p>
                     
                     <p>Votre demande a été enregistrée avec succès et sera examinée par notre service des admissions dans les plus brefs délais.</p>
                     
@@ -90,7 +90,7 @@ include "include/head.php";
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
-                        <span>admissions@inbtp.edu.cd</span>
+                        <span>scolarite@istmbeni.ac.cd</span>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-phone"></i>

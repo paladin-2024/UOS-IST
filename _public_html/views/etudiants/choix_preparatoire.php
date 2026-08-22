@@ -478,21 +478,21 @@ $configUniversite = $universite->getConfigurationUniversite();
                                         <div class="class-option" data-value="PREPARATOIRE A">
                                             <div class="check-icon"><i class="bi bi-check-circle-fill"></i></div>
                                             <h3>Préparatoire A</h3>
-                                            <p>Bienvenue à l'INBTP</p>
+                                            <p>Bienvenue à l'ISTM-BENI</p>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="class-option" data-value="PREPARATOIRE B">
                                             <div class="check-icon"><i class="bi bi-check-circle-fill"></i></div>
                                             <h3>Préparatoire B</h3>
-                                            <p>Bienvenue à l'INBTP</p>
+                                            <p>Bienvenue à l'ISTM-BENI</p>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="class-option" data-value="PREPARATOIRE C">
                                             <div class="check-icon"><i class="bi bi-check-circle-fill"></i></div>
                                             <h3>Préparatoire C</h3>
-                                            <p>Bienvenue à l'INBTP</p>
+                                            <p>Bienvenue à l'ISTM-BENI</p>
                                         </div>
                                     </div>
                                 </div>

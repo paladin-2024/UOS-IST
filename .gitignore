@@ -1,6 +1,7 @@
 # Claude Code project state (not part of the codebase)
 .claude/
 .claude.json
+/CLAUDE.md
 
 # Database dumps (production data, too large for GitHub anyway)
 *.sql

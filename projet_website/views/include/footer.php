@@ -1131,7 +1131,7 @@ $(document).ready(function() {
         const particlesArray = [];
         const numberOfParticles = 100;
         
-        // Couleurs des particules basées sur la charte graphique INBTP
+        // Couleurs des particules basées sur la charte graphique ISTM-BENI
         const colors = [
             'rgba(0, 51, 102, 0.7)',    // primary-color
             'rgba(0, 85, 164, 0.7)',    // primary-light
@@ -1402,7 +1402,7 @@ $(document).ready(function() {
                 } else if (lowerMsg.includes('formation') || lowerMsg.includes('cours')) {
                     return "Nous proposons des formations en Génie civil, Architecture, Travaux publics et Topographie. Quelle formation vous intéresse ?";
                 } else if (lowerMsg.includes('contact') || lowerMsg.includes('adresse')) {
-                    return "Vous pouvez nous contacter au +243 123 456 789 ou par email à contact@inbtp.edu.cd. Notre adresse principale est 123 Avenue de l'INBTP, Kinshasa.";
+                    return "Vous pouvez nous contacter au +243 123 456 789 ou par email à scolarite@istmbeni.ac.cd. Notre adresse principale est Beni, Nord-Kivu, RDC.";
                 } else {
                     return "Merci pour votre message. Un conseiller vous répondra prochainement. Pour une réponse plus rapide, n'hésitez pas à nous appeler au +243 123 456 789.";
                 }
