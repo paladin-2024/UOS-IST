@@ -1,0 +1,19 @@
+# Claude Code project state (not part of the codebase)
+.claude/
+.claude.json
+
+# Database dumps (production data, too large for GitHub anyway)
+*.sql
+
+# Hardcoded/plaintext DB credentials (per-app connection files)
+**/config/Connexion.php
+**/api_controller/connexion.php
+**/config/flexpay.php
+**/config/Config.php
+
+# Environment files (local secrets/config, never committed)
+**/.env
+
+# Student-submitted documents
+Projet_E-Gestion/dossiers/uploads/*
+!Projet_E-Gestion/dossiers/uploads/.gitkeep

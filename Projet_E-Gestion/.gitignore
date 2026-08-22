@@ -1,0 +1,30 @@
+# Ignorer tout par défaut
+/*
+
+# Ne PAS ignorer ces dossiers spécifiques
+!/models/
+!/views/
+!/controller/
+!/dossiers/
+
+# Suivre tout le contenu de ces dossiers
+!models/**
+!controller/**
+!views/**
+!dossiers/**
+
+# Configuration FlexPay (contient le token secret)
+config/flexpay.php
+
+# Variables d'environnement (contient les identifiants base de données)
+config/.env
+config/Config.php
+
+# Ne pas ignorer le fichier .gitignore lui-même
+!.gitignore
+
+# Optionnel : Si vous voulez aussi garder certains fichiers à la racine
+# Décommentez les lignes suivantes si nécessaire :
+# !index.php
+# !README.md
+# !AGENT.md

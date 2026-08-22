@@ -1,0 +1,19 @@
+# Enable URL rewriting
+RewriteEngine On
+RewriteBase /
+
+# Redirect requests to the appropriate view
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?view=$1 [L,QSA]
+
+# Optional: Redirect from index.php?view= to /
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.php\?view=([^\ ]+)\ HTTP/
+RewriteRule ^index\.php$ /%1 [R=301,L]
+
+# Handle cases where view includes subdirectories
+RewriteCond %{REQUEST_URI} ^/([a-zA-Z0-9_\-/]+)/?$ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9_\-/]+)$ index.php?view=$1 [L,QSA]
+

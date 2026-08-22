@@ -1,0 +1,180 @@
+<?php
+include "./views/include/header.php";
+
+$structureModel = new Structure();
+$searchName = isset($_GET['searchName']) ? $_GET['searchName'] : '';
+$startDate = isset($_GET['startDate']) ? $_GET['startDate'] : '';
+$endDate = isset($_GET['endDate']) ? $_GET['endDate'] : '';
+
+$userId = $_SESSION['id']; // Assuming the user ID is stored in the session
+$banqueModel = new Banque();
+$banks = $banqueModel->getBanksByUserAccess($userId);
+
+$structures = $structureModel->getStructures();
+
+?>
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Historique des Factures Fournisseurs</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+                <li class="breadcrumb-item active">Factures Fournisseurs</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <h5 class="card-title">Recherche des Factures Fournisseurs</h5>
+
+                        <!-- Search Form -->
+                        <form method="GET" action="" class="mb-3">
+                            <div class="input-group">
+                                <input type="hidden" name="view" value="comptabilite/facture_frs.historique">
+                                <input type="text" name="searchName" value="<?= htmlspecialchars($searchName) ?>" class="form-control" placeholder="Nom du fournisseur">
+                                <input type="date" name="startDate" value="<?= htmlspecialchars($startDate) ?>" class="form-control" placeholder="Date de début">
+                                <input type="date" name="endDate" value="<?= htmlspecialchars($endDate) ?>" class="form-control" placeholder="Date de fin">
+                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                            </div>
+                        </form>
+
+                        <table class="table table-striped table-bordered" id="invoiceTable">
+                            <thead>
+                                <tr>
+                                    <th>Numéro de Facture</th>
+                                    <th>Date</th>
+                                    <th>Montant</th>
+                                    <th>Fournisseur</th>
+                                    <th>Structure</th>
+                                    <th>État</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                $userId = $_SESSION['id'];
+                                $hasResults = false;
+                                if ($searchName || ($startDate && $endDate)) {
+                                foreach ($structures as $structure) {
+                                    $ver1 = $structureModel->getUserPermissionStructure($userId, $structure['idStructure']);
+                                    if ($ver1->fetch()) {
+                                $invoices = $structureModel->getSupplierInvoicesByUserAccess2($userId,$structure['idStructure'], $searchName, $startDate, $endDate);
+                                foreach ($invoices as $invoice) {
+                                    
+                                    $dateF = date('d/m/Y', strtotime($invoice['dateFacture']));
+                                    $hasResults = true;
+                                    echo "
+                                        <tr>
+                                            <td>{$invoice['numeroFacture']}</td>
+                                            <td>{$dateF}</td>
+                                            <td>{$invoice['montant']}</td>
+                                            <td>{$invoice['fournisseurName']}</td>
+                                            <td>{$invoice['structureName']}</td>
+                                            <td>{$invoice['statut']}</td>
+                                            <td>
+                                                <button type='button' class='btn btn-info btn-sm toggle-payments' data-invoice-id='{$invoice['idInvoice']}'>
+                                                    Voir
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class='payment-details' id='payments-{$invoice['idInvoice']}' style='display:none;'>
+                                            <td colspan='7'>
+                                                <table class='table'>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Montant</th>
+                                                            <th>Libellé</th>
+                                                            <th>Bénéficiaire</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>";
+                                    
+                                    // Fetch payments for the current invoice
+                                    $payments = $structureModel->getSupplierPaymentsByInvoiceId($invoice['idInvoice']);
+                                    foreach ($payments as $payment) {
+                                        echo "
+                                            <tr>
+                                                <td>{$payment['datePaiement']}</td>
+                                                <td>{$payment['montant']}</td>
+                                                <td>{$payment['libelle']}</td>
+                                                <td>{$payment['beneficiaire']}</td>
+                                                <td>
+                                                    <button type='button' class='btn btn-secondary btn-sm print-receipt-btn' data-payment-id='{$payment['idPaiement_fournisseur']}'><i class='bi bi-printer'></i> Imprimer</button>
+                                                    <button type='button' class='btn btn-secondary btn-sm print-receipt-btn-pos' data-payment-id='{$payment['idPaiement_fournisseur']}'><i class='bi bi-printer'></i> POS</button>
+                                                </td>
+                                            </tr>
+                                        ";
+                                    }
+
+                                    echo "
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    ";
+                                }
+                            }
+                        }
+                        }
+
+
+                                if (!$hasResults) {
+                                    echo "<tr><td colspan='7' class='text-center'>Aucun résultat trouvé</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                document.querySelectorAll('.toggle-payments').forEach(button => {
+                                    button.addEventListener('click', function () {
+                                        const invoiceId = this.getAttribute('data-invoice-id');
+                                        const paymentRow = document.getElementById('payments-' + invoiceId);
+                                        paymentRow.style.display = paymentRow.style.display === 'none' ? '' : 'none';
+                                    });
+                                });
+
+                                document.querySelectorAll('.print-receipt-btn').forEach(button => {
+                                    button.addEventListener('click', function () {
+                                        const paymentId = this.getAttribute('data-payment-id');
+                                        printReceipt(paymentId);
+                                    });
+                                });
+
+                                document.querySelectorAll('.print-receipt-btn-pos').forEach(button => {
+                                    button.addEventListener('click', function () {
+                                        const paymentId = this.getAttribute('data-payment-id');
+                                        printReceipt_pos(paymentId);
+                                    });
+                                });
+
+                                function printReceipt(paymentId) {
+                                    // Open the PDF receipt in a new window
+                                    window.open('comptabilite/generate_receipt_supplier&paymentId=' + paymentId, '_blank');
+                                }
+
+                                function printReceipt_pos(paymentId) {
+                                    // Open the PDF receipt in a new window
+                                    window.open('comptabilite/generate_receipt_pos_supplier&paymentId=' + paymentId, '_blank');
+                                }
+                            });
+                        </script>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<?php include "./views/include/footer.php"; ?>
