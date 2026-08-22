@@ -20,16 +20,16 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
     try {
         // Récupérer les détails de la séance
         $stmt = $db->prepare("
-            SELECT sc.*, ec.designationECUE, p.designationPromotion, s.numeroSemestre,
+            SELECT sc.*, ec.\"designationECUE\", p.\"designationPromotion\", s.\"numeroSemestre\",
                 (SELECT COUNT(*) FROM presence_cours WHERE idseance = sc.idseance) as nb_presents,
                 e.noms as nom_enseignant
             FROM seance_cours sc
-            JOIN ecue ec ON sc.idECUE = ec.idECUE
-            JOIN ue ON ec.UE_idUE = ue.idUE
+            JOIN ecue ec ON sc.\"idECUE\" = ec.\"idECUE\"
+            JOIN ue ON ec.\"UE_idUE\" = ue.\"idUE\"
             JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
             JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-            JOIN enseignant_ecue ee ON ec.idECUE = ee.idECUE AND ee.anneeAcad = sc.annee_acad_id
-            JOIN agent e ON ee.idAgent = e.idAgent
+            JOIN enseignant_ecue ee ON ec.\"idECUE\" = ee.\"idECUE\" AND ee.\"anneeAcad\" = sc.annee_acad_id
+            JOIN agent e ON ee.\"idAgent\" = e.\"idAgent\"
             WHERE sc.idseance = :idSeance
         ");
         $stmt->bindParam(':idSeance', $idSeance, PDO::PARAM_INT);
@@ -59,8 +59,8 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
             JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
             JOIN semestre s ON s.promotion_idpromotion = p.idpromotion
             JOIN ue ON ue.semestre_idsemestre = s.idsemestre
-            JOIN ecue ec ON ec.UE_idUE = ue.idUE
-            WHERE ec.idECUE = :idECUE
+            JOIN ecue ec ON ec.\"UE_idUE\" = ue.\"idUE\"
+            WHERE ec.\"idECUE\" = :idECUE
             ORDER BY e.noms
         ");
         $stmtAllEtudiants->bindParam(':idECUE', $seance['idECUE'], PDO::PARAM_INT);

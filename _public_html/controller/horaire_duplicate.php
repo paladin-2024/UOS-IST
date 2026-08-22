@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
                   INNER JOIN section s ON s.idsection = rs.section_idsection
                   INNER JOIN orientation o ON o.section_idsection = s.idsection
                   INNER JOIN promotion p ON p.orientation_idorientation = o.idorientation
-                  WHERE rs.idUser = :userId 
+                  WHERE rs.\"idUser\" = :userId 
                   AND rs.annee_acad_idannee_acad = :anneeId
                   AND p.idpromotion = :promotionId";
         

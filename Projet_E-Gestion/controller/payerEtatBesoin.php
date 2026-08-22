@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Mettre à jour le statut de l'état de besoin
-        $query = "UPDATE etat_de_besoin SET statut = 'Paye' WHERE idEtat_de_besoin = :etatId";
+        $query = "UPDATE etat_de_besoin SET statut = 'Paye' WHERE \"idEtat_de_besoin\" = :etatId";
         $stmt = $db->prepare($query);
         $stmt->execute(['etatId' => $etatId]);
 

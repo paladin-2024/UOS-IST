@@ -86,9 +86,9 @@ class Universite {
  */
 public function getAllAcademicYears() {
     $conn = Connexion::getInstance()->getPDO();
-    $query = "SELECT idannee_acad, designation, dateCreation 
+    $query = "SELECT idannee_acad, designation, \"dateCreation\" 
               FROM annee_acad 
-              ORDER BY dateCreation DESC";
+              ORDER BY \"dateCreation\" DESC";
     
     $stmt = $conn->prepare($query);
     $stmt->execute();
@@ -99,7 +99,7 @@ public function getAllAcademicYears() {
 
     public function createAcademicYear($designation) {
         $dateCreation = date('Y-m-d H:i:s');
-        $query = "INSERT INTO annee_acad (designation, dateCreation) VALUES (:designation, :dateCreation)";
+        $query = "INSERT INTO annee_acad (designation, \"dateCreation\") VALUES (:designation, :dateCreation)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designation', $designation);
         $stmt->bindParam(':dateCreation', $dateCreation);
@@ -162,7 +162,7 @@ public function getAllAcademicYears() {
 
     public function createSection($designationSection, $idAnnee, $adresse = null, $telephone = null, $email = null, $boite_postale = null, $site_web = null) {
         $dateCreation = date('Y-m-d H:i:s');
-        $query = "INSERT INTO section (designationSection, dateCreation, idAnnee, adresse, telephone, email, boite_postale, site_web) 
+        $query = "INSERT INTO section (\"designationSection\", \"dateCreation\", \"idAnnee\", adresse, telephone, email, boite_postale, site_web) 
                   VALUES (:designationSection, :dateCreation, :idAnnee, :adresse, :telephone, :email, :boite_postale, :site_web)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designationSection', $designationSection);
@@ -177,7 +177,7 @@ public function getAllAcademicYears() {
     }
 
     public function updateSection($id, $designationSection, $idAnnee, $adresse = null, $telephone = null, $email = null, $boite_postale = null, $site_web = null) {
-        $query = "UPDATE section SET designationSection = :designationSection, idAnnee = :idAnnee, 
+        $query = "UPDATE section SET \"designationSection\" = :designationSection, \"idAnnee\" = :idAnnee, 
                   adresse = :adresse, telephone = :telephone, email = :email, 
                   boite_postale = :boite_postale, site_web = :site_web 
                   WHERE idsection = :id";
@@ -202,10 +202,10 @@ public function getAllAcademicYears() {
                    FROM responsable_section rs 
                    WHERE rs.section_idsection = s.idsection 
                    AND rs.est_chef = 1 
-                   AND rs.annee_acad_idannee_acad = s.idAnnee
+                   AND rs.annee_acad_idannee_acad = s.\"idAnnee\"
                    LIMIT 1) AS chef_section
                   FROM section s
-                  JOIN annee_acad aa ON s.idAnnee = aa.idannee_acad
+                  JOIN annee_acad aa ON s.\"idAnnee\" = aa.idannee_acad
                   WHERE s.idsection = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -233,7 +233,7 @@ public function getAllAcademicYears() {
 
 
     public function createManager($noms, $fonction, $signature, $idUser, $sectionId, $anneeAcadId) {
-        $query = "INSERT INTO responsable_section (noms, fonction, signature, idUser, section_idsection, annee_acad_idannee_acad) 
+        $query = "INSERT INTO responsable_section (noms, fonction, signature, \"idUser\", section_idsection, annee_acad_idannee_acad) 
                   VALUES (:noms, :fonction, :signature, :idUser, :sectionId, :anneeAcadId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':noms', $noms);
@@ -247,7 +247,7 @@ public function getAllAcademicYears() {
 
     public function updateManager($id, $noms, $fonction, $signature, $idUser, $anneeAcadId) {
         $query = "UPDATE responsable_section SET noms = :noms, fonction = :fonction, 
-                  idUser = :idUser, annee_acad_idannee_acad = :anneeAcadId";
+                  \"idUser\" = :idUser, annee_acad_idannee_acad = :anneeAcadId";
         
         // Only update the signature if a new one is provided
         if ($signature !== null) {
@@ -277,12 +277,12 @@ public function getAllAcademicYears() {
 
     
     public function getDepartements($search = '') {
-        $query = "SELECT d.*, s.designationSection AS sectionDesignation,a.designation as annee 
+        $query = "SELECT d.*, s.\"designationSection\" AS sectionDesignation,a.designation as annee 
                   FROM departement d
                   JOIN section s ON d.section_idsection = s.idsection
-                  JOIN annee_acad a ON a.idannee_acad=s.idAnnee";
+                  JOIN annee_acad a ON a.idannee_acad=s.\"idAnnee\"";
         if (!empty($search)) {
-            $query .= " WHERE d.designationDepartement LIKE :search OR s.designationSection LIKE :search";
+            $query .= " WHERE d.designationDepartement LIKE :search OR s.\"designationSection\" LIKE :search";
         }
         $query .= " ORDER BY annee DESC";
 
@@ -297,7 +297,7 @@ public function getAllAcademicYears() {
 
     public function createDepartement($designationDepartement, $sectionId) {
         $dateCreation = date('Y-m-d H:i:s');
-        $query = "INSERT INTO departement (designationDepartement, dateCreation, section_idsection) 
+        $query = "INSERT INTO departement (designationDepartement, \"dateCreation\", section_idsection) 
                   VALUES (:designationDepartement, :dateCreation, :sectionId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designationDepartement', $designationDepartement);
@@ -336,7 +336,7 @@ public function getAllAcademicYears() {
     }
 
     public function createManagerDepartement($noms, $fonction, $signature, $idUser, $departementId, $anneeAcadId) {
-        $query = "INSERT INTO responsable_departement (noms, fonction, signature, idUser, departement_iddepartement, annee_acad_idannee_acad) 
+        $query = "INSERT INTO responsable_departement (noms, fonction, signature, \"idUser\", departement_iddepartement, annee_acad_idannee_acad) 
                   VALUES (:noms, :fonction, :signature, :idUser, :departementId, :anneeAcadId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':noms', $noms);
@@ -350,7 +350,7 @@ public function getAllAcademicYears() {
 
     public function updateManagerDepartement($id, $noms, $fonction, $signature, $idUser, $anneeAcadId) {
         $query = "UPDATE responsable_departement SET noms = :noms, fonction = :fonction, 
-                  idUser = :idUser, annee_acad_idannee_acad = :anneeAcadId";
+                  \"idUser\" = :idUser, annee_acad_idannee_acad = :anneeAcadId";
         
         // Only update the signature if a new one is provided
         if ($signature !== null) {
@@ -381,7 +381,7 @@ public function getAllAcademicYears() {
     // Other existing methods...
 
     public function getPromotions($search = '', $anneeAcadId = null) {
-        $query = "SELECT p.*, o.designationOrientation AS orientationDesignation, aa.designation AS anneeDesignation
+        $query = "SELECT p.*, o.\"designationOrientation\" AS orientationDesignation, aa.designation AS anneeDesignation
                   FROM promotion p
                   JOIN orientation o ON p.orientation_idorientation = o.idorientation
                   JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad";
@@ -390,7 +390,7 @@ public function getAllAcademicYears() {
         $params = [];
 
         if (!empty($search)) {
-            $whereConditions[] = "(p.designationPromotion LIKE :search OR o.designationOrientation LIKE :search)";
+            $whereConditions[] = "(p.\"designationPromotion\" LIKE :search OR o.\"designationOrientation\" LIKE :search)";
             $params[':search'] = '%' . $search . '%';
         }
 
@@ -403,7 +403,7 @@ public function getAllAcademicYears() {
             $query .= " WHERE " . implode(" AND ", $whereConditions);
         }
 
-        $query .= " ORDER BY p.designationPromotion ASC";
+        $query .= " ORDER BY p.\"designationPromotion\" ASC";
 
         $stmt = $this->db->prepare($query);
 
@@ -419,7 +419,7 @@ public function getAllAcademicYears() {
     public function createPromotion($designationPromotion, $cycle, $orientationId, $anneeAcadId, $estTerminale = 0) {
         $dateCreation = date('Y-m-d H:i:s');
     
-        $query = "INSERT INTO promotion (designationPromotion, cycle, dateCreation, orientation_idorientation, annee_acad_idannee_acad, est_terminale)
+        $query = "INSERT INTO promotion (\"designationPromotion\", cycle, \"dateCreation\", orientation_idorientation, annee_acad_idannee_acad, est_terminale)
                   VALUES (:designationPromotion, :cycle, :dateCreation, :orientationId, :anneeAcadId, :estTerminale)";
     
         $stmt = $this->db->prepare($query);
@@ -437,7 +437,7 @@ public function getAllAcademicYears() {
 // Méthode pour mettre à jour une promotion (mise à jour)
 public function updatePromotion($promotionId, $designationPromotion, $cycle, $orientationId, $anneeAcadId, $estTerminale = 0) {
     $query = "UPDATE promotion 
-              SET designationPromotion = :designationPromotion, 
+              SET \"designationPromotion\" = :designationPromotion, 
                   cycle = :cycle, 
                   orientation_idorientation = :orientationId, 
                   annee_acad_idannee_acad = :anneeAcadId,
@@ -493,7 +493,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
 
     public function getPromotionByDesignationAndYear($designationPromotion, $anneeAcadId) {
-        $query = "SELECT * FROM promotion WHERE designationPromotion = :designationPromotion AND annee_acad_idannee_acad = :anneeAcadId";
+        $query = "SELECT * FROM promotion WHERE \"designationPromotion\" = :designationPromotion AND annee_acad_idannee_acad = :anneeAcadId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designationPromotion', $designationPromotion);
         $stmt->bindParam(':anneeAcadId', $anneeAcadId);
@@ -503,7 +503,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
 
     
     public function getStudents($search = '', $limit = 100, $offset = 0, $anneeId = null, $orientationId = null, $promotionId = null, $includeInactive = false) {
-        $query = "SELECT e.*, p.designationPromotion, o.designationOrientation,
+        $query = "SELECT e.*, p.\"designationPromotion\", o.\"designationOrientation\",
                   a.designation as annee
                   FROM etudiant e
                   JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -561,7 +561,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
     
     public function getStudents2($search = '') {
-        $query = "SELECT e.*, p.designationPromotion, o.designationOrientation,
+        $query = "SELECT e.*, p.\"designationPromotion\", o.\"designationOrientation\",
                   a.designation as annee
                   FROM etudiant e
                   JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -586,7 +586,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     public function createStudent($matricule, $noms, $lieuNaissance, $dateNaissance, $adressemail, $telephone, $sexe, $nationalite, $anneeAcadId, $promotionId, $idUser) {
         $dateEnregistrement = date('Y-m-d H:i:s');
         $defaultPwd = password_hash("12345678", PASSWORD_BCRYPT);
-        $query = "INSERT INTO etudiant (matricule, noms, lieuNaissance, dateNaissance, adressemail, telephone, sexe, nationalite, pwd, dateEnregistrement, annee_acad_idannee_acad, promotion_idpromotion, idUser) 
+        $query = "INSERT INTO etudiant (matricule, noms, \"lieuNaissance\", \"dateNaissance\", adressemail, telephone, sexe, nationalite, pwd, \"dateEnregistrement\", annee_acad_idannee_acad, promotion_idpromotion, \"idUser\") 
                   VALUES (:matricule, :noms, :lieuNaissance, :dateNaissance, :adressemail, :telephone, :sexe, :nationalite, :pwd, :dateEnregistrement, :anneeAcadId, :promotionId, :idUser)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':matricule', $matricule);
@@ -606,9 +606,9 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
 
     public function updateStudent($id, $matricule, $noms, $lieuNaissance, $dateNaissance, $adressemail, $telephone, $sexe, $nationalite, $anneeAcadId, $promotionId, $idUser) {
-    $query = "UPDATE etudiant SET matricule = :matricule, noms = :noms, lieuNaissance = :lieuNaissance, dateNaissance = :dateNaissance,
+    $query = "UPDATE etudiant SET matricule = :matricule, noms = :noms, \"lieuNaissance\" = :lieuNaissance, \"dateNaissance\" = :dateNaissance,
     adressemail = :adressemail, telephone = :telephone, sexe = :sexe, nationalite = :nationalite, annee_acad_idannee_acad = :anneeAcadId,
-    promotion_idpromotion = :promotionId, idUser = :idUser WHERE idetudiant = :id";
+    promotion_idpromotion = :promotionId, \"idUser\" = :idUser WHERE idetudiant = :id";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':matricule', $matricule);
     $stmt->bindParam(':noms', $noms);
@@ -629,7 +629,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
      * Met à jour le profil d'un étudiant (utilisé par les étudiants pour modifier leurs propres informations)
      */
     public function updateStudentProfile($id, $noms, $lieuNaissance, $dateNaissance, $sexe, $nationalite, $adressemail, $telephone, $adresse, $personne_contact, $telephone_contact, $photo = null) {
-        $query = "UPDATE etudiant SET noms = :noms, lieuNaissance = :lieuNaissance, dateNaissance = :dateNaissance,
+        $query = "UPDATE etudiant SET noms = :noms, \"lieuNaissance\" = :lieuNaissance, \"dateNaissance\" = :dateNaissance,
                   sexe = :sexe, nationalite = :nationalite, adressemail = :adressemail, telephone = :telephone,
                   adresse = :adresse, personne_contact = :personne_contact, telephone_contact = :telephone_contact";
 
@@ -674,7 +674,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     public function getUserStudents($userId) {
         $query = "SELECT ue.*, e.noms, e.matricule FROM user_etudiant ue
                   JOIN etudiant e ON ue.matriculeEtudiant = e.matricule
-                  WHERE ue.idUser = :userId";
+                  WHERE ue.\"idUser\" = :userId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -682,7 +682,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
 
     public function associateUserToStudent($matriculeEtudiant, $userId) {
-        $query = "INSERT INTO user_etudiant (matriculeEtudiant, idUser) VALUES (:matriculeEtudiant, :userId)";
+        $query = "INSERT INTO user_etudiant (matriculeEtudiant, \"idUser\") VALUES (:matriculeEtudiant, :userId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':matriculeEtudiant', $matriculeEtudiant);
         $stmt->bindParam(':userId', $userId);
@@ -698,7 +698,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
 
     public function getStudentByMatriculeAndYear($matricule, $anneeAcadId) {
         $query = "SELECT e.*, 
-                         p.designationPromotion, 
+                         p.\"designationPromotion\", 
                          a.designation AS annee
                   FROM etudiant e
                   LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -712,8 +712,8 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
 
     public function getStudentsByPromotion($promotionId) {
-        $query = "SELECT e.matricule, e.noms, e.lieuNaissance, e.dateNaissance, e.adressemail, e.telephone, e.sexe, e.nationalite, 
-                         p.designationPromotion, a.designation AS annee
+        $query = "SELECT e.matricule, e.noms, e.\"lieuNaissance\", e.\"dateNaissance\", e.adressemail, e.telephone, e.sexe, e.nationalite, 
+                         p.\"designationPromotion\", a.designation AS annee
                   FROM etudiant e
                   JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
                   JOIN annee_acad a ON e.annee_acad_idannee_acad = a.idannee_acad
@@ -725,16 +725,16 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
 
     public function getTeachers($search = '') {
-        $query = "SELECT e.idenseignant, e.nomEnseignant, e.grade, e.idAgent, e.idDepartement, 
-                         a.noms AS agentName, a.lieuNaissance, a.dateNaissance, a.sexe, a.telephone, a.email,
+        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, e.\"idAgent\", e.\"idDepartement\", 
+                         a.noms AS agentName, a.\"lieuNaissance\", a.\"dateNaissance\", a.sexe, a.telephone, a.email,
                          d.designationDepartement AS departmentName
                   FROM enseignant e
-                  JOIN agent a ON e.idAgent = a.idAgent
-                  JOIN departement d ON e.idDepartement = d.iddepartement";
+                  JOIN agent a ON e.\"idAgent\" = a.\"idAgent\"
+                  JOIN departement d ON e.\"idDepartement\" = d.iddepartement";
         if (!empty($search)) {
-            $query .= " WHERE e.nomEnseignant LIKE :search OR a.noms LIKE :search OR d.designationDepartement LIKE :search";
+            $query .= " WHERE e.\"nomEnseignant\" LIKE :search OR a.noms LIKE :search OR d.designationDepartement LIKE :search";
         }
-        $query .= " ORDER BY e.nomEnseignant ASC";
+        $query .= " ORDER BY e.\"nomEnseignant\" ASC";
     
         $stmt = $this->db->prepare($query);
         if (!empty($search)) {
@@ -753,7 +753,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
     
     public function getAllAgents() {
-        $query = "SELECT idAgent, noms FROM agent ORDER BY noms ASC";
+        $query = "SELECT \"idAgent\", noms FROM agent ORDER BY noms ASC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -763,7 +763,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
  * Créer un nouvel enseignant
  */
 public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, $userId) {
-    $query = "INSERT INTO enseignant (nomEnseignant, grade, idAgent, idDepartement, idUser, dateEnregistrement) 
+    $query = "INSERT INTO enseignant (\"nomEnseignant\", grade, \"idAgent\", \"idDepartement\", \"idUser\", \"dateEnregistrement\") 
               VALUES (:nomEnseignant, :grade, :idAgent, :idDepartement, :userId, NOW())";
     
     $stmt = $this->db->prepare($query);
@@ -785,7 +785,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     public function updateTeacher($id, $grade,$idDepartement) {
         $query = "UPDATE enseignant SET grade = :grade, 
-                  idDepartement = :idDepartement WHERE idenseignant = :id";
+                  \"idDepartement\" = :idDepartement WHERE idenseignant = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':grade', $grade);
         $stmt->bindParam(':idDepartement', $idDepartement);
@@ -801,7 +801,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     }
 
     public function checkDuplicateTeacher($nomEnseignant, $idAgent) {
-        $query = "SELECT COUNT(*) FROM enseignant WHERE nomEnseignant = :nomEnseignant AND idAgent = :idAgent";
+        $query = "SELECT COUNT(*) FROM enseignant WHERE \"nomEnseignant\" = :nomEnseignant AND \"idAgent\" = :idAgent";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':nomEnseignant', $nomEnseignant, PDO::PARAM_STR);
         $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -817,9 +817,9 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
                   FROM unite_recherche ur
                   JOIN departement d ON ur.departement_iddepartement = d.iddepartement";
         if (!empty($search)) {
-            $query .= " WHERE ur.designation_UR LIKE :search OR d.designationDepartement LIKE :search";
+            $query .= " WHERE ur.\"designation_UR\" LIKE :search OR d.designationDepartement LIKE :search";
         }
-        $query .= " ORDER BY ur.designation_UR ASC";
+        $query .= " ORDER BY ur.\"designation_UR\" ASC";
     
         $stmt = $this->db->prepare($query);
         if (!empty($search)) {
@@ -831,16 +831,16 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     }
 
     public function getTeachersWithResearchUnits($search = '') {
-        $query = "SELECT e.idenseignant, e.nomEnseignant, e.grade, d.designationDepartement AS departmentName, 
-                         ur.designation_UR AS researchUnitName
+        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS departmentName, 
+                         ur.\"designation_UR\" AS researchUnitName
                   FROM enseignant e
-                  JOIN departement d ON e.idDepartement = d.iddepartement
-                  LEFT JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.idUser
-                  LEFT JOIN unite_recherche ur ON eur.idUnite_recherche = ur.idunite_recherche";
+                  JOIN departement d ON e.\"idDepartement\" = d.iddepartement
+                  LEFT JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.\"idUser\"
+                  LEFT JOIN unite_recherche ur ON eur.\"idUnite_recherche\" = ur.idunite_recherche";
         if (!empty($search)) {
-            $query .= " WHERE e.nomEnseignant LIKE :search OR ur.designation_UR LIKE :search";
+            $query .= " WHERE e.\"nomEnseignant\" LIKE :search OR ur.\"designation_UR\" LIKE :search";
         }
-        $query .= " ORDER BY e.nomEnseignant ASC";
+        $query .= " ORDER BY e.\"nomEnseignant\" ASC";
 
         $stmt = $this->db->prepare($query);
         if (!empty($search)) {
@@ -852,12 +852,12 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     }
 
     public function getTeachersByResearchUnit($researchUnitId) {
-        $query = "SELECT e.idenseignant, e.nomEnseignant, e.grade, d.designationDepartement AS departmentName
+        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS departmentName
                   FROM enseignant e
-                  JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.idUser
-                  JOIN departement d ON e.idDepartement = d.iddepartement
-                  WHERE eur.idUnite_recherche = :researchUnitId
-                  ORDER BY e.nomEnseignant ASC";
+                  JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.\"idUser\"
+                  JOIN departement d ON e.\"idDepartement\" = d.iddepartement
+                  WHERE eur.\"idUnite_recherche\" = :researchUnitId
+                  ORDER BY e.\"nomEnseignant\" ASC";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':researchUnitId', $researchUnitId, PDO::PARAM_INT);
@@ -868,7 +868,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     // Method to create a specialization
     public function createSpecialisation($designation, $idUniteRecherche) {
         $dateCreation = date('Y-m-d H:i:s');
-        $query = "INSERT INTO specialisation (designation, idUnite_recherche, dateCreation) 
+        $query = "INSERT INTO specialisation (designation, \"idUnite_recherche\", \"dateCreation\") 
                   VALUES (:designation, :idUniteRecherche, :dateCreation)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designation', $designation);
@@ -879,8 +879,8 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     // Method to update a specialization
     public function updateSpecialisation($id, $designation, $idUniteRecherche) {
-        $query = "UPDATE specialisation SET designation = :designation, idUnite_recherche = :idUniteRecherche 
-                  WHERE idSpecialisation = :id";
+        $query = "UPDATE specialisation SET designation = :designation, \"idUnite_recherche\" = :idUniteRecherche 
+                  WHERE \"idSpecialisation\" = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designation', $designation);
         $stmt->bindParam(':idUniteRecherche', $idUniteRecherche);
@@ -890,7 +890,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     // Method to delete a specialization
     public function deleteSpecialisation($id) {
-        $query = "DELETE FROM specialisation WHERE idSpecialisation = :id";
+        $query = "DELETE FROM specialisation WHERE \"idSpecialisation\" = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
@@ -898,7 +898,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     // Method to get specializations by research unit
     public function getSpecialisationsByResearchUnit($researchUnitId) {
-        $query = "SELECT * FROM specialisation WHERE idUnite_recherche = :researchUnitId ORDER BY designation ASC";
+        $query = "SELECT * FROM specialisation WHERE \"idUnite_recherche\" = :researchUnitId ORDER BY designation ASC";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':researchUnitId', $researchUnitId, PDO::PARAM_INT);
         $stmt->execute();
@@ -910,7 +910,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     // Method to assign a teacher to a specialization
     public function assignTeacherToSpecialisation($idEnseignant, $idSpecialisation) {
-        $query = "INSERT INTO enseignant_uniterecherche (idUser, idSpecialisation) 
+        $query = "INSERT INTO enseignant_uniterecherche (\"idUser\", \"idSpecialisation\") 
                   VALUES (:idEnseignant, :idSpecialisation)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEnseignant', $idEnseignant);
@@ -920,7 +920,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     // Method to remove a teacher from a specialization
     public function removeTeacherFromSpecialisation($idEnseignant, $idSpecialisation) {
-        $query = "DELETE FROM enseignant_uniterecherche WHERE idUser = :idEnseignant AND idSpecialisation = :idSpecialisation";
+        $query = "DELETE FROM enseignant_uniterecherche WHERE \"idUser\" = :idEnseignant AND \"idSpecialisation\" = :idSpecialisation";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEnseignant', $idEnseignant);
         $stmt->bindParam(':idSpecialisation', $idSpecialisation);
@@ -929,12 +929,12 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     // Method to get teachers by specialization
     public function getTeachersBySpecialisation($specialisationId) {
-        $query = "SELECT e.idenseignant, e.nomEnseignant, e.grade, d.designationDepartement AS departmentName
+        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS departmentName
                   FROM enseignant e
-                  JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.idUser
-                  JOIN departement d ON e.idDepartement = d.iddepartement
-                  WHERE eur.idSpecialisation = :specialisationId
-                  ORDER BY e.nomEnseignant ASC";
+                  JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.\"idUser\"
+                  JOIN departement d ON e.\"idDepartement\" = d.iddepartement
+                  WHERE eur.\"idSpecialisation\" = :specialisationId
+                  ORDER BY e.\"nomEnseignant\" ASC";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':specialisationId', $specialisationId, PDO::PARAM_INT);
@@ -946,7 +946,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     public function createResearchUnit($designationUR, $description, $idDepartement) {
         $dateCreation = date('Y-m-d H:i:s');
-        $query = "INSERT INTO unite_recherche (designation_UR, description, dateCreation, departement_iddepartement) 
+        $query = "INSERT INTO unite_recherche (\"designation_UR\", description, \"dateCreation\", departement_iddepartement) 
                   VALUES (:designationUR, :description, :dateCreation, :idDepartement)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designationUR', $designationUR);
@@ -957,7 +957,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     }
 
     public function updateResearchUnit($id, $designationUR, $description, $idDepartement) {
-        $query = "UPDATE unite_recherche SET designation_UR = :designationUR, description = :description, 
+        $query = "UPDATE unite_recherche SET \"designation_UR\" = :designationUR, description = :description, 
                   departement_iddepartement = :idDepartement WHERE idunite_recherche = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designationUR', $designationUR);
@@ -978,21 +978,21 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     public function getSujets($search = '') {
         $query = "SELECT s.*, spec.designation as specialisation, aa.designation as annee,
                          CONCAT(e.noms, ' (', e.matricule, ')') as etudiant,
-                         CONCAT(d.nomEnseignant, ' (', d.grade, ')') as directeur,
-                         CONCAT(enc.nomEnseignant, ' (', enc.grade, ')') as encadreur
+                         CONCAT(d.\"nomEnseignant\", ' (', d.grade, ')') as directeur,
+                         CONCAT(enc.\"nomEnseignant\", ' (', enc.grade, ')') as encadreur
                   FROM sujets s
-                  LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+                  LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
                   LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                  LEFT JOIN enseignant d ON s.idDirecteur = d.idenseignant
-                  LEFT JOIN enseignant enc ON s.idEncadreur = enc.idenseignant";
+                  LEFT JOIN enseignant d ON s.\"idDirecteur\" = d.idenseignant
+                  LEFT JOIN enseignant enc ON s.\"idEncadreur\" = enc.idenseignant";
         
         if (!empty($search)) {
             $query .= " WHERE s.intitule LIKE :search 
                        OR spec.designation LIKE :search 
                        OR e.noms LIKE :search
-                       OR d.nomEnseignant LIKE :search
-                       OR enc.nomEnseignant LIKE :search";
+                       OR d.\"nomEnseignant\" LIKE :search
+                       OR enc.\"nomEnseignant\" LIKE :search";
         }
         
         $query .= " ORDER BY s.idsujets DESC";
@@ -1009,23 +1009,23 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     public function getSujetsNonValides($search = '') {
         $query = "SELECT s.*, spec.designation as specialisation, aa.designation as annee,
                          CONCAT(e.noms, ' (', e.matricule, ')') as etudiant,
-                         CONCAT(d.nomEnseignant, ' (', d.grade, ')') as directeur,
-                         CONCAT(enc.nomEnseignant, ' (', enc.grade, ')') as encadreur
+                         CONCAT(d.\"nomEnseignant\", ' (', d.grade, ')') as directeur,
+                         CONCAT(enc.\"nomEnseignant\", ' (', enc.grade, ')') as encadreur
                   FROM sujets s
-                  LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+                  LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
                   LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                  LEFT JOIN enseignant d ON s.idDirecteur = d.idenseignant
-                  LEFT JOIN enseignant enc ON s.idEncadreur = enc.idenseignant
-                  WHERE (s.idDirecteur IS NULL OR s.statut_validation = 'En attente' OR s.statut_validation = 'Rejeté')
+                  LEFT JOIN enseignant d ON s.\"idDirecteur\" = d.idenseignant
+                  LEFT JOIN enseignant enc ON s.\"idEncadreur\" = enc.idenseignant
+                  WHERE (s.\"idDirecteur\" IS NULL OR s.statut_validation = 'En attente' OR s.statut_validation = 'Rejeté')
                   AND s.etudiant_idetudiant IS NOT NULL";
         
         if (!empty($search)) {
             $query .= " AND (s.intitule LIKE :search 
                        OR spec.designation LIKE :search 
                        OR e.noms LIKE :search
-                       OR d.nomEnseignant LIKE :search
-                       OR enc.nomEnseignant LIKE :search)";
+                       OR d.\"nomEnseignant\" LIKE :search
+                       OR enc.\"nomEnseignant\" LIKE :search)";
         }
         
         $query .= " ORDER BY s.idsujets DESC";
@@ -1055,8 +1055,8 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     // Méthode pour créer un nouveau sujet
     public function createSujet($intitule, $cycle, $idSpecialisation, $anneeAcadId, $idUser, $etatSujet, $etudiantId, $directeurId, $encadreurId) {
         try {
-            $query = "INSERT INTO sujets (intitule, cycle, idSpecialisation, annee_acad_idannee_acad, 
-                                        idUser, etatSujet, etudiant_idetudiant, idDirecteur, idEncadreur)
+            $query = "INSERT INTO sujets (intitule, cycle, \"idSpecialisation\", annee_acad_idannee_acad, 
+                                        \"idUser\", \"etatSujet\", etudiant_idetudiant, \"idDirecteur\", \"idEncadreur\")
                       VALUES (:intitule, :cycle, :idSpecialisation, :anneeAcadId, 
                              :idUser, :etatSujet, :etudiantId, :directeurId, :encadreurId)";
     
@@ -1080,8 +1080,8 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     public function createSujet2($intitule, $cycle, $idSpecialisation, $anneeAcadId, $idUser) {
         try {
-            $query = "INSERT INTO sujets (intitule, cycle, idSpecialisation, annee_acad_idannee_acad, 
-                                        idUser)
+            $query = "INSERT INTO sujets (intitule, cycle, \"idSpecialisation\", annee_acad_idannee_acad, 
+                                        \"idUser\")
                       VALUES (:intitule, :cycle, :idSpecialisation, :anneeAcadId, 
                              :idUser)";
     
@@ -1105,12 +1105,12 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
             $query = "UPDATE sujets 
                       SET intitule = :intitule,
                           cycle = :cycle,
-                          idSpecialisation = :idSpecialisation,
+                          \"idSpecialisation\" = :idSpecialisation,
                           annee_acad_idannee_acad = :anneeAcadId,
-                          etatSujet = :etatSujet,
+                          \"etatSujet\" = :etatSujet,
                           etudiant_idetudiant = :etudiantId,
-                          idDirecteur = :directeurId,
-                          idEncadreur = :encadreurId
+                          \"idDirecteur\" = :directeurId,
+                          \"idEncadreur\" = :encadreurId
                       WHERE idsujets = :idSujet";
     
             $stmt = $this->db->prepare($query);
@@ -1136,7 +1136,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
         try {
             $query = "UPDATE sujets 
                       SET intitule = :intitule,
-                          idSpecialisation = :idSpecialisation
+                          \"idSpecialisation\" = :idSpecialisation
                       WHERE idsujets = :idSujet";
     
             $stmt = $this->db->prepare($query);
@@ -1162,7 +1162,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     // Méthode pour valider un sujet par le directeur
     public function validerSujet($idSujet, $etatSujet) {
         $query = "UPDATE sujets 
-                 SET etatSujet = :etatSujet
+                 SET \"etatSujet\" = :etatSujet
                  WHERE idsujets = :idSujet";
         
         $stmt = $this->db->prepare($query);
@@ -1174,7 +1174,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     // Méthode pour assigner un encadreur à un sujet
     public function assignerEncadreur($idSujet, $idEncadreur) {
         $query = "UPDATE sujets 
-                 SET idEncadreur = :idEncadreur
+                 SET \"idEncadreur\" = :idEncadreur
                  WHERE idsujets = :idSujet";
         
         $stmt = $this->db->prepare($query);
@@ -1200,11 +1200,11 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     public function getSujetsDisponibles($cycle) {
         $query = "SELECT s.*, spec.designation as specialisation, aa.designation as annee
                  FROM sujets s
-                 JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+                 JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
                  JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                  WHERE s.cycle = :cycle 
                  AND s.etudiant_idetudiant IS NULL
-                 AND s.etatSujet = 'Validé'
+                 AND s.\"etatSujet\" = 'Validé'
                  ORDER BY aa.designation DESC, s.intitule ASC";
         
         $stmt = $this->db->prepare($query);
@@ -1228,12 +1228,12 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
  * @return array Liste des spécialisations
  */
 public function getAllSpecialisations($search = '') {
-    $query = "SELECT s.*, ur.designation_UR as unite_recherche 
+    $query = "SELECT s.*, ur.\"designation_UR\" as unite_recherche 
               FROM specialisation s
-              JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche";
+              JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche";
     
     if (!empty($search)) {
-        $query .= " WHERE s.designation LIKE :search OR ur.designation_UR LIKE :search";
+        $query .= " WHERE s.designation LIKE :search OR ur.\"designation_UR\" LIKE :search";
     }
     
     $query .= " ORDER BY s.designation ASC";
@@ -1255,10 +1255,10 @@ public function getAllSpecialisations($search = '') {
  * @return array|false Données de la spécialisation ou false si non trouvée
  */
 public function getSpecialisationById($id) {
-    $query = "SELECT s.*, ur.designation_UR as unite_recherche, ur.description as ur_description 
+    $query = "SELECT s.*, ur.\"designation_UR\" as unite_recherche, ur.description as ur_description 
               FROM specialisation s
-              JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
-              WHERE s.idSpecialisation = :id";
+              JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
+              WHERE s.\"idSpecialisation\" = :id";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -1276,10 +1276,10 @@ public function getAllUniteRecherche($search = '') {
     $query = "SELECT * FROM unite_recherche";
     
     if (!empty($search)) {
-        $query .= " WHERE designation_UR LIKE :search OR description LIKE :search";
+        $query .= " WHERE \"designation_UR\" LIKE :search OR description LIKE :search";
     }
     
-    $query .= " ORDER BY designation_UR ASC";
+    $query .= " ORDER BY \"designation_UR\" ASC";
     
     $stmt = $this->db->prepare($query);
     
@@ -1304,7 +1304,7 @@ public function getSectionsByUniteRecherche($idUniteRecherche) {
               FROM section s
               JOIN unite_recherche_section urs ON s.idsection = urs.idsection
               WHERE urs.idunite_recherche = :idUniteRecherche
-              ORDER BY s.designationSection ASC";
+              ORDER BY s.\"designationSection\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idUniteRecherche', $idUniteRecherche, PDO::PARAM_INT);
@@ -1320,10 +1320,10 @@ public function getSectionsByUniteRecherche($idUniteRecherche) {
  * @return array Liste des spécialisations
  */
 public function getSpecialisationsByUniteRecherche($uniteRechercheId) {
-    $query = "SELECT s.*, ur.designation_UR as unite_recherche
+    $query = "SELECT s.*, ur.\"designation_UR\" as unite_recherche
               FROM specialisation s
-              LEFT JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
-              WHERE s.idUnite_recherche = :uniteRechercheId
+              LEFT JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
+              WHERE s.\"idUnite_recherche\" = :uniteRechercheId
               ORDER BY s.designation ASC";
     
     $stmt = $this->db->prepare($query);
@@ -1340,9 +1340,9 @@ public function getSpecialisationsByUniteRecherche($uniteRechercheId) {
  */
 public function getSpecialisationsByOrientation($orientationId)
 {
-    $query = "SELECT s.*, ur.designation_UR as unite_recherche
+    $query = "SELECT s.*, ur.\"designation_UR\" as unite_recherche
               FROM specialisation s
-              INNER JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+              INNER JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
               INNER JOIN section sec ON s.idsection = sec.idsection
               INNER JOIN orientation o ON o.section_idsection = sec.idsection
               WHERE o.idorientation = :orientationId";
@@ -1356,9 +1356,9 @@ public function getSpecialisationsByOrientation($orientationId)
 
 public function getSpecialisations()
 {
-    $query = "SELECT s.*, ur.designation_UR as unite_recherche
+    $query = "SELECT s.*, ur.\"designation_UR\" as unite_recherche
               FROM specialisation s 
-              INNER JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+              INNER JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
               ORDER BY s.designation ASC";
               
     $stmt = $this->db->query($query);
@@ -1376,7 +1376,7 @@ public function getSpecialisations()
 public function specialisationExists($designation, $uniteRechercheId) {
     $query = "SELECT COUNT(*) FROM specialisation 
               WHERE designation = :designation 
-              AND idUnite_recherche = :uniteRechercheId";
+              AND \"idUnite_recherche\" = :uniteRechercheId";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':designation', $designation, PDO::PARAM_STR);
@@ -1394,13 +1394,13 @@ public function specialisationExists($designation, $uniteRechercheId) {
 public function getSujetsByAnnee($anneeId) {
     $query = "SELECT s.*, spec.designation as specialisation, 
                      CONCAT(e.noms, ' (', e.matricule, ')') as etudiant,
-                     CONCAT(d.nomEnseignant, ' (', d.grade, ')') as directeur,
-                     CONCAT(enc.nomEnseignant, ' (', enc.grade, ')') as encadreur
+                     CONCAT(d.\"nomEnseignant\", ' (', d.grade, ')') as directeur,
+                     CONCAT(enc.\"nomEnseignant\", ' (', enc.grade, ')') as encadreur
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN enseignant d ON s.idDirecteur = d.idenseignant
-              LEFT JOIN enseignant enc ON s.idEncadreur = enc.idenseignant
+              LEFT JOIN enseignant d ON s.\"idDirecteur\" = d.idenseignant
+              LEFT JOIN enseignant enc ON s.\"idEncadreur\" = enc.idenseignant
               WHERE s.annee_acad_idannee_acad = :anneeId
               ORDER BY s.intitule ASC";
     
@@ -1429,14 +1429,14 @@ public function getAcademicYearById($id) {
  * @return array Liste des spécialisations
  */
 public function getSpecialisationsForEnseignant($idEnseignant) {
-    $query = "SELECT DISTINCT s.idSpecialisation, s.designation, o.designationOrientation as departement
+    $query = "SELECT DISTINCT s.\"idSpecialisation\", s.designation, o.\"designationOrientation\" as departement
               FROM specialisation s
-              JOIN enseignant_uniterecherche eur ON s.idSpecialisation = eur.idSpecialisation
-              JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+              JOIN enseignant_uniterecherche eur ON s.\"idSpecialisation\" = eur.\"idSpecialisation\"
+              JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
               JOIN unite_recherche_section urs ON ur.idunite_recherche = urs.idunite_recherche
               JOIN section sec ON urs.idsection = sec.idsection
               JOIN orientation o ON sec.idsection = o.section_idsection
-              JOIN enseignant e ON eur.idUser = e.idEnseignant
+              JOIN enseignant e ON eur.\"idUser\" = e.idEnseignant
               WHERE e.idenseignant = :idEnseignant
               ORDER BY s.designation ASC";
    
@@ -1455,8 +1455,8 @@ public function getSpecialisationsForEnseignant($idEnseignant) {
 public function getEnseignantIdByUserId($userId) {
     $query = "SELECT e.idenseignant 
               FROM enseignant e
-              JOIN t_users u ON e.idAgent = u.idAgent
-              WHERE u.idUser = :userId";
+              JOIN t_users u ON e.\"idAgent\" = u.\"idAgent\"
+              WHERE u.\"idUser\" = :userId";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -1472,8 +1472,8 @@ public function getEnseignantIdByUserId($userId) {
 public function isEnseignant($userId) {
     $query = "SELECT e.* 
               FROM enseignant e
-              JOIN t_users u ON e.idAgent = u.idAgent
-              WHERE u.idUser = :userId";
+              JOIN t_users u ON e.\"idAgent\" = u.\"idAgent\"
+              WHERE u.\"idUser\" = :userId";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -1491,19 +1491,19 @@ public function isEnseignant($userId) {
  */
 public function getSujetsByEnseignant($userId, $search = '') {
     $query = "SELECT s.*, spec.designation as specialisation, aa.designation as annee,
-                     ur.designation_UR as uniteRecherche
+                     ur.\"designation_UR\" as uniteRecherche
                      CONCAT(e.noms, ' (', e.matricule, ')') as etudiant,
-                     CONCAT(d.nomEnseignant, ' (', d.grade, ')') as directeur,
-                     CONCAT(enc.nomEnseignant, ' (', enc.grade, ')') as encadreur
+                     CONCAT(d.\"nomEnseignant\", ' (', d.grade, ')') as directeur,
+                     CONCAT(enc.\"nomEnseignant\", ' (', enc.grade, ')') as encadreur
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
-              LEFT JOIN unite_recherche ur ON spec.idUnite_recherche=ur.idunite_recherche
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
+              LEFT JOIN unite_recherche ur ON spec.\"idUnite_recherche\"=ur.idunite_recherche
               LEFT JOIN 
               LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN enseignant d ON s.idDirecteur = d.idenseignant
-              LEFT JOIN enseignant enc ON s.idEncadreur = enc.idenseignant
-              WHERE s.idUser = :userId";
+              LEFT JOIN enseignant d ON s.\"idDirecteur\" = d.idenseignant
+              LEFT JOIN enseignant enc ON s.\"idEncadreur\" = enc.idenseignant
+              WHERE s.\"idUser\" = :userId";
     
     if (!empty($search)) {
         $query .= " AND (s.intitule LIKE :search 
@@ -1530,21 +1530,21 @@ public function getSujetsByDirecteurOrEncadreur($idEnseignant, $search = '') {
                      spec.designation as specialisation, 
                      aa.designation as annee,
                      CONCAT(e.noms, ' (', e.matricule, ')') as etudiant,
-                     p.designationPromotion as promotion,
+                     p.\"designationPromotion\" as promotion,
                      s.statut_validation
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-              WHERE (s.idDirecteur = :idEnseignant OR s.idEncadreur = :idEnseignant)
+              WHERE (s.\"idDirecteur\" = :idEnseignant OR s.\"idEncadreur\" = :idEnseignant)
               AND s.etudiant_idetudiant IS NOT NULL AND s.statut_validation='Validé'";
     
     if (!empty($search)) {
         $query .= " AND (s.intitule LIKE :search 
                    OR spec.designation LIKE :search
                    OR e.noms LIKE :search
-                   OR p.designationPromotion LIKE :search)";
+                   OR p.\"designationPromotion\" LIKE :search)";
     }
     
     $query .= " ORDER BY s.idsujets DESC";
@@ -1594,7 +1594,7 @@ public function updateTacheEncadreur($tacheId, $commentaire, $fichier, $validati
 }
 
 public function getTacheDetails($tacheId) {
-    $query = "SELECT t.*, s.idDirecteur, s.idEncadreur 
+    $query = "SELECT t.*, s.\"idDirecteur\", s.\"idEncadreur\" 
               FROM taches t
               JOIN sujets s ON t.sujets_idsujets = s.idsujets
               WHERE t.idtaches = :tacheId";
@@ -1610,16 +1610,16 @@ public function getSujetsByEnseignantAndYear($enseignantId, $anneeAcadId) {
     $query = "SELECT s.*, 
                      spec.designation as specialisation, 
                      CONCAT(e.noms, ' (', e.matricule, ')') as etudiant,
-                     p.designationPromotion as promotion
+                     p.\"designationPromotion\" as promotion
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-              WHERE (s.idDirecteur = :enseignantId OR s.idEncadreur = :enseignantId)
+              WHERE (s.\"idDirecteur\" = :enseignantId OR s.\"idEncadreur\" = :enseignantId)
               AND s.annee_acad_idannee_acad = :anneeAcadId
               AND s.etudiant_idetudiant IS NOT NULL
               AND s.statut_validation='Validé'
-              ORDER BY p.designationPromotion ASC, s.intitule ASC";
+              ORDER BY p.\"designationPromotion\" ASC, s.intitule ASC";
 
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':enseignantId', $enseignantId, PDO::PARAM_INT);
@@ -1640,13 +1640,13 @@ public function getSujetsByEtudiant($etudiantId) {
                      aa.designation as annee,
                      CONCAT(d.noms, ' (', gDir.designation, ')') as directeur,
                      CONCAT(enc.noms, ' (', gEnc.designation, ')') as encadreur,
-                     d.idAgent as idDirecteur,
-                     enc.idAgent as idEncadreur
+                     d.\"idAgent\" as \"idDirecteur\",
+                     enc.\"idAgent\" as \"idEncadreur\"
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
-              LEFT JOIN agent d ON s.idDirecteur = d.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               LEFT JOIN grade gDir ON d.grade_id=gDir.idgrade
               LEFT JOIN grade gEnc ON enc.grade_id=gEnc.idgrade
               WHERE s.etudiant_idetudiant = :etudiantId
@@ -1665,7 +1665,7 @@ public function getSujetsByEtudiant($etudiantId) {
  */
 public function getAllEtudiantsWithSujets($search = '') {
     $query = "SELECT DISTINCT e.*, 
-                p.designationPromotion as promotion,
+                p.\"designationPromotion\" as promotion,
                 d.designationDepartement as departement,
                 aa.designation as annee_academique
              FROM etudiant e
@@ -1678,7 +1678,7 @@ public function getAllEtudiantsWithSujets($search = '') {
     if (!empty($search)) {
         $query .= " AND (e.noms LIKE :search 
                     OR e.matricule LIKE :search 
-                    OR p.designationPromotion LIKE :search)";
+                    OR p.\"designationPromotion\" LIKE :search)";
     }
 
     $query .= " ORDER BY e.noms ASC";
@@ -1703,16 +1703,16 @@ public function getCurrentAcademicYear() {
 }
 
 public function getEnseignantsByUniteRecherche() {
-    $query = "SELECT ur.*, o.designationOrientation,
-              COUNT(DISTINCT es.idAgent) as nombre_enseignants
+    $query = "SELECT ur.*, o.\"designationOrientation\",
+              COUNT(DISTINCT es.\"idAgent\") as nombre_enseignants
               FROM unite_recherche ur
               JOIN unite_recherche_section urs ON ur.idunite_recherche = urs.idunite_recherche
               JOIN section s ON urs.idsection = s.idsection
               JOIN orientation o ON o.section_idsection = s.idsection
-              LEFT JOIN specialisation spec ON spec.idUnite_recherche = ur.idunite_recherche
-              LEFT JOIN enseignant_specialisation es ON spec.idSpecialisation = es.idSpecialisation
-              GROUP BY ur.idunite_recherche, ur.designation_UR, o.designationOrientation
-              ORDER BY o.designationOrientation, ur.designation_UR";
+              LEFT JOIN specialisation spec ON spec.\"idUnite_recherche\" = ur.idunite_recherche
+              LEFT JOIN enseignant_specialisation es ON spec.\"idSpecialisation\" = es.\"idSpecialisation\"
+              GROUP BY ur.idunite_recherche, ur.\"designation_UR\", o.\"designationOrientation\"
+              ORDER BY o.\"designationOrientation\", ur.\"designation_UR\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -1725,28 +1725,28 @@ public function getEtudiantsByProfesseurAndSection() {
 
     $query = "
         SELECT
-            COALESCE(s.designationSection, 'section non définie') AS designationSection,
-            COALESCE(o.designationOrientation, 'orientation non définie') AS designationOrientation,
-            a.noms AS nomEnseignant,
-            a.idAgent,
+            COALESCE(s.\"designationSection\", 'section non définie') AS \"designationSection\",
+            COALESCE(o.\"designationOrientation\", 'orientation non définie') AS \"designationOrientation\",
+            a.noms AS \"nomEnseignant\",
+            a.\"idAgent\",
             g.designation AS grade,
             COUNT(DISTINCT CASE WHEN suj.statut_validation = 'Validé' AND suj.etudiant_idetudiant IS NOT NULL THEN suj.etudiant_idetudiant END) as sujets_valides,
             COUNT(DISTINCT CASE WHEN suj.statut_validation = 'En attente' AND suj.etudiant_idetudiant IS NOT NULL THEN suj.etudiant_idetudiant END) as sujets_en_attente,
             COUNT(DISTINCT CASE WHEN suj.etudiant_idetudiant IS NOT NULL THEN suj.etudiant_idetudiant END) as total_etudiants
         FROM agent a
         JOIN grade g ON a.grade_id = g.idgrade
-        LEFT JOIN agent_section ags ON a.idAgent = ags.idAgent AND ags.estPrincipal = 1
+        LEFT JOIN agent_section ags ON a.\"idAgent\" = ags.\"idAgent\" AND ags.\"estPrincipal\" = 1
         LEFT JOIN section s ON ags.idsection = s.idsection
         LEFT JOIN orientation o ON s.idsection = o.section_idsection
-        LEFT JOIN sujets suj ON (suj.idDirecteur = a.idAgent OR suj.idEncadreur = a.idAgent)
+        LEFT JOIN sujets suj ON (suj.\"idDirecteur\" = a.\"idAgent\" OR suj.\"idEncadreur\" = a.\"idAgent\")
                              AND suj.annee_acad_idannee_acad = :currentYearId
         WHERE a.type_agent = 'Enseignant'
-        GROUP BY a.idAgent,
-                 COALESCE(s.designationSection, 'section non définie'),
-                 COALESCE(o.designationOrientation, 'orientation non définie'),
+        GROUP BY a.\"idAgent\",
+                 COALESCE(s.\"designationSection\", 'section non définie'),
+                 COALESCE(o.\"designationOrientation\", 'orientation non définie'),
                  a.noms, g.designation
         HAVING total_etudiants > 0
-        ORDER BY designationSection, nomEnseignant";
+        ORDER BY \"designationSection\", \"nomEnseignant\"";
 
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':currentYearId', $currentYearId, PDO::PARAM_INT);
@@ -2038,14 +2038,14 @@ public function deposerTravail($data) {
  */
 public function getTravaux($search = '', $filters = []) {
     $query = "SELECT t.*, 
-        o.designationOrientation, 
+        o.\"designationOrientation\", 
         s.designation as specialisation,
         aa.designation as annee,
-        e.nomEnseignant as directeur,
+        e.\"nomEnseignant\" as directeur,
         COUNT(c.id) as nb_consultations
     FROM travaux_scientifiques t
     LEFT JOIN orientation o ON t.orientation_id = o.idorientation
-    LEFT JOIN specialisation s ON t.specialisation_id = s.idSpecialisation
+    LEFT JOIN specialisation s ON t.specialisation_id = s.\"idSpecialisation\"
     LEFT JOIN annee_acad aa ON t.annee_academique_id = aa.idannee_acad
     LEFT JOIN enseignant e ON t.directeur_id = e.idenseignant
     LEFT JOIN consultations c ON t.id = c.travail_id
@@ -2056,11 +2056,11 @@ public function getTravaux($search = '', $filters = []) {
                    OR t.mots_cles LIKE :search 
                    OR t.resume LIKE :search
                    OR t.nom_auteur LIKE :search
-                   OR o.designationOrientation LIKE :search";
+                   OR o.\"designationOrientation\" LIKE :search";
         
         // Ajouter la recherche dans les champs spécifiques aux thèses
         $query .= " OR t.universiteThese LIKE :search
-                   OR t.faculteThese LIKE :search
+                   OR t.\"faculteThese\" LIKE :search
                    OR t.specialisationThese LIKE :search";
         
         $query .= ")";
@@ -2098,13 +2098,13 @@ public function getTravaux($search = '', $filters = []) {
     
     // Filtres spécifiques aux thèses
     if (!empty($filters['anneeThese'])) {
-        $query .= " AND t.anneeThese = :anneeThese";
+        $query .= " AND t.\"anneeThese\" = :anneeThese";
     }
     if (!empty($filters['universiteThese'])) {
         $query .= " AND t.universiteThese LIKE :universiteThese";
     }
     if (!empty($filters['faculteThese'])) {
-        $query .= " AND t.faculteThese LIKE :faculteThese";
+        $query .= " AND t.\"faculteThese\" LIKE :faculteThese";
     }
 
     // Ajouter le GROUP BY pour le comptage des consultations
@@ -2112,8 +2112,8 @@ public function getTravaux($search = '', $filters = []) {
                 t.orientation_id, t.specialisation_id, t.annee_academique_id, 
                 t.directeur_id, t.mots_cles, t.resume, t.fichier_path, 
                 t.date_depot, t.statut, t.est_public, 
-                t.anneeThese, t.universiteThese, t.faculteThese, t.specialisationThese,
-                o.designationOrientation, s.designation, aa.designation, e.nomEnseignant";
+                t.\"anneeThese\", t.universiteThese, t.\"faculteThese\", t.specialisationThese,
+                o.\"designationOrientation\", s.designation, aa.designation, e.\"nomEnseignant\"";
 
     // Trier par date de dépôt décroissante (plus récent en premier)
     $query .= " ORDER BY t.date_depot DESC";
@@ -2261,13 +2261,13 @@ public function deleteTravail($id) {
  */
 public function getTravailById($id) {
     $query = "SELECT t.*,
-        o.designationOrientation,
+        o.\"designationOrientation\",
         s.designation as specialisation,
         aa.designation as annee,
-        e.nomEnseignant as directeur
+        e.\"nomEnseignant\" as directeur
     FROM travaux_scientifiques t
     LEFT JOIN orientation o ON t.orientation_id = o.idorientation
-    LEFT JOIN specialisation s ON t.specialisation_id = s.idSpecialisation
+    LEFT JOIN specialisation s ON t.specialisation_id = s.\"idSpecialisation\"
     LEFT JOIN annee_acad aa ON t.annee_academique_id = aa.idannee_acad
     LEFT JOIN enseignant e ON t.directeur_id = e.idenseignant
     WHERE t.id = :id";
@@ -2395,7 +2395,7 @@ public function getDepartementById($id) {
     try {
         // Requête principale pour les informations du département
         $query = "SELECT d.*,
-                    s.designationSection,
+                    s.\"designationSection\",
                     s.idsection,
                     COUNT(DISTINCT t.id) as total_travaux,
                     COUNT(DISTINCT CASE WHEN t.type_document = 'Thèse' THEN t.id END) as total_theses,
@@ -2410,7 +2410,7 @@ public function getDepartementById($id) {
                 LEFT JOIN travaux_scientifiques t ON t.departement_id = d.iddepartement 
                     AND t.est_public = 1 
                     AND t.statut = 'Validé'
-                LEFT JOIN enseignant e ON e.idDepartement = d.iddepartement
+                LEFT JOIN enseignant e ON e.\"idDepartement\" = d.iddepartement
                 LEFT JOIN unite_recherche ur ON ur.departement_iddepartement = d.iddepartement
                 WHERE d.iddepartement = :id
                 GROUP BY d.iddepartement";
@@ -2428,7 +2428,7 @@ public function getDepartementById($id) {
         // Récupérer les spécialisations du département
         $query = "SELECT s.*
                 FROM specialisation s
-                JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+                JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
                 WHERE ur.departement_iddepartement = :departement_id
                 ORDER BY s.designation";
 
@@ -2439,9 +2439,9 @@ public function getDepartementById($id) {
         $departement['specialisations'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Récupérer les responsables actuels du département
-        $query = "SELECT rd.*, e.nomEnseignant, e.grade
+        $query = "SELECT rd.*, e.\"nomEnseignant\", e.grade
                 FROM responsable_departement rd
-                JOIN enseignant e ON rd.idUser = e.idenseignant
+                JOIN enseignant e ON rd.\"idUser\" = e.idenseignant
                 WHERE rd.departement_iddepartement = :departement_id
                 AND rd.annee_acad_idannee_acad = (
                     SELECT MAX(idannee_acad) FROM annee_acad
@@ -2457,7 +2457,7 @@ public function getDepartementById($id) {
         $query = "SELECT *
                 FROM unite_recherche
                 WHERE departement_iddepartement = :departement_id
-                ORDER BY designation_UR";
+                ORDER BY \"designation_UR\"";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':departement_id', $id, PDO::PARAM_INT);
@@ -2609,18 +2609,18 @@ public function updateTravail($id, $data) {
 }
 
 public function getFrais($search = '') {
-    $query = "SELECT f.*, p.designationPromotion, aa.designation AS anneeDesignation 
+    $query = "SELECT f.*, p.\"designationPromotion\", aa.designation AS anneeDesignation 
               FROM frais f
               JOIN promotion p ON f.promotion_idpromotion = p.idpromotion
               JOIN annee_acad aa ON f.annee_acad_idannee_acad = aa.idannee_acad";
     
     if (!empty($search)) {
         $query .= " WHERE f.designation LIKE :search 
-                   OR p.designationPromotion LIKE :search 
+                   OR p.\"designationPromotion\" LIKE :search 
                    OR aa.designation LIKE :search";
     }
     
-    $query .= " ORDER BY aa.designation DESC, p.designationPromotion ASC";
+    $query .= " ORDER BY aa.designation DESC, p.\"designationPromotion\" ASC";
 
     $stmt = $this->db->prepare($query);
     
@@ -2634,7 +2634,7 @@ public function getFrais($search = '') {
 }
 
 public function getFraisById($id) {
-    $query = "SELECT f.*, p.designationPromotion, aa.designation AS anneeDesignation 
+    $query = "SELECT f.*, p.\"designationPromotion\", aa.designation AS anneeDesignation 
               FROM frais f
               JOIN promotion p ON f.promotion_idpromotion = p.idpromotion
               JOIN annee_acad aa ON f.annee_acad_idannee_acad = aa.idannee_acad
@@ -2650,7 +2650,7 @@ public function getFraisById($id) {
 public function getFraisByPromotionAndYear($promotionId, $anneeAcadId) {
     try {
         $query = "SELECT f.*, 
-                         p.designationPromotion,
+                         p.\"designationPromotion\",
                          aa.designation as anneeDesignation
                   FROM frais f
                   JOIN promotion p ON f.promotion_idpromotion = p.idpromotion
@@ -2691,7 +2691,7 @@ public function getFraisByPromotionAndYear($promotionId, $anneeAcadId) {
 public function createFrais($designation, $montant, $devise, $promotionId, $anneeAcadId, $description = '', $estObligatoire = true) {
     $dateCreation = date('Y-m-d H:i:s');
     
-    $query = "INSERT INTO frais (designation, montant, devise, description, estObligatoire, dateCreation, promotion_idpromotion, annee_acad_idannee_acad) 
+    $query = "INSERT INTO frais (designation, montant, devise, description, \"estObligatoire\", \"dateCreation\", promotion_idpromotion, annee_acad_idannee_acad) 
               VALUES (:designation, :montant, :devise, :description, :estObligatoire, :dateCreation, :promotionId, :anneeAcadId)";
     
     $stmt = $this->db->prepare($query);
@@ -2713,7 +2713,7 @@ public function updateFrais($id, $designation, $montant, $devise, $promotionId, 
                   montant = :montant, 
                   devise = :devise, 
                   description = :description, 
-                  estObligatoire = :estObligatoire, 
+                  \"estObligatoire\" = :estObligatoire, 
                   promotion_idpromotion = :promotionId, 
                   annee_acad_idannee_acad = :anneeAcadId 
               WHERE idfrais = :id";
@@ -2758,7 +2758,7 @@ public function getPaiements($search = '', $filters = []) {
                      f.devise,
                      e.noms AS nomEtudiant, 
                      e.matricule,
-                     pr.designationPromotion,
+                     pr.\"designationPromotion\",
                      aa.designation AS anneeDesignation
               FROM paiement p
               JOIN frais f ON p.frais_idfrais = f.idfrais
@@ -2792,11 +2792,11 @@ public function getPaiements($search = '', $filters = []) {
     }
     
     if (isset($filters['estComplet'])) {
-        $query .= " AND p.estComplet = :estComplet";
+        $query .= " AND p.\"estComplet\" = :estComplet";
     }
     
     // Tri par date de paiement décroissante
-    $query .= " ORDER BY p.datePaiement DESC";
+    $query .= " ORDER BY p.\"datePaiement\" DESC";
     
     $stmt = $this->db->prepare($query);
     
@@ -2838,7 +2838,7 @@ public function getPaiementById($id) {
                      f.devise,
                      e.noms AS nomEtudiant, 
                      e.matricule,
-                     pr.designationPromotion,
+                     pr.\"designationPromotion\",
                      aa.designation AS anneeDesignation
               FROM paiement p
               JOIN frais f ON p.frais_idfrais = f.idfrais
@@ -2875,14 +2875,14 @@ public function createPaiement($etudiantId, $fraisId, $montantPaye, $referencePa
         $query = "INSERT INTO paiement (
                     etudiant_idetudiant, 
                     frais_idfrais, 
-                    montantPaye, 
-                    referencePaiement, 
-                    datePaiement, 
-                    estComplet, 
-                    modePaiement, 
+                    \"montantPaye\", 
+                    \"referencePaiement\", 
+                    \"datePaiement\", 
+                    \"estComplet\", 
+                    \"modePaiement\", 
                     commentaire, 
                     annee_acad_idannee_acad, 
-                    idUser
+                    \"idUser\"
                   ) VALUES (
                     :etudiantId, 
                     :fraisId, 
@@ -2938,10 +2938,10 @@ public function updatePaiement($id, $montantPaye, $referencePaiement, $modePaiem
         
         // Mettre à jour le paiement
         $query = "UPDATE paiement 
-                  SET montantPaye = :montantPaye, 
-                      referencePaiement = :referencePaiement, 
-                      estComplet = :estComplet, 
-                      modePaiement = :modePaiement, 
+                  SET \"montantPaye\" = :montantPaye, 
+                      \"referencePaiement\" = :referencePaiement, 
+                      \"estComplet\" = :estComplet, 
+                      \"modePaiement\" = :modePaiement, 
                       commentaire = :commentaire 
                   WHERE idpaiement = :id";
         
@@ -2971,7 +2971,7 @@ public function deletePaiement($id) {
 public function getEtatPaiementsEtudiant($etudiantId, $anneeAcadId) {
     try {
         // Récupérer les informations de l'étudiant
-        $query = "SELECT e.*, p.designationPromotion 
+        $query = "SELECT e.*, p.\"designationPromotion\" 
                   FROM etudiant e
                   JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
                   WHERE e.idetudiant = :etudiantId";
@@ -3086,9 +3086,9 @@ public function getEtudiants($search = '') {
 
         // Construire la requête
         $query = "SELECT e.*, 
-                         p.designationPromotion, 
+                         p.\"designationPromotion\", 
                          d.designationDepartement, 
-                         s.designationSection,
+                         s.\"designationSection\",
                          aa.designation as annee
                   FROM etudiant e
                   JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -3101,13 +3101,13 @@ public function getEtudiants($search = '') {
         if (!empty($search)) {
             $query .= " AND (e.noms LIKE :search 
                            OR e.matricule LIKE :search 
-                           OR p.designationPromotion LIKE :search
+                           OR p.\"designationPromotion\" LIKE :search
                            OR d.designationDepartement LIKE :search)";
         }
 
         // Trier les résultats
-        $query .= " ORDER BY s.designationSection, d.designationDepartement, 
-                            p.designationPromotion, e.noms ASC";
+        $query .= " ORDER BY s.\"designationSection\", d.designationDepartement, 
+                            p.\"designationPromotion\", e.noms ASC";
 
         $stmt = $this->db->prepare($query);
         
@@ -3164,10 +3164,10 @@ public function getEtudiants($search = '') {
 public function getEtudiantById($id) {
     try {
         $query = "SELECT e.*, 
-                         p.designationPromotion, 
+                         p.\"designationPromotion\", 
                          p.idpromotion as promotion_idpromotion,
-                         d.designationOrientation, 
-                         s.designationSection,
+                         d.\"designationOrientation\", 
+                         s.\"designationSection\",
                          aa.designation as annee,
                          aa.idannee_acad
                   FROM etudiant e
@@ -3237,8 +3237,8 @@ public function getFraisForEtudiant($etudiantId, $anneeAcadId) {
         
         // 2. Récupérer les frais associés à cette promotion pour l'année académique spécifiée
         $query = "SELECT f.*, 
-                  COALESCE((SELECT SUM(p.montantPaye) FROM paiement p 
-                           WHERE p.frais_idfrais = f.idfrais AND p.etudiant_idetudiant = :etudiantId), 0) as montantPaye
+                  COALESCE((SELECT SUM(p.\"montantPaye\") FROM paiement p 
+                           WHERE p.frais_idfrais = f.idfrais AND p.etudiant_idetudiant = :etudiantId), 0) as \"montantPaye\"
                   FROM frais f
                   WHERE f.promotion_idpromotion = :promotionId 
                   AND f.annee_acad_idannee_acad = :anneeAcadId";
@@ -3300,9 +3300,9 @@ public function getEtudiantsByAnneeAcadAndCycle($anneeAcadId, $cycle) {
 public function getSessions($search = '') {
     $query = "SELECT * FROM session";
     if (!empty($search)) {
-        $query .= " WHERE designSession LIKE :search";
+        $query .= " WHERE \"designSession\" LIKE :search";
     }
-    $query .= " ORDER BY designSession ASC";
+    $query .= " ORDER BY \"designSession\" ASC";
 
     $stmt = $this->db->prepare($query);
     if (!empty($search)) {
@@ -3317,7 +3317,7 @@ public function getSessions($search = '') {
 
 public function createSession($designSession,$description) {
     $dateCreation = date('Y-m-d H:i:s');
-    $query = "INSERT INTO session (designSession,description, dateCreation) VALUES (:designSession, :dateCreation,:descri)";
+    $query = "INSERT INTO session (\"designSession\",description, \"dateCreation\") VALUES (:designSession, :dateCreation,:descri)";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':designSession', $designSession);
     $stmt->bindParam(':descri', $description);
@@ -3326,7 +3326,7 @@ public function createSession($designSession,$description) {
 }
 
 public function updateSession($id, $designSession,$description) {
-    $query = "UPDATE session SET designSession = :designSession,description=:descri WHERE idsession = :id";
+    $query = "UPDATE session SET \"designSession\" = :designSession,description=:descri WHERE idsession = :id";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':designSession', $designSession);
     $stmt->bindParam(':descri', $description);
@@ -3342,16 +3342,16 @@ public function deleteSession($id) {
 }
 
 public function getSemestres($search = '') {
-    $query = "SELECT s.*, p.designationPromotion,a.designation as annee 
+    $query = "SELECT s.*, p.\"designationPromotion\",a.designation as annee 
               FROM semestre s
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               JOIN annee_acad a ON p.annee_acad_idannee_acad=a.idannee_acad";
     
     if (!empty($search)) {
-        $query .= " WHERE s.numeroSemestre LIKE :search OR p.designationPromotion LIKE :search";
+        $query .= " WHERE s.\"numeroSemestre\" LIKE :search OR p.\"designationPromotion\" LIKE :search";
     }
     
-    $query .= " ORDER BY p.designationPromotion ASC, s.numeroSemestre ASC";
+    $query .= " ORDER BY p.\"designationPromotion\" ASC, s.\"numeroSemestre\" ASC";
 
     $stmt = $this->db->prepare($query);
     
@@ -3366,7 +3366,7 @@ public function getSemestres($search = '') {
 
 public function createSemestre($numeroSemestre, $promotion_idpromotion) {
     $dateEnregistrement = date('Y-m-d H:i:s');
-    $query = "INSERT INTO semestre (numeroSemestre, dateEnregistrement, promotion_idpromotion) 
+    $query = "INSERT INTO semestre (\"numeroSemestre\", \"dateEnregistrement\", promotion_idpromotion) 
               VALUES (:numeroSemestre, :dateEnregistrement, :promotion_idpromotion)";
     
     $stmt = $this->db->prepare($query);
@@ -3379,7 +3379,7 @@ public function createSemestre($numeroSemestre, $promotion_idpromotion) {
 
 public function updateSemestre($idsemestre, $numeroSemestre, $promotion_idpromotion) {
     $query = "UPDATE semestre 
-              SET numeroSemestre = :numeroSemestre, 
+              SET \"numeroSemestre\" = :numeroSemestre, 
                   promotion_idpromotion = :promotion_idpromotion 
               WHERE idsemestre = :idsemestre";
     
@@ -3400,7 +3400,7 @@ public function deleteSemestre($idsemestre) {
 }
 
 public function getSemestreById($idsemestre) {
-    $query = "SELECT s.*, p.designationPromotion 
+    $query = "SELECT s.*, p.\"designationPromotion\" 
               FROM semestre s
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               WHERE s.idsemestre = :idsemestre";
@@ -3416,11 +3416,11 @@ public function getSemestreById($idsemestre) {
  * Récupérer les sections d'un agent
  */
 public function getAgentSections($idAgent) {
-    $query = "SELECT ase.*, s.designationSection 
+    $query = "SELECT ase.*, s.\"designationSection\" 
               FROM agent_section ase
               INNER JOIN section s ON ase.idsection = s.idsection
-              WHERE ase.idAgent = :idAgent
-              ORDER BY ase.estPrincipal DESC, s.designationSection ASC";
+              WHERE ase.\"idAgent\" = :idAgent
+              ORDER BY ase.\"estPrincipal\" DESC, s.\"designationSection\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute(['idAgent' => $idAgent]);
@@ -3433,7 +3433,7 @@ public function getAgentSections($idAgent) {
 public function checkDuplicateAgentSection($idAgent, $idSection) {
     $query = "SELECT COUNT(*) as count 
               FROM agent_section 
-              WHERE idAgent = :idAgent AND idsection = :idSection";
+              WHERE \"idAgent\" = :idAgent AND idsection = :idSection";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute([
@@ -3452,15 +3452,15 @@ public function addAgentSection($idAgent, $idSection, $estPrincipal) {
     // Si cette section doit être principale, mettre à jour les autres sections pour qu'elles ne soient plus principales
     if ($estPrincipal) {
         $updateQuery = "UPDATE agent_section 
-                        SET estPrincipal = 0 
-                        WHERE idAgent = :idAgent";
+                        SET \"estPrincipal\" = 0 
+                        WHERE \"idAgent\" = :idAgent";
         
         $updateStmt = $this->db->prepare($updateQuery);
         $updateStmt->execute(['idAgent' => $idAgent]);
     }
     
     // Ajouter la nouvelle affectation
-    $query = "INSERT INTO agent_section (idAgent, idsection, dateAffectation, estPrincipal) 
+    $query = "INSERT INTO agent_section (\"idAgent\", idsection, \"dateAffectation\", \"estPrincipal\") 
               VALUES (:idAgent, :idSection, NOW(), :estPrincipal)";
     
     $stmt = $this->db->prepare($query);
@@ -3476,7 +3476,7 @@ public function addAgentSection($idAgent, $idSection, $estPrincipal) {
  */
 public function setAgentSectionAsPrincipal($idAgentSection) {
     // Récupérer l'ID de l'agent
-    $query = "SELECT idAgent FROM agent_section WHERE idagent_section = :id";
+    $query = "SELECT \"idAgent\" FROM agent_section WHERE idagent_section = :id";
     $stmt = $this->db->prepare($query);
     $stmt->execute(['id' => $idAgentSection]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -3489,15 +3489,15 @@ public function setAgentSectionAsPrincipal($idAgentSection) {
     
     // Mettre à jour toutes les sections de cet agent pour qu'elles ne soient plus principales
     $updateQuery = "UPDATE agent_section 
-                    SET estPrincipal = 0 
-                    WHERE idAgent = :idAgent";
+                    SET \"estPrincipal\" = 0 
+                    WHERE \"idAgent\" = :idAgent";
     
     $updateStmt = $this->db->prepare($updateQuery);
     $updateStmt->execute(['idAgent' => $idAgent]);
     
     // Définir la section sélectionnée comme principale
     $setPrincipalQuery = "UPDATE agent_section 
-                          SET estPrincipal = 1 
+                          SET \"estPrincipal\" = 1 
                           WHERE idagent_section = :id";
     
     $setPrincipalStmt = $this->db->prepare($setPrincipalQuery);
@@ -3509,7 +3509,7 @@ public function setAgentSectionAsPrincipal($idAgentSection) {
  */
 public function deleteAgentSection($idAgentSection) {
     // Vérifier si c'est une section principale
-    $checkQuery = "SELECT estPrincipal, idAgent FROM agent_section WHERE idagent_section = :id";
+    $checkQuery = "SELECT \"estPrincipal\", \"idAgent\" FROM agent_section WHERE idagent_section = :id";
     $checkStmt = $this->db->prepare($checkQuery);
     $checkStmt->execute(['id' => $idAgentSection]);
     $section = $checkStmt->fetch(PDO::FETCH_ASSOC);
@@ -3524,7 +3524,7 @@ public function deleteAgentSection($idAgentSection) {
         $idAgent = $section['idAgent'];
         
         // Vérifier s'il reste des sections pour cet agent
-        $countQuery = "SELECT COUNT(*) as count FROM agent_section WHERE idAgent = :idAgent";
+        $countQuery = "SELECT COUNT(*) as count FROM agent_section WHERE \"idAgent\" = :idAgent";
         $countStmt = $this->db->prepare($countQuery);
         $countStmt->execute(['idAgent' => $idAgent]);
         $countResult = $countStmt->fetch(PDO::FETCH_ASSOC);
@@ -3532,9 +3532,9 @@ public function deleteAgentSection($idAgentSection) {
         if ($countResult['count'] > 0) {
             // Définir la première section restante comme principale
             $updateQuery = "UPDATE agent_section 
-                            SET estPrincipal = 1 
-                            WHERE idAgent = :idAgent 
-                            ORDER BY dateAffectation ASC 
+                            SET \"estPrincipal\" = 1 
+                            WHERE \"idAgent\" = :idAgent 
+                            ORDER BY \"dateAffectation\" ASC 
                             LIMIT 1";
             
             $updateStmt = $this->db->prepare($updateQuery);
@@ -3546,7 +3546,7 @@ public function deleteAgentSection($idAgentSection) {
 }
 public function createOrientation($designationOrientation, $sectionId) {
     // Préparer la requête d'insertion
-    $query = "INSERT INTO orientation (designationOrientation, section_idsection) VALUES (:designation, :sectionId)";
+    $query = "INSERT INTO orientation (\"designationOrientation\", section_idsection) VALUES (:designation, :sectionId)";
     $stmt = $this->db->prepare($query);
     
     // Exécuter la requête avec les paramètres
@@ -3559,7 +3559,7 @@ public function createOrientation($designationOrientation, $sectionId) {
 public function updateOrientation($orientationId, $designationOrientation, $sectionId) {
     // Préparer la requête de mise à jour
     $query = "UPDATE orientation 
-              SET designationOrientation = :designation, 
+              SET \"designationOrientation\" = :designation, 
                   section_idsection = :sectionId 
               WHERE idorientation = :id";
     $stmt = $this->db->prepare($query);
@@ -3588,7 +3588,7 @@ public function getManagersByOrientation($orientationId) {
               FROM responsable_orientation r 
               JOIN annee_acad a ON r.annee_acad_idannee_acad = a.idannee_acad 
               WHERE r.orientation_idorientation = :orientationId 
-              ORDER BY r.dateEnregistrement DESC";
+              ORDER BY r.\"dateEnregistrement\" DESC";
     $stmt = $this->db->prepare($query);
     
     // Exécuter la requête avec le paramètre
@@ -3601,7 +3601,7 @@ public function getManagersByOrientation($orientationId) {
 public function createOrientationManager($noms, $fonction, $signature, $userId, $orientationId, $idAnnee) {
     // Préparer la requête d'insertion
     $query = "INSERT INTO responsable_orientation 
-              (noms, fonction, signature, idUser, dateEnregistrement, orientation_idorientation, annee_acad_idannee_acad) 
+              (noms, fonction, signature, \"idUser\", \"dateEnregistrement\", orientation_idorientation, annee_acad_idannee_acad) 
               VALUES (:noms, :fonction, :signature, :userId, NOW(), :orientationId, :idAnnee)";
     $stmt = $this->db->prepare($query);
     
@@ -3634,7 +3634,7 @@ public function updateOrientationManager($managerId, $noms, $fonction, $signatur
               SET noms = :noms, 
                   fonction = :fonction, 
                   signature = :signature, 
-                  idUser = :userId, 
+                  \"idUser\" = :userId, 
                   annee_acad_idannee_acad = :idAnnee 
               WHERE idresponsable_orientation = :id";
     $stmt = $this->db->prepare($query);
@@ -3661,7 +3661,7 @@ public function deleteOrientationManager($managerId) {
 
 public function getUserById($userId) {
     // Préparer la requête pour récupérer un utilisateur
-    $query = "SELECT * FROM t_users WHERE idUser = :id";
+    $query = "SELECT * FROM t_users WHERE \"idUser\" = :id";
     $stmt = $this->db->prepare($query);
     
     // Exécuter la requête avec le paramètre
@@ -3673,7 +3673,7 @@ public function getUserById($userId) {
 
 public function getOrientations($search = '', $anneeAcadId = null) {
 // Préparer la requête de base avec le chef d'orientation
-$query = "SELECT o.*, s.designationSection as sectionDesignation, a.designation as anneeDesignation, a.idannee_acad,
+$query = "SELECT o.*, s.\"designationSection\" as sectionDesignation, a.designation as anneeDesignation, a.idannee_acad,
 (SELECT CONCAT(ro.noms, ' - ', ro.fonction) 
 FROM responsable_orientation ro 
 WHERE ro.orientation_idorientation = o.idorientation 
@@ -3682,14 +3682,14 @@ AND ro.annee_acad_idannee_acad = a.idannee_acad
 LIMIT 1) AS chef_orientation
 FROM orientation o
 JOIN section s ON o.section_idsection = s.idsection
-JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
 WHERE 1=1";
 
 $params = [];
 
 // Ajouter la condition de recherche si nécessaire
 if (!empty($search)) {
-$query .= " AND o.designationOrientation LIKE :search";
+$query .= " AND o.\"designationOrientation\" LIKE :search";
 $params['search'] = '%' . $search . '%';
 }
 
@@ -3700,7 +3700,7 @@ $params['anneeAcadId'] = $anneeAcadId;
 }
 
 // Ajouter l'ordre de tri
-$query .= " ORDER BY o.designationOrientation ASC";
+$query .= " ORDER BY o.\"designationOrientation\" ASC";
 
 // Préparer et exécuter la requête
 $stmt = $this->db->prepare($query);
@@ -3712,8 +3712,8 @@ return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 public function getOrientationsForExport($idSection = 'all', $idOrientation = 'all') {
     // Construire la requête de base
-    $query = "SELECT o.*, s.designationSection as sectionDesignation, 
-                     r.idresponsable_orientation, r.noms, r.fonction, r.dateEnregistrement,
+    $query = "SELECT o.*, s.\"designationSection\" as sectionDesignation, 
+                     r.idresponsable_orientation, r.noms, r.fonction, r.\"dateEnregistrement\",
                      a.designation as anneeDesignation
               FROM orientation o 
               JOIN section s ON o.section_idsection = s.idsection 
@@ -3735,7 +3735,7 @@ public function getOrientationsForExport($idSection = 'all', $idOrientation = 'a
     }
     
     // Ajouter l'ordre de tri
-    $query .= " ORDER BY s.designationSection, o.designationOrientation, r.dateEnregistrement DESC";
+    $query .= " ORDER BY s.\"designationSection\", o.\"designationOrientation\", r.\"dateEnregistrement\" DESC";
     
     // Préparer et exécuter la requête
     $stmt = $this->db->prepare($query);
@@ -3747,11 +3747,11 @@ public function getOrientationsForExport($idSection = 'all', $idOrientation = 'a
 
 // Récupérer les promotions par orientation
 public function getPromotionsByOrientation($orientationId) {
-    $query = "SELECT p.idpromotion, p.designationPromotion, aa.designation as anneeDesignation
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\", aa.designation as anneeDesignation
               FROM promotion p
               JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
               WHERE p.orientation_idorientation = :orientationId
-              ORDER BY p.designationPromotion ASC";
+              ORDER BY p.\"designationPromotion\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':orientationId', $orientationId, PDO::PARAM_INT);
@@ -3775,7 +3775,7 @@ public function getPromotionOrientation($promotionId) {
 }
 
 public function getPromotionById($promotionId) {
-    $query = "SELECT p.*, o.designationOrientation, aa.designation as anneeDesignation
+    $query = "SELECT p.*, o.\"designationOrientation\", aa.designation as anneeDesignation
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
@@ -3791,7 +3791,7 @@ public function getPromotionById($promotionId) {
 public function getUserSections($userId) {
     $query = "SELECT section_idsection 
               FROM responsable_section 
-              WHERE idUser = :userId";
+              WHERE \"idUser\" = :userId";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
@@ -3818,7 +3818,7 @@ public function getPromotionsBySection($sectionId, $anneeAcadId = null) {
         $query .= " AND p.annee_acad_idannee_acad = :anneeAcadId";
     }
     
-    $query .= " ORDER BY p.designationPromotion ASC";
+    $query .= " ORDER BY p.\"designationPromotion\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':sectionId', $sectionId, PDO::PARAM_INT);
@@ -3842,10 +3842,10 @@ public function getPromotionsBySection($sectionId, $anneeAcadId = null) {
  */
 public function getAllUEs($anneeAcadId, $search = '')
 {
-    $query = "SELECT ue.idUE, ue.codeUE, ue.designationUE, ue.description, 
-                     ue.semestre_idsemestre, s.numeroSemestre, 
-                     p.idpromotion, p.designationPromotion, 
-                     sec.idsection, sec.designationSection
+    $query = "SELECT ue.\"idUE\", ue.\"codeUE\", ue.\"designationUE\", ue.description, 
+                     ue.semestre_idsemestre, s.\"numeroSemestre\", 
+                     p.idpromotion, p.\"designationPromotion\", 
+                     sec.idsection, sec.\"designationSection\"
               FROM ue 
               JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
@@ -3855,13 +3855,13 @@ public function getAllUEs($anneeAcadId, $search = '')
     
     // Ajouter la condition de recherche si un terme est fourni
     if (!empty($search)) {
-        $query .= " AND (ue.designationUE LIKE :search 
-                   OR ue.codeUE LIKE :search
-                   OR p.designationPromotion LIKE :search
-                   OR sec.designationSection LIKE :search)";
+        $query .= " AND (ue.\"designationUE\" LIKE :search 
+                   OR ue.\"codeUE\" LIKE :search
+                   OR p.\"designationPromotion\" LIKE :search
+                   OR sec.\"designationSection\" LIKE :search)";
     }
     
-    $query .= " ORDER BY sec.designationSection, p.designationPromotion, s.numeroSemestre, ue.designationUE";
+    $query .= " ORDER BY sec.\"designationSection\", p.\"designationPromotion\", s.\"numeroSemestre\", ue.\"designationUE\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -3876,17 +3876,17 @@ public function getAllUEs($anneeAcadId, $search = '')
 }
 
 public function getPromotionsByAnneeAcad($anneeAcadId, $search = '') {
-    $query = "SELECT p.*, o.designationOrientation, aa.designation AS anneeDesignation 
+    $query = "SELECT p.*, o.\"designationOrientation\", aa.designation AS anneeDesignation 
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
               WHERE p.annee_acad_idannee_acad = :anneeAcadId";
     
     if (!empty($search)) {
-        $query .= " AND (p.designationPromotion LIKE :search OR o.designationOrientation LIKE :search)";
+        $query .= " AND (p.\"designationPromotion\" LIKE :search OR o.\"designationOrientation\" LIKE :search)";
     }
     
-    $query .= " ORDER BY p.designationPromotion ASC";
+    $query .= " ORDER BY p.\"designationPromotion\" ASC";
 
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -3901,7 +3901,7 @@ public function getPromotionsByAnneeAcad($anneeAcadId, $search = '') {
 }
 
 public function getEtudiantByMatricule($matricule, $anneeAcadId) {
-    $query = "SELECT e.*, p.designationPromotion 
+    $query = "SELECT e.*, p.\"designationPromotion\" 
               FROM etudiant e
               JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               WHERE e.matricule = :matricule
@@ -3923,7 +3923,7 @@ public function getEtudiantByMatricule($matricule, $anneeAcadId) {
 public function getSemestresByPromotion($promotionId) {
     $query = "SELECT * FROM semestre 
               WHERE promotion_idpromotion = :promotionId 
-              ORDER BY numeroSemestre";
+              ORDER BY \"numeroSemestre\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':promotionId', $promotionId, PDO::PARAM_INT);
@@ -3962,10 +3962,10 @@ public function getUEsBySemestre($semestreId) {
  */
 public function getECUEsByUE($ueId) {
     try {
-        $query = "SELECT idECUE, designationECUE, CMI, TD, TP 
+        $query = "SELECT \"idECUE\", \"designationECUE\", CMI, TD, TP 
                   FROM ecue 
-                  WHERE idUE = ? 
-                  ORDER BY designationECUE";
+                  WHERE \"idUE\" = ? 
+                  ORDER BY \"designationECUE\"";
         
         $stmt = $this->db->prepare($query);
         $stmt->execute([$ueId]);
@@ -4012,14 +4012,14 @@ public function getParcoursEtudiantSysteme($matricule, $annee_id, $promotion_id)
         $creditHeure = $config && isset($config['credit_heure']) ? $config['credit_heure'] : 25;
         
         // Récupérer les semestres où l'étudiant a des moyennes d'UE enregistrées
-        $query = "SELECT DISTINCT s.idsemestre, s.numeroSemestre as nom_semestre, s.numeroSemestre
+        $query = "SELECT DISTINCT s.idsemestre, s.\"numeroSemestre\" as nom_semestre, s.\"numeroSemestre\"
                  FROM semestre s
                  INNER JOIN ue u ON u.semestre_idsemestre = s.idsemestre
-                 INNER JOIN moyenne_ue mu ON mu.idUE = u.idUE
+                 INNER JOIN moyenne_ue mu ON mu.\"idUE\" = u.\"idUE\"
                  WHERE mu.matricule = :matricule 
                  AND mu.annee_acad_idannee_acad = :annee_id
                  AND u.promotion_idpromotion = :promotion_id
-                 ORDER BY s.numeroSemestre";
+                 ORDER BY s.\"numeroSemestre\"";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':matricule', $matricule, PDO::PARAM_STR);
@@ -4032,22 +4032,22 @@ public function getParcoursEtudiantSysteme($matricule, $annee_id, $promotion_id)
             // Récupérer les UE du semestre avec leurs moyennes
             // Calculer les crédits à partir des ECUE (CMI + TD + TP) / credit_heure
             $queryUE = "SELECT DISTINCT 
-                           u.idUE, u.designationUE as designation, u.codeUE as code,
+                           u.\"idUE\", u.\"designationUE\" as designation, u.\"codeUE\" as code,
                            COALESCE(mu.moyenne_brute, 0) as moyenne,
                            COALESCE(mu.est_validee, 0) as est_valide,
                            COALESCE(mu.credits_obtenus, 0) as credits_valides,
                            COALESCE(
-                               (SELECT SUM((e.CMI + e.TD + e.TP) / $creditHeure) FROM ecue e WHERE e.UE_idUE = u.idUE),
+                               (SELECT SUM((e.CMI + e.TD + e.TP) / $creditHeure) FROM ecue e WHERE e.\"UE_idUE\" = u.\"idUE\"),
                                0
                            ) as credits_total,
                            mu.type_validation
                        FROM ue u
-                       INNER JOIN moyenne_ue mu ON mu.idUE = u.idUE 
+                       INNER JOIN moyenne_ue mu ON mu.\"idUE\" = u.\"idUE\" 
                            AND mu.matricule = :matricule 
                            AND mu.annee_acad_idannee_acad = :annee_id
                        WHERE u.semestre_idsemestre = :semestre_id 
                        AND u.promotion_idpromotion = :promotion_id
-                       ORDER BY u.designationUE";
+                       ORDER BY u.\"designationUE\"";
             
             $stmtUE = $this->db->prepare($queryUE);
             $stmtUE->bindParam(':matricule', $matricule, PDO::PARAM_STR);
@@ -4078,12 +4078,12 @@ public function getParcoursEtudiantSysteme($matricule, $annee_id, $promotion_id)
  */
 public function getPromotionsByYear($anneeId) {
     try {
-        $query = "SELECT p.idpromotion, p.designationPromotion, p.cycle, 
-                         o.designationOrientation, p.est_terminale
+        $query = "SELECT p.idpromotion, p.\"designationPromotion\", p.cycle, 
+                         o.\"designationOrientation\", p.est_terminale
                   FROM promotion p
                   INNER JOIN orientation o ON p.orientation_idorientation = o.idorientation
                   WHERE p.annee_acad_idannee_acad = :annee_id
-                  ORDER BY p.designationPromotion ASC";
+                  ORDER BY p.\"designationPromotion\" ASC";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':annee_id', $anneeId, PDO::PARAM_INT);
@@ -4098,18 +4098,18 @@ public function getPromotionsByYear($anneeId) {
 }
 
 public function getEcuesByPromotion($idPromotion) {
-    $query = "SELECT e.*, u.designationUE, s.numeroSemestre, 
+    $query = "SELECT e.*, u.\"designationUE\", s.\"numeroSemestre\", 
               (SELECT a.noms FROM enseignant_ecue ee 
-               JOIN agent a ON ee.idAgent = a.idAgent 
-               WHERE ee.idECUE = e.idECUE 
+               JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\" 
+               WHERE ee.\"idECUE\" = e.\"idECUE\" 
                AND ee.poste = 'Titulaire' 
                LIMIT 1) as enseignant_titulaire
               FROM ecue e
-              JOIN ue u ON e.UE_idUE = u.idUE
+              JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
               JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               WHERE p.idpromotion = :idPromotion
-              ORDER BY s.numeroSemestre, u.designationUE, e.designationECUE";
+              ORDER BY s.\"numeroSemestre\", u.\"designationUE\", e.\"designationECUE\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idPromotion', $idPromotion, PDO::PARAM_INT);
@@ -4121,24 +4121,24 @@ public function getEcuesByPromotion($idPromotion) {
 
 public function getSujetsValidesForSoutenance($idAnneeAcad) {
     $query = "SELECT s.idsujets, s.intitule, s.cycle, s.etudiant_idetudiant,
-              s.idDirecteur, s.idEncadreur, s.commentaire_commission,
+              s.\"idDirecteur\", s.\"idEncadreur\", s.commentaire_commission,
               e.noms as etudiant_nom, e.matricule,
-              p.designationPromotion as promotion,
+              p.\"designationPromotion\" as promotion,
               sp.designation as specialisation,
-              sp.idSpecialisation,
+              sp.\"idSpecialisation\",
               d.noms as directeur_nom, 
               en.noms as encadreur_nom,
               (SELECT COUNT(*) FROM soutenance WHERE sujets_idsujets = s.idsujets) as has_soutenance
               FROM sujets s
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-              LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
-              LEFT JOIN agent d ON s.idDirecteur = d.idAgent
-              LEFT JOIN agent en ON s.idEncadreur = en.idAgent
-              WHERE s.etatSujet = 'Validé'
+              LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
+              LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
+              LEFT JOIN agent en ON s.\"idEncadreur\" = en.\"idAgent\"
+              WHERE s.\"etatSujet\" = 'Validé'
               AND s.annee_acad_idannee_acad = :idAnneeAcad
               AND s.etudiant_idetudiant IS NOT NULL
-              AND s.idDirecteur IS NOT NULL
+              AND s.\"idDirecteur\" IS NOT NULL
               HAVING has_soutenance = 0
               ORDER BY e.noms";
     
@@ -4152,9 +4152,9 @@ public function getSujetsValidesForSoutenance($idAnneeAcad) {
 
 public function getEtudiantsByAnnee($idAnneeAcad) {
     $query = "SELECT e.*, 
-              p.designationPromotion, 
+              p.\"designationPromotion\", 
               p.cycle,
-              o.designationOrientation
+              o.\"designationOrientation\"
               FROM etudiant e
               JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -4171,10 +4171,10 @@ public function getEtudiantsByAnnee($idAnneeAcad) {
 
 public function getAllUEsBySection($sectionId, $anneeAcadId, $search = '')
 {
-    $query = "SELECT ue.idUE, ue.codeUE, ue.designationUE, ue.description, 
-                     ue.semestre_idsemestre, s.numeroSemestre, 
-                     p.idpromotion, p.designationPromotion, 
-                     sec.idsection, sec.designationSection
+    $query = "SELECT ue.\"idUE\", ue.\"codeUE\", ue.\"designationUE\", ue.description, 
+                     ue.semestre_idsemestre, s.\"numeroSemestre\", 
+                     p.idpromotion, p.\"designationPromotion\", 
+                     sec.idsection, sec.\"designationSection\"
               FROM ue 
               JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
@@ -4185,12 +4185,12 @@ public function getAllUEsBySection($sectionId, $anneeAcadId, $search = '')
     
     // Ajouter la condition de recherche si un terme est fourni
     if (!empty($search)) {
-        $query .= " AND (ue.designationUE LIKE :search 
-                   OR ue.codeUE LIKE :search
-                   OR p.designationPromotion LIKE :search)";
+        $query .= " AND (ue.\"designationUE\" LIKE :search 
+                   OR ue.\"codeUE\" LIKE :search
+                   OR p.\"designationPromotion\" LIKE :search)";
     }
     
-    $query .= " ORDER BY p.designationPromotion, s.numeroSemestre, ue.designationUE";
+    $query .= " ORDER BY p.\"designationPromotion\", s.\"numeroSemestre\", ue.\"designationUE\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':sectionId', $sectionId, PDO::PARAM_INT);
@@ -4211,9 +4211,9 @@ public function getAllUEsBySection($sectionId, $anneeAcadId, $search = '')
  */
 public function getAllSemestres($anneeAcadId = null)
 {
-    $query = "SELECT s.idsemestre, s.numeroSemestre, 
-                     p.idpromotion, p.designationPromotion, p.cycle,
-                     sec.idsection, sec.designationSection
+    $query = "SELECT s.idsemestre, s.\"numeroSemestre\", 
+                     p.idpromotion, p.\"designationPromotion\", p.cycle,
+                     sec.idsection, sec.\"designationSection\"
               FROM semestre s
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -4223,7 +4223,7 @@ public function getAllSemestres($anneeAcadId = null)
         $query .= " WHERE p.annee_acad_idannee_acad = :anneeAcadId";
     }
     
-    $query .= " ORDER BY sec.designationSection, p.designationPromotion, s.numeroSemestre";
+    $query .= " ORDER BY sec.\"designationSection\", p.\"designationPromotion\", s.\"numeroSemestre\"";
     
     $stmt = $this->db->prepare($query);
     
@@ -4238,7 +4238,7 @@ public function getAllSemestres($anneeAcadId = null)
 
 // Créer une nouvelle UE
 public function createUE($codeUE, $designationUE, $description, $semestre_idsemestre) {
-    $query = "INSERT INTO ue (codeUE, designationUE, description, semestre_idsemestre) 
+    $query = "INSERT INTO ue (\"codeUE\", \"designationUE\", description, semestre_idsemestre) 
               VALUES (:codeUE, :designationUE, :description, :semestre_idsemestre)";
     
     $stmt = $this->db->prepare($query);
@@ -4265,7 +4265,7 @@ public function createUEMultiple($codeUE, $designationUE, $description, $semestr
     
     try {
         foreach ($semestres as $semestre_id) {
-            $query = "INSERT INTO ue (codeUE, designationUE, description, semestre_idsemestre)
+            $query = "INSERT INTO ue (\"codeUE\", \"designationUE\", description, semestre_idsemestre)
                       VALUES (:codeUE, :designationUE, :description, :semestre_idsemestre)";
             
             $stmt = $this->db->prepare($query);
@@ -4292,11 +4292,11 @@ public function createUEMultiple($codeUE, $designationUE, $description, $semestr
 // Mettre à jour une UE existante
 public function updateUE($idUE, $codeUE, $designationUE, $description, $semestre_idsemestre) {
     $query = "UPDATE ue 
-              SET codeUE = :codeUE, 
-                  designationUE = :designationUE, 
+              SET \"codeUE\" = :codeUE, 
+                  \"designationUE\" = :designationUE, 
                   description = :description, 
                   semestre_idsemestre = :semestre_idsemestre 
-              WHERE idUE = :idUE";
+              WHERE \"idUE\" = :idUE";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':codeUE', $codeUE);
@@ -4311,7 +4311,7 @@ public function updateUE($idUE, $codeUE, $designationUE, $description, $semestre
 
 public function getEtudiantsByPromotion($promotionId, $anneeAcadId) {
     $query = "SELECT e.idetudiant, e.matricule, e.noms, e.adressemail, e.telephone, 
-                     e.sexe, e.nationalite, p.designationPromotion,e.promotion_idpromotion
+                     e.sexe, e.nationalite, p.\"designationPromotion\",e.promotion_idpromotion
               FROM etudiant e
               JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               WHERE e.promotion_idpromotion = :promotionId 
@@ -4359,7 +4359,7 @@ public function getEtudiantsByPromotionAndNom($promotionId, $anneeAcadId, $searc
 public function deleteUE($idUE) {
     try {
         // Vérifier d'abord si l'UE existe
-        $checkQuery = "SELECT * FROM ue WHERE idUE = :idUE";
+        $checkQuery = "SELECT * FROM ue WHERE \"idUE\" = :idUE";
         $checkStmt = $this->db->prepare($checkQuery);
         $checkStmt->bindParam(':idUE', $idUE, PDO::PARAM_INT);
         $checkStmt->execute();
@@ -4387,7 +4387,7 @@ public function deleteUE($idUE) {
         $this->db->beginTransaction();
         
         // Supprimer l'UE
-        $query = "DELETE FROM ue WHERE idUE = :idUE";
+        $query = "DELETE FROM ue WHERE \"idUE\" = :idUE";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idUE', $idUE, PDO::PARAM_INT);
         $result = $stmt->execute();
@@ -4413,11 +4413,11 @@ public function deleteUE($idUE) {
 
 
 public function getUEById($idUE) {
-    $query = "SELECT ue.*, s.numeroSemestre, p.designationPromotion 
+    $query = "SELECT ue.*, s.\"numeroSemestre\", p.\"designationPromotion\" 
               FROM ue 
               JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-              WHERE ue.idUE = :idUE";
+              WHERE ue.\"idUE\" = :idUE";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idUE', $idUE, PDO::PARAM_INT);
@@ -4438,7 +4438,7 @@ public function getSujetsValidesParSection($idSection, $anneeAcadId)
               WHERE o.section_idsection = :idSection
               AND s.annee_acad_idannee_acad = :anneeAcadId
               AND s.statut_validation = 'Validé'
-              AND s.etatSujet='Validé'
+              AND s.\"etatSujet\"='Validé'
               ORDER BY e.noms ASC";
     
     $stmt = $this->db->prepare($query);
@@ -4503,9 +4503,9 @@ public function getPromotionsByResponsable($idAnneeAcad, $idUser) {
               JOIN section s ON o.section_idsection = s.idsection
               JOIN responsable_section rs ON s.idsection = rs.section_idsection
               WHERE p.annee_acad_idannee_acad = :idAnneeAcad
-              AND rs.idUser = :idUser
+              AND rs.\"idUser\" = :idUser
               AND rs.annee_acad_idannee_acad = :idAnneeAcad
-              ORDER BY p.designationPromotion ASC";
+              ORDER BY p.\"designationPromotion\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute([
@@ -4520,7 +4520,7 @@ public function getPromotionsByResponsable($idAnneeAcad, $idUser) {
 public function isUserSectionResponsable($idUser, $idAnneeAcad) {
     $query = "SELECT COUNT(*) as count 
               FROM responsable_section 
-              WHERE idUser = :idUser
+              WHERE \"idUser\" = :idUser
               AND annee_acad_idannee_acad = :idAnneeAcad";
     
     $stmt = $this->db->prepare($query);
@@ -4542,10 +4542,10 @@ public function isUserSectionResponsableForEcue($idUser, $idAnneeAcad, $idECUE) 
               JOIN promotion p ON o.idorientation = p.orientation_idorientation
               JOIN semestre sem ON p.idpromotion = sem.promotion_idpromotion
               JOIN ue u ON sem.idsemestre = u.semestre_idsemestre
-              JOIN ecue e ON u.idUE = e.UE_idUE
-              WHERE rs.idUser = :idUser
+              JOIN ecue e ON u.\"idUE\" = e.\"UE_idUE\"
+              WHERE rs.\"idUser\" = :idUser
               AND rs.annee_acad_idannee_acad = :idAnneeAcad
-              AND e.idECUE = :idECUE";
+              AND e.\"idECUE\" = :idECUE";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute([
@@ -4564,7 +4564,7 @@ public function isUserSectionResponsableForEcue($idUser, $idAnneeAcad, $idECUE) 
  * @return array|false Données de l'ECUE ou false si non trouvé
  */
 public function getEcueById($idECUE) {
-    $query = "SELECT * FROM ecue WHERE idECUE = :idECUE";
+    $query = "SELECT * FROM ecue WHERE \"idECUE\" = :idECUE";
     $stmt = $this->db->prepare($query);
     $stmt->execute(['idECUE' => $idECUE]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -4576,10 +4576,10 @@ public function getSalles($search = '')
     $query = "SELECT * FROM salle";
     
     if (!empty($search)) {
-        $query .= " WHERE designationSalle LIKE :search";
+        $query .= " WHERE \"designationSalle\" LIKE :search";
     }
     
-    $query .= " ORDER BY designationSalle ASC";
+    $query .= " ORDER BY \"designationSalle\" ASC";
     
     $stmt = $this->db->prepare($query);
     
@@ -4595,7 +4595,7 @@ public function getSalles($search = '')
 // Créer une nouvelle salle
 public function createSalle($designationSalle)
 {
-    $query = "INSERT INTO salle (designationSalle, dateCreation) VALUES (:designationSalle, NOW())";
+    $query = "INSERT INTO salle (\"designationSalle\", \"dateCreation\") VALUES (:designationSalle, NOW())";
     $stmt = $this->db->prepare($query);
     return $stmt->execute([
         'designationSalle' => $designationSalle
@@ -4605,7 +4605,7 @@ public function createSalle($designationSalle)
 // Mettre à jour une salle
 public function updateSalle($idSalle, $designationSalle)
 {
-    $query = "UPDATE salle SET designationSalle = :designationSalle WHERE idSalle = :idSalle";
+    $query = "UPDATE salle SET \"designationSalle\" = :designationSalle WHERE \"idSalle\" = :idSalle";
     $stmt = $this->db->prepare($query);
     return $stmt->execute([
         'idSalle' => $idSalle,
@@ -4616,7 +4616,7 @@ public function updateSalle($idSalle, $designationSalle)
 // Supprimer une salle
 public function deleteSalle($idSalle)
 {
-    $query = "DELETE FROM salle WHERE idSalle = :idSalle";
+    $query = "DELETE FROM salle WHERE \"idSalle\" = :idSalle";
     $stmt = $this->db->prepare($query);
     return $stmt->execute(['idSalle' => $idSalle]);
 }
@@ -4624,7 +4624,7 @@ public function deleteSalle($idSalle)
 // Récupérer une salle par son ID
 public function getSalleById($idSalle)
 {
-    $query = "SELECT * FROM salle WHERE idSalle = :idSalle";
+    $query = "SELECT * FROM salle WHERE \"idSalle\" = :idSalle";
     $stmt = $this->db->prepare($query);
     $stmt->execute(['idSalle' => $idSalle]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -4640,8 +4640,8 @@ public function getJurys($search = '', $anneeAcadId = null)
 {
     $query = "SELECT b.*, a1.noms as president_nom, a2.noms as secretaire_nom, a.designation as annee_academique
               FROM bureau_jury_deliberation b
-              JOIN agent a1 ON b.president_id = a1.idAgent
-              JOIN agent a2 ON b.secretaire_id = a2.idAgent
+              JOIN agent a1 ON b.president_id = a1.\"idAgent\"
+              JOIN agent a2 ON b.secretaire_id = a2.\"idAgent\"
               JOIN annee_acad a ON b.annee_acad_idannee_acad = a.idannee_acad";
 
     $whereConditions = [];
@@ -4680,7 +4680,7 @@ public function createJury($designation, $numeroDecision, $dateDecision, $presid
 {
     $query = "INSERT INTO bureau_jury_deliberation (designation, numero_decision, date_creation, date_decision, 
                                                    president_id, secretaire_id, annee_acad_idannee_acad, 
-                                                   est_actif, commentaire, idUser) 
+                                                   est_actif, commentaire, \"idUser\") 
               VALUES (:designation, :numeroDecision, NOW(), :dateDecision, 
                       :presidentId, :secretaireId, :anneeAcadId, 
                       1, :commentaire, :idUser)";
@@ -4768,7 +4768,7 @@ public function getJuryMembers($juryId)
 {
     $query = "SELECT m.*, a.noms, DATE_FORMAT(m.date_ajout, '%d/%m/%Y %H:%i') as date_ajout 
               FROM membre_bureau_jury m
-              JOIN agent a ON m.idAgent = a.idAgent
+              JOIN agent a ON m.\"idAgent\" = a.\"idAgent\"
               WHERE m.idbureau = :juryId
               ORDER BY m.date_ajout";
     
@@ -4783,7 +4783,7 @@ public function getJuryMembers($juryId)
  */
 public function addJuryMember($juryId, $memberId, $fonction)
 {
-    $query = "INSERT INTO membre_bureau_jury (idbureau, idAgent, fonction, date_ajout) 
+    $query = "INSERT INTO membre_bureau_jury (idbureau, \"idAgent\", fonction, date_ajout) 
               VALUES (:juryId, :memberId, :fonction, NOW())";
     
     $stmt = $this->db->prepare($query);
@@ -4810,14 +4810,14 @@ public function removeJuryMember($memberId)
  */
 public function getPromotionsByJury($juryId)
 {
-    $query = "SELECT bp.*, p.designationPromotion, p.cycle, o.designationOrientation as orientationDesignation, 
+    $query = "SELECT bp.*, p.\"designationPromotion\", p.cycle, o.\"designationOrientation\" as orientationDesignation, 
                     a.designation as anneeDesignation
               FROM bureau_jury_promotion bp
               JOIN promotion p ON bp.idpromotion = p.idpromotion
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN annee_acad a ON p.annee_acad_idannee_acad = a.idannee_acad
               WHERE bp.idbureau = :juryId
-              ORDER BY p.designationPromotion";
+              ORDER BY p.\"designationPromotion\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute(['juryId' => $juryId]);
@@ -4847,7 +4847,7 @@ public function assignPromotionToJury($juryId, $promotionId, $userId)
     }
     
     // Insérer la nouvelle association
-    $query = "INSERT INTO bureau_jury_promotion (idbureau, idpromotion, date_association, idUser) 
+    $query = "INSERT INTO bureau_jury_promotion (idbureau, idpromotion, date_association, \"idUser\") 
               VALUES (:juryId, :promotionId, NOW(), :userId)";
     
     $stmt = $this->db->prepare($query);
@@ -4876,8 +4876,8 @@ public function getJuryById($juryId)
 {
     $query = "SELECT b.*, a1.noms as president_nom, a2.noms as secretaire_nom, a.designation as annee_academique
               FROM bureau_jury_deliberation b
-              JOIN agent a1 ON b.president_id = a1.idAgent
-              JOIN agent a2 ON b.secretaire_id = a2.idAgent
+              JOIN agent a1 ON b.president_id = a1.\"idAgent\"
+              JOIN agent a2 ON b.secretaire_id = a2.\"idAgent\"
               JOIN annee_acad a ON b.annee_acad_idannee_acad = a.idannee_acad
               WHERE b.idbureau = :juryId";
     
@@ -4979,7 +4979,7 @@ public function saveDeliberationConfig($configParams)
                   pourcentage_passage_semestre = :pourcentage_passage_semestre,
                   calculer_moyenne_avec_notes_vides = :calculer_moyenne_avec_notes_vides,
                   date_creation = NOW(),
-                  idUser = :idUser
+                  \"idUser\" = :idUser
                   WHERE idconfig = :idconfig";
        
         $stmt = $this->db->prepare($query);
@@ -4994,7 +4994,7 @@ public function saveDeliberationConfig($configParams)
                   seuil_compensation_inter_semestre, limiter_compensation_annee,
                   note_passage, pourcentage_passage_semestre,
                   calculer_moyenne_avec_notes_vides,
-                  date_creation, idUser)
+                  date_creation, \"idUser\")
                   VALUES (
                   :idbureau, :session_idsession, :annee_acad_idannee_acad,
                   :compensation_intra_ue, :seuil_compensation_intra_ue,
@@ -5035,7 +5035,7 @@ public function saveDeliberationConfig($configParams)
  */
 public function getAllSessions()
 {
-    $query = "SELECT * FROM session ORDER BY designSession ASC";
+    $query = "SELECT * FROM session ORDER BY \"designSession\" ASC";
     $stmt = $this->db->query($query);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -5048,7 +5048,7 @@ public function getAllSessions()
  */
 public function getOpenDeliberationsByJury($idBureau, $anneeId = null)
 {
-    $query = "SELECT d.*, p.designationPromotion, s.designSession
+    $query = "SELECT d.*, p.\"designationPromotion\", s.\"designSession\"
               FROM deliberation d
               JOIN promotion p ON d.idpromotion = p.idpromotion
               JOIN session s ON d.session_idsession = s.idsession
@@ -5124,7 +5124,7 @@ public function getStatistiquesEcue($ecueId, $sessionId, $anneeId, $promotionId)
                 MAX(MF) as max
               FROM cotes_grille cg
               JOIN etudiant e ON cg.matricule = e.matricule
-              WHERE ECUE_idECUE = :ecueId
+              WHERE \"ECUE_idECUE\" = :ecueId
               AND session_idsession = :sessionId
               AND annee_acad_id = :anneeId
               AND e.promotion_idpromotion = :promotionId";
@@ -5161,7 +5161,7 @@ public function canAgentAccessPromotion($agentId, $promotionId) {
     $query = "SELECT COUNT(*) FROM bureau_jury_deliberation bj
               JOIN bureau_jury_promotion bjp ON bj.idbureau = bjp.idbureau
               WHERE (bj.president_id = :agentId OR bj.secretaire_id = :agentId 
-                    OR EXISTS (SELECT 1 FROM membre_bureau_jury mbj WHERE mbj.idbureau = bj.idbureau AND mbj.idAgent = :agentId))
+                    OR EXISTS (SELECT 1 FROM membre_bureau_jury mbj WHERE mbj.idbureau = bj.idbureau AND mbj.\"idAgent\" = :agentId))
               AND bjp.idpromotion = :promotionId
               AND bj.est_actif = 1";
     
@@ -5178,7 +5178,7 @@ public function getJuryBureauxByAgent($agentId) {
     $query = "SELECT DISTINCT bj.* FROM bureau_jury_deliberation bj
               WHERE (bj.president_id = :agentId 
               OR bj.secretaire_id = :agentId
-              OR EXISTS (SELECT 1 FROM membre_bureau_jury mbj WHERE mbj.idbureau = bj.idbureau AND mbj.idAgent = :agentId))
+              OR EXISTS (SELECT 1 FROM membre_bureau_jury mbj WHERE mbj.idbureau = bj.idbureau AND mbj.\"idAgent\" = :agentId))
               AND bj.est_actif = 1
               ORDER BY bj.date_creation DESC";
     
@@ -5192,7 +5192,7 @@ public function getJuryBureauxByAgent($agentId) {
 // Méthode pour récupérer les cotes d'un ECUE
 public function getCotesGrille($ecueId, $sessionId, $anneeId) {
     $query = "SELECT * FROM cotes_grille 
-              WHERE ECUE_idECUE = :ecueId 
+              WHERE \"ECUE_idECUE\" = :ecueId 
               AND session_idsession = :sessionId 
               AND annee_acad_id = :anneeId";
     
@@ -5210,7 +5210,7 @@ public function saveCoteGrille($ecueId, $sessionId, $anneeId, $matricule, $cc, $
     try {
         // Vérifier si une cote existe déjà pour cet étudiant/ECUE/session/année
         $checkQuery = "SELECT idpoints FROM cotes_grille WHERE 
-                       ECUE_idECUE = :ecueId AND 
+                       \"ECUE_idECUE\" = :ecueId AND 
                        session_idsession = :sessionId AND 
                        matricule = :matricule AND 
                        annee_acad_id = :anneeId";
@@ -5231,7 +5231,7 @@ public function saveCoteGrille($ecueId, $sessionId, $anneeId, $matricule, $cc, $
                      EX = :ex, 
                      MF = :mf, 
                      date_compilation = NOW(), 
-                     idUser = :userId 
+                     \"idUser\" = :userId 
                      WHERE idpoints = :idpoints";
            
             $stmt = $this->db->prepare($query);
@@ -5245,7 +5245,7 @@ public function saveCoteGrille($ecueId, $sessionId, $anneeId, $matricule, $cc, $
         } else {
             // Insertion d'une nouvelle cote
             $query = "INSERT INTO cotes_grille 
-                     (ECUE_idECUE, session_idsession, annee_acad_id, matricule, CC, EX, MF, date_compilation, idUser) 
+                     (\"ECUE_idECUE\", session_idsession, annee_acad_id, matricule, CC, EX, MF, date_compilation, \"idUser\") 
                      VALUES 
                      (:ecueId, :sessionId, :anneeId, :matricule, :cc, :ex, :mf, NOW(), :userId)";
            
@@ -5271,7 +5271,7 @@ public function saveCoteGrille($ecueId, $sessionId, $anneeId, $matricule, $cc, $
 // Méthode pour récupérer la configuration du calcul de la moyenne
 public function getConfigurationMoyenne($ecueId, $sessionId, $anneeId) {
     $query = "SELECT * FROM configuration_moyenne 
-              WHERE idECUE = :ecueId 
+              WHERE \"idECUE\" = :ecueId 
               AND session_idsession = :sessionId 
               AND annee_acad_id = :anneeId";
     
@@ -5325,12 +5325,12 @@ public function getPonderationsDefaut() {
 
 // Méthode pour récupérer les ECUEs d'un semestre
 public function getEcuesBySemestre($semestreId) {
-    $query = "SELECT e.*, ue.idUE, ue.codeUE, ue.designationUE 
+    $query = "SELECT e.*, ue.\"idUE\", ue.\"codeUE\", ue.\"designationUE\" 
               FROM ecue e
-              JOIN ue ON e.UE_idUE = ue.idUE
+              JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
               WHERE ue.semestre_idsemestre = :semestreId
-              AND e.estVisible = 1
-              ORDER BY ue.designationUE, e.designationECUE";
+              AND e.\"estVisible\" = 1
+              ORDER BY ue.\"designationUE\", e.\"designationECUE\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':semestreId', $semestreId, PDO::PARAM_INT);
@@ -5342,7 +5342,7 @@ public function getEcuesBySemestre($semestreId) {
 public function getCotesGrilleByEcue($ecueId, $sessionId, $anneeId) {
     try {
         $query = "SELECT * FROM cotes_grille 
-                 WHERE ECUE_idECUE = :ecueId 
+                 WHERE \"ECUE_idECUE\" = :ecueId 
                  AND session_idsession = :sessionId 
                  AND annee_acad_id = :anneeId";
         
@@ -5368,10 +5368,10 @@ public function saveHistoriqueCotes($ecueId, $sessionId, $anneeId, $matricule,
                                    $motif, $userId) {
     try {
         $query = "INSERT INTO historique_cotes 
-                 (ECUE_idECUE, session_idsession, annee_acad_id, matricule, 
+                 (\"ECUE_idECUE\", session_idsession, annee_acad_id, matricule, 
                  cc_avant, ex_avant, mf_avant, 
                  cc_apres, ex_apres, mf_apres, 
-                 motif, idUser) 
+                 motif, \"idUser\") 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $this->db->prepare($query);
@@ -5393,7 +5393,7 @@ public function saveHistoriqueCotes($ecueId, $sessionId, $anneeId, $matricule,
 public function getCoteGrille($ecueId, $sessionId, $anneeId, $matricule) {
     try {
         $query = "SELECT CC, EX, MF FROM cotes_grille 
-                 WHERE ECUE_idECUE = ? AND session_idsession = ? 
+                 WHERE \"ECUE_idECUE\" = ? AND session_idsession = ? 
                  AND annee_acad_id = ? AND matricule = ?";
         
         $stmt = $this->db->prepare($query);
@@ -5465,10 +5465,10 @@ public function getHistoriqueCotes($ecueId, $sessionId, $anneeId, $matricule) {
         }
         
         // Requête SQL pour récupérer l'historique des cotes avec jointure sur t_users
-        $query = "SELECT h.*, u.nomUser as nom_utilisateur 
+        $query = "SELECT h.*, u.\"nomUser\" as nom_utilisateur 
                  FROM historique_cotes h
-                 LEFT JOIN t_users u ON h.idUser = u.idUser
-                 WHERE h.ECUE_idECUE = :ecueId 
+                 LEFT JOIN t_users u ON h.\"idUser\" = u.\"idUser\"
+                 WHERE h.\"ECUE_idECUE\" = :ecueId 
                  AND h.session_idsession = :sessionId 
                  AND h.annee_acad_id = :anneeId 
                  AND h.matricule = :matricule
@@ -5546,7 +5546,7 @@ public function getHistoriqueCountByEcue($ecueId, $sessionId, $anneeId) {
     try {
         $query = "SELECT matricule, COUNT(*) as count 
                  FROM historique_cotes 
-                 WHERE ECUE_idECUE = ? 
+                 WHERE \"ECUE_idECUE\" = ? 
                  AND session_idsession = ? 
                  AND annee_acad_id = ? 
                  GROUP BY matricule";
@@ -5699,10 +5699,10 @@ public function getJurysByPromotion($promotionId, $actifSeulement = true) {
  * @return array Tableau des délibérations
  */
 public function getDeliberationsByFilters($bureauId, $anneeId, $sessionId) {
-    $query = "SELECT d.*, p.designationPromotion, u.nomUser as nom_createur
+    $query = "SELECT d.*, p.\"designationPromotion\", u.\"nomUser\" as nom_createur
               FROM deliberation d
               JOIN promotion p ON d.idpromotion = p.idpromotion
-              JOIN t_users u ON d.idUser = u.idUser
+              JOIN t_users u ON d.\"idUser\" = u.\"idUser\"
               WHERE d.idbureau = :bureauId
               AND d.session_idsession = :sessionId
               AND d.annee_acad_id = :anneeId
@@ -5723,10 +5723,10 @@ public function getDeliberationsByFilters($bureauId, $anneeId, $sessionId) {
  * @return array|false Délibération ou false si non trouvée
  */
 public function getDeliberationById($id) {
-    $query = "SELECT d.*, p.designationPromotion, u.nomUser as nom_createur
+    $query = "SELECT d.*, p.\"designationPromotion\", u.\"nomUser\" as nom_createur
               FROM deliberation d
               JOIN promotion p ON d.idpromotion = p.idpromotion
-              JOIN t_users u ON d.idUser = u.idUser
+              JOIN t_users u ON d.\"idUser\" = u.\"idUser\"
               WHERE d.iddeliberation = :id";
     
     $stmt = $this->db->prepare($query);
@@ -5777,7 +5777,7 @@ public function createDeliberation($bureauId, $promotionId, $dateDeliberation, $
     
     try {
         $query = "INSERT INTO deliberation 
-                  (idbureau, idpromotion, date_deliberation, session_idsession, commentaire, statut, idUser, annee_acad_id, date_creation) 
+                  (idbureau, idpromotion, date_deliberation, session_idsession, commentaire, statut, \"idUser\", annee_acad_id, date_creation) 
                   VALUES (:bureauId, :promotionId, :dateDeliberation, :sessionId, :commentaire, 'En préparation', :userId, :anneeId, NOW())";
         
         $stmt = $this->db->prepare($query);
@@ -5862,7 +5862,7 @@ public function initializeDeliberationProcess($deliberationId, $userId) {
         
         // Création des étapes du processus
         foreach ($etapes as $etape) {
-            $query = "INSERT INTO processus_deliberation (iddeliberation, etape, statut, progression, idUser) 
+            $query = "INSERT INTO processus_deliberation (iddeliberation, etape, statut, progression, \"idUser\") 
                       VALUES (:deliberationId, :etape, 'En attente', 0, :userId)";
             
             $stmt = $this->db->prepare($query);
@@ -5994,11 +5994,11 @@ public function getAnneeAcademiqueById($id) {
  * @return array Liste des UE
  */
 public function getUEsByPromotion($promotionId) {
-    $query = "SELECT u.idUE, u.codeUE, u.designationUE, u.description, s.numeroSemestre
+    $query = "SELECT u.\"idUE\", u.\"codeUE\", u.\"designationUE\", u.description, s.\"numeroSemestre\"
               FROM ue u
               JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
               WHERE s.promotion_idpromotion = :promotionId
-              ORDER BY u.codeUE ASC";
+              ORDER BY u.\"codeUE\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':promotionId', $promotionId, PDO::PARAM_INT);
@@ -6013,15 +6013,15 @@ public function getUEsByPromotion($promotionId) {
  * @return array Liste des semestres regroupés
  */
 public function getSemestresGroupes($search = '') {
-    $query = "SELECT DISTINCT numeroSemestre 
+    $query = "SELECT DISTINCT \"numeroSemestre\" 
               FROM semestre 
               WHERE 1=1";
     
     if (!empty($search)) {
-        $query .= " AND numeroSemestre LIKE :search";
+        $query .= " AND \"numeroSemestre\" LIKE :search";
     }
     
-    $query .= " ORDER BY numeroSemestre ASC";
+    $query .= " ORDER BY \"numeroSemestre\" ASC";
     
     $stmt = $this->db->prepare($query);
     
@@ -6041,18 +6041,18 @@ public function getSemestresGroupes($search = '') {
  * @return array Liste des instances du semestre
  */
 public function getSemestresByNumero($numeroSemestre, $search = '') {
-    $query = "SELECT s.idsemestre, s.numeroSemestre, s.dateEnregistrement, 
-                     p.idpromotion, p.designationPromotion, aa.designation as annee
+    $query = "SELECT s.idsemestre, s.\"numeroSemestre\", s.\"dateEnregistrement\", 
+                     p.idpromotion, p.\"designationPromotion\", aa.designation as annee
               FROM semestre s
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
-              WHERE s.numeroSemestre = :numeroSemestre";
+              WHERE s.\"numeroSemestre\" = :numeroSemestre";
     
     if (!empty($search)) {
-        $query .= " AND (p.designationPromotion LIKE :search OR aa.designation LIKE :search)";
+        $query .= " AND (p.\"designationPromotion\" LIKE :search OR aa.designation LIKE :search)";
     }
     
-    $query .= " ORDER BY p.designationPromotion ASC";
+    $query .= " ORDER BY p.\"designationPromotion\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':numeroSemestre', $numeroSemestre, PDO::PARAM_STR);
@@ -6078,13 +6078,13 @@ public function getSemestresByIds($ids) {
     
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
     
-    $query = "SELECT s.idsemestre, s.numeroSemestre, s.dateEnregistrement, 
-                     s.promotion_idpromotion, p.designationPromotion, aa.designation as annee
+    $query = "SELECT s.idsemestre, s.\"numeroSemestre\", s.\"dateEnregistrement\", 
+                     s.promotion_idpromotion, p.\"designationPromotion\", aa.designation as annee
               FROM semestre s
               JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
               WHERE s.idsemestre IN ($placeholders)
-              ORDER BY p.designationPromotion ASC";
+              ORDER BY p.\"designationPromotion\" ASC";
     
     $stmt = $this->db->prepare($query);
     
@@ -6104,7 +6104,7 @@ public function getSemestresByIds($ids) {
  * @return bool Succès de l'opération
  */
 public function updateSemestreNumero($id, $numeroSemestre) {
-    $query = "UPDATE semestre SET numeroSemestre = :numeroSemestre WHERE idsemestre = :id";
+    $query = "UPDATE semestre SET \"numeroSemestre\" = :numeroSemestre WHERE idsemestre = :id";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':numeroSemestre', $numeroSemestre, PDO::PARAM_STR);
@@ -6122,7 +6122,7 @@ public function updateSemestreNumero($id, $numeroSemestre) {
  * @return array Liste des UE regroupées
  */
 public function getUEsGroupees($anneeAcadId, $search = '', $sectionId = 0, $promotionId = 0) {
-    $query = "SELECT DISTINCT u.codeUE, u.designationUE, s.designationSection
+    $query = "SELECT DISTINCT u.\"codeUE\", u.\"designationUE\", s.\"designationSection\"
               FROM ue u
               JOIN semestre sem ON u.semestre_idsemestre = sem.idsemestre
               JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
@@ -6131,8 +6131,8 @@ public function getUEsGroupees($anneeAcadId, $search = '', $sectionId = 0, $prom
               WHERE p.annee_acad_idannee_acad = :anneeAcadId";
     
     if (!empty($search)) {
-        $query .= " AND (u.codeUE LIKE :search OR u.designationUE LIKE :search OR sem.numeroSemestre LIKE :search 
-                         OR p.designationPromotion LIKE :search OR s.designationSection LIKE :search)";
+        $query .= " AND (u.\"codeUE\" LIKE :search OR u.\"designationUE\" LIKE :search OR sem.\"numeroSemestre\" LIKE :search 
+                         OR p.\"designationPromotion\" LIKE :search OR s.\"designationSection\" LIKE :search)";
     }
     
     if ($sectionId > 0) {
@@ -6143,7 +6143,7 @@ public function getUEsGroupees($anneeAcadId, $search = '', $sectionId = 0, $prom
         $query .= " AND p.idpromotion = :promotionId";
     }
     
-    $query .= " ORDER BY s.designationSection, u.codeUE ASC";
+    $query .= " ORDER BY s.\"designationSection\", u.\"codeUE\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
@@ -6176,20 +6176,20 @@ public function getUEsGroupees($anneeAcadId, $search = '', $sectionId = 0, $prom
  * @return array Liste des instances de l'UE
  */
 public function getUEsByCodeDesignation($codeUE, $designationUE, $anneeAcadId, $search = '', $sectionId = 0, $promotionId = 0) {
-    $query = "SELECT u.idUE, u.codeUE, u.designationUE, u.description, u.semestre_idsemestre,
-                     sem.numeroSemestre, p.designationPromotion, p.idpromotion as promotion_idpromotion, s.designationSection
+    $query = "SELECT u.\"idUE\", u.\"codeUE\", u.\"designationUE\", u.description, u.semestre_idsemestre,
+                     sem.\"numeroSemestre\", p.\"designationPromotion\", p.idpromotion as promotion_idpromotion, s.\"designationSection\"
               FROM ue u
               JOIN semestre sem ON u.semestre_idsemestre = sem.idsemestre
               JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN section s ON o.section_idsection = s.idsection
-              WHERE u.codeUE = :codeUE 
-              AND u.designationUE = :designationUE
+              WHERE u.\"codeUE\" = :codeUE 
+              AND u.\"designationUE\" = :designationUE
               AND p.annee_acad_idannee_acad = :anneeAcadId";
     
     if (!empty($search)) {
-        $query .= " AND (sem.numeroSemestre LIKE :search OR p.designationPromotion LIKE :search 
-                         OR s.designationSection LIKE :search)";
+        $query .= " AND (sem.\"numeroSemestre\" LIKE :search OR p.\"designationPromotion\" LIKE :search 
+                         OR s.\"designationSection\" LIKE :search)";
     }
     
     if ($sectionId > 0) {
@@ -6200,7 +6200,7 @@ public function getUEsByCodeDesignation($codeUE, $designationUE, $anneeAcadId, $
         $query .= " AND p.idpromotion = :promotionId";
     }
     
-    $query .= " ORDER BY sem.numeroSemestre, p.designationPromotion ASC";
+    $query .= " ORDER BY sem.\"numeroSemestre\", p.\"designationPromotion\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':codeUE', $codeUE, PDO::PARAM_STR);
@@ -6236,15 +6236,15 @@ public function getUEsByIds($ids) {
     
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
     
-    $query = "SELECT u.idUE, u.codeUE, u.designationUE, u.description, u.semestre_idsemestre,
-                     sem.numeroSemestre, p.designationPromotion, s.designationSection
+    $query = "SELECT u.\"idUE\", u.\"codeUE\", u.\"designationUE\", u.description, u.semestre_idsemestre,
+                     sem.\"numeroSemestre\", p.\"designationPromotion\", s.\"designationSection\"
               FROM ue u
               JOIN semestre sem ON u.semestre_idsemestre = sem.idsemestre
               JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN section s ON o.section_idsection = s.idsection
-              WHERE u.idUE IN ($placeholders)
-              ORDER BY s.designationSection, p.designationPromotion, sem.numeroSemestre ASC";
+              WHERE u.\"idUE\" IN ($placeholders)
+              ORDER BY s.\"designationSection\", p.\"designationPromotion\", sem.\"numeroSemestre\" ASC";
     
     $stmt = $this->db->prepare($query);
     
@@ -6267,10 +6267,10 @@ public function getUEsByIds($ids) {
  */
 public function updateUEGroupe($id, $codeUE, $designationUE, $description) {
     $query = "UPDATE ue SET 
-              codeUE = :codeUE, 
-              designationUE = :designationUE, 
+              \"codeUE\" = :codeUE, 
+              \"designationUE\" = :designationUE, 
               description = :description 
-              WHERE idUE = :id";
+              WHERE \"idUE\" = :id";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':codeUE', $codeUE, PDO::PARAM_STR);
@@ -6289,8 +6289,8 @@ public function updateUEGroupe($id, $codeUE, $designationUE, $description) {
  */
 public function getStudentByMatricule($matricule) {
     try {
-        $query = "SELECT e.*, p.designationPromotion, o.designationOrientation, 
-                  a.designation as annee, s.designationSection
+        $query = "SELECT e.*, p.\"designationPromotion\", o.\"designationOrientation\", 
+                  a.designation as annee, s.\"designationSection\"
                   FROM etudiant e
                   JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
                   JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -6321,15 +6321,15 @@ public function getInscriptionsStatsByYear($anneeId) {
     $stats = [];
 
     // Récupérer les statistiques par promotion
-    $query = "SELECT p.idpromotion, p.designationPromotion,
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\",
               COUNT(*) as total,
               SUM(CASE WHEN e.sexe = 'Masculin' THEN 1 ELSE 0 END) as masculin,
               SUM(CASE WHEN e.sexe = 'Feminin' THEN 1 ELSE 0 END) as feminin
               FROM etudiant e
               JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               WHERE e.annee_acad_idannee_acad = :anneeId
-              GROUP BY p.idpromotion, p.designationPromotion
-              ORDER BY p.designationPromotion";
+              GROUP BY p.idpromotion, p.\"designationPromotion\"
+              ORDER BY p.\"designationPromotion\"";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute(['anneeId' => $anneeId]);
@@ -6353,7 +6353,7 @@ public function getInscriptionsStatsBySectionAndYear($sectionId, $anneeId) {
     $stats = [];
 
     // Récupérer les statistiques par promotion
-    $query = "SELECT p.idpromotion, p.designationPromotion,
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\",
               COUNT(*) as total,
               SUM(CASE WHEN e.sexe = 'Masculin' THEN 1 ELSE 0 END) as masculin,
               SUM(CASE WHEN e.sexe = 'Feminin' THEN 1 ELSE 0 END) as feminin
@@ -6362,8 +6362,8 @@ public function getInscriptionsStatsBySectionAndYear($sectionId, $anneeId) {
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               WHERE e.annee_acad_idannee_acad = :anneeId
               AND o.section_idsection = :sectionId
-              GROUP BY p.idpromotion, p.designationPromotion
-              ORDER BY p.designationPromotion";
+              GROUP BY p.idpromotion, p.\"designationPromotion\"
+              ORDER BY p.\"designationPromotion\"";
 
     $stmt = $this->db->prepare($query);
     $stmt->execute([
@@ -6471,7 +6471,7 @@ private function processAndSaveImage($sourceFile, $destination) {
 
 // Mettre à jour la méthode getStudentById pour inclure l'URL de la photo
 public function getStudentById($idEtudiant) {
-    $sql = "SELECT e.*, p.designationPromotion, a.designation as annee, e.photo 
+    $sql = "SELECT e.*, p.\"designationPromotion\", a.designation as annee, e.photo 
             FROM etudiant e
             LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
             LEFT JOIN annee_acad a ON e.annee_acad_idannee_acad = a.idannee_acad
@@ -6494,14 +6494,14 @@ public function addAgentSection2($idAgent, $idSection, $estPrincipal = 0) {
     try {
         // Si c'est une section principale, mettre à jour toutes les autres sections de l'agent pour qu'elles ne soient plus principales
         if ($estPrincipal == 1) {
-            $sqlUpdate = "UPDATE agent_section SET estPrincipal = 0 WHERE idAgent = :idAgent";
+            $sqlUpdate = "UPDATE agent_section SET \"estPrincipal\" = 0 WHERE \"idAgent\" = :idAgent";
             $stmtUpdate = $this->db->prepare($sqlUpdate);
             $stmtUpdate->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
             $stmtUpdate->execute();
         }
         
         // Vérifier si l'agent est déjà affecté à cette section
-        $sqlCheck = "SELECT idagent_section FROM agent_section WHERE idAgent = :idAgent AND idsection = :idSection";
+        $sqlCheck = "SELECT idagent_section FROM agent_section WHERE \"idAgent\" = :idAgent AND idsection = :idSection";
         $stmtCheck = $this->db->prepare($sqlCheck);
         $stmtCheck->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $stmtCheck->bindParam(':idSection', $idSection, PDO::PARAM_INT);
@@ -6512,7 +6512,7 @@ public function addAgentSection2($idAgent, $idSection, $estPrincipal = 0) {
             $row = $stmtCheck->fetch(PDO::FETCH_ASSOC);
             $idAgentSection = $row['idagent_section'];
             
-            $sqlUpdateSection = "UPDATE agent_section SET estPrincipal = :estPrincipal WHERE idagent_section = :idAgentSection";
+            $sqlUpdateSection = "UPDATE agent_section SET \"estPrincipal\" = :estPrincipal WHERE idagent_section = :idAgentSection";
             $stmtUpdateSection = $this->db->prepare($sqlUpdateSection);
             $stmtUpdateSection->bindParam(':estPrincipal', $estPrincipal, PDO::PARAM_INT);
             $stmtUpdateSection->bindParam(':idAgentSection', $idAgentSection, PDO::PARAM_INT);
@@ -6521,7 +6521,7 @@ public function addAgentSection2($idAgent, $idSection, $estPrincipal = 0) {
             // Sinon, ajouter une nouvelle affectation
             $dateAffectation = date('Y-m-d');
             
-            $sql = "INSERT INTO agent_section (idAgent, idsection, dateAffectation, estPrincipal) 
+            $sql = "INSERT INTO agent_section (\"idAgent\", idsection, \"dateAffectation\", \"estPrincipal\") 
                     VALUES (:idAgent, :idSection, :dateAffectation, :estPrincipal)";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -6539,20 +6539,20 @@ public function addAgentSection2($idAgent, $idSection, $estPrincipal = 0) {
 
 public function getTeacherResearcherCount($anneeId = null) {
     // Un enseignant chercheur est un agent de type "Enseignant" qui est rattaché à au moins une unité de recherche
-    $query = "SELECT COUNT(DISTINCT a.idAgent) as total 
+    $query = "SELECT COUNT(DISTINCT a.\"idAgent\") as total 
               FROM agent a
-              INNER JOIN enseignant_specialisation es ON a.idAgent = es.idAgent
-              INNER JOIN specialisation s ON es.idSpecialisation = s.idSpecialisation
-              INNER JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+              INNER JOIN enseignant_specialisation es ON a.\"idAgent\" = es.\"idAgent\"
+              INNER JOIN specialisation s ON es.\"idSpecialisation\" = s.\"idSpecialisation\"
+              INNER JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
               WHERE a.type_agent = 'Enseignant'";
     
     if ($anneeId) {
         // Si on veut filtrer par année académique, on peut limiter aux enseignants
         // qui ont encadré des étudiants cette année
-        $query .= " AND a.idAgent IN (
-            SELECT DISTINCT idDirecteur FROM sujets WHERE annee_acad_idannee_acad = :anneeId
+        $query .= " AND a.\"idAgent\" IN (
+            SELECT DISTINCT \"idDirecteur\" FROM sujets WHERE annee_acad_idannee_acad = :anneeId
             UNION
-            SELECT DISTINCT idEncadreur FROM sujets WHERE annee_acad_idannee_acad = :anneeId
+            SELECT DISTINCT \"idEncadreur\" FROM sujets WHERE annee_acad_idannee_acad = :anneeId
         )";
     }
     
@@ -6733,12 +6733,12 @@ public function getProfileCompletionStats() {
 public function getCompletionStatsByPromotion() {
     $query = "SELECT 
                 p.idpromotion,
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 COUNT(e.idetudiant) as total_students
               FROM promotion p
               LEFT JOIN etudiant e ON p.idpromotion = e.promotion_idpromotion
-              GROUP BY p.idpromotion, p.designationPromotion
-              ORDER BY p.designationPromotion";
+              GROUP BY p.idpromotion, p.\"designationPromotion\"
+              ORDER BY p.\"designationPromotion\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -6828,8 +6828,8 @@ public function updatePreparatoireChoice($id, $selectedClass, $noms, $lieuNaissa
         // Mettre à jour les informations dans la table etudiant_tempon
         $query = "UPDATE etudiant_tempon SET 
                   noms = :noms,
-                  lieuNaissance = :lieuNaissance,
-                  dateNaissance = :dateNaissance,
+                  \"lieuNaissance\" = :lieuNaissance,
+                  \"dateNaissance\" = :dateNaissance,
                   adressemail = :adressemail,
                   telephone = :telephone,
                   adresse = :adresse,
@@ -6896,7 +6896,7 @@ public function getStudentsByPreparatoireClass($preparatoireClass) {
 public function addPreparatoireStudent($matricule, $noms, $lieuNaissance, $dateNaissance, $adressemail, $telephone, $sexe, $nationalite, $anneeAcademique, $adresse, $personne_contact, $telephone_contact) {
     try {
         $query = "INSERT INTO etudiant_tempon (
-                    matricule, noms, lieuNaissance, dateNaissance, adressemail, telephone, 
+                    matricule, noms, \"lieuNaissance\", \"dateNaissance\", adressemail, telephone, 
                     sexe, nationalite, annee_academique, adresse, personne_contact, telephone_contact
                   ) VALUES (
                     :matricule, :noms, :lieuNaissance, :dateNaissance, :adressemail, :telephone,
@@ -7026,19 +7026,19 @@ public function getJuryBureauxByPresident($agentId) {
  */
 public function getJuryMembersByBureau($bureauId, $excludePresident = false) {
     try {
-        $query = "SELECT a.idAgent, a.noms, a.telephone, a.email, 
+        $query = "SELECT a.\"idAgent\", a.noms, a.telephone, a.email, 
                 CASE 
-                    WHEN b.president_id = a.idAgent THEN 'Président' 
-                    WHEN b.secretaire_id = a.idAgent THEN 'Secrétaire'
+                    WHEN b.president_id = a.\"idAgent\" THEN 'Président' 
+                    WHEN b.secretaire_id = a.\"idAgent\" THEN 'Secrétaire'
                     ELSE 'Membre'
                 END as role
                 FROM agent a
-                JOIN membre_bureau_jury m ON a.idAgent = m.idAgent
+                JOIN membre_bureau_jury m ON a.\"idAgent\" = m.\"idAgent\"
                 JOIN bureau_jury_deliberation b ON m.idbureau = b.idbureau
                 WHERE b.idbureau = :bureauId ";
         
         if ($excludePresident) {
-            $query .= "AND b.president_id != a.idAgent ";
+            $query .= "AND b.president_id != a.\"idAgent\" ";
         }
         
         $query .= "ORDER BY role, a.noms";
@@ -7068,7 +7068,7 @@ public function addJuryMemberAuthorization($bureauId, $agentId, $ecueId, $sessio
     try {
         // Vérifier si l'agent est bien membre de ce jury
         $query = "SELECT COUNT(*) AS count FROM membre_bureau_jury 
-                  WHERE idbureau = :bureauId AND idAgent = :agentId";
+                  WHERE idbureau = :bureauId AND \"idAgent\" = :agentId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':bureauId', $bureauId, PDO::PARAM_INT);
         $stmt->bindParam(':agentId', $agentId, PDO::PARAM_INT);
@@ -7082,7 +7082,7 @@ public function addJuryMemberAuthorization($bureauId, $agentId, $ecueId, $sessio
         
         // Insertion de l'autorisation (ignorera les doublons avec IGNORE)
         $query = "INSERT IGNORE INTO jury_membre_autorisations 
-                 (idbureau, idAgent, idECUE, session_idsession, annee_acad_idannee_acad, idUser) 
+                 (idbureau, \"idAgent\", \"idECUE\", session_idsession, annee_acad_idannee_acad, \"idUser\") 
                  VALUES (:bureauId, :agentId, :ecueId, :sessionId, :anneeId, :userId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':bureauId', $bureauId, PDO::PARAM_INT);
@@ -7124,16 +7124,16 @@ public function getJuryMemberAuthorizations($bureauId, $sessionId, $anneeId) {
     try {
         $query = "SELECT a.*, 
                   agent.noms as nom_agent, 
-                  ecue.designationECUE, 
-                  ue.designationUE
+                  ecue.\"designationECUE\", 
+                  ue.\"designationUE\"
                   FROM jury_membre_autorisations a
-                  JOIN agent ON agent.idAgent = a.idAgent
-                  JOIN ecue ON ecue.idECUE = a.idECUE
-                  JOIN ue ON ue.idUE = ecue.UE_idUE
+                  JOIN agent ON agent.idAgent = a.\"idAgent\"
+                  JOIN ecue ON ecue.\"idECUE\" = a.\"idECUE\"
+                  JOIN ue ON ue.\"idUE\" = ecue.\"UE_idUE\"
                   WHERE a.idbureau = :bureauId 
                   AND a.session_idsession = :sessionId 
                   AND a.annee_acad_idannee_acad = :anneeId
-                  ORDER BY agent.noms, ecue.designationECUE";
+                  ORDER BY agent.noms, ecue.\"designationECUE\"";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':bureauId', $bureauId, PDO::PARAM_INT);
@@ -7177,8 +7177,8 @@ public function hasEncodingAuthorization($agentId, $ecueId, $sessionId, $anneeId
         // Vérifier les autorisations spécifiques pour ce cours
         $query = "SELECT COUNT(*) AS count 
                 FROM jury_membre_autorisations 
-                WHERE idAgent = :agentId 
-                AND idECUE = :ecueId 
+                WHERE \"idAgent\" = :agentId 
+                AND \"idECUE\" = :ecueId 
                 AND session_idsession = :sessionId 
                 AND annee_acad_idannee_acad = :anneeId";
         
@@ -7214,14 +7214,14 @@ public function getAuthorizedEcuesForAgent($agentId, $sessionId, $anneeId) {
             // Si président, récupérer tous les cours des promos liées à ses jurys
             $query = "SELECT DISTINCT e.*
                      FROM ecue e
-                     JOIN ue ON e.UE_idUE = ue.idUE
+                     JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
                      JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
                      JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                      JOIN bureau_jury_deliberation b ON b.idbureau IN (
                          SELECT idbureau FROM bureau_jury_deliberation WHERE president_id = :agentId AND est_actif = 1
                      )
                      JOIN bureau_jury_promotion bp ON b.idbureau = bp.idbureau AND p.idpromotion = bp.idpromotion
-                     ORDER BY e.designationECUE";
+                     ORDER BY e.\"designationECUE\"";
             
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':agentId', $agentId, PDO::PARAM_INT);
@@ -7232,11 +7232,11 @@ public function getAuthorizedEcuesForAgent($agentId, $sessionId, $anneeId) {
             // Sinon, récupérer seulement les cours autorisés
             $query = "SELECT DISTINCT e.*
                      FROM ecue e
-                     JOIN jury_membre_autorisations a ON e.idECUE = a.idECUE
-                     WHERE a.idAgent = :agentId
+                     JOIN jury_membre_autorisations a ON e.\"idECUE\" = a.\"idECUE\"
+                     WHERE a.\"idAgent\" = :agentId
                      AND a.session_idsession = :sessionId
                      AND a.annee_acad_idannee_acad = :anneeId
-                     ORDER BY e.designationECUE";
+                     ORDER BY e.\"designationECUE\"";
             
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':agentId', $agentId, PDO::PARAM_INT);
@@ -7342,7 +7342,7 @@ public function addStudentDocument($documentData) {
                 chemin_fichier, 
                 date_ajout,
                 annee_acad_id,
-                idUser,
+                \"idUser\",
                 statut
             ) VALUES (
                 :idetudiant, 
@@ -7392,7 +7392,7 @@ public function updateStudentDocument($documentData) {
                   chemin_fichier = :chemin_fichier,
                   statut = :statut,
                   date_ajout = NOW(),
-                  idUser = :idUser
+                  \"idUser\" = :idUser
                   WHERE id = :id";
         
         $stmt = $this->db->prepare($query);
@@ -7590,7 +7590,7 @@ public function isStudentActiveForYear($studentId, $academicYearId) {
             
             // Récupérer les promotions cibles disponibles
             $query = "SELECT cco.id as config_id, p.*, 
-                             o.designationOrientation, aa.designation as anneeDesignation
+                             o.\"designationOrientation\", aa.designation as anneeDesignation
                       FROM configuration_choix_orientation cco
                       JOIN promotion p ON cco.promotion_cible_id = p.idpromotion
                       LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation

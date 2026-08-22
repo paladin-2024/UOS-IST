@@ -17,7 +17,7 @@ if (!isset($_SESSION['id']) || $_SESSION['idRole'] != 1) {
 }
 
 // Récupération des utilisateurs
-$queryUsers = "SELECT idUser, nomUser, loginUser FROM t_users ORDER BY nomUser";
+$queryUsers = "SELECT \"idUser\", \"nomUser\", \"loginUser\" FROM t_users ORDER BY \"nomUser\"";
 $stmtUsers = $db->prepare($queryUsers);
 $stmtUsers->execute();
 $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);

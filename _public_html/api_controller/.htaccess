@@ -1,0 +1,71 @@
+# Activer le moteur de réécriture d'URL
+RewriteEngine On
+
+# ===========================================================================
+# RÈGLES D'ACCÈS AUX FICHIERS - À PLACER EN PREMIER
+# ===========================================================================
+
+# 1. Autoriser l'accès direct à TOUS les fichiers du dossier uploads
+RewriteCond %{REQUEST_URI} ^/uploads/ [NC]
+RewriteRule ^(.*)$ - [L]
+
+# 2. Règles spécifiques pour les types de fichiers (redondantes avec la règle 1, mais conservées par sécurité)
+RewriteCond %{REQUEST_URI} ^/uploads/.*\.(jpg|jpeg|png|gif|pdf|doc|docx|xls|xlsx|ppt|pptx|mp4|mp3|avi|mov|zip|rar)$ [NC]
+RewriteRule ^(.*)$ - [L]
+
+# 3. Règle spécifique pour le dossier photos_etudiants
+RewriteCond %{REQUEST_URI} ^/uploads/photos_etudiants/.*$ [NC]
+RewriteRule ^(.*)$ - [L]
+
+# ===========================================================================
+# GESTION DES REQUÊTES CORS
+# ===========================================================================
+
+# Gérer les requêtes preflight CORS
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# ===========================================================================
+# ENDPOINTS API - ROUTES PRINCIPALES
+# ===========================================================================
+
+# Authentification et gestion de compte
+RewriteRule ^login$ login.php [L]
+RewriteRule ^logout$ logout.php [L]
+RewriteRule ^forgot-password$ forgot-password.php [L]
+RewriteRule ^change-password$ change-password.php [L]
+
+# Dashboard et profil
+RewriteRule ^dashboard$ dashboard.php [L]
+RewriteRule ^profile$ profile.php [L]
+RewriteRule ^profile/update$ profile.php?update=1 [L]
+RewriteRule ^profile/upload-photo$ profile.php?upload-photo=1 [L]
+
+# Cours et enseignement
+RewriteRule ^courses$ courses.php [L]
+RewriteRule ^get_course_details_student$ get_course_details_student.php [L]
+RewriteRule ^submit_assignment$ submit_assignment.php [L]
+RewriteRule ^schedule$ schedule.php [L]
+
+# Résultats et finances
+RewriteRule ^results$ resultats.php [L]
+RewriteRule ^payments$ paiements.php [L]
+
+# Autres routes
+RewriteRule ^sujet$ sujet.php [L]
+
+# ===========================================================================
+# GESTION DES ERREURS
+# ===========================================================================
+
+# Si la ressource demandée n'existe pas, renvoyer une erreur 404
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ error.php?code=404 [L]
+
+# ===========================================================================
+# SÉCURITÉ SUPPLÉMENTAIRE (OPTIONNEL)
+# ===========================================================================
+
+# Empêcher la navigation dans les répertoires
+Options -Indexes

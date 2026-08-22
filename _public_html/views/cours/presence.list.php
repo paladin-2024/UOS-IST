@@ -14,10 +14,10 @@ if (!$idSeance) {
 $db = Connexion::getInstance()->getPDO();
 
 // Récupérer les informations de la séance
-$querySeance = "SELECT s.*, e.designationECUE, p.designationPromotion, p.idpromotion, sem.numeroSemestre
+$querySeance = "SELECT s.*, e.\"designationECUE\", p.\"designationPromotion\", p.idpromotion, sem.\"numeroSemestre\"
                 FROM seance_cours s
-                JOIN ecue e ON s.idECUE = e.idECUE
-                JOIN ue ON e.UE_idUE = ue.idUE
+                JOIN ecue e ON s.\"idECUE\" = e.\"idECUE\"
+                JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
                 JOIN semestre sem ON ue.semestre_idsemestre = sem.idsemestre
                 JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
                 WHERE s.idseance = :idSeance";

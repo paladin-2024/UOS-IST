@@ -23,14 +23,14 @@ try {
                      ae.noms as encadreur_nom, ae.grade_id as encadreur_grade,
                      gd.designation as grade_directeur,
                      ge.designation as grade_encadreur,
-                     u.loginUser as validateur_nom
+                     u.\"loginUser\" as validateur_nom
               FROM sujet_reformulations sr
-              LEFT JOIN specialisation sp ON sr.idSpecialisation_propose = sp.idSpecialisation
-              LEFT JOIN agent ad ON sr.idDirecteur_propose = ad.idAgent
-              LEFT JOIN agent ae ON sr.idEncadreur_propose = ae.idAgent
+              LEFT JOIN specialisation sp ON sr.\"idSpecialisation_propose\" = sp.\"idSpecialisation\"
+              LEFT JOIN agent ad ON sr.\"idDirecteur_propose\" = ad.\"idAgent\"
+              LEFT JOIN agent ae ON sr.\"idEncadreur_propose\" = ae.\"idAgent\"
               LEFT JOIN grade gd ON ad.grade_id = gd.idgrade
               LEFT JOIN grade ge ON ae.grade_id = ge.idgrade
-              LEFT JOIN t_users u ON sr.idValidateur = u.idUser
+              LEFT JOIN t_users u ON sr.\"idValidateur\" = u.\"idUser\"
               WHERE sr.idsujets = :sujet_id 
               ORDER BY sr.date_proposition DESC";
 
@@ -41,16 +41,16 @@ try {
 
     // Récupérer l'historique du sujet
     $historiqueQuery = "SELECT sh.*, 
-                               u.loginUser as user_nom,
+                               u.\"loginUser\" as user_nom,
                                CASE 
                                    WHEN sh.type_utilisateur = 'Etudiant' THEN e.noms
                                    WHEN sh.type_utilisateur = 'Enseignant' THEN a.noms
-                                   ELSE u.loginUser
+                                   ELSE u.\"loginUser\"
                                END as auteur_nom
                         FROM sujet_historique sh
-                        LEFT JOIN t_users u ON sh.idUser = u.idUser
-                        LEFT JOIN etudiant e ON sh.idUser = e.idetudiant AND sh.type_utilisateur = 'Etudiant'
-                        LEFT JOIN agent a ON sh.idUser = a.idAgent AND sh.type_utilisateur = 'Enseignant'
+                        LEFT JOIN t_users u ON sh.\"idUser\" = u.\"idUser\"
+                        LEFT JOIN etudiant e ON sh.\"idUser\" = e.idetudiant AND sh.type_utilisateur = 'Etudiant'
+                        LEFT JOIN agent a ON sh.\"idUser\" = a.\"idAgent\" AND sh.type_utilisateur = 'Enseignant'
                         WHERE sh.idsujets = :sujet_id
                         ORDER BY sh.date_action DESC";
 

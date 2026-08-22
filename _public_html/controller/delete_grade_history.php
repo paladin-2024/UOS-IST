@@ -31,7 +31,7 @@ try {
     $pdo->beginTransaction();
     
     // Récupérer les informations de l'agent pour la redirection
-    $queryAgent = "SELECT codeAgent FROM agent WHERE idAgent = :idAgent";
+    $queryAgent = 'SELECT "codeAgent" FROM agent WHERE "idAgent" = :idAgent';
     $stmtAgent = $pdo->prepare($queryAgent);
     $stmtAgent->bindParam(':idAgent', $agentId, PDO::PARAM_INT);
     $stmtAgent->execute();
@@ -42,7 +42,7 @@ try {
     }
     
     // Vérifier si l'historique de grade existe et appartient à l'agent
-    $queryCheck = "SELECT * FROM historique_grade WHERE idhistorique_grade = :id AND idAgent = :idAgent";
+    $queryCheck = 'SELECT * FROM historique_grade WHERE idhistorique_grade = :id AND "idAgent" = :idAgent';
     $stmtCheck = $pdo->prepare($queryCheck);
     $stmtCheck->bindParam(':id', $gradeHistoryId, PDO::PARAM_INT);
     $stmtCheck->bindParam(':idAgent', $agentId, PDO::PARAM_INT);
@@ -65,10 +65,10 @@ try {
     
     // Si c'était le grade actuel, mettre à jour avec le grade le plus récent restant
     if ($wasCurrentGrade) {
-        $queryLatest = "SELECT idgrade FROM historique_grade 
-                        WHERE idAgent = :idAgent 
-                        ORDER BY date_promotion DESC 
-                        LIMIT 1";
+        $queryLatest = 'SELECT idgrade FROM historique_grade
+                        WHERE "idAgent" = :idAgent
+                        ORDER BY date_promotion DESC
+                        LIMIT 1';
         $stmtLatest = $pdo->prepare($queryLatest);
         $stmtLatest->bindParam(':idAgent', $agentId, PDO::PARAM_INT);
         $stmtLatest->execute();
@@ -77,14 +77,14 @@ try {
         
         if ($latestGrade) {
             // Mettre à jour avec le grade le plus récent
-            $queryUpdateAgent = "UPDATE agent SET grade_id = :grade_id WHERE idAgent = :idAgent";
+            $queryUpdateAgent = 'UPDATE agent SET grade_id = :grade_id WHERE "idAgent" = :idAgent';
             $stmtUpdateAgent = $pdo->prepare($queryUpdateAgent);
             $stmtUpdateAgent->bindParam(':grade_id', $latestGrade['idgrade'], PDO::PARAM_INT);
             $stmtUpdateAgent->bindParam(':idAgent', $agentId, PDO::PARAM_INT);
             $stmtUpdateAgent->execute();
         } else {
             // Aucun grade restant, mettre à NULL
-            $queryUpdateAgent = "UPDATE agent SET grade_id = NULL WHERE idAgent = :idAgent";
+            $queryUpdateAgent = 'UPDATE agent SET grade_id = NULL WHERE "idAgent" = :idAgent';
             $stmtUpdateAgent = $pdo->prepare($queryUpdateAgent);
             $stmtUpdateAgent->bindParam(':idAgent', $agentId, PDO::PARAM_INT);
             $stmtUpdateAgent->execute();

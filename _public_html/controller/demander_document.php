@@ -68,10 +68,10 @@ try {
     
     // Récupérer les informations de l'utilisateur connecté (expéditeur)
     $stmtUser = $conn->prepare("
-    SELECT u.*, r.nomRole as role_nom 
+    SELECT u.*, r.\"nomRole\" as role_nom 
     FROM t_users u
-    JOIN t_roles r ON u.idRole = r.idRole
-    WHERE u.idUser = ?
+    JOIN t_roles r ON u.\"idRole\" = r.\"idRole\"
+    WHERE u.\"idUser\" = ?
     ");
     $stmtUser->execute([$_SESSION['id']]);
     $expediteur = $stmtUser->fetch(PDO::FETCH_ASSOC);
@@ -86,7 +86,7 @@ try {
     // Enregistrer la demande dans la base de données
     $stmt = $conn->prepare("
         INSERT INTO demandes_documents 
-        (idetudiant, matricule, document_obligatoire_id, objet, contenu, date_envoi, email_envoye, idUser) 
+        (idetudiant, matricule, document_obligatoire_id, objet, contenu, date_envoi, email_envoye, \"idUser\") 
         VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)
     ");
     

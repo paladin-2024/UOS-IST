@@ -21,9 +21,9 @@ $userId = $_SESSION['id'];
 $anneeId = isset($_GET['annee']) ? intval($_GET['annee']) : 0;
 
 // Récupérer l'ID de l'agent (enseignant)
-$query = "SELECT a.idAgent, a.noms FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ? AND a.type_agent = 'Enseignant'";
+$query = "SELECT a.\"idAgent\", a.noms FROM agent a 
+          INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+          WHERE u.\"idUser\" = ? AND a.type_agent = 'Enseignant'";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -56,12 +56,12 @@ $queryLecteur = "SELECT
                   sa.cote_lecteur,
                   e.noms as nom_etudiant,
                   e.matricule,
-                  p.designationPromotion as promotion,
+                  p.\"designationPromotion\" as promotion,
                   enc.noms as encadreur_nom
                  FROM stage_assignments sa
                  INNER JOIN etudiant e ON sa.idetudiant = e.idetudiant
                  INNER JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-                 LEFT JOIN agent enc ON sa.idencadreur = enc.idAgent
+                 LEFT JOIN agent enc ON sa.idencadreur = enc.\"idAgent\"
                  WHERE sa.idlecteur = ?
                  AND e.annee_acad_idannee_acad = ?
                  ORDER BY e.noms";

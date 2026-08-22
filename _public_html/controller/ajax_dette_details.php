@@ -18,7 +18,7 @@ if (empty($matricule)) {
 $db = Connexion::getInstance()->getPDO();
 
 // Récupérer les informations de l'étudiant
-$sql = "SELECT e.*, p.designationPromotion 
+$sql = "SELECT e.*, p.\"designationPromotion\" 
         FROM etudiant e
         JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
         WHERE e.matricule = :matricule";
@@ -33,18 +33,18 @@ if (!$etudiant) {
 // Récupérer toutes les dettes de l'étudiant
 $sql = "SELECT 
             d.*,
-            ec.designationECUE,
+            ec.\"designationECUE\",
             d.credits_ecue as credits,  -- Utilisation directe du champ credits_ecue
-            s.numeroSemestre,
+            s.\"numeroSemestre\",
             aa.designation as annee_academique,
-            sess.designSession
+            sess.\"designSession\"
         FROM dette_etudiant d
-        JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
+        JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
         JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
         JOIN annee_acad aa ON d.annee_acad_idannee_acad = aa.idannee_acad
         JOIN session sess ON d.session_idsession = sess.idsession
         WHERE d.matricule = :matricule
-        ORDER BY aa.designation DESC, s.numeroSemestre ASC";
+        ORDER BY aa.designation DESC, s.\"numeroSemestre\" ASC";
 
 $stmt = $db->prepare($sql);
 $stmt->execute([':matricule' => $matricule]);

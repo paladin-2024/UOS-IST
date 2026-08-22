@@ -20,7 +20,7 @@ class Deliberation
     {
         $query = "SELECT bj.* FROM bureau_jury_deliberation bj
                   LEFT JOIN membre_bureau_jury mbj ON bj.idbureau = mbj.idbureau
-                  WHERE (bj.president_id = :agentId OR bj.secretaire_id = :agentId OR mbj.idAgent = :agentId)
+                  WHERE (bj.president_id = :agentId OR bj.secretaire_id = :agentId OR mbj.\"idAgent\" = :agentId)
                   AND bj.est_actif = 1
                   ORDER BY bj.date_creation DESC";
         
@@ -53,8 +53,8 @@ class Deliberation
                   s.noms as secretaire_nom,
                   COUNT(DISTINCT bjp.idpromotion) as nb_promotions
                   FROM bureau_jury_deliberation bj
-                  LEFT JOIN agent p ON bj.president_id = p.idAgent
-                  LEFT JOIN agent s ON bj.secretaire_id = s.idAgent
+                  LEFT JOIN agent p ON bj.president_id = p.\"idAgent\"
+                  LEFT JOIN agent s ON bj.secretaire_id = s.\"idAgent\"
                   LEFT JOIN bureau_jury_promotion bjp ON bj.idbureau = bjp.idbureau";
         
         if ($activeOnly) {
@@ -82,7 +82,7 @@ class Deliberation
     // Récupérer les promotions associées à un bureau de jury
     public function getPromotionsByJury($bureauId)
     {
-        $query = "SELECT p.*, o.designationOrientation, s.designationSection
+        $query = "SELECT p.*, o.\"designationOrientation\", s.\"designationSection\"
                   FROM promotion p
                   INNER JOIN bureau_jury_promotion bjp ON p.idpromotion = bjp.idpromotion
                   INNER JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -115,7 +115,7 @@ class Deliberation
     public function getUEsBySemestre($semestreId)
     {
         $query = "SELECT u.*, 
-                  (SELECT SUM(nombre_credits) FROM credit_ue WHERE idUE = u.idUE) as nombre_credits
+                  (SELECT SUM(nombre_credits) FROM credit_ue WHERE \"idUE\" = u.\"idUE\") as nombre_credits
                   FROM ue u
                   WHERE u.semestre_idsemestre = :semestreId
                   ORDER BY u.codeUE";
@@ -148,7 +148,7 @@ class Deliberation
     {
         $query = "SELECT * FROM cotes_grille
                   WHERE matricule = :matricule
-                  AND ECUE_idECUE = :ecueId
+                  AND \"ECUE_idECUE\" = :ecueId
                   AND session_idsession = :sessionId
                   AND annee_acad_id = :anneeId";
         
@@ -166,17 +166,17 @@ class Deliberation
     public function calculerMoyenneUE($matricule, $ueId, $sessionId, $anneeId)
     {
         // D'abord, vérifier si une moyenne existe déjà dans moyenne_ue
-        $query = "SELECT e.idECUE, e.designationECUE, 
+        $query = "SELECT e.\"idECUE\", e.\"designationECUE\", 
              ((e.CMI + e.TD + e.TP)/ " . $this->heuresParCredit . ") as credits,
              COALESCE(p.coefficient, 1) as coefficient,
              cg.MF as note
              FROM ecue e
-             LEFT JOIN ponderation_ecue p ON e.idECUE = p.idECUE AND p.annee_acad_idannee_acad = :anneeId
-             LEFT JOIN cotes_grille cg ON e.idECUE = cg.ECUE_idECUE 
+             LEFT JOIN ponderation_ecue p ON e.\"idECUE\" = p.\"idECUE\" AND p.annee_acad_idannee_acad = :anneeId
+             LEFT JOIN cotes_grille cg ON e.\"idECUE\" = cg.\"ECUE_idECUE\" 
                 AND cg.matricule = :matricule 
                 AND cg.session_idsession = :sessionId 
                 AND cg.annee_acad_id = :anneeId
-             WHERE e.UE_idUE = :ueId";
+             WHERE e.\"UE_idUE\" = :ueId";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':matricule', $matricule, PDO::PARAM_STR);
@@ -193,16 +193,16 @@ class Deliberation
         
         
         // Sinon, calculer la moyenne à partir des notes des ECUE
-        $query = "SELECT e.idECUE, e.designationECUE, 
+        $query = "SELECT e.\"idECUE\", e.\"designationECUE\", 
                  COALESCE(p.coefficient, 1) as coefficient,
                  cg.MF as note
                  FROM ecue e
-                 LEFT JOIN ponderation_ecue p ON e.idECUE = p.idECUE AND p.annee_acad_idannee_acad = :anneeId
-                 LEFT JOIN cotes_grille cg ON e.idECUE = cg.ECUE_idECUE 
+                 LEFT JOIN ponderation_ecue p ON e.\"idECUE\" = p.\"idECUE\" AND p.annee_acad_idannee_acad = :anneeId
+                 LEFT JOIN cotes_grille cg ON e.\"idECUE\" = cg.\"ECUE_idECUE\" 
                     AND cg.matricule = :matricule 
                     AND cg.session_idsession = :sessionId 
                     AND cg.annee_acad_id = :anneeId
-                 WHERE e.UE_idUE = :ueId";
+                 WHERE e.\"UE_idUE\" = :ueId";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':matricule', $matricule, PDO::PARAM_STR);
@@ -262,12 +262,12 @@ class Deliberation
         }
         
         // Sinon, calculer la moyenne à partir des moyennes des UE
-        $query = "SELECT u.idUE, u.designationUE, 
+        $query = "SELECT u.\"idUE\", u.\"designationUE\", 
                  cu.nombre_credits as credits,
                  mu.moyenne_deliberee, mu.moyenne_brute
                  FROM ue u
-                 LEFT JOIN credit_ue cu ON u.idUE = cu.idUE AND cu.annee_acad_idannee_acad = :anneeId
-                 LEFT JOIN moyenne_ue mu ON u.idUE = mu.idUE 
+                 LEFT JOIN credit_ue cu ON u.\"idUE\" = cu.\"idUE\" AND cu.annee_acad_idannee_acad = :anneeId
+                 LEFT JOIN moyenne_ue mu ON u.\"idUE\" = mu.\"idUE\" 
                     AND mu.matricule = :matricule 
                     AND mu.session_idsession = :sessionId 
                     AND mu.annee_acad_idannee_acad = :anneeId
@@ -312,7 +312,7 @@ class Deliberation
     public function getCreditsValidesSemestre($matricule, $semestreId, $sessionId, $anneeId)
 {
     // Récupérer les UE du semestre
-    $query = "SELECT u.idUE, u.designationUE
+    $query = "SELECT u.\"idUE\", u.\"designationUE\"
              FROM ue u
              WHERE u.semestre_idsemestre = :semestreId";
     
@@ -329,9 +329,9 @@ class Deliberation
         $ueId = $ue['idUE'];
         
         // Récupérer les ECUE de l'UE
-        $query = "SELECT e.idECUE, ((e.CMI + e.TD + e.TP)/ " . $this->heuresParCredit . ") as credits
+        $query = "SELECT e.\"idECUE\", ((e.CMI + e.TD + e.TP)/ " . $this->heuresParCredit . ") as credits
                  FROM ecue e
-                 WHERE e.UE_idUE = :ueId";
+                 WHERE e.\"UE_idUE\" = :ueId";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':ueId', $ueId, PDO::PARAM_INT);
@@ -423,7 +423,7 @@ class Deliberation
                   COUNT(DISTINCT matricule) as total_etudiants,
                   SUM(CASE WHEN est_validee = 1 THEN 1 ELSE 0 END) as etudiants_reussis
                   FROM moyenne_ue
-                  WHERE idUE = :ueId
+                  WHERE \"idUE\" = :ueId
                   AND session_idsession = :sessionId
                   AND annee_acad_idannee_acad = :anneeId";
         
@@ -532,7 +532,7 @@ class Deliberation
     // Récupérer les délibérations pour un bureau de jury
     public function getDeliberationsByJury($bureauId)
     {
-        $query = "SELECT d.*, p.designationPromotion, s.designSession, a.designation as annee_academique
+        $query = "SELECT d.*, p.\"designationPromotion\", s.\"designSession\", a.designation as annee_academique
                   FROM deliberation d
                   INNER JOIN promotion p ON d.idpromotion = p.idpromotion
                   INNER JOIN session s ON d.session_idsession = s.idsession
@@ -550,7 +550,7 @@ class Deliberation
     // Créer une nouvelle délibération
     public function createDeliberation($bureauId, $promotionId, $sessionId, $date, $commentaire, $userId)
     {
-        $query = "INSERT INTO deliberation (idbureau, idpromotion, session_idsession, date_deliberation, commentaire, statut, idUser)
+        $query = "INSERT INTO deliberation (idbureau, idpromotion, session_idsession, date_deliberation, commentaire, statut, \"idUser\")
                   VALUES (:bureauId, :promotionId, :sessionId, :date, :commentaire, 'En préparation', :userId)";
         
         $stmt = $this->db->prepare($query);
@@ -572,7 +572,7 @@ class Deliberation
     public function updateDeliberationStatus($deliberationId, $statut, $userId)
     {
         $query = "UPDATE deliberation 
-                  SET statut = :statut, idUser = :userId
+                  SET statut = :statut, \"idUser\" = :userId
                   WHERE iddeliberation = :deliberationId";
         
         $stmt = $this->db->prepare($query);
@@ -586,7 +586,7 @@ class Deliberation
     // Enregistrer une intervention du jury sur une note
     public function saveJuryIntervention($deliberationId, $typeElement, $idElement, $matricule, $noteOriginale, $noteModifiee, $motif, $idAgent, $userId)
     {
-        $query = "INSERT INTO intervention_jury (iddeliberation, type_element, id_element, matricule, note_originale, note_modifiee, motif, idAgent, idUser)
+        $query = "INSERT INTO intervention_jury (iddeliberation, type_element, id_element, matricule, note_originale, note_modifiee, motif, \"idAgent\", \"idUser\")
                   VALUES (:deliberationId, :typeElement, :idElement, :matricule, :noteOriginale, :noteModifiee, :motif, :idAgent, :userId)";
         
         $stmt = $this->db->prepare($query);
@@ -606,7 +606,7 @@ class Deliberation
     // Enregistrer l'historique des modifications de notes
     public function saveNoteHistory($deliberationId, $matricule, $ecueId, $ueId, $sessionId, $noteAvant, $noteApres, $typeModification, $justification, $userId)
     {
-        $query = "INSERT INTO historique_notes (iddeliberation, matricule, ECUE_idECUE, UE_idUE, session_idsession, note_avant, note_apres, type_modification, justification, idUser)
+        $query = "INSERT INTO historique_notes (iddeliberation, matricule, \"ECUE_idECUE\", \"UE_idUE\", session_idsession, note_avant, note_apres, type_modification, justification, \"idUser\")
                   VALUES (:deliberationId, :matricule, :ecueId, :ueId, :sessionId, :noteAvant, :noteApres, :typeModification, :justification, :userId)";
         
         $stmt = $this->db->prepare($query);
@@ -628,7 +628,7 @@ class Deliberation
     // Enregistrer les résultats finaux de délibération
     public function saveDeliberationResult($deliberationId, $matricule, $promotionId, $semestreId, $moyenneGenerale, $creditsAcquis, $creditsTotal, $decision, $commentaire, $userId, $estFinal = false)
     {
-        $query = "INSERT INTO resultat_deliberation (iddeliberation, matricule, idpromotion, idsemestre, moyenne_generale, credits_acquis, credits_total, decision, commentaire, idUser, est_final)
+        $query = "INSERT INTO resultat_deliberation (iddeliberation, matricule, idpromotion, idsemestre, moyenne_generale, credits_acquis, credits_total, decision, commentaire, \"idUser\", est_final)
                   VALUES (:deliberationId, :matricule, :promotionId, :semestreId, :moyenneGenerale, :creditsAcquis, :creditsTotal, :decision, :commentaire, :userId, :estFinal)";
         
         $stmt = $this->db->prepare($query);
@@ -653,7 +653,7 @@ class Deliberation
         // Vérifier si une entrée existe déjà
         $query = "SELECT idmoyenne_ue FROM moyenne_ue
                   WHERE matricule = :matricule
-                  AND idUE = :ueId
+                  AND \"idUE\" = :ueId
                   AND session_idsession = :sessionId
                   AND annee_acad_idannee_acad = :anneeId";
         
@@ -673,7 +673,7 @@ class Deliberation
                           est_validee = :estValidee,
                           credits_obtenus = :creditsObtenus,
                           type_validation = :typeValidation,
-                          idUser = :userId,
+                          \"idUser\" = :userId,
                           date_calcul = NOW()
                       WHERE idmoyenne_ue = :idMoyenneUE";
             
@@ -684,7 +684,7 @@ class Deliberation
             $moyenneBrute = $this->calculerMoyenneUE($matricule, $ueId, $sessionId, $anneeId);
             
             // Insérer une nouvelle entrée
-            $query = "INSERT INTO moyenne_ue (idUE, matricule, session_idsession, annee_acad_idannee_acad, moyenne_brute, moyenne_deliberee, est_validee, credits_obtenus, type_validation, idUser)
+            $query = "INSERT INTO moyenne_ue (\"idUE\", matricule, session_idsession, annee_acad_idannee_acad, moyenne_brute, moyenne_deliberee, est_validee, credits_obtenus, type_validation, \"idUser\")
                       VALUES (:ueId, :matricule, :sessionId, :anneeId, :moyenneBrute, :moyenneDeliberee, :estValidee, :creditsObtenus, :typeValidation, :userId)";
             
             $stmt = $this->db->prepare($query);
@@ -730,7 +730,7 @@ class Deliberation
                           est_valide = :estValide,
                           credits_obtenus = :creditsObtenus,
                           credits_total = :creditsTotal,
-                          idUser = :userId,
+                          \"idUser\" = :userId,
                           date_calcul = NOW()
                       WHERE idmoyenne_semestre = :idMoyenneSemestre";
             
@@ -741,7 +741,7 @@ class Deliberation
             $moyenneBrute = $this->calculerMoyenneSemestre($matricule, $semestreId, $sessionId, $anneeId);
             
             // Insérer une nouvelle entrée
-            $query = "INSERT INTO moyenne_semestre (idsemestre, matricule, session_idsession, annee_acad_idannee_acad, moyenne_brute, moyenne_deliberee, est_valide, credits_obtenus, credits_total, idUser)
+            $query = "INSERT INTO moyenne_semestre (idsemestre, matricule, session_idsession, annee_acad_idannee_acad, moyenne_brute, moyenne_deliberee, est_valide, credits_obtenus, credits_total, \"idUser\")
                       VALUES (:semestreId, :matricule, :sessionId, :anneeId, :moyenneBrute, :moyenneDeliberee, :estValide, :creditsObtenus, :creditsTotal, :userId)";
             
             $stmt = $this->db->prepare($query);
@@ -788,7 +788,7 @@ class Deliberation
                           credits_obtenus = :creditsObtenus,
                           credits_total = :creditsTotal,
                           mention = :mention,
-                          idUser = :userId,
+                          \"idUser\" = :userId,
                           date_calcul = NOW()
                       WHERE idmoyenne_annuelle = :idMoyenneAnnuelle";
             
@@ -802,7 +802,7 @@ class Deliberation
             $moyenneBrute = $this->calculerMoyenneAnnuelle($matricule, $semestres, $sessionId, $anneeId);
             
             // Insérer une nouvelle entrée
-            $query = "INSERT INTO moyenne_annuelle (idpromotion, matricule, session_idsession, annee_acad_idannee_acad, moyenne_brute, moyenne_deliberee, est_admis, credits_obtenus, credits_total, mention, idUser)
+            $query = "INSERT INTO moyenne_annuelle (idpromotion, matricule, session_idsession, annee_acad_idannee_acad, moyenne_brute, moyenne_deliberee, est_admis, credits_obtenus, credits_total, mention, \"idUser\")
                       VALUES (:promotionId, :matricule, :sessionId, :anneeId, :moyenneBrute, :moyenneDeliberee, :estAdmis, :creditsObtenus, :creditsTotal, :mention, :userId)";
             
             $stmt = $this->db->prepare($query);
@@ -826,7 +826,7 @@ class Deliberation
     // Ajouter une mention spéciale (félicitations, encouragements, etc.)
     public function addMentionSpeciale($typeMention, $matricule, $deliberationId, $commentaire, $userId)
     {
-        $query = "INSERT INTO mention_speciale (type_mention, matricule, iddeliberation, commentaire, idUser)
+        $query = "INSERT INTO mention_speciale (type_mention, matricule, iddeliberation, commentaire, \"idUser\")
                   VALUES (:typeMention, :matricule, :deliberationId, :commentaire, :userId)";
         
         $stmt = $this->db->prepare($query);
@@ -905,7 +905,7 @@ class Deliberation
                           limiter_compensation_annee = :limiterCompensationAnnee,
                           note_passage = :notePassage,
                           pourcentage_passage_semestre = :pourcentagePassageSemestre,
-                          idUser = :userId,
+                          \"idUser\" = :userId,
                           date_creation = NOW()
                       WHERE idconfig = :idConfig";
             
@@ -919,7 +919,7 @@ class Deliberation
                           compensation_inter_ue, seuil_compensation_inter_ue,
                           exiger_meme_credit_ue, compensation_inter_semestre,
                           seuil_compensation_inter_semestre, limiter_compensation_annee,
-                          note_passage, pourcentage_passage_semestre, idUser
+                          note_passage, pourcentage_passage_semestre, \"idUser\"
                       ) VALUES (
                           :bureauId, :sessionId, :anneeId,
                           :compensationIntraUE, :seuilCompensationIntraUE,
@@ -999,7 +999,7 @@ class Deliberation
                           nombre_ue_echec_max = :nombreUEEchecMax,
                           autoriser_dette = :autoriserDette,
                           max_dette_credits = :maxDetteCredits,
-                          idUser = :userId,
+                          \"idUser\" = :userId,
                           date_creation = NOW()
                       WHERE idregle = :idRegle";
             
@@ -1010,7 +1010,7 @@ class Deliberation
             $query = "INSERT INTO regle_passage (
                           idpromotion, annee_acad_idannee_acad,
                           credits_min_passage, nombre_ue_echec_max,
-                          autoriser_dette, max_dette_credits, idUser
+                          autoriser_dette, max_dette_credits, \"idUser\"
                       ) VALUES (
                           :promotionId, :anneeId,
                           :creditsMinPassage, :nombreUEEchecMax,
@@ -1041,8 +1041,8 @@ class Deliberation
                       s.noms as secretaire_nom,
                       a.designation as annee_academique
                       FROM bureau_jury_deliberation b
-                      LEFT JOIN agent p ON b.president_id = p.idAgent
-                      LEFT JOIN agent s ON b.secretaire_id = s.idAgent
+                      LEFT JOIN agent p ON b.president_id = p.\"idAgent\"
+                      LEFT JOIN agent s ON b.secretaire_id = s.\"idAgent\"
                       LEFT JOIN annee_acad a ON b.annee_acad_idannee_acad = a.idannee_acad
                       WHERE b.idbureau = :idBureau";
             
@@ -1056,7 +1056,7 @@ class Deliberation
         // Récupérer une promotion par son ID
         public function getPromotionById($idPromotion)
         {
-            $query = "SELECT p.*, o.designationOrientation, s.designationSection, c.designation as annee_academique
+            $query = "SELECT p.*, o.\"designationOrientation\", s.\"designationSection\", c.designation as annee_academique
                       FROM promotion p
                       LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
                       LEFT JOIN section s ON o.section_idsection = s.idsection
@@ -1153,8 +1153,8 @@ public function getEtudiantsEligiblesDeuxiemeSession($promotionId, $anneeId, $se
     try {
         // 1. Récupérer l'ID de la première session
         $query = "SELECT idsession FROM session
-                  WHERE LOWER(designSession) LIKE 'premi%re session'
-                  OR LOWER(designSession) = 'premiere session' LIMIT 1";
+                  WHERE LOWER(\"designSession\") LIKE 'premi%re session'
+                  OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $firstSession = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1172,7 +1172,7 @@ public function getEtudiantsEligiblesDeuxiemeSession($promotionId, $anneeId, $se
         
         $placeholders = str_repeat('?,', count($semestreIds) - 1) . '?';
         
-        $query = "SELECT idUE FROM ue WHERE semestre_idsemestre IN ($placeholders)";
+        $query = "SELECT \"idUE\" FROM ue WHERE semestre_idsemestre IN ($placeholders)";
         $stmt = $this->db->prepare($query);
         
         foreach ($semestreIds as $index => $semId) {
@@ -1209,7 +1209,7 @@ public function getEtudiantsEligiblesDeuxiemeSession($promotionId, $anneeId, $se
             
             foreach ($ues as $ueId) {
                 // Récupérer les ECUE de cette UE
-                $query = "SELECT idECUE FROM ecue WHERE UE_idUE = ?";
+                $query = "SELECT \"idECUE\" FROM ecue WHERE \"UE_idUE\" = ?";
                 $stmt = $this->db->prepare($query);
                 $stmt->bindValue(1, $ueId, PDO::PARAM_INT);
                 $stmt->execute();
@@ -1227,13 +1227,13 @@ public function getEtudiantsEligiblesDeuxiemeSession($promotionId, $anneeId, $se
                             SUM(CASE WHEN cg.MF IS NOT NULL THEN cg.MF * ROUND((ec.CMI + ec.TD + ec.TP)/ " . $this->heuresParCredit . ", 2) ELSE 0 END) / 
                             NULLIF(SUM(CASE WHEN cg.MF IS NOT NULL THEN ROUND((ec.CMI + ec.TD + ec.TP)/ " . $this->heuresParCredit . ", 2) ELSE 0 END), 0) AS moyenne_ponderee,
                             SUM(CASE WHEN cg.MF IS NOT NULL THEN 1 ELSE 0 END) AS nb_notes_valides,
-                            COUNT(DISTINCT ec.idECUE) AS nb_ecues
+                            COUNT(DISTINCT ec.\"idECUE\") AS nb_ecues
                           FROM ecue ec
-                          LEFT JOIN cotes_grille cg ON ec.idECUE = cg.ECUE_idECUE 
+                          LEFT JOIN cotes_grille cg ON ec.\"idECUE\" = cg.\"ECUE_idECUE\" 
                                                     AND cg.matricule = ? 
                                                     AND cg.session_idsession = ? 
                                                     AND cg.annee_acad_id = ?
-                          WHERE ec.idECUE IN ($placeholdersEcue)";
+                          WHERE ec.\"idECUE\" IN ($placeholdersEcue)";
                 
                 $stmt = $this->db->prepare($query);
                 $stmt->bindValue(1, $matricule, PDO::PARAM_STR);
@@ -1295,19 +1295,19 @@ public function getEtudiantsEligiblesDeuxiemeSession($promotionId, $anneeId, $se
     public function creerDettesAutomatiques($matricule, $promotionId, $sessionId, $anneeId, $userId) {
         try {
             // Récupérer les UE non validées
-            $query = "SELECT DISTINCT u.idUE, u.codeUE, u.designationUE, s.idsemestre, s.numeroSemestre,
+            $query = "SELECT DISTINCT u.\"idUE\", u.\"codeUE\", u.\"designationUE\", s.idsemestre, s.\"numeroSemestre\",
                              mu.moyenne_brute, mu.credits_obtenus,
                              SUM((e.CMI + e.TD + e.TP) / :heuresParCredit) as credits_ue
                       FROM ue u
                       INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
-                      INNER JOIN ecue e ON e.UE_idUE = u.idUE
-                      LEFT JOIN moyenne_ue mu ON mu.idUE = u.idUE 
+                      INNER JOIN ecue e ON e.\"UE_idUE\" = u.\"idUE\"
+                      LEFT JOIN moyenne_ue mu ON mu.\"idUE\" = u.\"idUE\" 
                           AND mu.matricule = :matricule 
                           AND mu.session_idsession = :sessionId 
                           AND mu.annee_acad_idannee_acad = :anneeId
                       WHERE s.promotion_idpromotion = :promotionId
                       AND (mu.est_validee = 0 OR mu.est_validee IS NULL OR mu.moyenne_brute < 10 OR mu.moyenne_brute IS NULL)
-                      GROUP BY u.idUE, u.codeUE, u.designationUE, s.idsemestre, s.numeroSemestre, mu.moyenne_brute, mu.credits_obtenus";
+                      GROUP BY u.\"idUE\", u.\"codeUE\", u.\"designationUE\", s.idsemestre, s.\"numeroSemestre\", mu.moyenne_brute, mu.credits_obtenus";
             
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':heuresParCredit', $this->heuresParCredit);
@@ -1388,8 +1388,8 @@ public function getMoyenneUEPremiereSession($matricule, $ueId, $anneeId) {
     try {
         // Récupérer l'ID de la première session
         $query = "SELECT idsession FROM session
-                  WHERE LOWER(designSession) LIKE 'premi%re session'
-                  OR LOWER(designSession) = 'premiere session' LIMIT 1";
+                  WHERE LOWER(\"designSession\") LIKE 'premi%re session'
+                  OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $firstSession = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1401,7 +1401,7 @@ public function getMoyenneUEPremiereSession($matricule, $ueId, $anneeId) {
         $session1Id = $firstSession['idsession'];
         
         // Récupérer les ECUE de cette UE
-        $query = "SELECT idECUE, CMI, TD, TP FROM ecue WHERE UE_idUE = ?";
+        $query = "SELECT \"idECUE\", CMI, TD, TP FROM ecue WHERE \"UE_idUE\" = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(1, $ueId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1421,7 +1421,7 @@ public function getMoyenneUEPremiereSession($matricule, $ueId, $anneeId) {
             
             // Récupérer la note de cet ECUE
             $query = "SELECT MF FROM cotes_grille 
-                      WHERE ECUE_idECUE = ? 
+                      WHERE \"ECUE_idECUE\" = ? 
                       AND matricule = ? 
                       AND session_idsession = ? 
                       AND annee_acad_id = ?";
@@ -1551,8 +1551,8 @@ public function getNotesEtudiantECUEPremiereSession($matricule, $ecueId, $anneeI
     try {
         // Récupérer l'ID de la première session
         $query = "SELECT idsession FROM session
-                  WHERE LOWER(designSession) LIKE 'premi%re session'
-                  OR LOWER(designSession) = 'premiere session' LIMIT 1";
+                  WHERE LOWER(\"designSession\") LIKE 'premi%re session'
+                  OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $firstSession = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1565,7 +1565,7 @@ public function getNotesEtudiantECUEPremiereSession($matricule, $ecueId, $anneeI
         
         // Récupérer les notes
         $query = "SELECT CC, EX, MF FROM cotes_grille 
-                  WHERE ECUE_idECUE = ? 
+                  WHERE \"ECUE_idECUE\" = ? 
                   AND matricule = ? 
                   AND session_idsession = ? 
                   AND annee_acad_id = ?";
@@ -1596,7 +1596,7 @@ public function initializeProcess($deliberationId, $userId) {
         $stmt->execute();
         
         // Créer une entrée dans la table processus_deliberation
-        $query = "INSERT INTO processus_deliberation (iddeliberation, etape, statut, message, progression, date_debut, idUser) 
+        $query = "INSERT INTO processus_deliberation (iddeliberation, etape, statut, message, progression, date_debut, \"idUser\") 
                   VALUES (:iddeliberation, 'Initialisation', 'En cours', 'Initialisation du processus de délibération', 0, NOW(), :idUser)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':iddeliberation', $deliberationId);
@@ -1666,14 +1666,14 @@ public function finalizeProcessStep($processId, $etape) {
  */
 public function getDeliberationInfo($deliberationId) {
     try {
-        $query = "SELECT d.*, p.designationPromotion, s.designSession, a.designation as annee_acad, 
-                  b.designation as bureau_designation, u.nomUser as nom_createur
+        $query = "SELECT d.*, p.\"designationPromotion\", s.\"designSession\", a.designation as annee_acad, 
+                  b.designation as bureau_designation, u.\"nomUser\" as nom_createur
                   FROM deliberation d
                   JOIN promotion p ON d.idpromotion = p.idpromotion
                   JOIN session s ON d.session_idsession = s.idsession
                   JOIN annee_acad a ON d.annee_acad_id = a.idannee_acad
                   JOIN bureau_jury_deliberation b ON d.idbureau = b.idbureau
-                  JOIN t_users u ON d.idUser = u.idUser
+                  JOIN t_users u ON d.\"idUser\" = u.\"idUser\"
                   WHERE d.iddeliberation = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $deliberationId);
@@ -1695,7 +1695,7 @@ public function getUEBySemestre($semestreId) {
     try {
         $query = "SELECT u.*, c.nombre_credits 
                   FROM ue u
-                  LEFT JOIN credit_ue c ON u.idUE = c.idUE
+                  LEFT JOIN credit_ue c ON u.\"idUE\" = c.\"idUE\"
                   WHERE u.semestre_idsemestre = :semestre_id
                   ORDER BY u.codeUE";
         $stmt = $this->db->prepare($query);
@@ -1718,8 +1718,8 @@ public function getECUEByUE($ueId) {
     try {
         $query = "SELECT e.*, p.coefficient 
                   FROM ecue e
-                  LEFT JOIN ponderation_ecue p ON e.idECUE = p.idECUE
-                  WHERE e.UE_idUE = :ue_id
+                  LEFT JOIN ponderation_ecue p ON e.\"idECUE\" = p.\"idECUE\"
+                  WHERE e.\"UE_idUE\" = :ue_id
                   ORDER BY e.designationECUE";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':ue_id', $ueId);
@@ -1742,7 +1742,7 @@ public function getECUEByUE($ueId) {
 public function getNotesByECUE($ecueId, $sessionId, $anneeId) {
     try {
         $query = "SELECT * FROM cotes_grille 
-                  WHERE ECUE_idECUE = :ecue_id 
+                  WHERE \"ECUE_idECUE\" = :ecue_id 
                   AND session_idsession = :session_id 
                   AND annee_acad_id = :annee_id";
         $stmt = $this->db->prepare($query);
@@ -1769,7 +1769,7 @@ public function getNotesByECUE($ecueId, $sessionId, $anneeId) {
 public function isUEValidated($ueId, $matricule, $sessionId, $anneeId) {
     try {
         $query = "SELECT est_validee FROM moyenne_ue 
-                  WHERE idUE = :ue_id 
+                  WHERE \"idUE\" = :ue_id 
                   AND matricule = :matricule 
                   AND session_idsession = :session_id 
                   AND annee_acad_idannee_acad = :annee_id";
@@ -1871,8 +1871,8 @@ public function executeIntraUECompensation($processId, $deliberationId, $semestr
                 // Récupérer les étudiants ayant des notes pour cette UE
                 $query = "SELECT DISTINCT cg.matricule 
                           FROM cotes_grille cg
-                          JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                          WHERE e.UE_idUE = :ue_id
+                          JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                          WHERE e.\"UE_idUE\" = :ue_id
                           AND cg.session_idsession = :session_id
                           AND cg.annee_acad_id = :annee_id";
                 $stmt = $this->db->prepare($query);
@@ -1901,7 +1901,7 @@ public function executeIntraUECompensation($processId, $deliberationId, $semestr
                         $totalCoefficients += $coefficient;
                         
                         $query = "SELECT * FROM cotes_grille 
-                                  WHERE ECUE_idECUE = :ecue_id 
+                                  WHERE \"ECUE_idECUE\" = :ecue_id 
                                   AND matricule = :matricule 
                                   AND session_idsession = :session_id 
                                   AND annee_acad_id = :annee_id";
@@ -1978,7 +1978,7 @@ public function executeIntraUECompensation($processId, $deliberationId, $semestr
                                 // Mettre à jour la note dans la base de données
                                 $query = "UPDATE cotes_grille 
                                           SET MF = :note_apres 
-                                          WHERE ECUE_idECUE = :ecue_id 
+                                          WHERE \"ECUE_idECUE\" = :ecue_id 
                                           AND matricule = :matricule 
                                           AND session_idsession = :session_id 
                                           AND annee_acad_id = :annee_id";
@@ -1992,8 +1992,8 @@ public function executeIntraUECompensation($processId, $deliberationId, $semestr
                                 
                                 // Enregistrer l'historique de la modification
                                 $query = "INSERT INTO historique_notes 
-                                          (iddeliberation, matricule, ECUE_idECUE, UE_idUE, session_idsession, 
-                                           note_avant, note_apres, type_modification, justification, idUser) 
+                                          (iddeliberation, matricule, \"ECUE_idECUE\", \"UE_idUE\", session_idsession, 
+                                           note_avant, note_apres, type_modification, justification, \"idUser\") 
                                           VALUES 
                                           (:iddeliberation, :matricule, :ecue_id, :ue_id, :session_id, 
                                            :note_avant, :note_apres, 'Compensation intra-UE', 
@@ -2024,7 +2024,7 @@ public function executeIntraUECompensation($processId, $deliberationId, $semestr
                                 // Mettre à jour la note dans la base de données
                                 $query = "UPDATE cotes_grille 
                                           SET MF = :note_apres 
-                                          WHERE ECUE_idECUE = :ecue_id 
+                                          WHERE \"ECUE_idECUE\" = :ecue_id 
                                           AND matricule = :matricule 
                                           AND session_idsession = :session_id 
                                           AND annee_acad_id = :annee_id";
@@ -2038,8 +2038,8 @@ public function executeIntraUECompensation($processId, $deliberationId, $semestr
                                 
                                 // Enregistrer l'historique de la modification
                                 $query = "INSERT INTO historique_notes 
-                                          (iddeliberation, matricule, ECUE_idECUE, UE_idUE, session_idsession, 
-                                           note_avant, note_apres, type_modification, justification, idUser) 
+                                          (iddeliberation, matricule, \"ECUE_idECUE\", \"UE_idUE\", session_idsession, 
+                                           note_avant, note_apres, type_modification, justification, \"idUser\") 
                                           VALUES 
                                           (:iddeliberation, :matricule, :ecue_id, :ue_id, :session_id, 
                                            :note_avant, :note_apres, 'Compensation intra-UE', 
@@ -2306,8 +2306,8 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                     // Récupérer les étudiants ayant des notes pour cette UE
                     $query = "SELECT DISTINCT cg.matricule 
                               FROM cotes_grille cg
-                              JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                              WHERE e.UE_idUE = :ue_id
+                              JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                              WHERE e.\"UE_idUE\" = :ue_id
                               AND cg.session_idsession = :session_id
                               AND cg.annee_acad_id = :annee_id";
                     $stmt = $this->db->prepare($query);
@@ -2332,7 +2332,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                             $totalCoefficients += $coefficient;
                             
                             $query = "SELECT * FROM cotes_grille 
-                                      WHERE ECUE_idECUE = :ecue_id 
+                                      WHERE \"ECUE_idECUE\" = :ecue_id 
                                       AND matricule = :matricule 
                                       AND session_idsession = :session_id 
                                       AND annee_acad_id = :annee_id";
@@ -2377,7 +2377,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                             
                             // Vérifier si une moyenne existe déjà pour cette UE
                             $query = "SELECT * FROM moyenne_ue 
-                                      WHERE idUE = :ue_id 
+                                      WHERE \"idUE\" = :ue_id 
                                       AND matricule = :matricule 
                                       AND session_idsession = :session_id 
                                       AND annee_acad_idannee_acad = :annee_id";
@@ -2398,7 +2398,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                                               est_validee = :est_validee, 
                                               credits_obtenus = :credits, 
                                               date_calcul = NOW(), 
-                                              idUser = :idUser 
+                                              \"idUser\" = :idUser 
                                           WHERE idmoyenne_ue = :id";
                                 $stmt = $this->db->prepare($query);
                                 $stmt->bindParam(':moyenne', $moyenneUE);
@@ -2410,9 +2410,9 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                             } else {
                                 // Insérer une nouvelle moyenne
                                 $query = "INSERT INTO moyenne_ue 
-                                          (idUE, matricule, session_idsession, annee_acad_idannee_acad, 
+                                          (\"idUE\", matricule, session_idsession, annee_acad_idannee_acad, 
                                            moyenne_brute, moyenne_deliberee, est_validee, credits_obtenus, 
-                                           type_validation, date_calcul, idUser) 
+                                           type_validation, date_calcul, \"idUser\") 
                                           VALUES 
                                           (:ue_id, :matricule, :session_id, :annee_id, 
                                            :moyenne, :moyenne, :est_validee, :credits, 
@@ -2478,7 +2478,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                             $semestres[] = $semestreId;
                         } else {
                             // Traiter tous les semestres de la promotion
-                            $query = "SELECT idsemestre, numeroSemestre FROM semestre WHERE promotion_idpromotion = :promotion_id ORDER BY numeroSemestre";
+                            $query = "SELECT idsemestre, \"numeroSemestre\" FROM semestre WHERE promotion_idpromotion = :promotion_id ORDER BY numeroSemestre";
                             $stmt = $this->db->prepare($query);
                             $stmt->bindParam(':promotion_id', $promotionId);
                             $stmt->execute();
@@ -2521,7 +2521,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                             // Récupérer les étudiants ayant des moyennes d'UE pour ce semestre
                             $query = "SELECT DISTINCT mu.matricule 
                                       FROM moyenne_ue mu
-                                      JOIN ue u ON mu.idUE = u.idUE
+                                      JOIN ue u ON mu.\"idUE\" = u.\"idUE\"
                                       WHERE u.semestre_idsemestre = :semestre_id
                                       AND mu.session_idsession = :session_id
                                       AND mu.annee_acad_idannee_acad = :annee_id";
@@ -2547,7 +2547,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                                     $totalCredits += $creditsUE;
                                     
                                     $query = "SELECT * FROM moyenne_ue 
-                                              WHERE idUE = :ue_id 
+                                              WHERE \"idUE\" = :ue_id 
                                               AND matricule = :matricule 
                                               AND session_idsession = :session_id 
                                               AND annee_acad_idannee_acad = :annee_id";
@@ -2602,7 +2602,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                                                       credits_obtenus = :credits_obtenus, 
                                                       credits_total = :credits_total, 
                                                       date_calcul = NOW(), 
-                                                      idUser = :idUser 
+                                                      \"idUser\" = :idUser 
                                                   WHERE idmoyenne_semestre = :id";
                                         $stmt = $this->db->prepare($query);
                                         $stmt->bindParam(':moyenne', $moyenneSemestre);
@@ -2617,7 +2617,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                                         $query = "INSERT INTO moyenne_semestre 
                                                   (idsemestre, matricule, session_idsession, annee_acad_idannee_acad, 
                                                    moyenne_brute, moyenne_deliberee, est_valide, credits_obtenus, credits_total, 
-                                                   date_calcul, idUser) 
+                                                   date_calcul, \"idUser\") 
                                                   VALUES 
                                                   (:semestre_id, :matricule, :session_id, :annee_id, 
                                                    :moyenne, :moyenne, :est_valide, :credits_obtenus, :credits_total, 
@@ -2715,7 +2715,7 @@ public function executeDeliberation($processId, $deliberationId, $typeDeliberati
                 $matricule = $etudiant['matricule'];
                 
                 // Récupérer les moyennes de semestre
-                $query = "SELECT ms.*, s.numeroSemestre 
+                $query = "SELECT ms.*, s.\"numeroSemestre\" 
                           FROM moyenne_semestre ms 
                           JOIN semestre s ON ms.idsemestre = s.idsemestre 
                           WHERE ms.matricule = :matricule 
@@ -2782,7 +2782,7 @@ public function getEtudiantByMatricule($matricule, $anneeId = null) {
     try {
         // Si l'année académique est spécifiée, filtrer par année
         if ($anneeId) {
-            $query = "SELECT e.*, p.designationPromotion 
+            $query = "SELECT e.*, p.\"designationPromotion\" 
                       FROM etudiant e
                       LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
                       WHERE e.matricule = :matricule 
@@ -2794,7 +2794,7 @@ public function getEtudiantByMatricule($matricule, $anneeId = null) {
             $stmt->bindParam(':anneeId', $anneeId, PDO::PARAM_INT);
         } else {
             // Garder la requête originale comme fallback
-            $query = "SELECT e.*, p.designationPromotion 
+            $query = "SELECT e.*, p.\"designationPromotion\" 
                       FROM etudiant e
                       LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
                       WHERE e.matricule = :matricule";
@@ -2824,8 +2824,8 @@ public function getBureauJuryById($bureauId) {
                   s.noms as secretaire_nom,
                   a.designation as annee_academique
                   FROM bureau_jury_deliberation b
-                  LEFT JOIN agent p ON b.president_id = p.idAgent
-                  LEFT JOIN agent s ON b.secretaire_id = s.idAgent
+                  LEFT JOIN agent p ON b.president_id = p.\"idAgent\"
+                  LEFT JOIN agent s ON b.secretaire_id = s.\"idAgent\"
                   LEFT JOIN annee_acad a ON b.annee_acad_idannee_acad = a.idannee_acad
                   WHERE b.idbureau = :idBureau";
         
@@ -2854,8 +2854,8 @@ public function getNotesEtudiant($matricule, $sessionId, $anneeId, $semestreId =
         }
         
         // Récupérer les semestres concernés
-        $query = "SELECT s.idsemestre, s.numeroSemestre, p.designationPromotion,
-                  o.designationOrientation, sec.designationSection
+        $query = "SELECT s.idsemestre, s.\"numeroSemestre\", p.\"designationPromotion\",
+                  o.\"designationOrientation\", sec.\"designationSection\"
                   FROM semestre s
                   INNER JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                   INNER JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -2884,9 +2884,9 @@ public function getNotesEtudiant($matricule, $sessionId, $anneeId, $semestreId =
             
             // Récupérer les UE du semestre
             $query = "SELECT u.*,
-                     (SELECT moyenne_deliberee FROM moyenne_ue WHERE idUE = u.idUE AND matricule = :matricule 
+                     (SELECT moyenne_deliberee FROM moyenne_ue WHERE \"idUE\" = u.\"idUE\" AND matricule = :matricule 
                       AND session_idsession = :sessionId AND annee_acad_idannee_acad = :anneeId) as moyenne,
-                     (SELECT est_validee FROM moyenne_ue WHERE idUE = u.idUE AND matricule = :matricule 
+                     (SELECT est_validee FROM moyenne_ue WHERE \"idUE\" = u.\"idUE\" AND matricule = :matricule 
                       AND session_idsession = :sessionId AND annee_acad_idannee_acad = :anneeId) as est_validee
                      FROM ue u
                      WHERE u.semestre_idsemestre = :semestreId
@@ -2910,15 +2910,15 @@ public function getNotesEtudiant($matricule, $sessionId, $anneeId, $semestreId =
                 
                 // Récupérer les ECUE de l'UE
                 $query = "SELECT e.*,
-                         (SELECT MF FROM cotes_grille WHERE ECUE_idECUE = e.idECUE AND matricule = :matricule 
+                         (SELECT MF FROM cotes_grille WHERE \"ECUE_idECUE\" = e.\"idECUE\" AND matricule = :matricule 
                           AND session_idsession = :sessionId AND annee_acad_id = :anneeId) as note,
-                         (SELECT CC FROM cotes_grille WHERE ECUE_idECUE = e.idECUE AND matricule = :matricule 
+                         (SELECT CC FROM cotes_grille WHERE \"ECUE_idECUE\" = e.\"idECUE\" AND matricule = :matricule 
                           AND session_idsession = :sessionId AND annee_acad_id = :anneeId) as cc,
-                         (SELECT EX FROM cotes_grille WHERE ECUE_idECUE = e.idECUE AND matricule = :matricule 
+                         (SELECT EX FROM cotes_grille WHERE \"ECUE_idECUE\" = e.\"idECUE\" AND matricule = :matricule 
                           AND session_idsession = :sessionId AND annee_acad_id = :anneeId) as examen,
                          ROUND((e.CMI + e.TD + e.TP)/ " . $this->heuresParCredit . ", 1) as coefficient
                          FROM ecue e
-                         WHERE e.UE_idUE = :ueId
+                         WHERE e.\"UE_idUE\" = :ueId
                          ORDER BY e.designationECUE";
                 
                 $stmt = $this->db->prepare($query);
@@ -3131,7 +3131,7 @@ public function getECUEsByUE($ueId) {
         $query = "SELECT e.*, 
                   (e.CMI + e.TD + e.TP) / 25 as coefficient
                   FROM ecue e 
-                  WHERE e.idUE = :ueId 
+                  WHERE e.\"idUE\" = :ueId 
                   ORDER BY e.designationECUE";
         
         $stmt = $this->db->prepare($query);
@@ -3158,8 +3158,8 @@ public function getUEValideePremiereSession($matricule, $ueId, $anneeId) {
     try {
         // Récupérer l'ID de la première session
         $query = "SELECT idsession FROM session
-                  WHERE LOWER(designSession) LIKE 'premi%re session'
-                  OR LOWER(designSession) = 'premiere session' LIMIT 1";
+                  WHERE LOWER(\"designSession\") LIKE 'premi%re session'
+                  OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $firstSession = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -3171,7 +3171,7 @@ public function getUEValideePremiereSession($matricule, $ueId, $anneeId) {
         $session1Id = $firstSession['idsession'];
        
         // Récupérer les ECUEs de cette UE avec les valeurs CMI, TP et TD
-        $query = "SELECT idECUE, CMI, TP, TD FROM ecue WHERE UE_idUE = ?";
+        $query = "SELECT \"idECUE\", CMI, TP, TD FROM ecue WHERE \"UE_idUE\" = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(1, $ueId, PDO::PARAM_INT);
         $stmt->execute();
@@ -3201,7 +3201,7 @@ public function getUEValideePremiereSession($matricule, $ueId, $anneeId) {
            
             // Récupérer la note de l'ECUE
             $query = "SELECT MF, CC, EX FROM cotes_grille
-                      WHERE ECUE_idECUE = ?
+                      WHERE \"ECUE_idECUE\" = ?
                       AND matricule = ?
                       AND session_idsession = ?
                       AND annee_acad_id = ?";
@@ -3231,7 +3231,7 @@ public function getUEValideePremiereSession($matricule, $ueId, $anneeId) {
         // Si toutes les ECUEs n'ont pas de notes, considérer l'UE comme non validée
         if (!$allEcuesHaveNotes) {
             // Récupérer les informations de l'UE
-            $query = "SELECT * FROM ue WHERE idUE = ?";
+            $query = "SELECT * FROM ue WHERE \"idUE\" = ?";
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(1, $ueId, PDO::PARAM_INT);
             $stmt->execute();
@@ -3253,7 +3253,7 @@ public function getUEValideePremiereSession($matricule, $ueId, $anneeId) {
         $moyenne = ($totalCoefficients > 0) ? ($totalPoints / $totalCoefficients) : 0;
        
         // Récupérer les informations de l'UE
-        $query = "SELECT * FROM ue WHERE idUE = ?";
+        $query = "SELECT * FROM ue WHERE \"idUE\" = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(1, $ueId, PDO::PARAM_INT);
         $stmt->execute();
@@ -3288,7 +3288,7 @@ public function getSectionsResponsable($agentId, $anneeId = null) {
     $query = "SELECT s.* 
               FROM section s
               INNER JOIN responsable_section rs ON s.idsection = rs.section_idsection
-              WHERE rs.idUser = :agentId";
+              WHERE rs.\"idUser\" = :agentId";
     
     $params = [':agentId' => $agentId];
     
@@ -3297,7 +3297,7 @@ public function getSectionsResponsable($agentId, $anneeId = null) {
         $params[':anneeId'] = $anneeId;
     }
     
-    $query .= " ORDER BY s.designationSection ASC";
+    $query .= " ORDER BY s.\"designationSection\" ASC";
     
     $stmt = $this->db->prepare($query);
     foreach ($params as $key => $value) {
@@ -3384,7 +3384,7 @@ public function getPromotionsByJuryAndSections($juryId, $sectionIds, $anneeId = 
         $params[] = $anneeId;
     }
     
-    $query .= " ORDER BY p.designationPromotion ASC";
+    $query .= " ORDER BY p.\"designationPromotion\" ASC";
     
     $stmt = $this->db->prepare($query);
     
@@ -3479,7 +3479,7 @@ public function sauvegarderMoyennes($etudiants, $moyennesSemestre, $validationsS
                                  credits_obtenus = ?, 
                                  credits_total = ?, 
                                  date_calcul = NOW(), 
-                                 idUser = ? 
+                                 \"idUser\" = ? 
                                  WHERE idmoyenne_semestre = ?";
                         
                         $stmt = $this->db->prepare($query);
@@ -3495,7 +3495,7 @@ public function sauvegarderMoyennes($etudiants, $moyennesSemestre, $validationsS
                         // Créer un nouvel enregistrement
                         $query = "INSERT INTO moyenne_semestre 
                                  (idsemestre, matricule, session_idsession, annee_acad_idannee_acad, 
-                                 moyenne_brute, est_valide, credits_obtenus, credits_total, idUser) 
+                                 moyenne_brute, est_valide, credits_obtenus, credits_total, \"idUser\") 
                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         
                         $stmt = $this->db->prepare($query);
@@ -3551,7 +3551,7 @@ public function sauvegarderMoyennes($etudiants, $moyennesSemestre, $validationsS
                              credits_total = ?, 
                              mention = ?,
                              date_calcul = NOW(), 
-                             idUser = ? 
+                             \"idUser\" = ? 
                              WHERE idmoyenne_annuelle = ?";
                     
                     $stmt = $this->db->prepare($query);
@@ -3568,7 +3568,7 @@ public function sauvegarderMoyennes($etudiants, $moyennesSemestre, $validationsS
                     // Créer un nouvel enregistrement
                     $query = "INSERT INTO moyenne_annuelle 
                              (idpromotion, matricule, session_idsession, annee_acad_idannee_acad, 
-                             moyenne_brute, est_admis, credits_obtenus, credits_total, mention, idUser) 
+                             moyenne_brute, est_admis, credits_obtenus, credits_total, mention, \"idUser\") 
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     
                     $stmt = $this->db->prepare($query);
@@ -3627,7 +3627,7 @@ public function getMoyenneSemestre($matricule, $sessionId, $anneeId, $semestreId
         $totalCredits = 0;
         
         // Récupérer les UE du semestre
-        $query = "SELECT idUE FROM ue WHERE semestre_idsemestre = ?";
+        $query = "SELECT \"idUE\" FROM ue WHERE semestre_idsemestre = ?";
         $stmt = $this->db->prepare($query);
         $stmt->execute([$semestreId]);
         $ues = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -3637,7 +3637,7 @@ public function getMoyenneSemestre($matricule, $sessionId, $anneeId, $semestreId
             
             // Récupérer la moyenne de l'UE
             $query = "SELECT moyenne_deliberee FROM moyenne_ue 
-                     WHERE idUE = ? AND matricule = ? 
+                     WHERE \"idUE\" = ? AND matricule = ? 
                      AND session_idsession = ? AND annee_acad_idannee_acad = ?";
             
             $stmt = $this->db->prepare($query);
@@ -3646,7 +3646,7 @@ public function getMoyenneSemestre($matricule, $sessionId, $anneeId, $semestreId
             
             if ($moyenneUE !== false && $moyenneUE !== null) {
                 // Calculer les crédits de l'UE
-                $query = "SELECT SUM(ROUND((CMI + TD + TP)/ " . $this->heuresParCredit . ", 1)) as credits FROM ecue WHERE UE_idUE = ?";
+                $query = "SELECT SUM(ROUND((CMI + TD + TP)/ " . $this->heuresParCredit . ", 1)) as credits FROM ecue WHERE \"UE_idUE\" = ?";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([$ueId]);
                 $credits = $stmt->fetchColumn();
@@ -3689,9 +3689,9 @@ public function getCreditsValides($matricule, $sessionId, $anneeId, $semestres) 
             
             // Récupérer les UE du semestre
             $query = "SELECT u.*, 
-                     (SELECT moyenne_deliberee FROM moyenne_ue WHERE idUE = u.idUE AND matricule = :matricule
+                     (SELECT moyenne_deliberee FROM moyenne_ue WHERE \"idUE\" = u.\"idUE\" AND matricule = :matricule
                       AND session_idsession = :sessionId AND annee_acad_idannee_acad = :anneeId) as moyenne,
-                     (SELECT est_validee FROM moyenne_ue WHERE idUE = u.idUE AND matricule = :matricule
+                     (SELECT est_validee FROM moyenne_ue WHERE \"idUE\" = u.\"idUE\" AND matricule = :matricule
                       AND session_idsession = :sessionId AND annee_acad_idannee_acad = :anneeId) as est_validee
                      FROM ue u
                      WHERE u.semestre_idsemestre = :semestreId
@@ -3718,11 +3718,11 @@ public function getCreditsValides($matricule, $sessionId, $anneeId, $semestres) 
                 } else {
                     // Calculer la moyenne de l'UE si elle n'est pas disponible
                     $query = "SELECT e.*,
-                             (SELECT MF FROM cotes_grille WHERE ECUE_idECUE = e.idECUE AND matricule = :matricule
+                             (SELECT MF FROM cotes_grille WHERE \"ECUE_idECUE\" = e.\"idECUE\" AND matricule = :matricule
                               AND session_idsession = :sessionId AND annee_acad_id = :anneeId) as note,
                              ROUND((e.CMI + e.TD + e.TP)/ " . $this->heuresParCredit . ", 1) as coefficient
                              FROM ecue e
-                             WHERE e.UE_idUE = :ueId";
+                             WHERE e.\"UE_idUE\" = :ueId";
                     
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':matricule', $matricule, PDO::PARAM_STR);
@@ -3753,7 +3753,7 @@ public function getCreditsValides($matricule, $sessionId, $anneeId, $semestres) 
                 // Si l'UE est validée, ajouter ses crédits
                 if ($estValidee) {
                     // Récupérer les ECUE pour calculer les crédits
-                    $query = "SELECT SUM(ROUND((CMI + TD + TP)/ " . $this->heuresParCredit . ", 1)) as credits FROM ecue WHERE UE_idUE = :ueId";
+                    $query = "SELECT SUM(ROUND((CMI + TD + TP)/ " . $this->heuresParCredit . ", 1)) as credits FROM ecue WHERE \"UE_idUE\" = :ueId";
                     $stmt = $this->db->prepare($query);
                     $stmt->bindParam(':ueId', $ue['idUE'], PDO::PARAM_INT);
                     $stmt->execute();
@@ -3789,7 +3789,7 @@ public function getCreditsTotal($semestres) {
             // Récupérer le total des crédits pour ce semestre
             $query = "SELECT SUM(ROUND((e.CMI + e.TD + e.TP)/ " . $this->heuresParCredit . ", 1)) as total_credits
                      FROM ecue e
-                     JOIN ue u ON e.UE_idUE = u.idUE
+                     JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                      WHERE u.semestre_idsemestre = :semestreId";
             
             $stmt = $this->db->prepare($query);
@@ -3856,7 +3856,7 @@ public function getMoyenneAnnuelle($matricule, $sessionId, $anneeId, $semestres)
                 // Récupérer les crédits du semestre
                 $query = "SELECT SUM(ROUND((e.CMI + e.TD + e.TP)/ " . $this->heuresParCredit . ", 1)) as credits
                          FROM ecue e
-                         JOIN ue u ON e.UE_idUE = u.idUE
+                         JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                          WHERE u.semestre_idsemestre = :semestreId";
                 
                 $stmt = $this->db->prepare($query);
@@ -3906,8 +3906,8 @@ public function isDeliberationPubliee($promotionId) {
  * @return array La liste de toutes les promotions
  */
 public function getAllPromotions() {
-    $query = "SELECT p.idpromotion, p.designationPromotion, p.cycle, o.designationOrientation, a.designation as annee_acad 
-    FROM promotion p JOIN orientation o ON p.orientation_idorientation = o.idorientation JOIN annee_acad a ON p.annee_acad_idannee_acad = a.idannee_acad ORDER BY a.designation DESC, o.designationOrientation, p.cycle, p.designationPromotion";
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\", p.cycle, o.\"designationOrientation\", a.designation as annee_acad 
+    FROM promotion p JOIN orientation o ON p.orientation_idorientation = o.idorientation JOIN annee_acad a ON p.annee_acad_idannee_acad = a.idannee_acad ORDER BY a.designation DESC, o.\"designationOrientation\", p.cycle, p.designationPromotion";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute();
@@ -3952,7 +3952,7 @@ public function getHeuresParCredit($bureauId, $sessionId, $anneeId) {
      */
     public function getEtudiantsByPromotionPaginated($promotionId, $anneeId, $offset = 0, $limit = 25)
     {
-        $query = "SELECT e.idetudiant, e.matricule, e.noms, e.sexe, e.dateNaissance, e.telephone, e.adressemail
+        $query = "SELECT e.idetudiant, e.matricule, e.noms, e.sexe, e.\"dateNaissance\", e.telephone, e.adressemail
                  FROM etudiant e
                  WHERE e.promotion_idpromotion = :promotionId 
                  AND e.annee_acad_idannee_acad = :anneeId
@@ -4013,10 +4013,10 @@ public function etudiantADesDettes($matricule, $anneeId, $promotionId) {
         if (!$cycleActuel) return false;
 
         // Vérifier s'il existe des ECUE en échec dont l'UE a une moyenne < 10 dans les années précédentes du même cycle
-        $query = "SELECT COUNT(DISTINCT cg.ECUE_idECUE) as nb_dettes
+        $query = "SELECT COUNT(DISTINCT cg.\"ECUE_idECUE\") as nb_dettes
                   FROM cotes_grille cg
-                  JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                  JOIN ue u ON e.UE_idUE = u.idUE
+                  JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   JOIN semestre sem ON u.semestre_idsemestre = sem.idsemestre
                   JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
                   JOIN etudiant et ON cg.matricule = et.matricule AND et.promotion_idpromotion = p.idpromotion
@@ -4029,16 +4029,16 @@ public function etudiantADesDettes($matricule, $anneeId, $promotionId) {
                       SELECT 1
                       FROM (
                           SELECT 
-                              e2.UE_idUE,
+                              e2.\"UE_idUE\",
                               SUM(cg2.MF * ((e2.CMI + e2.TD + e2.TP) / " . $this->heuresParCredit . ")) / 
                               SUM((e2.CMI + e2.TD + e2.TP) / " . $this->heuresParCredit . ") AS moyenne_ue
                           FROM cotes_grille cg2
-                          JOIN ecue e2 ON cg2.ECUE_idECUE = e2.idECUE
+                          JOIN ecue e2 ON cg2.\"ECUE_idECUE\" = e2.\"idECUE\"
                           WHERE cg2.matricule = cg.matricule
-                          AND e2.UE_idUE = e.UE_idUE
+                          AND e2.\"UE_idUE\" = e.\"UE_idUE\"
                           AND cg2.session_idsession = cg.session_idsession
                           AND cg2.annee_acad_id = cg.annee_acad_id
-                          GROUP BY e2.UE_idUE
+                          GROUP BY e2.\"UE_idUE\"
                           HAVING moyenne_ue < 10
                       ) AS ue_check
                   )";
@@ -4079,29 +4079,29 @@ public function getDetailsDettesEtudiant($matricule, $anneeId, $promotionId) {
 
         // Récupérer les ECUE en dette avec les détails
         $query = "SELECT DISTINCT 
-                    cg.ECUE_idECUE,
-                    e.designationECUE,
-                    u.idUE,
-                    u.designationUE,
+                    cg.\"ECUE_idECUE\",
+                    e.\"designationECUE\",
+                    u.\"idUE\",
+                    u.\"designationUE\",
                     cg.MF as note_ecue,
                     ROUND((e.CMI + e.TD + e.TP) / " . $this->heuresParCredit . ", 2) as credits_ecue,
-                    p.designationPromotion,
+                    p.\"designationPromotion\",
                     aa.designation as annee_academique,
-                    sess.designSession,
+                    sess.\"designSession\",
                     -- Calculer la moyenne de l'UE
                     (SELECT 
                         SUM(cg3.MF * ((e3.CMI + e3.TD + e3.TP) / " . $this->heuresParCredit . ")) / 
                         SUM((e3.CMI + e3.TD + e3.TP) / " . $this->heuresParCredit . ")
                      FROM cotes_grille cg3
-                     JOIN ecue e3 ON cg3.ECUE_idECUE = e3.idECUE
+                     JOIN ecue e3 ON cg3.\"ECUE_idECUE\" = e3.\"idECUE\"
                      WHERE cg3.matricule = cg.matricule
-                     AND e3.UE_idUE = e.UE_idUE
+                     AND e3.\"UE_idUE\" = e.\"UE_idUE\"
                      AND cg3.session_idsession = cg.session_idsession
                      AND cg3.annee_acad_id = cg.annee_acad_id
                     ) as moyenne_ue
                   FROM cotes_grille cg
-                  JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                  JOIN ue u ON e.UE_idUE = u.idUE
+                  JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   JOIN semestre sem ON u.semestre_idsemestre = sem.idsemestre
                   JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
                   JOIN etudiant et ON cg.matricule = et.matricule AND et.promotion_idpromotion = p.idpromotion
@@ -4112,7 +4112,7 @@ public function getDetailsDettesEtudiant($matricule, $anneeId, $promotionId) {
                   AND cg.annee_acad_id < :anneeId
                   AND cg.MF < 10  -- ECUE en échec
                   HAVING moyenne_ue < 10  -- UE en échec
-                  ORDER BY cg.annee_acad_id DESC, u.idUE, e.idECUE";
+                  ORDER BY cg.annee_acad_id DESC, u.\"idUE\", e.idECUE";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':matricule', $matricule, PDO::PARAM_STR);
@@ -4141,7 +4141,7 @@ public function isEcueDette($matricule, $ecueId, $sessionId, $anneeId) {
         // Récupérer la note de l'ECUE
         $query = "SELECT MF FROM cotes_grille 
                   WHERE matricule = :matricule 
-                  AND ECUE_idECUE = :ecueId 
+                  AND \"ECUE_idECUE\" = :ecueId 
                   AND session_idsession = :sessionId 
                   AND annee_acad_id = :anneeId";
         
@@ -4160,7 +4160,7 @@ public function isEcueDette($matricule, $ecueId, $sessionId, $anneeId) {
         }
         
         // Récupérer l'UE de l'ECUE
-        $query = "SELECT UE_idUE FROM ecue WHERE idECUE = :ecueId";
+        $query = "SELECT \"UE_idUE\" FROM ecue WHERE \"idECUE\" = :ecueId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':ecueId', $ecueId, PDO::PARAM_INT);
         $stmt->execute();
@@ -4193,14 +4193,14 @@ public function enregistrerDettesEtudiant($matricule, $promotionId, $sessionId, 
     try {
         // Récupérer tous les ECUE en échec dont l'UE a une moyenne < 10
         $query = "SELECT DISTINCT 
-                    cg.ECUE_idECUE,
-                    e.UE_idUE,
+                    cg.\"ECUE_idECUE\",
+                    e.\"UE_idUE\",
                     u.semestre_idsemestre,
                     cg.MF as note_obtenue,
                     ROUND((e.CMI + e.TD + e.TP) / " . $this->heuresParCredit . ", 2) as credits_ecue
                   FROM cotes_grille cg
-                  JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                  JOIN ue u ON e.UE_idUE = u.idUE
+                  JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                   WHERE cg.matricule = :matricule
                   AND s.promotion_idpromotion = :promotionId
@@ -4212,16 +4212,16 @@ public function enregistrerDettesEtudiant($matricule, $promotionId, $sessionId, 
                       SELECT 1
                       FROM (
                           SELECT 
-                              e2.UE_idUE,
+                              e2.\"UE_idUE\",
                               SUM(cg2.MF * ((e2.CMI + e2.TD + e2.TP) / " . $this->heuresParCredit . ")) / 
                               SUM((e2.CMI + e2.TD + e2.TP) / " . $this->heuresParCredit . ") AS moyenne_ue
                           FROM cotes_grille cg2
-                          JOIN ecue e2 ON cg2.ECUE_idECUE = e2.idECUE
+                          JOIN ecue e2 ON cg2.\"ECUE_idECUE\" = e2.\"idECUE\"
                           WHERE cg2.matricule = cg.matricule
-                          AND e2.UE_idUE = e.UE_idUE
+                          AND e2.\"UE_idUE\" = e.\"UE_idUE\"
                           AND cg2.session_idsession = cg.session_idsession
                           AND cg2.annee_acad_id = cg.annee_acad_id
-                          GROUP BY e2.UE_idUE
+                          GROUP BY e2.\"UE_idUE\"
                           HAVING moyenne_ue < 10
                       ) AS ue_check
                   )";
@@ -4240,7 +4240,7 @@ public function enregistrerDettesEtudiant($matricule, $promotionId, $sessionId, 
             // Vérifier si la dette n'existe pas déjà
             $checkQuery = "SELECT id_dette FROM dette_etudiant 
                           WHERE matricule = :matricule 
-                          AND ECUE_idECUE = :ecueId 
+                          AND \"ECUE_idECUE\" = :ecueId 
                           AND statut = 'En cours'";
             
             $checkStmt = $this->db->prepare($checkQuery);
@@ -4251,9 +4251,9 @@ public function enregistrerDettesEtudiant($matricule, $promotionId, $sessionId, 
             if (!$checkStmt->fetch()) {
                 // Insérer la nouvelle dette
                 $insertQuery = "INSERT INTO dette_etudiant (
-                                    matricule, ECUE_idECUE, UE_idUE, semestre_idsemestre,
+                                    matricule, \"ECUE_idECUE\", \"UE_idUE\", semestre_idsemestre,
                                     promotion_idpromotion, session_idsession, annee_acad_idannee_acad,
-                                    note_obtenue, credits_ecue, statut, idUser
+                                    note_obtenue, credits_ecue, statut, \"idUser\"
                                 ) VALUES (
                                     :matricule, :ecueId, :ueId, :semestreId,
                                     :promotionId, :sessionId, :anneeId,

@@ -22,7 +22,7 @@ try {
     }
 
     // Nombre total de séances pour cet ECUE cette année
-    $stmtSeances = $db->prepare("SELECT COUNT(*) FROM seance_cours WHERE idECUE = ? AND annee_acad_id = ?");
+    $stmtSeances = $db->prepare("SELECT COUNT(*) FROM seance_cours WHERE \"idECUE\" = ? AND annee_acad_id = ?");
     $stmtSeances->execute([$ecue_id, $annee_id]);
     $total_seances = (int)$stmtSeances->fetchColumn();
 
@@ -30,7 +30,7 @@ try {
     $stmtPresences = $db->prepare("
         SELECT COUNT(*) FROM presence_cours pc
         JOIN seance_cours sc ON pc.idseance = sc.idseance
-        WHERE sc.idECUE = ? AND sc.annee_acad_id = ?
+        WHERE sc.\"idECUE\" = ? AND sc.annee_acad_id = ?
     ");
     $stmtPresences->execute([$ecue_id, $annee_id]);
     $total_presences = (int)$stmtPresences->fetchColumn();
@@ -39,9 +39,9 @@ try {
     $stmtPromo = $db->prepare("
         SELECT s.promotion_idpromotion
         FROM ecue e
-        JOIN ue u ON e.UE_idUE = u.idUE
+        JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
         JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
-        WHERE e.idECUE = ?
+        WHERE e.\"idECUE\" = ?
         LIMIT 1
     ");
     $stmtPromo->execute([$ecue_id]);
@@ -66,7 +66,7 @@ try {
         SELECT s.idseance, s.titre, s.date_seance, s.heure_debut, s.heure_fin, s.salle,
                (SELECT COUNT(*) FROM presence_cours WHERE idseance = s.idseance) as nb_presents
         FROM seance_cours s
-        WHERE s.idECUE = ? AND s.annee_acad_id = ?
+        WHERE s.\"idECUE\" = ? AND s.annee_acad_id = ?
         ORDER BY s.date_seance, s.heure_debut
     ");
     $stmtListeSeances->execute([$ecue_id, $annee_id]);
@@ -103,7 +103,7 @@ try {
         $stmtPresEtudiant = $db->prepare("
             SELECT COUNT(*) FROM presence_cours pc
             JOIN seance_cours sc ON pc.idseance = sc.idseance
-            WHERE pc.idetudiant = ? AND sc.idECUE = ? AND sc.annee_acad_id = ?
+            WHERE pc.idetudiant = ? AND sc.\"idECUE\" = ? AND sc.annee_acad_id = ?
         ");
 
         foreach ($listeEtudiants as $etudiant) {

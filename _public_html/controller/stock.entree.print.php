@@ -17,12 +17,12 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
 
     try {
         // Récupérer les informations de l'entrée de stock
-        $queryEntree = "SELECT e.*, d.libelle_depot, u.nomUser as user_creation,
-                        v.nomUser as user_validation
+        $queryEntree = "SELECT e.*, d.libelle_depot, u.\"nomUser\" as user_creation,
+                        v.\"nomUser\" as user_validation
                         FROM entree_stock e
                         LEFT JOIN depot d ON e.id_depot = d.id_depot
-                        LEFT JOIN t_users u ON e.id_user_creation = u.idUser
-                        LEFT JOIN t_users v ON e.id_user_validation = v.idUser
+                        LEFT JOIN t_users u ON e.id_user_creation = u.\"idUser\"
+                        LEFT JOIN t_users v ON e.id_user_validation = v.\"idUser\"
                         WHERE e.id_entree = :id_entree";
         $stmtEntree = $db->prepare($queryEntree);
         $stmtEntree->bindParam(':id_entree', $idEntree, PDO::PARAM_INT);

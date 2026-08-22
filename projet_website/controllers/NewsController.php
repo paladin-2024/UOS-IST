@@ -61,8 +61,8 @@ public function getAllNews($page = 1, $perPage = 9, $category_id = null, $featur
              FROM news n 
              LEFT JOIN categories c ON n.category_id = c.id 
              $whereClause
-             ORDER BY n.published_at DESC 
-             LIMIT :offset, :perPage";
+             ORDER BY n.published_at DESC
+             LIMIT :perPage OFFSET :offset";
     
     $stmt = $this->pdo->prepare($query);
     $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);

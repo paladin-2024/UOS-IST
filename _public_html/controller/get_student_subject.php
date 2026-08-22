@@ -25,7 +25,7 @@ $hasFullAccess = $_SESSION['idRole'] == 1;
 // Fonctions utilitaires
 function getUserSections($db, $userId, $anneeAcadId) {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     $stmt = $db->prepare($query);
     $stmt->execute(['userId' => $userId, 'anneeId' => $anneeAcadId]);
     return $stmt->fetchAll(PDO::FETCH_COLUMN);

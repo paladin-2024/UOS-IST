@@ -14,7 +14,7 @@ class Ecue {
 
     // Ajouter un ECUE
     public function addEcue($designationECUE, $CMI, $TD, $TP, $idUE, $idCreateur) {
-        $query = "INSERT INTO ecue (designationECUE, CMI, TD, TP, UE_idUE, idCreateur) 
+        $query = "INSERT INTO ecue (\"designationECUE\", CMI, TD, TP, \"UE_idUE\", \"idCreateur\") 
                   VALUES (:designation, :cmi, :td, :tp, :idUE, :idCreateur)";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
@@ -30,16 +30,16 @@ class Ecue {
 
     public function getEcueById($idEcue) {
         $query = "SELECT e.*, 
-                u.designationUE, u.codeUE,
-                s.numeroSemestre, 
-                p.designationPromotion, p.cycle,p.annee_acad_idannee_acad,
-                o.designationOrientation,p.idpromotion
+                u.\"designationUE\", u.\"codeUE\",
+                s.\"numeroSemestre\", 
+                p.\"designationPromotion\", p.cycle,p.annee_acad_idannee_acad,
+                o.\"designationOrientation\",p.idpromotion
                 FROM ecue e
-                JOIN ue u ON e.UE_idUE = u.idUE
+                JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                 JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                 JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                 JOIN orientation o ON p.orientation_idorientation = o.idorientation
-                WHERE e.idECUE = :idEcue";
+                WHERE e.\"idECUE\" = :idEcue";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -49,13 +49,13 @@ class Ecue {
     }
 
     public function getEcuesByUE($ueId, $search = '') {
-        $query = "SELECT * FROM ecue WHERE UE_idUE = :ueId";
+        $query = "SELECT * FROM ecue WHERE \"UE_idUE\" = :ueId";
         
         if (!empty($search)) {
-            $query .= " AND designationECUE LIKE :search";
+            $query .= " AND \"designationECUE\" LIKE :search";
         }
         
-        $query .= " ORDER BY designationECUE ASC";
+        $query .= " ORDER BY \"designationECUE\" ASC";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':ueId', $ueId, PDO::PARAM_INT);
@@ -72,8 +72,8 @@ class Ecue {
     public function getECUEsByUE2($ueId) {
         $query = "SELECT e.*, ((e.CMI + e.TD + e.TP)/" . $this->heuresParCredit . ") as nombre_credits 
                   FROM ecue e 
-                  WHERE e.UE_idUE = :ueId 
-                  ORDER BY e.designationECUE";
+                  WHERE e.\"UE_idUE\" = :ueId 
+                  ORDER BY e.\"designationECUE\"";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':ueId', $ueId, PDO::PARAM_INT);
@@ -87,7 +87,7 @@ class Ecue {
 
    
     public function createEcue($designation, $cmi, $td, $tp, $ueId, $idUser) {
-        $query = "INSERT INTO ecue (designationECUE, CMI, TD, TP, UE_idUE, idCreateur, estVisible) 
+        $query = "INSERT INTO ecue (\"designationECUE\", CMI, TD, TP, \"UE_idUE\", \"idCreateur\", \"estVisible\") 
                   VALUES (:designation, :cmi, :td, :tp, :ueId, :idUser, 1)";
         
         $stmt = $this->db->prepare($query);
@@ -103,11 +103,11 @@ class Ecue {
 
     public function updateEcue($idEcue, $designation, $cmi, $td, $tp) {
         $query = "UPDATE ecue 
-                  SET designationECUE = :designation, 
+                  SET \"designationECUE\" = :designation, 
                       CMI = :cmi, 
                       TD = :td, 
                       TP = :tp 
-                  WHERE idECUE = :idEcue";
+                  WHERE \"idECUE\" = :idEcue";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':designation', $designation, PDO::PARAM_STR);
@@ -123,17 +123,17 @@ class Ecue {
 
 
     public function getEcuesBySection($sectionId, $anneeAcadId) {
-        $query = "SELECT e.*, u.designationUE, u.codeUE, s.numeroSemestre, p.designationPromotion
+        $query = "SELECT e.*, u.\"designationUE\", u.\"codeUE\", s.\"numeroSemestre\", p.\"designationPromotion\"
                   FROM ecue e
-                  JOIN ue u ON e.UE_idUE = u.idUE
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                   JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                   JOIN orientation o ON p.orientation_idorientation = o.idorientation
                   JOIN section sec ON o.section_idsection = sec.idsection
                   WHERE sec.idsection = :sectionId
                   AND p.annee_acad_idannee_acad = :anneeAcadId
-                  AND e.estVisible = 1
-                  ORDER BY p.designationPromotion, s.numeroSemestre, u.designationUE, e.designationECUE";
+                  AND e.\"estVisible\" = 1
+                  ORDER BY p.\"designationPromotion\", s.\"numeroSemestre\", u.\"designationUE\", e.\"designationECUE\"";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':sectionId', $sectionId, PDO::PARAM_INT);
@@ -145,7 +145,7 @@ class Ecue {
 
        
         public function toggleEcueVisibility($idEcue, $visible) {
-            $query = "UPDATE ecue SET estVisible = :visible WHERE idECUE = :idEcue";
+            $query = "UPDATE ecue SET \"estVisible\" = :visible WHERE \"idECUE\" = :idEcue";
             
             $stmt = $this->db->prepare($query);
             $visibleInt = $visible ? 1 : 0;
@@ -161,9 +161,9 @@ public function getEnseignantsByEcue($idEcue, $anneeAcadId) {
     try {
         $query = "SELECT e.*, a.noms 
                   FROM enseignant_ecue e 
-                  JOIN agent a ON e.idAgent = a.idAgent 
-                  WHERE e.idECUE = :idEcue 
-                  AND e.anneeAcad = :anneeAcad";
+                  JOIN agent a ON e.\"idAgent\" = a.\"idAgent\" 
+                  WHERE e.\"idECUE\" = :idEcue 
+                  AND e.\"anneeAcad\" = :anneeAcad";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -181,7 +181,7 @@ public function getEnseignantsByEcue($idEcue, $anneeAcadId) {
 public function getChaptersByEcue($idEcue) {
     try {
         $query = "SELECT * FROM parties_cours 
-                  WHERE idECUE = :idEcue 
+                  WHERE \"idECUE\" = :idEcue 
                   ORDER BY ordre ASC";
         
         $stmt = $this->db->prepare($query);
@@ -200,7 +200,7 @@ public function getAssignmentsByEcue($idEcue, $anneeAcadId=null) {
     try {
         $query = "SELECT d.* 
                   FROM devoirs d
-                  WHERE d.idECUE = :idEcue 
+                  WHERE d.\"idECUE\" = :idEcue 
                   ORDER BY d.date_limite ASC";
         
         $stmt = $this->db->prepare($query);
@@ -218,8 +218,8 @@ public function getAssignmentsByEcue($idEcue, $anneeAcadId=null) {
 public function getSupportsByEcue($idEcue) {
     try {
         $query = "SELECT * FROM support_cours 
-                  WHERE idECUE = :idEcue 
-                  ORDER BY dateCreation DESC";
+                  WHERE \"idECUE\" = :idEcue 
+                  ORDER BY \"dateCreation\" DESC";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -237,7 +237,7 @@ public function getRessourcesByChapter($idPartie) {
     try {
         $query = "SELECT * FROM ressources_cours 
                   WHERE idpartie = :idPartie 
-                  ORDER BY dateCreation DESC";
+                  ORDER BY \"dateCreation\" DESC";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idPartie', $idPartie, PDO::PARAM_INT);
@@ -253,7 +253,7 @@ public function getRessourcesByChapter($idPartie) {
 
 public function getAllTeachers() {
     try {
-        $query = "SELECT a.idAgent, a.noms, a.matricule 
+        $query = "SELECT a.\"idAgent\", a.noms, a.matricule 
                   FROM agent a 
                   WHERE a.type_agent = 'Enseignant' 
                   ORDER BY a.noms ASC";
@@ -272,9 +272,9 @@ public function getAllTeachers() {
 public function checkTeacherAssignment($idEcue, $idAgent, $anneeAcad) {
     try {
         $query = "SELECT COUNT(*) FROM enseignant_ecue 
-                  WHERE idECUE = :idEcue 
-                  AND idAgent = :idAgent 
-                  AND anneeAcad = :anneeAcad";
+                  WHERE \"idECUE\" = :idEcue 
+                  AND \"idAgent\" = :idAgent 
+                  AND \"anneeAcad\" = :anneeAcad";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -292,7 +292,7 @@ public function checkTeacherAssignment($idEcue, $idAgent, $anneeAcad) {
 
 public function addTeacherToEcue($idEcue, $idAgent, $poste, $anneeAcad) {
     try {
-        $query = "INSERT INTO enseignant_ecue (idECUE, idAgent, poste, anneeAcad) 
+        $query = "INSERT INTO enseignant_ecue (\"idECUE\", \"idAgent\", poste, \"anneeAcad\") 
                   VALUES (:idEcue, :idAgent, :poste, :anneeAcad)";
         
         $stmt = $this->db->prepare($query);
@@ -325,7 +325,7 @@ public function removeTeacherFromEcue($idEnseignantEcue) {
 
 public function addChapterToEcue($idEcue, $titre, $description, $ordre) {
     try {
-        $query = "INSERT INTO parties_cours (idECUE, titre, description, ordre, estVisible) 
+        $query = "INSERT INTO parties_cours (\"idECUE\", titre, description, ordre, \"estVisible\") 
                   VALUES (:idEcue, :titre, :description, :ordre, 1)";
         
         $stmt = $this->db->prepare($query);
@@ -444,7 +444,7 @@ public function deleteResource($idRessource) {
 
 public function addSupportToEcue($idEcue, $titre, $description, $fichier, $est_payant, $idfrais) {
     try {
-        $query = "INSERT INTO support_cours (idECUE, titre, description, fichier, est_payant, idfrais) 
+        $query = "INSERT INTO support_cours (\"idECUE\", titre, description, fichier, est_payant, idfrais) 
                   VALUES (:idEcue, :titre, :description, :fichier, :est_payant, :idfrais)";
         
         $stmt = $this->db->prepare($query);
@@ -509,13 +509,13 @@ public function deleteEcue($idEcue) {
         $this->db->beginTransaction();
         
         // Supprimer les enseignants associés
-        $queryEnseignants = "DELETE FROM enseignant_ecue WHERE idECUE = :idEcue";
+        $queryEnseignants = "DELETE FROM enseignant_ecue WHERE \"idECUE\" = :idEcue";
         $stmtEnseignants = $this->db->prepare($queryEnseignants);
         $stmtEnseignants->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
         $stmtEnseignants->execute();
         
         // Récupérer les chapitres pour supprimer les ressources associées
-        $queryChapitres = "SELECT idpartie FROM parties_cours WHERE idECUE = :idEcue";
+        $queryChapitres = "SELECT idpartie FROM parties_cours WHERE \"idECUE\" = :idEcue";
         $stmtChapitres = $this->db->prepare($queryChapitres);
         $stmtChapitres->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
         $stmtChapitres->execute();
@@ -530,31 +530,31 @@ public function deleteEcue($idEcue) {
         }
         
         // Supprimer les chapitres
-        $queryDeleteChapitres = "DELETE FROM parties_cours WHERE idECUE = :idEcue";
+        $queryDeleteChapitres = "DELETE FROM parties_cours WHERE \"idECUE\" = :idEcue";
         $stmtDeleteChapitres = $this->db->prepare($queryDeleteChapitres);
         $stmtDeleteChapitres->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
         $stmtDeleteChapitres->execute();
         
         // Supprimer les supports de cours
-        $querySupports = "DELETE FROM support_cours WHERE idECUE = :idEcue";
+        $querySupports = "DELETE FROM support_cours WHERE \"idECUE\" = :idEcue";
         $stmtSupports = $this->db->prepare($querySupports);
         $stmtSupports->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
         $stmtSupports->execute();
         
         // Supprimer les devoirs
-        $queryDevoirs = "DELETE FROM devoirs WHERE idECUE = :idEcue";
+        $queryDevoirs = "DELETE FROM devoirs WHERE \"idECUE\" = :idEcue";
         $stmtDevoirs = $this->db->prepare($queryDevoirs);
         $stmtDevoirs->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
         $stmtDevoirs->execute();
 
         // Vérifier les points (notes)
-        $query = "SELECT COUNT(*) FROM points WHERE ECUE_idECUE = :idEcue";
+        $query = "SELECT COUNT(*) FROM points WHERE \"ECUE_idECUE\" = :idEcue";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
         $stmt->execute();
         
         // Enfin, supprimer l'ECUE lui-même
-        $query = "DELETE FROM ecue WHERE idECUE = :idEcue";
+        $query = "DELETE FROM ecue WHERE \"idECUE\" = :idEcue";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
         $result = $stmt->execute();
@@ -578,7 +578,7 @@ public function deleteEcue($idEcue) {
 
 public function addAssignment($idECUE, $titre, $description, $fichier, $date_limite, $est_payant, $idFrais) {
     try {
-        $query = "INSERT INTO devoirs (idECUE, titre, description, fichier, date_limite, est_payant, idfrais) 
+        $query = "INSERT INTO devoirs (\"idECUE\", titre, description, fichier, date_limite, est_payant, idfrais) 
                   VALUES (:idECUE, :titre, :description, :fichier, :date_limite, :est_payant, :idFrais)";
         
         $stmt = $this->db->prepare($query);
@@ -769,7 +769,7 @@ public function updateChapter($idPartie, $titre, $description, $ordre) {
  */
 public function getEvaluationTypes() {
     try {
-        $query = "SELECT idType, designationT, categorie FROM typeevaluation ORDER BY categorie, designationT";
+        $query = "SELECT \"idType\", \"designationT\", categorie FROM typeevaluation ORDER BY categorie, \"designationT\"";
         
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -790,11 +790,11 @@ public function getEvaluationTypes() {
  */
 public function getEvaluationsByEcue($idEcue, $idAnneeAcad) {
     try {
-        $query = "SELECT e.*, t.designationT, s.designSession,s.description,t.categorie 
+        $query = "SELECT e.*, t.\"designationT\", s.\"designSession\",s.description,t.categorie 
                  FROM evaluations e
-                 INNER JOIN typeevaluation t ON e.idType = t.idType
+                 INNER JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
                  INNER JOIN session s ON e.session_idsession = s.idsession
-                 WHERE e.idECUE = ?
+                 WHERE e.\"idECUE\" = ?
                  ORDER BY e.date_evaluation, e.titre";
         
         $stmt = $this->db->prepare($query);
@@ -827,10 +827,10 @@ public function getStudentsByEcue($idEcue, $idAnneeAcad, $sessionId = null) {
         // Logique originale pour les autres cas (première session ou pas de session spécifiée)
         $query1 = "SELECT p.idpromotion 
                   FROM ecue e
-                  INNER JOIN ue u ON e.UE_idUE = u.idUE
+                  INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                   INNER JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-                  WHERE e.idECUE = :idEcue";
+                  WHERE e.\"idECUE\" = :idEcue";
         
         $stmt1 = $this->db->prepare($query1);
         $stmt1->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -875,9 +875,9 @@ public function calculateUeWeightedAverage($matricule, $idUE, $sessionId, $annee
                     SUM(cg.MF * ROUND((e.CMI + e.TD + e.TP)/" . $this->heuresParCredit . ", 2)) / 
                     SUM(ROUND((e.CMI + e.TD + e.TP)/" . $this->heuresParCredit . ", 2)) AS moyenne_ponderee
                   FROM cotes_grille cg
-                  JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
+                  JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
                   WHERE cg.matricule = :matricule
-                  AND e.UE_idUE = :idUE
+                  AND e.\"UE_idUE\" = :idUE
                   AND cg.session_idsession = :sessionId
                   AND cg.annee_acad_id = :anneeAcadId
                   GROUP BY cg.matricule";
@@ -918,7 +918,7 @@ public function getConfigurationMoyenne($idEcue, $idAnneeAcad, $sessionId = null
     try {
         // Base de la requête
         $query = "SELECT * FROM configuration_moyenne 
-                  WHERE idECUE = ? AND annee_acad_id = ?";
+                  WHERE \"idECUE\" = ? AND annee_acad_id = ?";
         $params = [$idEcue, $idAnneeAcad];
         
         // Si un ID de session est fourni, filtrer par session
@@ -973,14 +973,14 @@ public function getStudentGrades($idEtudiant, $idEcue, $idAnneeAcad) {
         $matricule = $etudiant['matricule'];
         
         // Ensuite, récupérer les notes de cet étudiant
-        $query2 = "SELECT p.*, e.idevaluation, e.titre, e.session_idsession, e.idType, t.designationT
+        $query2 = "SELECT p.*, e.idevaluation, e.titre, e.session_idsession, e.\"idType\", t.\"designationT\"
                   FROM points p
                   INNER JOIN evaluations e ON p.typeEvaluation = e.idevaluation 
-                                         AND p.ECUE_idECUE = e.idECUE 
+                                         AND p.\"ECUE_idECUE\" = e.\"idECUE\" 
                                          AND p.session_idsession = e.session_idsession
-                  INNER JOIN typeevaluation t ON e.idType = t.idType
+                  INNER JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
                   WHERE p.matricule = ? 
-                    AND p.ECUE_idECUE = ? 
+                    AND p.\"ECUE_idECUE\" = ? 
                     AND p.annee_acad_id = ?";
         
         $stmt2 = $this->db->prepare($query2);
@@ -1012,8 +1012,8 @@ public function addEvaluation($titre, $description, $date_evaluation, $idECUE, $
             throw new Exception("Un examen existe déjà pour cette session dans ce cours.");
         }
 
-        $query = "INSERT INTO evaluations (titre, description, date_evaluation, idECUE, idType, 
-                 session_idsession, ponderation, est_visible, idUser, annee_acad_id) 
+        $query = "INSERT INTO evaluations (titre, description, date_evaluation, \"idECUE\", \"idType\", 
+                 session_idsession, ponderation, est_visible, \"idUser\", annee_acad_id) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $this->db->prepare($query);
@@ -1046,9 +1046,9 @@ public function addEvaluation($titre, $description, $date_evaluation, $idECUE, $
  */
 public function getEvaluationById($idevaluation) {
     try {
-        $query = "SELECT e.*, t.designationT,t.categorie, s.designSession 
+        $query = "SELECT e.*, t.\"designationT\",t.categorie, s.\"designSession\" 
                  FROM evaluations e
-                 INNER JOIN typeevaluation t ON e.idType = t.idType
+                 INNER JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
                  INNER JOIN session s ON e.session_idsession = s.idsession
                  WHERE e.idevaluation = ?";
         
@@ -1078,7 +1078,7 @@ public function updateEvaluation($idevaluation, $titre, $description, $date_eval
         if ($annee_acad_id !== null) {
             $query = "UPDATE evaluations 
                      SET titre = ?, description = ?, date_evaluation = ?, 
-                     idType = ?, session_idsession = ?, ponderation = ?, 
+                     \"idType\" = ?, session_idsession = ?, ponderation = ?, 
                      est_visible = ?, annee_acad_id = ? 
                      WHERE idevaluation = ?";
             
@@ -1098,7 +1098,7 @@ public function updateEvaluation($idevaluation, $titre, $description, $date_eval
             // Sinon, ne pas modifier annee_acad_id
             $query = "UPDATE evaluations 
                      SET titre = ?, description = ?, date_evaluation = ?, 
-                     idType = ?, session_idsession = ?, ponderation = ?, 
+                     \"idType\" = ?, session_idsession = ?, ponderation = ?, 
                      est_visible = ? 
                      WHERE idevaluation = ?";
             
@@ -1132,7 +1132,7 @@ public function saveGrade($data) {
         // Vérifier si la note existe déjà
         $query = "SELECT COUNT(*) FROM points 
                  WHERE matricule = ? 
-                 AND ECUE_idECUE = ? 
+                 AND \"ECUE_idECUE\" = ? 
                  AND typeEvaluation = ? 
                  AND session_idsession = ? 
                  AND annee_acad_id = ?";
@@ -1151,9 +1151,9 @@ public function saveGrade($data) {
         if ($exists) {
             // Mettre à jour la note existante
             $query = "UPDATE points 
-                     SET coteObtenu = ? 
+                     SET \"coteObtenu\" = ? 
                      WHERE matricule = ? 
-                     AND ECUE_idECUE = ? 
+                     AND \"ECUE_idECUE\" = ? 
                      AND typeEvaluation = ? 
                      AND session_idsession = ? 
                      AND annee_acad_id = ?";
@@ -1169,7 +1169,7 @@ public function saveGrade($data) {
             ]);
         } else {
             // Créer une nouvelle note
-            $query = "INSERT INTO points (coteObtenu, typeEvaluation, ECUE_idECUE, session_idsession, matricule, annee_acad_id) 
+            $query = "INSERT INTO points (\"coteObtenu\", typeEvaluation, \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id) 
                      VALUES (?, ?, ?, ?, ?, ?)";
             
             $stmt = $this->db->prepare($query);
@@ -1198,7 +1198,7 @@ public function saveConfigurationMoyenne($data) {
     try {
         // Vérifier si une configuration existe déjà
         $query = "SELECT COUNT(*) FROM configuration_moyenne 
-                 WHERE idECUE = ? 
+                 WHERE \"idECUE\" = ? 
                  AND session_idsession = ? 
                  AND annee_acad_id = ?";
         
@@ -1214,8 +1214,8 @@ public function saveConfigurationMoyenne($data) {
         if ($exists) {
             // Mettre à jour la configuration existante
             $query = "UPDATE configuration_moyenne 
-                     SET formule_cc = ?, formule_ex = ?, ponderation_cc = ?, ponderation_ex = ?, idUser = ?, dateCreation = NOW() 
-                     WHERE idECUE = ? AND session_idsession = ? AND annee_acad_id = ?";
+                     SET formule_cc = ?, formule_ex = ?, ponderation_cc = ?, ponderation_ex = ?, \"idUser\" = ?, \"dateCreation\" = NOW() 
+                     WHERE \"idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?";
             
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
@@ -1231,8 +1231,8 @@ public function saveConfigurationMoyenne($data) {
         } else {
             // Créer une nouvelle configuration
             $query = "INSERT INTO configuration_moyenne 
-                     (idECUE, session_idsession, annee_acad_id, formule_cc, formule_ex, 
-                      ponderation_cc, ponderation_ex, idUser, dateCreation) 
+                     (\"idECUE\", session_idsession, annee_acad_id, formule_cc, formule_ex, 
+                      ponderation_cc, ponderation_ex, \"idUser\", \"dateCreation\") 
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
             
             $stmt = $this->db->prepare($query);
@@ -1272,7 +1272,7 @@ public function deleteEvaluation($idevaluation) {
         
         // Ensuite, supprimer les notes associées
         $query1 = "DELETE FROM points 
-                  WHERE ECUE_idECUE = ? 
+                  WHERE \"ECUE_idECUE\" = ? 
                   AND typeEvaluation = ? 
                   AND session_idsession = ?";
         
@@ -1364,7 +1364,7 @@ public function importNotes($evaluationId, $notes) {
     }
     
     // Récupérer les informations de l'évaluation
-    $evalQuery = "SELECT idECUE, session_idsession FROM evaluations WHERE idevaluation = :evaluationId";
+    $evalQuery = "SELECT \"idECUE\", session_idsession FROM evaluations WHERE idevaluation = :evaluationId";
     $evalStmt = $this->db->prepare($evalQuery);
     $evalStmt->bindParam(':evaluationId', $evaluationId, PDO::PARAM_INT);
     $evalStmt->execute();
@@ -1410,7 +1410,7 @@ public function importNotes($evaluationId, $notes) {
             $checkQuery = "SELECT idpoints FROM points 
                           WHERE matricule = :matricule 
                           AND typeEvaluation = :evaluationId  
-                          AND ECUE_idECUE = :idECUE 
+                          AND \"ECUE_idECUE\" = :idECUE 
                           AND session_idsession = :sessionId";
             $checkStmt = $this->db->prepare($checkQuery);
             $checkStmt->bindParam(':matricule', $matricule, PDO::PARAM_STR);
@@ -1423,7 +1423,7 @@ public function importNotes($evaluationId, $notes) {
             
             if (!$existingNote) {
                 // Insérer une nouvelle note
-                $insertQuery = "INSERT INTO points (coteObtenu, typeEvaluation, ECUE_idECUE, session_idsession, matricule, annee_acad_id) 
+                $insertQuery = "INSERT INTO points (\"coteObtenu\", typeEvaluation, \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id) 
                               VALUES (:note, :evaluationId, :idECUE, :sessionId, :matricule, :anneeAcadId)";
                 $stmt = $this->db->prepare($insertQuery);
                 $stmt->bindParam(':note', $note, PDO::PARAM_STR);
@@ -1434,10 +1434,10 @@ public function importNotes($evaluationId, $notes) {
                 $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
             } else {
                 // Mettre à jour la note existante
-                $updateQuery = "UPDATE points SET coteObtenu = :note 
+                $updateQuery = "UPDATE points SET \"coteObtenu\" = :note 
                               WHERE matricule = :matricule 
                               AND typeEvaluation = :evaluationId  // CORRECTION: Utiliser l'ID de l'évaluation
-                              AND ECUE_idECUE = :idECUE 
+                              AND \"ECUE_idECUE\" = :idECUE 
                               AND session_idsession = :sessionId";
                 $stmt = $this->db->prepare($updateQuery);
                 $stmt->bindParam(':note', $note, PDO::PARAM_STR);
@@ -1466,7 +1466,7 @@ public function getNotesByEvaluation($evaluationId) {
         // Récupérer d'abord l'évaluation pour obtenir ses informations
         $evalQuery = "SELECT e.*, t.categorie 
                       FROM evaluations e
-                      LEFT JOIN typeevaluation t ON e.idType = t.idType
+                      LEFT JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
                       WHERE e.idevaluation = ?";
         $evalStmt = $this->db->prepare($evalQuery);
         $evalStmt->execute([$evaluationId]);
@@ -1481,7 +1481,7 @@ public function getNotesByEvaluation($evaluationId) {
                   FROM points p
                   INNER JOIN etudiant e ON p.matricule = e.matricule
                   WHERE p.typeEvaluation = ?
-                  AND p.ECUE_idECUE = ?
+                  AND p.\"ECUE_idECUE\" = ?
                   AND p.session_idsession = ?";
         
         $stmt = $this->db->prepare($query);
@@ -1504,10 +1504,10 @@ public function getNotesByEvaluation($evaluationId) {
  * Récupère les évaluations par session
  */
 public function getEvaluationsBySession($idECUE, $annee_acad_id, $sessionId) {
-    $query = "SELECT e.*, t.designationT, t.categorie 
+    $query = "SELECT e.*, t.\"designationT\", t.categorie 
               FROM evaluations e 
-              INNER JOIN typeevaluation t ON e.idType = t.idType
-              WHERE e.idECUE = ? 
+              INNER JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
+              WHERE e.\"idECUE\" = ? 
               AND e.session_idsession = ?";
     
     $stmt = $this->db->prepare($query);
@@ -1536,10 +1536,10 @@ public function getStudentGradesBySession($idEtudiant, $idECUE, $annee_acad_id, 
         $query = "SELECT p.*, e.idevaluation, e.titre
                   FROM points p
                   INNER JOIN evaluations e ON p.typeEvaluation = e.idevaluation
-                                         AND p.ECUE_idECUE = e.idECUE
+                                         AND p.\"ECUE_idECUE\" = e.\"idECUE\"
                                          AND p.session_idsession = e.session_idsession
                   WHERE p.matricule = ?
-                  AND p.ECUE_idECUE = ?
+                  AND p.\"ECUE_idECUE\" = ?
                   AND p.annee_acad_id = ?
                   AND p.session_idsession = ?";
         
@@ -1559,7 +1559,7 @@ public function getStudentGradesBySession($idEtudiant, $idECUE, $annee_acad_id, 
 public function savePoints($coteObtenu, $idECUE, $idSession, $matricule, $annee_acad_id) {
     // Vérifier si une entrée existe déjà
     $query = "SELECT idpoints FROM points 
-              WHERE ECUE_idECUE = ? 
+              WHERE \"ECUE_idECUE\" = ? 
               AND session_idsession = ? 
               AND matricule = ? 
               AND annee_acad_id = ? 
@@ -1571,13 +1571,13 @@ public function savePoints($coteObtenu, $idECUE, $idSession, $matricule, $annee_
     
     if ($existingPoint) {
         // Mettre à jour une entrée existante
-        $query = "UPDATE points SET coteObtenu = ? 
+        $query = "UPDATE points SET \"coteObtenu\" = ? 
                   WHERE idpoints = ?";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$coteObtenu, $existingPoint['idpoints']]);
     } else {
         // Créer une nouvelle entrée
-        $query = "INSERT INTO points (coteObtenu, ECUE_idECUE, session_idsession, matricule, annee_acad_id) 
+        $query = "INSERT INTO points (\"coteObtenu\", \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id) 
                   VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$coteObtenu, $idECUE, $idSession, $matricule, $annee_acad_id]);
@@ -1588,10 +1588,10 @@ public function savePoints($coteObtenu, $idECUE, $idSession, $matricule, $annee_
  * Récupère les notes pour l'onglet "Grille de notes"
  */
 public function getCompiledGrades($idECUE, $annee_acad_id) {
-    $query = "SELECT e.matricule, e.noms, p.coteObtenu, p.session_idsession, s.designSession
+    $query = "SELECT e.matricule, e.noms, p.\"coteObtenu\", p.session_idsession, s.\"designSession\"
               FROM etudiant e
               LEFT JOIN points p ON e.matricule = p.matricule 
-                                  AND p.ECUE_idECUE = ? 
+                                  AND p.\"ECUE_idECUE\" = ? 
                                   AND p.annee_acad_id = ?
                                   AND p.typeEvaluation IS NULL
               LEFT JOIN session s ON p.session_idsession = s.idsession
@@ -1626,7 +1626,7 @@ public function getNoteByEvaluationAndStudent($evaluationId, $idEtudiant) {
         $matricule = $etudiant['matricule'];
         
         // Récupérer les informations de l'évaluation
-        $evalQuery = "SELECT idECUE, session_idsession FROM evaluations WHERE idevaluation = ?";
+        $evalQuery = "SELECT \"idECUE\", session_idsession FROM evaluations WHERE idevaluation = ?";
         $evalStmt = $this->db->prepare($evalQuery);
         $evalStmt->execute([$evaluationId]);
         $evaluation = $evalStmt->fetch(PDO::FETCH_ASSOC);
@@ -1636,10 +1636,10 @@ public function getNoteByEvaluationAndStudent($evaluationId, $idEtudiant) {
         }
         
         // Récupérer la note
-        $query = "SELECT coteObtenu FROM points 
+        $query = "SELECT \"coteObtenu\" FROM points 
                   WHERE matricule = ? 
                   AND typeEvaluation = ? 
-                  AND ECUE_idECUE = ? 
+                  AND \"ECUE_idECUE\" = ? 
                   AND session_idsession = ?";
         
         $stmt = $this->db->prepare($query);
@@ -1706,7 +1706,7 @@ public function saveNote($evaluationId, $idEtudiant, $coteObtenu) {
         error_log("Matricule trouvé: $matricule");
         
         // Récupérer les informations de l'évaluation
-        $evalQuery = "SELECT idECUE, session_idsession, annee_acad_id FROM evaluations WHERE idevaluation = ?";
+        $evalQuery = "SELECT \"idECUE\", session_idsession, annee_acad_id FROM evaluations WHERE idevaluation = ?";
         $evalStmt = $this->db->prepare($evalQuery);
         $evalStmt->execute([$evaluationId]);
         $evaluation = $evalStmt->fetch(PDO::FETCH_ASSOC);
@@ -1726,7 +1726,7 @@ public function saveNote($evaluationId, $idEtudiant, $coteObtenu) {
         $query = "SELECT COUNT(*) FROM points 
                   WHERE matricule = ? 
                   AND typeEvaluation = ? 
-                  AND ECUE_idECUE = ? 
+                  AND \"ECUE_idECUE\" = ? 
                   AND session_idsession = ?";
         
         $stmt = $this->db->prepare($query);
@@ -1736,10 +1736,10 @@ public function saveNote($evaluationId, $idEtudiant, $coteObtenu) {
         if ($exists) {
             // Mettre à jour la note existante
             $query = "UPDATE points 
-                      SET coteObtenu = ? 
+                      SET \"coteObtenu\" = ? 
                       WHERE matricule = ? 
                       AND typeEvaluation = ? 
-                      AND ECUE_idECUE = ? 
+                      AND \"ECUE_idECUE\" = ? 
                       AND session_idsession = ?";
             
             $stmt = $this->db->prepare($query);
@@ -1749,7 +1749,7 @@ public function saveNote($evaluationId, $idEtudiant, $coteObtenu) {
             return $result;
         } else {
             // Créer une nouvelle note
-            $query = "INSERT INTO points (coteObtenu, typeEvaluation, ECUE_idECUE, session_idsession, matricule, annee_acad_id) 
+            $query = "INSERT INTO points (\"coteObtenu\", typeEvaluation, \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id) 
                       VALUES (?, ?, ?, ?, ?, ?)";
             
             $stmt = $this->db->prepare($query);
@@ -1782,8 +1782,8 @@ public function saveNote($evaluationId, $idEtudiant, $coteObtenu) {
 public function countExamsBySessionAndEcue($sessionId, $idECUE, $annee_acad_id) {
     $query = "SELECT COUNT(*) as nbExams
               FROM evaluations e
-              INNER JOIN typeevaluation t ON e.idType = t.idType
-              WHERE e.idECUE = ?
+              INNER JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
+              WHERE e.\"idECUE\" = ?
               AND e.session_idsession = ? 
               AND t.categorie = 'Examen'";
     
@@ -1798,7 +1798,7 @@ public function countExamsBySessionAndEcue($sessionId, $idECUE, $annee_acad_id) 
  * Récupère les informations d'un type d'évaluation
  */
 public function getEvaluationType($idType) {
-    $query = "SELECT * FROM typeevaluation WHERE idType = ?";
+    $query = "SELECT * FROM typeevaluation WHERE \"idType\" = ?";
     $stmt = $this->db->prepare($query);
     $stmt->execute([$idType]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1822,7 +1822,7 @@ public function getSessionById($idSession) {
 public function saveCotesCompilees($coteCC, $coteEX, $moyenneFinale, $idECUE, $idSession, $matricule, $annee_acad_id, $idUser) {
     // Vérifier si une entrée existe déjà
     $query = "SELECT idpoints FROM cotes_grille 
-              WHERE ECUE_idECUE = ? 
+              WHERE \"ECUE_idECUE\" = ? 
               AND session_idsession = ? 
               AND matricule = ? 
               AND annee_acad_id = ?";
@@ -1834,13 +1834,13 @@ public function saveCotesCompilees($coteCC, $coteEX, $moyenneFinale, $idECUE, $i
     if ($existing) {
         // Mettre à jour une entrée existante
         $query = "UPDATE cotes_grille 
-                  SET CC = ?, EX = ?, MF = ?, date_compilation = NOW(), idUser = ? 
+                  SET CC = ?, EX = ?, MF = ?, date_compilation = NOW(), \"idUser\" = ? 
                   WHERE idpoints = ?";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$coteCC, $coteEX, $moyenneFinale, $idUser, $existing['idpoints']]);
     } else {
         // Créer une nouvelle entrée
-        $query = "INSERT INTO cotes_grille (CC, EX, MF, ECUE_idECUE, session_idsession, matricule, annee_acad_id, idUser) 
+        $query = "INSERT INTO cotes_grille (CC, EX, MF, \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id, \"idUser\") 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$coteCC, $coteEX, $moyenneFinale, $idECUE, $idSession, $matricule, $annee_acad_id, $idUser]);
@@ -1855,15 +1855,15 @@ public function saveCotesCompilees($coteCC, $coteEX, $moyenneFinale, $idECUE, $i
  */
 public function getCotesGrille($idECUE, $annee_acad_id) {
     try {
-        $query = "SELECT e.matricule, e.noms, c.CC, c.EX, c.MF, c.session_idsession, s.designSession
+        $query = "SELECT e.matricule, e.noms, c.CC, c.EX, c.MF, c.session_idsession, s.\"designSession\"
                   FROM etudiant e
                   LEFT JOIN (
                       SELECT * FROM cotes_grille 
-                      WHERE ECUE_idECUE = ? AND annee_acad_id = ?
+                      WHERE \"ECUE_idECUE\" = ? AND annee_acad_id = ?
                   ) c ON e.matricule = c.matricule
                   LEFT JOIN session s ON c.session_idsession = s.idsession
-                  INNER JOIN ecue ec ON ec.idECUE = ?
-                  INNER JOIN ue u ON ec.UE_idUE = u.idUE
+                  INNER JOIN ecue ec ON ec.\"idECUE\" = ?
+                  INNER JOIN ue u ON ec.\"UE_idUE\" = u.\"idUE\"
                   INNER JOIN semestre sem ON u.semestre_idsemestre = sem.idsemestre
                   INNER JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
                   WHERE e.promotion_idpromotion = p.idpromotion
@@ -1885,10 +1885,10 @@ public function getSessionsByEcue($idEcue, $annee_acad_id) {
     try {
         // D'abord, vérifier s'il y a des évaluations existantes pour cet ECUE et cette année
         // Si oui, récupérer uniquement les sessions utilisées dans ces évaluations
-        $query = "SELECT DISTINCT s.idsession, s.designSession 
+        $query = "SELECT DISTINCT s.idsession, s.\"designSession\" 
                   FROM session s
                   INNER JOIN evaluations e ON s.idsession = e.session_idsession
-                  WHERE e.idECUE = ? 
+                  WHERE e.\"idECUE\" = ? 
                   ORDER BY s.idsession";
         
         $stmt = $this->db->prepare($query);
@@ -1897,7 +1897,7 @@ public function getSessionsByEcue($idEcue, $annee_acad_id) {
         
         // Si aucune session n'est trouvée (pas encore d'évaluations), récupérer toutes les sessions disponibles
         if (empty($sessions)) {
-            $query = "SELECT idsession, designSession FROM session ORDER BY idsession";
+            $query = "SELECT idsession, \"designSession\" FROM session ORDER BY idsession";
             $stmt = $this->db->prepare($query);
             $stmt->execute();
             $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1995,7 +1995,7 @@ public function saveCoteGrille($matricule, $idEcue, $sessionId, $annee_acad_id, 
         // Vérifier si une entrée existe déjà
         $query = "SELECT idpoints FROM cotes_grille 
                   WHERE matricule = ? 
-                  AND ECUE_idECUE = ? 
+                  AND \"ECUE_idECUE\" = ? 
                   AND session_idsession = ? 
                   AND annee_acad_id = ?";
         
@@ -2013,7 +2013,7 @@ public function saveCoteGrille($matricule, $idEcue, $sessionId, $annee_acad_id, 
             return $stmt->execute([$cc, $ex, $mf, $existing['idpoints']]);
         } else {
             // Créer une nouvelle entrée
-            $query = "INSERT INTO cotes_grille (CC, EX, MF, ECUE_idECUE, session_idsession, matricule, annee_acad_id) 
+            $query = "INSERT INTO cotes_grille (CC, EX, MF, \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id) 
                       VALUES (?, ?, ?, ?, ?, ?, ?)";
             
             $stmt = $this->db->prepare($query);
@@ -2069,8 +2069,8 @@ private function calculateAverage($grades, $formula = '') {
 public function examExistsForSession($idECUE, $sessionId, $evaluationId = null) {
     try {
         $query = "SELECT COUNT(*) FROM evaluations e 
-                  JOIN typeevaluation t ON e.idType = t.idType 
-                  WHERE e.idECUE = ? 
+                  JOIN typeevaluation t ON e.\"idType\" = t.\"idType\" 
+                  WHERE e.\"idECUE\" = ? 
                   AND e.session_idsession = ? 
                   AND t.categorie = 'EX'";
         
@@ -2099,7 +2099,7 @@ public function examExistsForSession($idECUE, $sessionId, $evaluationId = null) 
  */
 public function isDeuxiemeSession($sessionId) {
     try {
-        $query = "SELECT designSession FROM session WHERE idsession = ?";
+        $query = "SELECT \"designSession\" FROM session WHERE idsession = ?";
         $stmt = $this->db->prepare($query);
         $stmt->execute([$sessionId]);
         $session = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2124,7 +2124,7 @@ public function isDeuxiemeSession($sessionId) {
  */
 public function isControleContinu($idType) {
     try {
-        $query = "SELECT categorie FROM typeevaluation WHERE idType = ?";
+        $query = "SELECT categorie FROM typeevaluation WHERE \"idType\" = ?";
         $stmt = $this->db->prepare($query);
         $stmt->execute([$idType]);
         $type = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2152,9 +2152,9 @@ public function isControleContinu($idType) {
 public function getStudentsEligibleForSecondSession($idEcue, $anneeAcadId) {
     try {
         // 1. Récupérer l'UE associée à cet ECUE
-        $query = "SELECT e.UE_idUE 
+        $query = "SELECT e.\"UE_idUE\" 
                   FROM ecue e 
-                  WHERE e.idECUE = :idEcue";
+                  WHERE e.\"idECUE\" = :idEcue";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -2169,8 +2169,8 @@ public function getStudentsEligibleForSecondSession($idEcue, $anneeAcadId) {
         
         // 2. Récupérer l'ID de la première session
         $query = "SELECT idsession FROM session 
-                  WHERE LOWER(designSession) LIKE 'premi%re session' 
-                  OR LOWER(designSession) = 'premiere session' LIMIT 1";
+                  WHERE LOWER(\"designSession\") LIKE 'premi%re session' 
+                  OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $firstSession = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2184,10 +2184,10 @@ public function getStudentsEligibleForSecondSession($idEcue, $anneeAcadId) {
         // 3. Récupérer la promotion associée à cet ECUE
         $query = "SELECT p.idpromotion 
                   FROM ecue e
-                  JOIN ue u ON e.UE_idUE = u.idUE
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                   JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-                  WHERE e.idECUE = :idEcue";
+                  WHERE e.\"idECUE\" = :idEcue";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -2208,8 +2208,8 @@ public function getStudentsEligibleForSecondSession($idEcue, $anneeAcadId) {
                              SUM(cg.MF * ROUND((ec.CMI + ec.TD + ec.TP)/" . $this->heuresParCredit . ", 2)) / 
                              SUM(ROUND((ec.CMI + ec.TD + ec.TP)/" . $this->heuresParCredit . ", 2)) AS moyenne_ponderee
                       FROM cotes_grille cg
-                      JOIN ecue ec ON cg.ECUE_idECUE = ec.idECUE
-                      WHERE ec.UE_idUE = :idUE 
+                      JOIN ecue ec ON cg.\"ECUE_idECUE\" = ec.\"idECUE\"
+                      WHERE ec.\"UE_idUE\" = :idUE 
                       AND cg.session_idsession = :sessionId
                       AND cg.annee_acad_id = :anneeAcadId
                       GROUP BY cg.matricule
@@ -2258,9 +2258,9 @@ public function getStudentsEligibleForSecondSession($idEcue, $anneeAcadId) {
 public function getStudentsEligibleForSecondSessionCours($idEcue, $anneeAcadId) {
     try {
         // 1. Récupérer l'UE associée à cet ECUE
-        $query = "SELECT e.UE_idUE, e.designationECUE
+        $query = "SELECT e.\"UE_idUE\", e.\"designationECUE\"
                   FROM ecue e
-                  WHERE e.idECUE = :idEcue";
+                  WHERE e.\"idECUE\" = :idEcue";
        
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -2276,8 +2276,8 @@ public function getStudentsEligibleForSecondSessionCours($idEcue, $anneeAcadId) 
        
         // 2. Récupérer l'ID de la première session
         $query = "SELECT idsession FROM session
-                  WHERE LOWER(designSession) LIKE 'premi%re session'
-                  OR LOWER(designSession) = 'premiere session' LIMIT 1";
+                  WHERE LOWER(\"designSession\") LIKE 'premi%re session'
+                  OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $firstSession = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2291,10 +2291,10 @@ public function getStudentsEligibleForSecondSessionCours($idEcue, $anneeAcadId) 
         // 3. Récupérer la promotion associée à cet ECUE
         $query = "SELECT p.idpromotion
                   FROM ecue e
-                  JOIN ue u ON e.UE_idUE = u.idUE
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                   JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-                  WHERE e.idECUE = :idEcue";
+                  WHERE e.\"idECUE\" = :idEcue";
        
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idEcue', $idEcue, PDO::PARAM_INT);
@@ -2310,7 +2310,7 @@ public function getStudentsEligibleForSecondSessionCours($idEcue, $anneeAcadId) 
         // 4. Vérifier d'abord si des notes existent pour cet ECUE en première session
         $query = "SELECT COUNT(*) as note_count
                   FROM cotes_grille
-                  WHERE ECUE_idECUE = :idEcue
+                  WHERE \"ECUE_idECUE\" = :idEcue
                   AND session_idsession = :sessionId
                   AND annee_acad_id = :anneeAcadId";
                   
@@ -2331,7 +2331,7 @@ public function getStudentsEligibleForSecondSessionCours($idEcue, $anneeAcadId) 
         $query = "SELECT e.idetudiant, e.matricule, e.noms
                   FROM etudiant e
                   LEFT JOIN cotes_grille cg ON e.matricule = cg.matricule
-                                           AND cg.ECUE_idECUE = :idEcue
+                                           AND cg.\"ECUE_idECUE\" = :idEcue
                                            AND cg.session_idsession = :sessionId
                                            AND cg.annee_acad_id = :anneeAcadId
                   WHERE e.promotion_idpromotion = :promotionId
@@ -2384,10 +2384,10 @@ public function getStudentsEligibleForSecondSessionCours($idEcue, $anneeAcadId) 
                         SUM(cg.MF * ROUND((ec.CMI + ec.TD + ec.TP)/" . $this->heuresParCredit . ", 2)) /
                         SUM(ROUND((ec.CMI + ec.TD + ec.TP)/" . $this->heuresParCredit . ", 2)) AS moyenne_ponderee,
                         COUNT(cg.MF) AS notes_count,
-                        (SELECT COUNT(*) FROM ecue WHERE UE_idUE = :idUE) AS total_ecues
+                        (SELECT COUNT(*) FROM ecue WHERE \"UE_idUE\" = :idUE) AS total_ecues
                       FROM cotes_grille cg
-                      JOIN ecue ec ON cg.ECUE_idECUE = ec.idECUE
-                      WHERE ec.UE_idUE = :idUE
+                      JOIN ecue ec ON cg.\"ECUE_idECUE\" = ec.\"idECUE\"
+                      WHERE ec.\"UE_idUE\" = :idUE
                       AND cg.matricule = :matricule
                       AND cg.session_idsession = :sessionId
                       AND cg.annee_acad_id = :anneeAcadId
@@ -2441,8 +2441,8 @@ public function hasValidatedUeInFirstSession($matricule, $idUE, $anneeAcadId) {
     try {
         // Récupérer l'ID de la première session
         $query = "SELECT idsession FROM session 
-                  WHERE LOWER(designSession) LIKE 'premi%re session' 
-                  OR LOWER(designSession) = 'premiere session' LIMIT 1";
+                  WHERE LOWER(\"designSession\") LIKE 'premi%re session' 
+                  OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $firstSession = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2472,11 +2472,11 @@ public function hasValidatedUeInFirstSession($matricule, $idUE, $anneeAcadId) {
  */
 public function getEcuesWithCreditsByUE($idUE) {
     try {
-        $query = "SELECT e.idECUE, e.designationECUE, e.CMI, e.TD, e.TP, 
+        $query = "SELECT e.\"idECUE\", e.\"designationECUE\", e.CMI, e.TD, e.TP, 
                   ROUND((e.CMI + e.TD + e.TP)/" . $this->heuresParCredit . ", 2) AS credit 
                   FROM ecue e 
-                  WHERE e.UE_idUE = :idUE
-                  ORDER BY e.designationECUE";
+                  WHERE e.\"UE_idUE\" = :idUE
+                  ORDER BY e.\"designationECUE\"";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idUE', $idUE, PDO::PARAM_INT);
@@ -2503,8 +2503,8 @@ public function calculateAndStoreUEAverages($idUE, $anneeAcadId) {
         
         // Récupérer l'ID de la première session
         $query = "SELECT idsession FROM session 
-                  WHERE LOWER(designSession) LIKE 'premi%re session' 
-                  OR LOWER(designSession) = 'premiere session' LIMIT 1";
+                  WHERE LOWER(\"designSession\") LIKE 'premi%re session' 
+                  OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $firstSession = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2527,8 +2527,8 @@ public function calculateAndStoreUEAverages($idUE, $anneeAcadId) {
         $query = "SELECT DISTINCT e.idetudiant, e.matricule, e.noms
                   FROM etudiant e
                   JOIN cotes_grille cg ON e.matricule = cg.matricule
-                  JOIN ecue ec ON cg.ECUE_idECUE = ec.idECUE
-                  WHERE ec.UE_idUE = :idUE
+                  JOIN ecue ec ON cg.\"ECUE_idECUE\" = ec.\"idECUE\"
+                  WHERE ec.\"UE_idUE\" = :idUE
                   AND cg.session_idsession = :sessionId
                   AND cg.annee_acad_id = :anneeAcadId
                   ORDER BY e.noms";
@@ -2606,15 +2606,15 @@ public function calculateAndStoreUEAverages($idUE, $anneeAcadId) {
  */
 public function getNotesEtudiantECUE($matricule, $ecueId, $sessionId, $anneeId) {
     try {
-        $query = "SELECT cg.*, s.designSession, e.designationECUE, 
-                         u.designationUE, u.codeUE, et.noms
+        $query = "SELECT cg.*, s.\"designSession\", e.\"designationECUE\", 
+                         u.\"designationUE\", u.\"codeUE\", et.noms
                   FROM cotes_grille cg
                   JOIN session s ON cg.session_idsession = s.idsession
-                  JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                  JOIN ue u ON e.UE_idUE = u.idUE
+                  JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                  JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   JOIN etudiant et ON cg.matricule = et.matricule
                   WHERE cg.matricule = :matricule
-                  AND cg.ECUE_idECUE = :ecueId
+                  AND cg.\"ECUE_idECUE\" = :ecueId
                   AND cg.session_idsession = :sessionId
                   AND cg.annee_acad_id = :anneeId";
         
@@ -2646,12 +2646,12 @@ public function getNotesEtudiantECUE($matricule, $ecueId, $sessionId, $anneeId) 
 public function calculerMoyenneUE($matricule, $ueId, $sessionId, $anneeId) {
     try {
         // Récupérer tous les ECUE de cette UE avec leurs notes et crédits
-        $query = "SELECT cg.ECUE_idECUE, cg.MF, e.designationECUE, 
+        $query = "SELECT cg.\"ECUE_idECUE\", cg.MF, e.\"designationECUE\", 
                          ROUND((e.CMI + e.TD + e.TP)/" . $this->heuresParCredit . ", 2) AS credit
                   FROM cotes_grille cg
-                  JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
+                  JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
                   WHERE cg.matricule = :matricule
-                  AND e.UE_idUE = :ueId
+                  AND e.\"UE_idUE\" = :ueId
                   AND cg.session_idsession = :sessionId
                   AND cg.annee_acad_id = :anneeId";
         
@@ -2695,7 +2695,7 @@ public function calculerMoyenneUE($matricule, $ueId, $sessionId, $anneeId) {
         $estValide = $moyenne !== null && $moyenne >= 10;
         
         // Récupérer les informations de l'UE
-        $queryUE = "SELECT designationUE, codeUE FROM ue WHERE idUE = :ueId";
+        $queryUE = "SELECT \"designationUE\", \"codeUE\" FROM ue WHERE \"idUE\" = :ueId";
         $stmtUE = $this->db->prepare($queryUE);
         $stmtUE->bindParam(':ueId', $ueId, PDO::PARAM_INT);
         $stmtUE->execute();
@@ -2735,10 +2735,10 @@ public function calculerMoyenneUE($matricule, $ueId, $sessionId, $anneeId) {
 public function calculerMoyenneSemestre($matricule, $semestreId, $sessionId, $anneeId) {
     try {
         // Récupérer toutes les UE de ce semestre
-        $query = "SELECT idUE, designationUE, codeUE 
+        $query = "SELECT \"idUE\", \"designationUE\", \"codeUE\" 
                   FROM ue 
                   WHERE semestre_idsemestre = :semestreId
-                  ORDER BY codeUE";
+                  ORDER BY \"codeUE\"";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':semestreId', $semestreId, PDO::PARAM_INT);
@@ -2758,7 +2758,7 @@ public function calculerMoyenneSemestre($matricule, $semestreId, $sessionId, $an
         }
         
         // Récupérer les informations du semestre
-        $querySemestre = "SELECT s.numeroSemestre, p.designationPromotion, o.designationOrientation
+        $querySemestre = "SELECT s.\"numeroSemestre\", p.\"designationPromotion\", o.\"designationOrientation\"
                           FROM semestre s
                           JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                           JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -2830,7 +2830,7 @@ public function calculerMoyenneSemestre($matricule, $semestreId, $sessionId, $an
 
 public function isNotesVerrouillees($idEcue, $idSession, $idAnneeAcad) {
     $sql = "SELECT * FROM ecue_notes_verrouillage 
-            WHERE idECUE = ? AND idsession = ? AND idannee_acad = ?";
+            WHERE \"idECUE\" = ? AND idsession = ? AND idannee_acad = ?";
     $stmt = $this->db->prepare($sql);
     $stmt->execute([$idEcue, $idSession, $idAnneeAcad]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2839,7 +2839,7 @@ public function isNotesVerrouillees($idEcue, $idSession, $idAnneeAcad) {
 
 public function verrouillageNotes($idEcue, $idSession, $idAnneeAcad, $idUser) {
     $sql = "INSERT INTO ecue_notes_verrouillage 
-            (idECUE, idsession, idannee_acad, date_verrouillage, idUser) 
+            (\"idECUE\", idsession, idannee_acad, date_verrouillage, \"idUser\") 
             VALUES (?, ?, ?, NOW(), ?)";
     $stmt = $this->db->prepare($sql);
     return $stmt->execute([$idEcue, $idSession, $idAnneeAcad, $idUser]);
@@ -2848,7 +2848,7 @@ public function verrouillageNotes($idEcue, $idSession, $idAnneeAcad, $idUser) {
 
 public function getSessionsVerrouillees($idEcue, $idAnneeAcad) {
     $sql = "SELECT idsession FROM ecue_notes_verrouillage 
-            WHERE idECUE = ? AND idannee_acad = ?";
+            WHERE \"idECUE\" = ? AND idannee_acad = ?";
     $stmt = $this->db->prepare($sql);
     $stmt->execute([$idEcue, $idAnneeAcad]);
     
@@ -2902,19 +2902,19 @@ public function deverrouillerNotes($id, $userId) {
 
 public function getAllVerrouillages($filtres = []) {
     $query = "SELECT v.*, 
-                e.designationECUE, 
-                u.designationUE,
+                e.\"designationECUE\", 
+                u.\"designationUE\",
                 s.description,
-                s.designSession,
-                p.designationPromotion,
-                usr.nomUser AS nom_utilisateur
+                s.\"designSession\",
+                p.\"designationPromotion\",
+                usr.\"nomUser\" AS nom_utilisateur
             FROM ecue_notes_verrouillage v
-            JOIN ecue e ON v.idECUE = e.idECUE
-            JOIN ue u ON e.UE_idUE = u.idUE
+            JOIN ecue e ON v.\"idECUE\" = e.\"idECUE\"
+            JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
             JOIN session s ON v.idsession = s.idsession
             LEFT JOIN semestre sem ON u.semestre_idsemestre = sem.idsemestre
             LEFT JOIN promotion p ON sem.promotion_idpromotion = p.idpromotion
-            LEFT JOIN t_users usr ON v.idUser = usr.idUser
+            LEFT JOIN t_users usr ON v.\"idUser\" = usr.\"idUser\"
             WHERE 1=1";
     
     $params = [];
@@ -2962,7 +2962,7 @@ public function getNoteEvaluation($evaluationId, $idEtudiant) {
         $matricule = $etudiant['matricule'];
         
         // Récupérer les informations de l'évaluation
-        $evalQuery = "SELECT idECUE, session_idsession FROM evaluations WHERE idevaluation = ?";
+        $evalQuery = "SELECT \"idECUE\", session_idsession FROM evaluations WHERE idevaluation = ?";
         $evalStmt = $this->db->prepare($evalQuery);
         $evalStmt->execute([$evaluationId]);
         $evaluation = $evalStmt->fetch(PDO::FETCH_ASSOC);
@@ -2972,10 +2972,10 @@ public function getNoteEvaluation($evaluationId, $idEtudiant) {
         }
         
         // Récupérer la note
-        $query = "SELECT coteObtenu FROM points 
+        $query = "SELECT \"coteObtenu\" FROM points 
                   WHERE matricule = ? 
                   AND typeEvaluation = ? 
-                  AND ECUE_idECUE = ? 
+                  AND \"ECUE_idECUE\" = ? 
                   AND session_idsession = ?";
         
         $stmt = $this->db->prepare($query);
@@ -3008,7 +3008,7 @@ public function compileNotes($idECUE, $anneeAcadId, $sessionId = null) {
     try {
         // Récupérer la configuration des moyennes
         $configQuery = "SELECT * FROM configuration_moyenne 
-                        WHERE idECUE = :idECUE AND annee_acad_id = :anneeAcadId";
+                        WHERE \"idECUE\" = :idECUE AND annee_acad_id = :anneeAcadId";
         
         if ($sessionId !== null) {
             $configQuery .= " AND session_idsession = :sessionId";
@@ -3047,7 +3047,7 @@ public function compileNotes($idECUE, $anneeAcadId, $sessionId = null) {
         
         // Récupérer les étudiants
         $studentsQuery = "SELECT DISTINCT matricule FROM points 
-                         WHERE ECUE_idECUE = :idECUE AND annee_acad_id = :anneeAcadId";
+                         WHERE \"ECUE_idECUE\" = :idECUE AND annee_acad_id = :anneeAcadId";
         
         $studentsStmt = $this->db->prepare($studentsQuery);
         $studentsStmt->bindParam(':idECUE', $idECUE, PDO::PARAM_INT);
@@ -3080,8 +3080,8 @@ public function compileNotes($idECUE, $anneeAcadId, $sessionId = null) {
                 // Récupérer les notes de CC
                 $ccQuery = "SELECT p.*, t.categorie 
                            FROM points p
-                           JOIN typeevaluation t ON p.typeEvaluation = t.idType
-                           WHERE p.ECUE_idECUE = :idECUE 
+                           JOIN typeevaluation t ON p.typeEvaluation = t.\"idType\"
+                           WHERE p.\"ECUE_idECUE\" = :idECUE 
                            AND p.session_idsession = :sessionId 
                            AND p.matricule = :matricule 
                            AND p.annee_acad_id = :anneeAcadId
@@ -3099,8 +3099,8 @@ public function compileNotes($idECUE, $anneeAcadId, $sessionId = null) {
                 // Récupérer les notes d'examen
                 $exQuery = "SELECT p.*, t.categorie 
                            FROM points p
-                           JOIN typeevaluation t ON p.typeEvaluation = t.idType
-                           WHERE p.ECUE_idECUE = :idECUE 
+                           JOIN typeevaluation t ON p.typeEvaluation = t.\"idType\"
+                           WHERE p.\"ECUE_idECUE\" = :idECUE 
                            AND p.session_idsession = :sessionId 
                            AND p.matricule = :matricule 
                            AND p.annee_acad_id = :anneeAcadId
@@ -3118,8 +3118,8 @@ public function compileNotes($idECUE, $anneeAcadId, $sessionId = null) {
                 // Récupérer les ajustements
                 $adjustQuery = "SELECT p.*, t.categorie 
                                FROM points p
-                               JOIN typeevaluation t ON p.typeEvaluation = t.idType
-                               WHERE p.ECUE_idECUE = :idECUE 
+                               JOIN typeevaluation t ON p.typeEvaluation = t.\"idType\"
+                               WHERE p.\"ECUE_idECUE\" = :idECUE 
                                AND p.session_idsession = :sessionId 
                                AND p.matricule = :matricule 
                                AND p.annee_acad_id = :anneeAcadId
@@ -3203,7 +3203,7 @@ public function compileNotes($idECUE, $anneeAcadId, $sessionId = null) {
                 
                 // Mettre à jour ou insérer dans cotes_grille
                 $checkQuery = "SELECT idpoints FROM cotes_grille 
-                              WHERE ECUE_idECUE = :idECUE 
+                              WHERE \"ECUE_idECUE\" = :idECUE 
                               AND session_idsession = :sessionId 
                               AND matricule = :matricule 
                               AND annee_acad_id = :anneeAcadId";
@@ -3232,7 +3232,7 @@ public function compileNotes($idECUE, $anneeAcadId, $sessionId = null) {
                 } else {
                     // Insérer
                     $insertQuery = "INSERT INTO cotes_grille 
-                                   (CC, EX, MF, ECUE_idECUE, session_idsession, matricule, annee_acad_id, idUser) 
+                                   (CC, EX, MF, \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id, \"idUser\") 
                                    VALUES (:cc, :ex, :mf, :idECUE, :sessionId, :matricule, :anneeAcadId, :idUser)";
                     
                     $insertStmt = $this->db->prepare($insertQuery);

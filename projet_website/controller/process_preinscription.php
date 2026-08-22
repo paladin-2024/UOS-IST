@@ -43,7 +43,7 @@ try {
     
     
     // Générer une référence unique pour la pré-inscription
-    $reference = 'INBTP-' . date('Y') . '-' . uniqid();
+    $reference = 'ISTM-' . date('Y') . '-' . uniqid();
     
     // Récupérer les données du formulaire
     $nom = $_POST['nom'];
@@ -271,24 +271,24 @@ try {
     /*
     // Envoyer un email de confirmation
     $to = $email;
-    $subject = "Confirmation de pré-inscription à l'INBTP";
+    $subject = "Confirmation de pré-inscription à l'ISTM-BENI";
     
     $message = "
     <html>
     <head>
-        <title>Confirmation de pré-inscription à l'INBTP</title>
+        <title>Confirmation de pré-inscription à l'ISTM-BENI</title>
     </head>
     <body>
         <div style='max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;'>
             <div style='text-align: center; margin-bottom: 20px;'>
-                <img src='' alt='Logo INBTP' style='max-width: 150px;'>
+                <img src='' alt='Logo ISTM-BENI' style='max-width: 150px;'>
             </div>
             
             <h2 style='color: #003366; text-align: center;'>Confirmation de pré-inscription</h2>
             
             <p>Cher(e) <strong>$prenom $nom</strong>,</p>
             
-            <p>Nous vous remercions pour votre demande de pré-inscription à l'Institut National du Bâtiment et des Travaux Publics (INBTP).</p>
+            <p>Nous vous remercions pour votre demande de pré-inscription à l'Institut Supérieur des Techniques Médicales de Beni (ISTM-BENI).</p>
             
             <div style='background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;'>
                 <p style='margin: 0;'><strong>Référence de votre demande :</strong> $reference</p>
@@ -308,7 +308,7 @@ try {
             
             <p>Pour toute question concernant votre pré-inscription, veuillez contacter le service des admissions :</p>
             <ul>
-                <li>Email : admissions@inbtp.edu.cd</li>
+                <li>Email : scolarite@istmbeni.ac.cd</li>
                 <li>Téléphone : +243 123 456 789</li>
             </ul>
             
@@ -316,7 +316,7 @@ try {
             
             <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;'>
                 <p style='color: #666; font-size: 12px;'>Institut National du Bâtiment et des Travaux Publics<br>
-                123 Avenue de l'INBTP, Commune de Limete<br>
+                Beni, Nord-Kivu, RDC<br>
                 Kinshasa, République Démocratique du Congo</p>
             </div>
         </div>
@@ -327,7 +327,7 @@ try {
     // En-têtes pour l'email HTML
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= 'From: INBTP <info@inbtpkinshasa.info>' . "\r\n";
+    $headers .= 'From: ISTM-BENI <scolarite@istmbeni.ac.cd>' . "\r\n";
     
     // Envoyer l'email
     mail($to, $subject, $message, $headers);

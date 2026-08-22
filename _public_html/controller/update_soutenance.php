@@ -33,7 +33,7 @@ $userResponsibilities = [];
 if (!$hasFullAccess) {
     try {
         $query = "SELECT DISTINCT section_idsection FROM responsable_section 
-                  WHERE idUser = ?";
+                  WHERE \"idUser\" = ?";
         $stmt = $connexion->prepare($query);
         $stmt->execute([$_SESSION['id']]);
         $userResponsibilities = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -99,7 +99,7 @@ try {
         
         $query = "SELECT s.* FROM soutenance s
                   JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
-                  JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+                  JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
                   JOIN orientation o ON sp.idorientation = o.idorientation
                   JOIN section sec ON o.section_idsection = sec.idsection
                   WHERE s.idsoutenance = ? 

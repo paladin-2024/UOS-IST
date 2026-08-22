@@ -13,7 +13,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -21,7 +21,7 @@ $stmtAnnee->execute();
 $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -47,7 +47,7 @@ $isResponsableSection = false;
 if ($userRole != 1) { // Si pas admin
     $query = "SELECT section_idsection 
               FROM responsable_section 
-              WHERE idUser = :userId 
+              WHERE \"idUser\" = :userId 
               AND annee_acad_idannee_acad = :anneeId";
     
     $stmt = $pdo->prepare($query);
@@ -67,13 +67,13 @@ $stmtAnnees->execute();
 $academicYears = $stmtAnnees->fetchAll(PDO::FETCH_ASSOC);
 
 // Sections (selon les droits)
-$querySections = "SELECT DISTINCT s.idsection, s.designationSection 
+$querySections = "SELECT DISTINCT s.idsection, s.\"designationSection\" 
                   FROM section s";
 if ($isResponsableSection && !empty($userSections)) {
     $placeholders = str_repeat('?,', count($userSections) - 1) . '?';
     $querySections .= " WHERE s.idsection IN ($placeholders)";
 }
-$querySections .= " ORDER BY s.designationSection";
+$querySections .= " ORDER BY s.\"designationSection\"";
 
 $stmtSections = $pdo->prepare($querySections);
 if ($isResponsableSection && !empty($userSections)) {
@@ -86,12 +86,12 @@ $sections = $stmtSections->fetchAll(PDO::FETCH_ASSOC);
 // Promotions (selon la section sélectionnée)
 $promotions = [];
 if ($filterSection) {
-    $queryPromotions = "SELECT DISTINCT p.idpromotion, p.designationPromotion, p.cycle
+    $queryPromotions = "SELECT DISTINCT p.idpromotion, p.\"designationPromotion\", p.cycle
                         FROM promotion p
                         JOIN orientation o ON p.orientation_idorientation = o.idorientation
                         WHERE o.section_idsection = :section
                         AND p.annee_acad_idannee_acad = :annee
-                        ORDER BY p.cycle, p.designationPromotion";
+                        ORDER BY p.cycle, p.\"designationPromotion\"";
     $stmtPromotions = $pdo->prepare($queryPromotions);
     $stmtPromotions->bindParam(':section', $filterSection);
     $stmtPromotions->bindParam(':annee', $filterAnnee);
@@ -107,23 +107,23 @@ $queryEtudiants = "SELECT DISTINCT
                     e.matricule,
                     e.noms,
                     e.sexe,
-                    e.dateNaissance,
-                    e.lieuNaissance,
+                    e.\"dateNaissance\",
+                    e.\"lieuNaissance\",
                     e.telephone,
                     e.adressemail as email,
                     1 as est_actif,
-                    e.dateEnregistrement as dateCreation,
+                    e.\"dateEnregistrement\" as \"dateCreation\",
                     p.idpromotion,
-                    p.designationPromotion,
+                    p.\"designationPromotion\",
                     p.cycle,
-                    o.designationOrientation,
+                    o.\"designationOrientation\",
                     sec.idsection,
-                    sec.designationSection,
+                    sec.\"designationSection\",
                     aa.designation as annee_designation,
                     eo.idetudiant as est_en_ordre,
                     suj.idsujets as a_sujet,
                     suj.intitule as sujet_intitule,
-                    suj.etatSujet as sujet_etat,
+                    suj.\"etatSujet\" as sujet_etat,
                     'Actif' as statut_etudiant,
                     'success' as badge_statut
                 FROM etudiant e
@@ -186,7 +186,7 @@ if (!empty($filterEnOrdre)) {
     }
 }
 
-$queryEtudiants .= " ORDER BY sec.designationSection, p.designationPromotion, e.noms";
+$queryEtudiants .= " ORDER BY sec.\"designationSection\", p.\"designationPromotion\", e.noms";
 
 $stmtEtudiants = $pdo->prepare($queryEtudiants);
 foreach ($params as $key => $value) {

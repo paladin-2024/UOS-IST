@@ -6,7 +6,7 @@ $connexion = Connexion::getInstance()->getPDO();
 $idUser = $_SESSION['id'];
 
 // Récupérer l'idAgent de l'utilisateur connecté
-$stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+$stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
 $stmt->bindParam(':idUser', $idUser);
 $stmt->execute();
 $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -16,7 +16,7 @@ $idAgent = $user_agent['idAgent'] ?? null;
 $stmt_sections = $connexion->prepare("
     SELECT DISTINCT section_idsection 
     FROM responsable_section 
-    WHERE idUser = :idUser
+    WHERE \"idUser\" = :idUser
 ");
 $stmt_sections->bindParam(':idUser', $idUser);
 $stmt_sections->execute();
@@ -68,8 +68,8 @@ if ($type_recherche === 'matricule') {
         // Récupérer les informations de l'étudiant par matricule
         $sql = "
          SELECT e.*, 
-         p.designationPromotion AS promotion_nom,
-         CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte_nom,
+         p.\"designationPromotion\" AS promotion_nom,
+         CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte_nom,
          aa.designation AS annee_academique
          FROM etudiant e
          LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -95,8 +95,8 @@ if ($type_recherche === 'matricule') {
         $recherche = "%$nom_recherche%";
         $sql = "
         SELECT e.*, 
-               p.designationPromotion AS promotion_nom,
-               CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte_nom,
+               p.\"designationPromotion\" AS promotion_nom,
+               CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte_nom,
                aa.designation AS annee_academique
         FROM etudiant e
         LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -169,7 +169,7 @@ if ($etudiant) {
             cf.designation AS categorie_nom,
             aa.designation AS annee_academique,
             aa.idannee_acad AS annee_id,
-            p.designationPromotion AS promotion_nom,
+            p.\"designationPromotion\" AS promotion_nom,
             (SELECT COALESCE(SUM(pf.montant), 0) 
              FROM paiements_frais pf 
              WHERE pf.affectation_id = af.id 
@@ -220,7 +220,7 @@ if ($etudiant) {
             cf.designation AS categorie_nom,
             aa.designation AS annee_academique,
             aa.idannee_acad AS annee_id,
-            p.designationPromotion AS promotion_nom,
+            p.\"designationPromotion\" AS promotion_nom,
             (SELECT COALESCE(SUM(pf.montant), 0) 
              FROM paiements_frais pf 
              WHERE pf.affectation_id = af.id 
@@ -353,7 +353,7 @@ if ($etudiant) {
                t.date_transaction,
                t.source,
                t.source_id,
-               u.nomUser AS agent_nom,
+               u.\"nomUser\" AS agent_nom,
                CASE 
                    WHEN t.source = 'Caisse' THEN (SELECT designation FROM caisses WHERE id = t.source_id)
                    WHEN t.source = 'Banque' THEN (SELECT CONCAT(nom_banque, ' - ', intitule_compte) FROM comptes_bancaires WHERE id = t.source_id)
@@ -364,7 +364,7 @@ if ($etudiant) {
         INNER JOIN frais f ON af.frais_id = f.id
         LEFT JOIN annee_acad aa ON f.annee_acad_id = aa.idannee_acad
         LEFT JOIN transactions t ON pf.transaction_id = t.id
-        LEFT JOIN t_users u ON t.idUser = u.idUser
+        LEFT JOIN t_users u ON t.\"idUser\" = u.\"idUser\"
         WHERE pf.matricule_etudiant = :matricule
         AND pf.est_confirme = 1";
 
@@ -468,7 +468,7 @@ $solde_total = isset($totaux_par_devise['USD']) ? $totaux_par_devise['USD']['sol
 
         <?php if ($has_section_responsibility):
             // Récupérer les noms des sections
-            $sections_names_sql = "SELECT designationSection FROM section WHERE idsection IN (" . implode(',', array_map('intval', $user_sections)) . ")";
+            $sections_names_sql = "SELECT \"designationSection\" FROM section WHERE idsection IN (" . implode(',', array_map('intval', $user_sections)) . ")";
             $stmt_names = $connexion->prepare($sections_names_sql);
             $stmt_names->execute();
             $sections_names = $stmt_names->fetchAll(PDO::FETCH_COLUMN);

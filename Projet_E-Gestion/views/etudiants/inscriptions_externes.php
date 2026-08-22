@@ -15,13 +15,12 @@ if ($lien_id) {
     $params[] = $lien_id;
 }
 
-$stmt = $connexion->prepare("
-    SELECT ie.*, 
+$stmt = $connexion->prepare("    SELECT ie.*, 
            lie.titre as lien_titre,
            lie.reference as lien_reference,
-           p.designationPromotion,
-           o.designationOrientation,
-           s.designationSection,
+           p.\"designationPromotion\",
+           o.\"designationOrientation\",
+           s.\"designationSection\",
            COUNT(die.id) as nb_documents
     FROM inscriptions_externes ie
     LEFT JOIN liens_inscription_externe lie ON ie.lien_inscription_id = lie.id
@@ -29,7 +28,7 @@ $stmt = $connexion->prepare("
     LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
     LEFT JOIN section s ON o.section_idsection = s.idsection
     LEFT JOIN documents_inscription_externe die ON ie.id = die.inscription_externe_id
-    $where_clause
+   $where_clause
     GROUP BY ie.id
     ORDER BY ie.date_soumission DESC
 ");
@@ -39,7 +38,7 @@ $inscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Récupérer les liens pour le filtre
 $stmt = $connexion->query("
     SELECT lie.id, lie.titre, lie.reference,
-           p.designationPromotion,
+           p.\"designationPromotion\",
            COUNT(ie.id) as nb_inscriptions
     FROM liens_inscription_externe lie
     LEFT JOIN promotion p ON lie.promotion_id = p.idpromotion

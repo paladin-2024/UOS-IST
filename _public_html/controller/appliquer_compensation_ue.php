@@ -110,7 +110,7 @@ try {
                 if ($isDeuxiemeSession && $premiereSessionId) {
                     // Récupérer les notes de l'UE déficitaire (prendre la meilleure note entre S1 et S2 pour chaque ECUE)
                     $getNotesDeficitaireQuery = $db->prepare("
-                        SELECT e.idECUE as ECUE_idECUE, e.CMI, e.TD, e.TP,
+                        SELECT e.\"idECUE\" as \"ECUE_idECUE\", e.CMI, e.TD, e.TP,
                                COALESCE(
                                    CASE 
                                        WHEN cg1.MF >= 10 THEN cg1.MF
@@ -126,11 +126,11 @@ try {
                                    ELSE ?
                                END as source_session
                         FROM ecue e
-                        LEFT JOIN cotes_grille cg1 ON e.idECUE = cg1.ECUE_idECUE 
+                        LEFT JOIN cotes_grille cg1 ON e.\"idECUE\" = cg1.\"ECUE_idECUE\" 
                             AND cg1.matricule = ? AND cg1.session_idsession = ? AND cg1.annee_acad_id = ?
-                        LEFT JOIN cotes_grille cg2 ON e.idECUE = cg2.ECUE_idECUE 
+                        LEFT JOIN cotes_grille cg2 ON e.\"idECUE\" = cg2.\"ECUE_idECUE\" 
                             AND cg2.matricule = ? AND cg2.session_idsession = ? AND cg2.annee_acad_id = ?
-                        WHERE e.UE_idUE = ?
+                        WHERE e.\"UE_idUE\" = ?
                         HAVING MF IS NOT NULL
                     ");
                     $getNotesDeficitaireQuery->execute([
@@ -143,7 +143,7 @@ try {
 
                     // Récupérer les notes de l'UE compensatrice
                     $getNotesCompensatriceQuery = $db->prepare("
-                        SELECT e.idECUE as ECUE_idECUE, e.CMI, e.TD, e.TP,
+                        SELECT e.\"idECUE\" as \"ECUE_idECUE\", e.CMI, e.TD, e.TP,
                                COALESCE(
                                    CASE 
                                        WHEN cg1.MF >= 10 THEN cg1.MF
@@ -159,11 +159,11 @@ try {
                                    ELSE ?
                                END as source_session
                         FROM ecue e
-                        LEFT JOIN cotes_grille cg1 ON e.idECUE = cg1.ECUE_idECUE 
+                        LEFT JOIN cotes_grille cg1 ON e.\"idECUE\" = cg1.\"ECUE_idECUE\" 
                             AND cg1.matricule = ? AND cg1.session_idsession = ? AND cg1.annee_acad_id = ?
-                        LEFT JOIN cotes_grille cg2 ON e.idECUE = cg2.ECUE_idECUE 
+                        LEFT JOIN cotes_grille cg2 ON e.\"idECUE\" = cg2.\"ECUE_idECUE\" 
                             AND cg2.matricule = ? AND cg2.session_idsession = ? AND cg2.annee_acad_id = ?
-                        WHERE e.UE_idUE = ?
+                        WHERE e.\"UE_idUE\" = ?
                         HAVING MF IS NOT NULL
                     ");
                     $getNotesCompensatriceQuery->execute([
@@ -176,19 +176,19 @@ try {
                 } else {
                     // Première session: requête simple
                     $getNotesDeficitaireQuery = $db->prepare("
-                        SELECT cg.ECUE_idECUE, cg.MF, e.CMI, e.TD, e.TP, ? as source_session
+                        SELECT cg.\"ECUE_idECUE\", cg.MF, e.CMI, e.TD, e.TP, ? as source_session
                         FROM cotes_grille cg
-                        JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                        WHERE cg.matricule = ? AND e.UE_idUE = ? AND cg.session_idsession = ? AND cg.annee_acad_id = ?
+                        JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                        WHERE cg.matricule = ? AND e.\"UE_idUE\" = ? AND cg.session_idsession = ? AND cg.annee_acad_id = ?
                     ");
                     $getNotesDeficitaireQuery->execute([$sessionId, $matricule, $ueDeficitaireId, $sessionId, $anneeId]);
                     $notesDeficitaire = $getNotesDeficitaireQuery->fetchAll(PDO::FETCH_ASSOC);
 
                     $getNotesCompensatriceQuery = $db->prepare("
-                        SELECT cg.ECUE_idECUE, cg.MF, e.CMI, e.TD, e.TP, ? as source_session
+                        SELECT cg.\"ECUE_idECUE\", cg.MF, e.CMI, e.TD, e.TP, ? as source_session
                         FROM cotes_grille cg
-                        JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                        WHERE cg.matricule = ? AND e.UE_idUE = ? AND cg.session_idsession = ? AND cg.annee_acad_id = ?
+                        JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                        WHERE cg.matricule = ? AND e.\"UE_idUE\" = ? AND cg.session_idsession = ? AND cg.annee_acad_id = ?
                     ");
                     $getNotesCompensatriceQuery->execute([$sessionId, $matricule, $ueCompensatriceId, $sessionId, $anneeId]);
                     $notesCompensatrice = $getNotesCompensatriceQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -286,7 +286,7 @@ try {
                     $updateQuery = $db->prepare("
                         UPDATE cotes_grille 
                         SET MF = ?, date_compilation = NOW()
-                        WHERE matricule = ? AND ECUE_idECUE = ? AND session_idsession = ? AND annee_acad_id = ?
+                        WHERE matricule = ? AND \"ECUE_idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?
                     ");
                     $updateQuery->execute([$noteInfo['note'], $matricule, $ecueId, $targetSession, $anneeId]);
                 }

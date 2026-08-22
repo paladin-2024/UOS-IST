@@ -21,7 +21,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -31,7 +31,7 @@ $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 // Récupérer les sections dont l'utilisateur est responsable
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -53,17 +53,17 @@ function getDataForExport($pdo, $userSections, $anneeId) {
     $params = [':anneeId' => $anneeId];
     
     $query = "SELECT 
-                s.designationSection,
+                s.\"designationSection\",
                 p.idpromotion,
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 p.cycle,
                 p.est_terminale,
-                o.designationOrientation,
+                o.\"designationOrientation\",
                 COUNT(DISTINCT e.idetudiant) as nb_etudiants_inscrits,
                 COUNT(DISTINCT CASE WHEN e.est_actif = 1 THEN e.idetudiant END) as nb_etudiants_actifs,
                 COUNT(DISTINCT suj.idsujets) as nb_sujets_recherche,
-                COUNT(DISTINCT CASE WHEN suj.etatSujet = 'Validé' THEN suj.idsujets END) as nb_sujets_valides,
-                COUNT(DISTINCT ag.idAgent) as nb_enseignants,
+                COUNT(DISTINCT CASE WHEN suj.\"etatSujet\" = 'Validé' THEN suj.idsujets END) as nb_sujets_valides,
+                COUNT(DISTINCT ag.\"idAgent\") as nb_enseignants,
                 COUNT(DISTINCT eo.idetudiant) as nb_etudiants_en_ordre,
                 -- Calcul des heures de cours
                 SUM(CASE WHEN ecue.CMI > 0 THEN ecue.CMI ELSE 0 END) as total_heures_cm_prevues,
@@ -80,13 +80,13 @@ function getDataForExport($pdo, $userSections, $anneeId) {
               LEFT JOIN sujets suj ON e.idetudiant = suj.etudiant_idetudiant 
                   AND suj.annee_acad_idannee_acad = :anneeId
               LEFT JOIN enseignant_section es ON s.idsection = es.idsection
-              LEFT JOIN agent ag ON es.idenseignant = ag.idAgent
+              LEFT JOIN agent ag ON es.idenseignant = ag.\"idAgent\"
               LEFT JOIN etudiant_en_ordre eo ON e.idetudiant = eo.idetudiant 
                   AND eo.annee_acad_idannee_acad = :anneeId
               LEFT JOIN semestre sem ON p.idpromotion = sem.promotion_idpromotion
               LEFT JOIN ue ON sem.idsemestre = ue.semestre_idsemestre
-              LEFT JOIN ecue ON ue.idUE = ecue.UE_idUE AND ecue.estVisible = 1
-              LEFT JOIN suivi_enseignements se ON ecue.idECUE = se.idECUE 
+              LEFT JOIN ecue ON ue.\"idUE\" = ecue.\"UE_idUE\" AND ecue.\"estVisible\" = 1
+              LEFT JOIN suivi_enseignements se ON ecue.\"idECUE\" = se.\"idECUE\" 
                   AND se.annee_acad_idannee_acad = :anneeId
               WHERE p.annee_acad_idannee_acad = :anneeId";
     
@@ -101,7 +101,7 @@ function getDataForExport($pdo, $userSections, $anneeId) {
     }
     
     $query .= " GROUP BY s.idsection, p.idpromotion
-                ORDER BY s.designationSection, p.cycle, p.designationPromotion";
+                ORDER BY s.\"designationSection\", p.cycle, p.\"designationPromotion\"";
     
     $stmt = $pdo->prepare($query);
     foreach ($params as $key => $value) {

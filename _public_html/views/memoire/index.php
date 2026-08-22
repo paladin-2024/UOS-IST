@@ -16,7 +16,7 @@ if (!$hasFullAccess) {
         // Récupérer les sections gérées par l'utilisateur
         $connexion = Connexion::getInstance()->getPDO();
         $query = "SELECT DISTINCT section_idsection FROM responsable_section 
-                  WHERE idUser = :userId";
+                  WHERE \"idUser\" = :userId";
         $stmt = $connexion->prepare($query);
         $stmt->execute(['userId' => $userId]);
         $userResponsibilities = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -62,15 +62,15 @@ $allYears = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $specialisationsHierarchy = [];
 if ($hasFullAccess) {
     // Admin - toutes les spécialisations
-    $query = "SELECT s.idSpecialisation, s.designation as spec_designation, 
-                     o.idorientation, o.designationOrientation as orientation_designation,
-                     sec.idsection, sec.designationSection as section_designation,
-                     ur.designation_UR as unite_recherche
+    $query = "SELECT s.\"idSpecialisation\", s.designation as spec_designation, 
+                     o.idorientation, o.\"designationOrientation\" as orientation_designation,
+                     sec.idsection, sec.\"designationSection\" as section_designation,
+                     ur.\"designation_UR\" as unite_recherche
               FROM specialisation s
-              LEFT JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+              LEFT JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
               LEFT JOIN orientation o ON s.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
-              ORDER BY sec.designationSection, o.designationOrientation, s.designation";
+              ORDER BY sec.\"designationSection\", o.\"designationOrientation\", s.designation";
     $stmt = $connexion->prepare($query);
     $stmt->execute();
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -78,16 +78,16 @@ if ($hasFullAccess) {
     // Responsable de section - seulement les spécialisations de ses sections
     if (!empty($userResponsibilities)) {
         $placeholders = str_repeat('?,', count($userResponsibilities) - 1) . '?';
-        $query = "SELECT s.idSpecialisation, s.designation as spec_designation, 
-                         o.idorientation, o.designationOrientation as orientation_designation,
-                         sec.idsection, sec.designationSection as section_designation,
-                         ur.designation_UR as unite_recherche
+        $query = "SELECT s.\"idSpecialisation\", s.designation as spec_designation, 
+                         o.idorientation, o.\"designationOrientation\" as orientation_designation,
+                         sec.idsection, sec.\"designationSection\" as section_designation,
+                         ur.\"designation_UR\" as unite_recherche
                   FROM specialisation s
-                  LEFT JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+                  LEFT JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
                   LEFT JOIN orientation o ON s.idorientation = o.idorientation
                   LEFT JOIN section sec ON o.section_idsection = sec.idsection
                   WHERE sec.idsection IN ($placeholders)
-                  ORDER BY sec.designationSection, o.designationOrientation, s.designation";
+                  ORDER BY sec.\"designationSection\", o.\"designationOrientation\", s.designation";
         $stmt = $connexion->prepare($query);
         $stmt->execute($userResponsibilities);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -140,13 +140,13 @@ try {
                       sj.intitule as sujet_titre, sj.idsujets, sj.cycle,
                       e.noms as etudiant_nom, e.matricule,
                       d.noms as directeur_nom,
-                      sp.designation as specialisation, sp.idSpecialisation,
-                      dm.idDepot, dm.fichier as memoire_fichier, dm.dateDepot
+                      sp.designation as specialisation, sp.\"idSpecialisation\",
+                      dm.\"idDepot\", dm.fichier as memoire_fichier, dm.\"dateDepot\"
                FROM soutenance s
                JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
                JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-               LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-               LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+               LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+               LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
                LEFT JOIN depot_memoire dm ON sj.idsujets = dm.sujets_idsujets
                WHERE s.annee_acad_idannee_acad = ?";
 
@@ -191,8 +191,8 @@ try {
             $query = "SELECT DISTINCT a.*, g.designation as gradeDesignation
                        FROM agent a
                        LEFT JOIN grade g ON a.grade_id = g.idgrade
-                       INNER JOIN sujets sj ON sj.idDirecteur = a.idAgent OR sj.idEncadrant = a.idAgent
-                       WHERE a.type_agent = 'Enseignant' AND sj.idSpecialisation = :specialisationId
+                       INNER JOIN sujets sj ON sj.\"idDirecteur\" = a.\"idAgent\" OR sj.idEncadrant = a.\"idAgent\"
+                       WHERE a.type_agent = 'Enseignant' AND sj.\"idSpecialisation\" = :specialisationId
                        ORDER BY a.noms";
             $stmt = $connexion->prepare($query);
             $stmt->execute(['specialisationId' => $selectedSpecialisation]);
@@ -215,9 +215,9 @@ try {
                 $query = "SELECT DISTINCT a.*, g.designation as gradeDesignation
                            FROM agent a
                            LEFT JOIN grade g ON a.grade_id = g.idgrade
-                           LEFT JOIN agent_section ag_s ON ag_s.idAgent = a.idAgent
-                           INNER JOIN sujets sj ON sj.idDirecteur = a.idAgent OR sj.idEncadrant = a.idAgent
-                           WHERE a.type_agent = 'Enseignant' AND ag_s.idsection IN ($placeholders) AND sj.idSpecialisation = :specialisationId
+                           LEFT JOIN agent_section ag_s ON ag_s.\"idAgent\" = a.\"idAgent\"
+                           INNER JOIN sujets sj ON sj.\"idDirecteur\" = a.\"idAgent\" OR sj.idEncadrant = a.\"idAgent\"
+                           WHERE a.type_agent = 'Enseignant' AND ag_s.idsection IN ($placeholders) AND sj.\"idSpecialisation\" = :specialisationId
                            ORDER BY a.noms";
                 $stmt = $connexion->prepare($query);
                 $executeParams = array_merge($userResponsibilities, ['specialisationId' => $selectedSpecialisation]);
@@ -227,7 +227,7 @@ try {
                 $query = "SELECT DISTINCT a.*, g.designation as gradeDesignation
                            FROM agent a
                            LEFT JOIN grade g ON a.grade_id = g.idgrade
-                           LEFT JOIN agent_section ag_s ON ag_s.idAgent = a.idAgent
+                           LEFT JOIN agent_section ag_s ON ag_s.\"idAgent\" = a.\"idAgent\"
                            WHERE a.type_agent = 'Enseignant' AND ag_s.idsection IN ($placeholders)
                            ORDER BY a.noms";
                 $stmt = $connexion->prepare($query);
@@ -260,13 +260,13 @@ try {
 // Récupérer les promotions pour les filtres d'export
 $promotionsExport = [];
 try {
-    $queryPromos = "SELECT DISTINCT p.idpromotion, p.designationPromotion as designation 
+    $queryPromos = "SELECT DISTINCT p.idpromotion, p.\"designationPromotion\" as designation 
                     FROM promotion p
                     INNER JOIN etudiant e ON e.promotion_idpromotion = p.idpromotion
                     INNER JOIN sujets sj ON sj.etudiant_idetudiant = e.idetudiant
                     INNER JOIN soutenance s ON s.sujets_idsujets = sj.idsujets
                     WHERE s.annee_acad_idannee_acad = ?
-                    ORDER BY p.designationPromotion";
+                    ORDER BY p.\"designationPromotion\"";
     $stmtPromos = $connexion->prepare($queryPromos);
     $stmtPromos->execute([$selectedYearId]);
     $promotionsExport = $stmtPromos->fetchAll(PDO::FETCH_ASSOC);
@@ -298,15 +298,15 @@ try {
                        sj.intitule as sujet_titre, sj.idsujets, sj.cycle,
                        e.noms as etudiant_nom, e.matricule, e.idetudiant,
                        d.noms as directeur_nom,
-                       sp.designation as specialisation, sp.idSpecialisation,
+                       sp.designation as specialisation, sp.\"idSpecialisation\",
                        s.idsoutenance, s.statut as soutenance_statut,
                        s.date_soutenance, s.lieu as lieu_soutenance,
                        j.idjury, j.designation as jury_designation
                 FROM depot_memoire dm
                 JOIN sujets sj ON dm.sujets_idsujets = sj.idsujets
                 JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-                LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-                LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+                LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+                LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
                 LEFT JOIN soutenance s ON sj.idsujets = s.sujets_idsujets
                 LEFT JOIN jury j ON s.jury_id = j.idjury
                 WHERE (s.annee_acad_idannee_acad = ? OR s.idsoutenance IS NULL)";
@@ -332,7 +332,7 @@ try {
         $executeParams = array_merge($executeParams, $userResponsibilities);
     }
 
-    $query .= " ORDER BY dm.dateDepot DESC LIMIT 50";
+    $query .= " ORDER BY dm.\"dateDepot\" DESC LIMIT 50";
 
     $stmt = $connexion->prepare($query);
     $stmt->execute($executeParams);
@@ -349,8 +349,8 @@ $jurysDisponibles = [];
 try {
     $query = "SELECT j.idjury, j.designation, j.date_creation, a1.noms as president_nom, a2.noms as secretaire_nom
               FROM jury j
-              LEFT JOIN agent a1 ON j.id_president = a1.idAgent
-              LEFT JOIN agent a2 ON j.id_secretaire = a2.idAgent
+              LEFT JOIN agent a1 ON j.id_president = a1.\"idAgent\"
+              LEFT JOIN agent a2 ON j.id_secretaire = a2.\"idAgent\"
               WHERE j.annee_acad_id = :yearId AND j.est_actif = 1
               ORDER BY j.designation";
     $stmt = $connexion->prepare($query);
@@ -364,20 +364,20 @@ try {
 // Récupérer TOUS les travaux (sujets) - avec ou sans dépôt
 $allTravaux = [];
 try {
-    $query = "SELECT DISTINCT sj.idsujets, sj.intitule as sujet_titre, sj.cycle, sj.idSpecialisation,
+    $query = "SELECT DISTINCT sj.idsujets, sj.intitule as sujet_titre, sj.cycle, sj.\"idSpecialisation\",
                      e.noms as etudiant_nom, e.matricule, e.idetudiant,
                      d.noms as directeur_nom,
                      sp.designation as specialisation,
-                     o.idorientation, o.designationOrientation as orientation_designation,
-                     sec.idsection as section_idsection, sec.designationSection as section_designation,
+                     o.idorientation, o.\"designationOrientation\" as orientation_designation,
+                     sec.idsection as section_idsection, sec.\"designationSection\" as section_designation,
                      s.idsoutenance, s.date_soutenance, s.lieu, s.statut,
-                     dm.idDepot, dm.fichier as memoire_fichier, dm.dateDepot,
+                     dm.\"idDepot\", dm.fichier as memoire_fichier, dm.\"dateDepot\",
                      j.idjury, j.designation as jury_designation,
                      (SELECT COUNT(*) FROM lecteurs_soutenance WHERE idsoutenance = s.idsoutenance) as nb_lecteurs
               FROM sujets sj
               JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-              LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+              LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+              LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
               LEFT JOIN orientation o ON sp.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
               LEFT JOIN soutenance s ON sj.idsujets = s.sujets_idsujets
@@ -407,7 +407,7 @@ try {
     }
 
     $query .= " ORDER BY CASE 
-                    WHEN dm.idDepot IS NULL THEN 0 
+                    WHEN dm.\"idDepot\" IS NULL THEN 0 
                     WHEN s.idsoutenance IS NULL THEN 1 
                     ELSE 2 
                 END, 
@@ -428,12 +428,12 @@ try {
 try {
     $statsQuery = "SELECT 
                     COUNT(DISTINCT sj.idsujets) as total,
-                    COUNT(DISTINCT CASE WHEN dm.idDepot IS NULL THEN sj.idsujets END) as sans_depot,
-                    COUNT(DISTINCT CASE WHEN dm.idDepot IS NOT NULL THEN sj.idsujets END) as avec_depot,
+                    COUNT(DISTINCT CASE WHEN dm.\"idDepot\" IS NULL THEN sj.idsujets END) as sans_depot,
+                    COUNT(DISTINCT CASE WHEN dm.\"idDepot\" IS NOT NULL THEN sj.idsujets END) as avec_depot,
                     COUNT(DISTINCT CASE WHEN j.idjury IS NOT NULL THEN sj.idsujets END) as avec_jury
                    FROM sujets sj
                    JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-                   LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+                   LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
                    LEFT JOIN orientation o ON sp.idorientation = o.idorientation
                    LEFT JOIN section sec ON o.section_idsection = sec.idsection
                    LEFT JOIN soutenance s ON sj.idsujets = s.sujets_idsujets

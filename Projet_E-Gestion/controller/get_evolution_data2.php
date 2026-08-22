@@ -46,7 +46,7 @@ try {
         // Compte total des étudiants dans la section pour cette année
         $queryTotal = "SELECT COUNT(DISTINCT s.etudiant_idetudiant) as total_etudiants
                        FROM sujets s
-                       INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                       INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                        WHERE sp.idsection = :sectionId
                        AND s.annee_acad_idannee_acad = :anneeId
                        AND s.etudiant_idetudiant IS NOT NULL";
@@ -60,7 +60,7 @@ try {
         // Compte des étudiants avec sujets validés
         $queryValides = "SELECT COUNT(DISTINCT s.etudiant_idetudiant) as etudiants_valides
                          FROM sujets s
-                         INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                         INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                          WHERE sp.idsection = :sectionId
                          AND s.annee_acad_idannee_acad = :anneeId
                          AND s.statut_validation = 'Validé'

@@ -79,7 +79,7 @@ try {
     $semestresQuery = $db->prepare("
         SELECT idsemestre FROM semestre 
         WHERE promotion_idpromotion = ?
-        ORDER BY numeroSemestre
+        ORDER BY \"numeroSemestre\"
     ");
     $semestresQuery->execute([$promotionId]);
     $semestres = $semestresQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -94,13 +94,13 @@ try {
     // Récupérer les UE des semestres concernés
     $placeholders = implode(',', array_fill(0, count($semestresToProcess), '?'));
     $uesQuery = $db->prepare("
-        SELECT DISTINCT u.idUE, u.designationUE, u.semestre_idsemestre,
+        SELECT DISTINCT u.\"idUE\", u.\"designationUE\", u.semestre_idsemestre,
                SUM((e.CMI + e.TD + e.TP) / ?) as total_credits
         FROM ue u
-        LEFT JOIN ecue e ON u.idUE = e.UE_idUE
+        LEFT JOIN ecue e ON u.\"idUE\" = e.\"UE_idUE\"
         WHERE u.semestre_idsemestre IN ({$placeholders})
-        GROUP BY u.idUE, u.designationUE, u.semestre_idsemestre
-        ORDER BY u.designationUE
+        GROUP BY u.\"idUE\", u.\"designationUE\", u.semestre_idsemestre
+        ORDER BY u.\"designationUE\"
     ");
     $params = array_merge([$creditHeure], $semestresToProcess);
     $uesQuery->execute($params);

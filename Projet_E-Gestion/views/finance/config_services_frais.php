@@ -21,11 +21,11 @@ $services = $dependanceModel->getAllServices();
 
 // Récupérer les promotions
 $stmt = $connexion->prepare("
-    SELECT p.idpromotion, p.designationPromotion, o.designationOrientation, s.designationSection
+    SELECT p.idpromotion, p.\"designationPromotion\", o.\"designationOrientation\", s.\"designationSection\"
     FROM promotion p
     JOIN orientation o ON p.orientation_idorientation = o.idorientation
     JOIN section s ON o.section_idsection = s.idsection
-    ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion
+    ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"
 ");
 $stmt->execute();
 $promotions = $stmt->fetchAll(PDO::FETCH_ASSOC);

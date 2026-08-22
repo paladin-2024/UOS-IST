@@ -14,7 +14,7 @@ class Conge {
     public function getAllDemandesConge($filters = []) {
         $sql = "SELECT dc.*, a.noms as nom_agent, tc.designation as type_conge_nom 
                 FROM demande_conge dc
-                JOIN agent a ON dc.idAgent = a.idAgent
+                JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
                 JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
                 WHERE 1=1";
         
@@ -27,7 +27,7 @@ class Conge {
         }
         
         if (isset($filters['idAgent']) && $filters['idAgent'] > 0) {
-            $sql .= " AND dc.idAgent = :idAgent";
+            $sql .= " AND dc.\"idAgent\" = :idAgent";
             $params[':idAgent'] = $filters['idAgent'];
         }
         
@@ -65,7 +65,7 @@ class Conge {
     public function getDemandeCongeById($idDemande) {
         $sql = "SELECT dc.*, a.noms as nom_agent, tc.designation as type_conge_nom 
                 FROM demande_conge dc
-                JOIN agent a ON dc.idAgent = a.idAgent
+                JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
                 JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
                 WHERE dc.iddemande_conge = :idDemande";
         
@@ -85,7 +85,7 @@ class Conge {
         $sql = "SELECT dc.*, tc.designation as type_conge_nom 
                 FROM demande_conge dc
                 JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
-                WHERE dc.idAgent = :idAgent
+                WHERE dc.\"idAgent\" = :idAgent
                 ORDER BY dc.date_creation DESC";
         
         $stmt = $this->db->prepare($sql);
@@ -97,15 +97,15 @@ class Conge {
 
     public function getDemandesCongeEnAttente($idService = null) {
         $query = "SELECT dc.*, tc.designation as type_conge_nom, a.noms as nom_agent, 
-                         a.codeAgent, a.matricule, s.designation as service_nom
+                         a.\"codeAgent\", a.matricule, s.designation as service_nom
                   FROM demande_conge dc
                   JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
-                  JOIN agent a ON dc.idAgent = a.idAgent
-                  LEFT JOIN service s ON a.idService = s.idService
+                  JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
+                  LEFT JOIN service s ON a.\"idService\" = s.\"idService\"
                   WHERE dc.statut = 'En attente'";
         
         if ($idService) {
-            $query .= " AND a.idService = :idService";
+            $query .= " AND a.\"idService\" = :idService";
         }
         
         $query .= " ORDER BY dc.date_demande ASC";
@@ -128,15 +128,15 @@ class Conge {
                  s.designation as service_nom,
                  decideur_agent.noms as decideur_nom
               FROM demande_conge dc
-              JOIN agent a ON dc.idAgent = a.idAgent
+              JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
               JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
-              LEFT JOIN service s ON a.idService = s.idService
-              LEFT JOIN t_users u ON dc.idDecideur = u.idUser
-              LEFT JOIN agent decideur_agent ON u.idAgent = decideur_agent.idAgent
+              LEFT JOIN service s ON a.\"idService\" = s.\"idService\"
+              LEFT JOIN t_users u ON dc.\"idDecideur\" = u.\"idUser\"
+              LEFT JOIN agent decideur_agent ON u.\"idAgent\" = decideur_agent.\"idAgent\"
               WHERE dc.statut IN ('Approuvé', 'Refusé', 'Annulé')";
         
         if ($idService) {
-            $query .= " AND a.idService = :idService";
+            $query .= " AND a.\"idService\" = :idService";
         }
         
         $query .= " ORDER BY dc.date_decision DESC LIMIT :limit";
@@ -163,11 +163,11 @@ class Conge {
                     COUNT(CASE WHEN dc.statut = 'Annulé' THEN 1 END) as nb_annule,
                     COUNT(*) as total
                   FROM demande_conge dc
-                  JOIN agent a ON dc.idAgent = a.idAgent
+                  JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
                   WHERE YEAR(dc.date_demande) = :annee";
         
         if ($idService) {
-            $query .= " AND a.idService = :idService";
+            $query .= " AND a.\"idService\" = :idService";
         }
         
         $stmt = $this->db->prepare($query);
@@ -181,17 +181,17 @@ class Conge {
         $stats = $stmt->fetch(PDO::FETCH_ASSOC);
         
         // Requête pour obtenir les agents actuellement en congé
-        $query = "SELECT a.idAgent, a.noms, a.codeAgent, a.matricule, 
+        $query = "SELECT a.\"idAgent\", a.noms, a.\"codeAgent\", a.matricule, 
                          tc.designation as type_conge_nom, 
                          dc.date_debut, dc.date_fin
                   FROM demande_conge dc
-                  JOIN agent a ON dc.idAgent = a.idAgent
+                  JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
                   JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
                   WHERE dc.statut = 'Approuvé'
                   AND CURRENT_DATE BETWEEN dc.date_debut AND dc.date_fin";
         
         if ($idService) {
-            $query .= " AND a.idService = :idService";
+            $query .= " AND a.\"idService\" = :idService";
         }
         
         $stmt = $this->db->prepare($query);
@@ -218,7 +218,7 @@ class Conge {
      */
     public function hasDemandeCongeEnCours($idAgent, $dateDebut, $dateFin) {
         $sql = "SELECT COUNT(*) FROM demande_conge 
-                WHERE idAgent = :idAgent 
+                WHERE \"idAgent\" = :idAgent 
                 AND statut = 'En attente'
                 AND ((date_debut BETWEEN :dateDebut AND :dateFin) 
                     OR (date_fin BETWEEN :dateDebut AND :dateFin)
@@ -244,7 +244,7 @@ class Conge {
      * @return int|false ID de la demande créée ou false en cas d'erreur
      */
     public function createDemandeConge($idAgent, $idtype_conge, $dateDebut, $dateFin, $motif, $documentJustificatif = null) {
-        $sql = "INSERT INTO demande_conge (idAgent, idtype_conge, date_debut, date_fin, motif, document_justificatif, statut, date_demande, idUser) 
+        $sql = "INSERT INTO demande_conge (\"idAgent\", idtype_conge, date_debut, date_fin, motif, document_justificatif, statut, date_demande, \"idUser\") 
                 VALUES (:idAgent, :idtype_conge, :dateDebut, :dateFin, :motif, :documentJustificatif, 'En attente', NOW(), :idUser)";
         
         try {
@@ -392,7 +392,7 @@ class Conge {
             // Mettre à jour le statut de la demande
             $query = "UPDATE demande_conge 
                       SET statut = 'Annulé', commentaire_decision = 'Annulé par l\'agent', 
-                          date_decision = NOW(), idDecideur = :idUser 
+                          date_decision = NOW(), \"idDecideur\" = :idUser 
                       WHERE iddemande_conge = :idDemande";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
@@ -502,7 +502,7 @@ class Conge {
 
     public function isAgentEnConge($idAgent) {
         $query = "SELECT COUNT(*) as nb FROM demande_conge 
-                  WHERE idAgent = :idAgent 
+                  WHERE \"idAgent\" = :idAgent 
                   AND statut = 'Approuvé' 
                   AND CURRENT_DATE BETWEEN date_debut AND date_fin";
         $stmt = $this->db->prepare($query);
@@ -513,15 +513,15 @@ class Conge {
     }
 
     public function getAgentsEnCongeByService($idService) {
-        $query = "SELECT a.idAgent, a.noms, a.codeAgent, a.matricule, 
+        $query = "SELECT a.\"idAgent\", a.noms, a.\"codeAgent\", a.matricule, 
                          tc.designation as type_conge_nom, 
                          dc.date_debut, dc.date_fin
                   FROM demande_conge dc
-                  JOIN agent a ON dc.idAgent = a.idAgent
+                  JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
                   JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
                   WHERE dc.statut = 'Approuvé'
                   AND CURRENT_DATE BETWEEN dc.date_debut AND dc.date_fin
-                  AND a.idService = :idService";
+                  AND a.\"idService\" = :idService";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idService', $idService, PDO::PARAM_INT);
         $stmt->execute();
@@ -728,7 +728,7 @@ class Conge {
      */
     public function getSoldeCongeByAgentAndType($idAgent, $idtype_conge) {
         $sql = "SELECT * FROM solde_conge 
-                WHERE idAgent = :idAgent AND idtype_conge = :idtype_conge";
+                WHERE \"idAgent\" = :idAgent AND idtype_conge = :idtype_conge";
         
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -767,7 +767,7 @@ class Conge {
 
     public function getSoldeConge($idAgent, $idtype_conge, $annee) {
         $query = "SELECT * FROM solde_conge 
-                  WHERE idAgent = :idAgent AND idtype_conge = :idtype_conge AND annee = :annee";
+                  WHERE \"idAgent\" = :idAgent AND idtype_conge = :idtype_conge AND annee = :annee";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $stmt->bindParam(':idtype_conge', $idtype_conge, PDO::PARAM_INT);
@@ -788,7 +788,7 @@ class Conge {
         $typeConge = $this->getTypeCongeById($idtype_conge);
         $joursAcquis = $typeConge['duree_standard'] ?? 0;
         
-        $query = "INSERT INTO solde_conge (idAgent, idtype_conge, annee, jours_acquis, jours_pris, jours_reportes, idUser) 
+        $query = "INSERT INTO solde_conge (\"idAgent\", idtype_conge, annee, jours_acquis, jours_pris, jours_reportes, \"idUser\") 
                   VALUES (:idAgent, :idtype_conge, :annee, :joursAcquis, 0, 0, 1)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -840,7 +840,7 @@ class Conge {
             // Mettre à jour le statut de la demande
             $query = "UPDATE demande_conge 
                       SET statut = :statut, commentaire_decision = :commentaire, 
-                          date_decision = NOW(), idDecideur = :idDecideur 
+                          date_decision = NOW(), \"idDecideur\" = :idDecideur 
                       WHERE iddemande_conge = :idDemande";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':statut', $statut);
@@ -877,7 +877,7 @@ class Conge {
     public function initSoldeConge($idAgent, $idtype_conge, $soldeInitial, $annee) {
         // Vérifier si un solde existe déjà pour cet agent, ce type de congé et cette année
         $sql = "SELECT idsolde_conge FROM solde_conge 
-                WHERE idAgent = :idAgent AND idtype_conge = :idtype_conge AND annee = :annee";
+                WHERE \"idAgent\" = :idAgent AND idtype_conge = :idtype_conge AND annee = :annee";
         
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -901,7 +901,7 @@ class Conge {
                 $stmt->bindValue(':idSolde', $soldeExistant['idsolde_conge'], PDO::PARAM_INT);
             } else {
                 // Créer un nouveau solde
-                $sql = "INSERT INTO solde_conge (idAgent, idtype_conge, solde_initial, solde_disponible, annee, date_creation) 
+                $sql = "INSERT INTO solde_conge (\"idAgent\", idtype_conge, solde_initial, solde_disponible, annee, date_creation) 
                         VALUES (:idAgent, :idtype_conge, :soldeInitial, :soldeInitial, :annee, NOW())";
                 
                 $stmt = $this->db->prepare($sql);
@@ -929,7 +929,7 @@ class Conge {
         $sql = "SELECT sc.*, tc.designation as type_conge_nom 
                 FROM solde_conge sc
                 JOIN type_conge tc ON sc.idtype_conge = tc.idtype_conge
-                WHERE sc.idAgent = :idAgent";
+                WHERE sc.\"idAgent\" = :idAgent";
         
         $params = [':idAgent' => $idAgent];
         
@@ -969,7 +969,7 @@ class Conge {
         // Requête pour compter les demandes par statut
         $sql = "SELECT statut, COUNT(*) as nombre 
                 FROM demande_conge 
-                WHERE idAgent = :idAgent";
+                WHERE \"idAgent\" = :idAgent";
         
         $params = [':idAgent' => $idAgent];
         
@@ -1012,7 +1012,7 @@ class Conge {
                 SUM(DATEDIFF(dc.date_fin, dc.date_debut) + 1) as jours_totaux 
                 FROM demande_conge dc
                 JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
-                WHERE dc.idAgent = :idAgent AND dc.statut = 'Approuvé'";
+                WHERE dc.\"idAgent\" = :idAgent AND dc.statut = 'Approuvé'";
         
         $params = [':idAgent' => $idAgent];
         
@@ -1053,10 +1053,10 @@ class Conge {
         $sql = "SELECT dc.*, a.noms as nom_agent, tc.designation as type_conge_nom, 
                 s.designation as service_nom, str.designation as structure_nom
                 FROM demande_conge dc
-                JOIN agent a ON dc.idAgent = a.idAgent
+                JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
                 JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
-                LEFT JOIN service s ON a.idService = s.idService
-                LEFT JOIN structure str ON a.idStructure = str.idStructure
+                LEFT JOIN service s ON a.\"idService\" = s.\"idService\"
+                LEFT JOIN structure str ON a.\"idStructure\" = str.\"idStructure\"
                 WHERE dc.statut = 'Approuvé'
                 AND ((dc.date_debut BETWEEN :dateDebut AND :dateFin) 
                     OR (dc.date_fin BETWEEN :dateDebut AND :dateFin)
@@ -1068,7 +1068,7 @@ class Conge {
         ];
         
         if ($idStructure !== null) {
-            $sql .= " AND a.idStructure = :idStructure";
+            $sql .= " AND a.\"idStructure\" = :idStructure";
             $params[':idStructure'] = $idStructure;
         }
         

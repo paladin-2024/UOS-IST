@@ -33,7 +33,7 @@ try {
     // Récupérer les informations de l'inscription externe
     $stmt = $connexion->prepare("
         SELECT ie.*, lie.promotion_id, lie.annee_acad_id, lie.titre as titre_lien,
-               p.designationPromotion as nom_promotion, aa.designation as annee_academique
+               p.\"designationPromotion\" as nom_promotion, aa.designation as annee_academique
         FROM inscriptions_externes ie
         JOIN liens_inscription_externe lie ON ie.lien_inscription_id = lie.id
         LEFT JOIN promotion p ON lie.promotion_id = p.idpromotion
@@ -81,7 +81,7 @@ try {
     $stmt = $connexion->prepare("
         SELECT COUNT(*) as nb_etudiants 
         FROM etudiant 
-        WHERE YEAR(dateEnregistrement) = ?
+        WHERE YEAR(\"dateEnregistrement\") = ?
     ");
     $stmt->execute([$anneeActuelle]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -104,22 +104,22 @@ try {
     // Insérer l'étudiant dans la table etudiant
     $stmt = $connexion->prepare("
         INSERT INTO etudiant (
-            matricule, 
-            noms, 
-            lieuNaissance, 
-            dateNaissance, 
-            adressemail, 
-            telephone, 
-            adresse, 
-            personne_contact, 
-            telephone_contact, 
-            sexe, 
-            nationalite, 
-            dateEnregistrement, 
-            annee_acad_idannee_acad, 
-            promotion_idpromotion, 
-            idUser, 
-            est_actif, 
+            matricule,
+            noms,
+            \"lieuNaissance\",
+            \"dateNaissance\",
+            adressemail,
+            telephone,
+            adresse,
+            personne_contact,
+            telephone_contact,
+            sexe,
+            nationalite,
+            \"dateEnregistrement\",
+            annee_acad_idannee_acad,
+            promotion_idpromotion,
+            \"idUser\",
+            est_actif,
             dossier_complete
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, 1, 0)
     ");
@@ -198,15 +198,15 @@ try {
 function envoyerEmailValidation($inscription, $matricule, $idEtudiant) {
     try {
         $to = $inscription['email'];
-        $subject = 'Inscription validée - Bienvenue à l\'INBTP Kinshasa';
+        $subject = 'Inscription validée - Bienvenue à l\'ISTM-BENI';
         
         // Construire le contenu HTML de l'email
         $htmlMessage = genererCorpsEmailValidation($inscription, $matricule, $idEtudiant);
         
         // Configuration de l'entreprise
         $entreprise = [
-            'nom' => 'INBTP Kinshasa',
-            'email' => 'info@inbtpkinshasa.info'
+            'nom' => 'ISTM-BENI',
+            'email' => 'scolarite@istmbeni.ac.cd'
         ];
         
         // Email headers
@@ -225,7 +225,7 @@ function envoyerEmailValidation($inscription, $matricule, $idEtudiant) {
 
 // Fonction pour générer le corps de l'email de validation en HTML
 function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
-    $urlPortail = "https://inbtpkinshasa.info/portail/login";
+    $urlPortail = "https://std-ucg-butembo.wscsarl.info/login";
     
     $htmlMessage = '<!DOCTYPE html>
     <html>
@@ -354,7 +354,7 @@ function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
                     
                     <div class="success-box">
                         <h3>✅ Inscription Validée avec Succès</h3>
-                        <p>Nous avons le plaisir de vous informer que votre demande d\'inscription à l\'<strong>INBTP Kinshasa</strong> a été validée avec succès !</p>
+                        <p>Nous avons le plaisir de vous informer que votre demande d\'inscription à l\'<strong>ISTM-BENI</strong> a été validée avec succès !</p>
                     </div>
                     
                     <div class="matricule-box">
@@ -394,19 +394,19 @@ function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
                         <p style="margin-bottom: 0;">Si vous avez des questions ou besoin d\'assistance, n\'hésitez pas à contacter notre service des admissions ou à vous rendre directement sur le campus.</p>
                     </div>
                     
-                    <p>Nous vous souhaitons la bienvenue dans la famille INBTP Kinshasa et vous souhaitons une excellente année académique !</p>
+                    <p>Nous vous souhaitons la bienvenue dans la famille ISTM-BENI et vous souhaitons une excellente année académique !</p>
                     
                     <p>Cordialement,<br>
                     Le Service des Admissions<br>
-                    <strong>INBTP Kinshasa</strong></p>
+                    <strong>ISTM-BENI</strong></p>
                 </div>
                 
                 <div class="footer">
                     <p><strong>Institut National du Bâtiment et des Travaux Publics</strong></p>
-                    <p>INBTP Kinshasa</p>
-                    <p>Email: <a href="mailto:info@inbtpkinshasa.info" style="color: #4299e1; text-decoration: none;">info@inbtpkinshasa.info</a></p>
-                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">inbtpkinshasa.info/portail</a></p>
-                    <p>&copy; ' . date('Y') . ' INBTP Kinshasa. Tous droits réservés.</p>
+                    <p>ISTM-BENI</p>
+                    <p>Email: <a href="mailto:scolarite@istmbeni.ac.cd" style="color: #4299e1; text-decoration: none;">scolarite@istmbeni.ac.cd</a></p>
+                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">std-ucg-butembo.wscsarl.info</a></p>
+                    <p>&copy; ' . date('Y') . ' ISTM-BENI. Tous droits réservés.</p>
                 </div>
             </div>
         </div>

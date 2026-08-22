@@ -19,23 +19,23 @@ $db = Connexion::getInstance()->getPDO();
 
 try {
     // Vérifier si la colonne estVisible existe
-    $checkColumn = "SHOW COLUMNS FROM ecue LIKE 'estVisible'";
+    $checkColumn = "SELECT column_name FROM information_schema.columns WHERE table_name = 'ecue' AND column_name = 'estVisible'";
     $stmtCheck = $db->prepare($checkColumn);
     $stmtCheck->execute();
     $columnExists = $stmtCheck->fetch();
-    
+
     // Récupérer les ECUE de la promotion sélectionnée
-    $sql = "SELECT DISTINCT e.idECUE, e.designationECUE 
+    $sql = "SELECT DISTINCT e.\"idECUE\", e.\"designationECUE\"
             FROM ecue e
-            JOIN ue u ON e.UE_idUE = u.idUE
+            JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
             JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
             WHERE s.promotion_idpromotion = :promotionId";
-    
+
     if ($columnExists) {
-        $sql .= " AND e.estVisible = 1";
+        $sql .= " AND e.\"estVisible\" = 1";
     }
-    
-    $sql .= " ORDER BY e.designationECUE";
+
+    $sql .= " ORDER BY e.\"designationECUE\"";
     
     $stmt = $db->prepare($sql);
     $stmt->execute([':promotionId' => $promotionId]);

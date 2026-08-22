@@ -13,10 +13,10 @@ $db = Connexion::getInstance()->getPDO();
 try {
     // Récupérer toutes les orientations pour cette section
     $stmt = $db->prepare("
-        SELECT o.idorientation, o.designationOrientation
+        SELECT o.idorientation, o.\"designationOrientation\"
         FROM orientation o
         WHERE o.section_idsection = ?
-        ORDER BY o.designationOrientation
+        ORDER BY o.\"designationOrientation\"
     ");
     
     $stmt->execute([$idSection]);

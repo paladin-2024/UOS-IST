@@ -5,22 +5,22 @@ include "./views/include/header.php";
 $connexion = Connexion::getInstance()->getPDO();
 
 // Récupérer tous les droits d'accès pour les caisses
-$stmt = $connexion->query("SELECT d.*, u.nomUser, c.designation as caisse_nom, 
+$stmt = $connexion->query("SELECT d.*, u.\"nomUser\", c.designation as caisse_nom, 
                           CONCAT(a.noms, ' (', a.matricule, ')') as agent_nom 
                           FROM droits_acces_finances d 
-                          LEFT JOIN t_users u ON d.idUser = u.idUser 
+                          LEFT JOIN t_users u ON d.\"idUser\" = u.\"idUser\" 
                           LEFT JOIN caisses c ON d.entite_id = c.id 
-                          LEFT JOIN agent a ON u.idAgent = a.idAgent 
+                          LEFT JOIN agent a ON u.\"idAgent\" = a.\"idAgent\" 
                           WHERE d.type = 'Caisse' 
                           ORDER BY d.est_actif DESC, d.date_debut DESC");
 $droits_acces = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer tous les utilisateurs
-$stmt = $connexion->query("SELECT u.idUser, u.nomUser, CONCAT(a.noms, ' (', a.matricule, ')') as agent_nom 
+$stmt = $connexion->query("SELECT u.\"idUser\", u.\"nomUser\", CONCAT(a.noms, ' (', a.matricule, ')') as agent_nom 
                           FROM t_users u 
-                          LEFT JOIN agent a ON u.idAgent = a.idAgent 
-                          WHERE u.etatUser = 1 
-                          ORDER BY u.nomUser ASC");
+                          LEFT JOIN agent a ON u.\"idAgent\" = a.\"idAgent\" 
+                          WHERE u.\"etatUser\" = 1 
+                          ORDER BY u.\"nomUser\" ASC");
 $utilisateurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer toutes les caisses
@@ -150,8 +150,8 @@ unset($_SESSION['messageType']);
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="idUser" class="form-label">Utilisateur <span class="text-danger">*</span></label>
-                        <select class="form-select" id="idUser" name="idUser" required>
+                        <label for=idUser class="form-label">Utilisateur <span class="text-danger">*</span></label>
+                        <select class="form-select" id=idUser name=idUser required>
                             <option value="">Sélectionner un utilisateur</option>
                             <?php foreach ($utilisateurs as $user): ?>
                                 <option value="<?= $user['idUser'] ?>"><?= htmlspecialchars($user['nomUser']) ?> - <?= htmlspecialchars($user['agent_nom'] ?? 'N/A') ?></option>
@@ -228,7 +228,7 @@ unset($_SESSION['messageType']);
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="edit_idUser" class="form-label">Utilisateur <span class="text-danger">*</span></label>
-                        <select class="form-select" id="edit_idUser" name="idUser" required>
+                        <select class="form-select" id="edit_idUser" name=idUser required>
                         <?php foreach ($utilisateurs as $user): ?>
                                 <option value="<?= $user['idUser'] ?>"><?= htmlspecialchars($user['nomUser']) ?> - <?= htmlspecialchars($user['agent_nom'] ?? 'N/A') ?></option>
                             <?php endforeach; ?>

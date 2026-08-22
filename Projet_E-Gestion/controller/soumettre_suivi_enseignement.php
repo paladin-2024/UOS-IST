@@ -55,22 +55,22 @@ if (!$chefPromotion) {
 
 // Fonction pour récupérer les ECUE de la promotion qui ne sont pas encore terminés
 function getECUEsDisponibles($connexion, $studentId, $anneeAcad) {
-    $query = "SELECT DISTINCT e.idECUE, e.designationECUE, e.CMI, e.TD, e.TP, u.designationUE,
+    $query = "SELECT DISTINCT e.\"idECUE\", e.\"designationECUE\", e.CMI, e.TD, e.TP, u.\"designationUE\",
                      COALESCE(SUM(CASE WHEN se.type_cours = 'CM' THEN TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60 ELSE 0 END), 0) as heures_cm_utilisees,
                      COALESCE(SUM(CASE WHEN se.type_cours = 'TD' THEN TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60 ELSE 0 END), 0) as heures_td_utilisees,
                      COALESCE(SUM(CASE WHEN se.type_cours = 'TP' THEN TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60 ELSE 0 END), 0) as heures_tp_utilisees
               FROM ecue e
-              INNER JOIN ue u ON e.UE_idUE = u.idUE
+              INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
               INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
               INNER JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               INNER JOIN etudiant et ON et.promotion_idpromotion = p.idpromotion
-              LEFT JOIN suivi_enseignements se ON e.idECUE = se.idECUE AND se.annee_acad_idannee_acad = :annee_acad
+              LEFT JOIN suivi_enseignements se ON e.\"idECUE\" = se.\"idECUE\" AND se.annee_acad_idannee_acad = :annee_acad
               WHERE et.idetudiant = :student_id
               AND et.annee_acad_idannee_acad = :annee_acad
-              AND e.estVisible = 1
-              GROUP BY e.idECUE, e.designationECUE, e.CMI, e.TD, e.TP, u.designationUE
+              AND e.\"estVisible\" = 1
+              GROUP BY e.\"idECUE\", e.\"designationECUE\", e.CMI, e.TD, e.TP, u.\"designationUE\"
               HAVING (e.CMI > heures_cm_utilisees) OR (e.TD > heures_td_utilisees) OR (e.TP > heures_tp_utilisees)
-              ORDER BY u.designationUE, e.designationECUE";
+              ORDER BY u.\"designationUE\", e.\"designationECUE\"";
     
     $stmt = $connexion->prepare($query);
     $stmt->bindParam(':student_id', $studentId);
@@ -110,13 +110,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Vérifier si l'ECUE appartient à la promotion de l'étudiant et récupérer les heures définies
-        $queryECUE = "SELECT e.idECUE, e.designationECUE, e.CMI, e.TD, e.TP, u.designationUE
+        $queryECUE = "SELECT e.\"idECUE\", e.\"designationECUE\", e.CMI, e.TD, e.TP, u.\"designationUE\"
                       FROM ecue e
-                      INNER JOIN ue u ON e.UE_idUE = u.idUE
+                      INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                       INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                       INNER JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                       INNER JOIN etudiant et ON et.promotion_idpromotion = p.idpromotion
-                      WHERE e.idECUE = :idECUE 
+                      WHERE e.\"idECUE\" = :\"idECUE\" 
                       AND et.idetudiant = :student_id
                       AND et.annee_acad_idannee_acad = :annee_acad";
 
@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                   ), 0) as heures_utilisees
                                   FROM suivi_enseignements 
                                   WHERE chef_promotion_id = :chef_id 
-                                  AND idECUE = :idECUE 
+                                  AND \"idECUE\" = :\"idECUE\" 
                                   AND type_cours = :type_cours
                                   AND annee_acad_idannee_acad = :annee_acad";
 
@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Vérifier si l'enseignant existe (si fourni)
         if ($enseignant_id) {
-            $queryEnseignant = "SELECT idAgent FROM agent WHERE idAgent = :enseignant_id AND type_agent = 'Enseignant'";
+            $queryEnseignant = "SELECT \"idAgent\" FROM agent WHERE \"idAgent\" = :enseignant_id AND type_agent = 'Enseignant'";
             $stmtEnseignant = $connexion->prepare($queryEnseignant);
             $stmtEnseignant->bindParam(':enseignant_id', $enseignant_id);
             $stmtEnseignant->execute();
@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $queryDuplicate = "SELECT id_suivi 
                           FROM suivi_enseignements 
                           WHERE chef_promotion_id = :chef_id 
-                          AND idECUE = :idECUE 
+                          AND \"idECUE\" = :\"idECUE\" 
                           AND date_cours = :date_cours 
                           AND ((heure_debut <= :heure_debut AND heure_fin > :heure_debut) 
                                OR (heure_debut < :heure_fin AND heure_fin >= :heure_fin)
@@ -225,11 +225,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insérer le nouveau suivi d'enseignement
         $queryInsert = "INSERT INTO suivi_enseignements 
-                       (chef_promotion_id, idECUE, date_cours, heure_debut, heure_fin, type_cours, 
-                        enseignant_id, salle, commentaire, annee_acad_idannee_acad, idUser) 
+                       (chef_promotion_id, \"idECUE\", date_cours, heure_debut, heure_fin, type_cours, 
+                        enseignant_id, salle, commentaire, annee_acad_idannee_acad, \"idUser\") 
                        VALUES 
-                       (:chef_id, :idECUE, :date_cours, :heure_debut, :heure_fin, :type_cours, 
-                        :enseignant_id, :salle, :commentaire, :annee_acad, :idUser)";
+                       (:chef_id, :\"idECUE\", :date_cours, :heure_debut, :heure_fin, :type_cours, 
+                        :enseignant_id, :salle, :commentaire, :annee_acad, :\"idUser\")";
 
         $stmtInsert = $connexion->prepare($queryInsert);
         $stmtInsert->bindParam(':chef_id', $chefPromotion['id_chef']);

@@ -34,7 +34,7 @@ try {
         }
 
         $sql = "INSERT INTO exercices_budgetaires (
-                    designation, date_debut, date_fin, est_actif, commentaire, idUser
+                    designation, date_debut, date_fin, est_actif, commentaire, \"idUser\"
                 ) VALUES (
                     :designation, :date_debut, :date_fin, :est_actif, :commentaire, :idUser
                 )";

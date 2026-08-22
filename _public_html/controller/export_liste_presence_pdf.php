@@ -21,11 +21,11 @@ $universiteModel = new Universite();
 
 // Récupérer les détails de la séance
 $stmt = $db->prepare("
-    SELECT sc.*, ec.designationECUE, p.designationPromotion, s.numeroSemestre,
-           sec.designationSection
+    SELECT sc.*, ec.\"designationECUE\", p.\"designationPromotion\", s.\"numeroSemestre\",
+           sec.\"designationSection\"
     FROM seance_cours sc
-    JOIN ecue ec ON sc.idECUE = ec.idECUE
-    JOIN ue ON ec.UE_idUE = ue.idUE
+    JOIN ecue ec ON sc.\"idECUE\" = ec.\"idECUE\"
+    JOIN ue ON ec.\"UE_idUE\" = ue.\"idUE\"
     JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
     JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
     JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -47,8 +47,8 @@ $stmtEtudiants = $db->prepare("
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
     JOIN semestre s ON s.promotion_idpromotion = p.idpromotion
     JOIN ue ON ue.semestre_idsemestre = s.idsemestre
-    JOIN ecue ec ON ec.UE_idUE = ue.idUE
-    WHERE ec.idECUE = :idECUE
+    JOIN ecue ec ON ec.\"UE_idUE\" = ue.\"idUE\"
+    WHERE ec.\"idECUE\" = :idECUE
     AND e.est_actif = 1
     ORDER BY e.noms
 ");

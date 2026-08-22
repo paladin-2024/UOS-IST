@@ -95,9 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         // Insérer le nouveau manager
-        $query = "INSERT INTO responsable_section 
-                  (noms, fonction, signature, idUser, section_idsection, annee_acad_idannee_acad, 
-                   est_chef, date_debut, date_fin, telephone, email) 
+        $query = "INSERT INTO responsable_section
+                  (noms, fonction, signature, \"idUser\", section_idsection, annee_acad_idannee_acad,
+                   est_chef, date_debut, date_fin, telephone, email)
                   VALUES (:noms, :fonction, :signature, :idUser, :sectionId, :anneeAcadId,
                           :est_chef, :date_debut, :date_fin, :telephone, :email)";
         

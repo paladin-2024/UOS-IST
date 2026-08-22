@@ -25,8 +25,8 @@ $pdo = Connexion::getInstance()->getPDO();
 try {
     // Vérifier si l'étudiant existe
     $stmtStudent = $pdo->prepare("
-        SELECT e.*, p.idpromotion, p.designationPromotion, a.designation as annee_academique,
-               s.designationSection, o.designationOrientation
+        SELECT e.*, p.idpromotion, p.\"designationPromotion\", a.designation as annee_academique,
+               s.\"designationSection\", o.\"designationOrientation\"
         FROM etudiant e
         JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
         JOIN annee_acad a ON e.annee_acad_idannee_acad = a.idannee_acad
@@ -356,7 +356,7 @@ function sendConfirmationEmail($student, $documents, $universite) {
     // Email headers
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: " . htmlspecialchars($universite['nom'] ?? $universite['sigle']) . " <" . htmlspecialchars($universite['email'] ?? 'no-reply@inbtpkinshasa.info') . ">" . "\r\n";
+    $headers .= "From: " . htmlspecialchars($universite['nom'] ?? $universite['sigle']) . " <" . htmlspecialchars($universite['email'] ?? 'no-reply@istmbeni.ac.cd') . ">" . "\r\n";
     
     // Envoyer l'email
     return mail($to, $subject, $htmlMessage, $headers);

@@ -15,7 +15,7 @@ $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
     // Si aucune année active, prendre la dernière année
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -24,7 +24,7 @@ if (!$currentYear) {
 // Récupérer les sections dont l'utilisateur est responsable
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -62,8 +62,8 @@ function getPromotionsWithChefs($pdo, $search, $sections = [], $anneeId = null) 
 $params = [];
 
 $query = "SELECT p.*,
-s.designationSection as section,
-o.designationOrientation as orientation,
+s.\"designationSection\" as section,
+o.\"designationOrientation\" as orientation,
 cp.id_chef,
 e.noms as chef_nom,
 e.matricule as chef_matricule,
@@ -103,14 +103,14 @@ WHERE EXISTS (
     
     // Filtrage par recherche textuelle
     if (!empty($search)) {
-        $query .= " AND (p.designationPromotion LIKE :search 
-                        OR o.designationOrientation LIKE :search 
+        $query .= " AND (p.\"designationPromotion\" LIKE :search 
+                        OR o.\"designationOrientation\" LIKE :search 
                         OR e.noms LIKE :search 
                         OR e.matricule LIKE :search)";
         $params[':search'] = "%$search%";
     }
     
-    $query .= " ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion";
+    $query .= " ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"";
     
     try {
         $stmt = $pdo->prepare($query);
@@ -160,7 +160,7 @@ if ($isResponsableSection) {
     $sections = [];
     if (!empty($userSections)) {
         $sectionPlaceholders = implode(',', array_fill(0, count($userSections), '?'));
-        $querySection = "SELECT * FROM section WHERE idsection IN ($sectionPlaceholders) ORDER BY designationSection";
+        $querySection = "SELECT * FROM section WHERE idsection IN ($sectionPlaceholders) ORDER BY \"designationSection\"";
         $stmtSection = $pdo->prepare($querySection);
         foreach ($userSections as $i => $section) {
             $stmtSection->bindValue($i+1, $section);
@@ -169,7 +169,7 @@ if ($isResponsableSection) {
         $sections = $stmtSection->fetchAll(PDO::FETCH_ASSOC);
     }
 } else {
-    $querySection = "SELECT * FROM section ORDER BY designationSection";
+    $querySection = "SELECT * FROM section ORDER BY \"designationSection\"";
     $stmtSection = $pdo->prepare($querySection);
     $stmtSection->execute();
     $sections = $stmtSection->fetchAll(PDO::FETCH_ASSOC);

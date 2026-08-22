@@ -23,13 +23,13 @@ if ($idTransfert <= 0) {
 $query = "SELECT t.*, 
            d1.libelle_depot as depot_source_nom,
            d2.libelle_depot as depot_destination_nom,
-           u1.nomUser as user_creation_nom, 
-           u2.nomUser as user_validation_nom
+           u1.\"nomUser\" as user_creation_nom, 
+           u2.\"nomUser\" as user_validation_nom
            FROM transfert_stock t
            LEFT JOIN depot d1 ON t.id_depot_source = d1.id_depot
            LEFT JOIN depot d2 ON t.id_depot_destination = d2.id_depot
-           LEFT JOIN t_users u1 ON t.id_user_creation = u1.idUser
-           LEFT JOIN t_users u2 ON t.id_user_validation = u2.idUser
+           LEFT JOIN t_users u1 ON t.id_user_creation = u1.\"idUser\"
+           LEFT JOIN t_users u2 ON t.id_user_validation = u2.\"idUser\"
            WHERE t.id_transfert = :id";
 $stmt = $db->prepare($query);
 $stmt->bindParam(':id', $idTransfert, PDO::PARAM_INT);

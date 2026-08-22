@@ -18,7 +18,7 @@ if (!$promotion_id || !$annee_id) {
 
 try {
     // Get the source promotion
-    $querySource = "SELECT p.*, o.designationOrientation 
+    $querySource = "SELECT p.*, o.\"designationOrientation\" 
                     FROM promotion p 
                     LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
                     WHERE p.idpromotion = :promotionId";
@@ -35,7 +35,7 @@ try {
     }
 
     // Get promotions that can be chosen (same academic year, different from source)
-    $query = "SELECT p.idpromotion, p.designationPromotion, p.cycle, o.designationOrientation
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\", p.cycle, o.\"designationOrientation\"
               FROM promotion p
               LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
               WHERE p.idpromotion != :promotionId

@@ -85,7 +85,7 @@ $totalMessages = $countStmt->fetchColumn();
 $totalPages = ceil($totalMessages / $limit);
 
 // Récupérer les messages avec pagination
-$query = "SELECT * FROM contact_submissions $whereClause ORDER BY created_at DESC LIMIT $offset, $limit";
+$query = "SELECT * FROM contact_submissions $whereClause ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
 $stmt = $db->prepare($query);
 $stmt->execute($params);
 $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);

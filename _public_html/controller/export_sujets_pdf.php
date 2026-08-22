@@ -17,7 +17,7 @@ $hasFullAccess = $_SESSION['idRole'] == 1; // Administrateur
 // Fonctions utilitaires pour le contrôle d'accès
 function getUserSections($db, $userId, $anneeAcadId) {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     $stmt = $db->prepare($query);
     $stmt->execute(['userId' => $userId, 'anneeId' => $anneeAcadId]);
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -118,28 +118,28 @@ try {
     $query = "SELECT s.*, 
                  a.designation as annee, 
                  spec.designation as specialisation,
-                 ur.designation_UR as unite_recherche,
-                 sec.designationSection as section,
-                 o.designationOrientation as orientation,
+                 ur.\"designation_UR\" as unite_recherche,
+                 sec.\"designationSection\" as section,
+                 o.\"designationOrientation\" as orientation,
                  e.noms as etudiant_noms,
                  e.matricule as etudiant_matricule,
                  dir.noms as directeur_noms,
                  enc.noms as encadreur_noms
               FROM sujets s
               LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
-              LEFT JOIN unite_recherche ur ON spec.idUnite_recherche = ur.idunite_recherche
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
+              LEFT JOIN unite_recherche ur ON spec.\"idUnite_recherche\" = ur.idunite_recherche
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent";
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"";
     
     if (!empty($whereConditions)) {
         $query .= " WHERE " . implode(' AND ', $whereConditions);
     }
     
-    $query .= " ORDER BY sec.designationSection, spec.designation, s.intitule";
+    $query .= " ORDER BY sec.\"designationSection\", spec.designation, s.intitule";
     
     // Debug des paramètres pour identifier le problème
     error_log("Query: " . $query);
@@ -245,7 +245,7 @@ try {
     }
     if (!empty($_POST['specialisation_export'])) {
         // Récupérer le nom de la spécialisation
-        $querySpec = "SELECT designation FROM specialisation WHERE idSpecialisation = :id";
+        $querySpec = "SELECT designation FROM specialisation WHERE \"idSpecialisation\" = :id";
         $stmtSpec = $db->prepare($querySpec);
         $stmtSpec->execute(['id' => $_POST['specialisation_export']]);
         $specResult = $stmtSpec->fetch(PDO::FETCH_ASSOC);
@@ -258,7 +258,7 @@ try {
     }
     if (!empty($_POST['section_export'])) {
         // Récupérer le nom de la section
-        $querySection = "SELECT designationSection FROM section WHERE idsection = :id";
+        $querySection = "SELECT \"designationSection\" FROM section WHERE idsection = :id";
         $stmtSection = $db->prepare($querySection);
         $stmtSection->execute(['id' => $_POST['section_export']]);
         $sectionResult = $stmtSection->fetch(PDO::FETCH_ASSOC);
@@ -282,7 +282,7 @@ try {
     if (!$hasFullAccess && !empty($userSections)) {
         // Afficher les sections de l'utilisateur
         $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
-        $queryUserSections = "SELECT designationSection FROM section WHERE idsection IN ($sectionsParams)";
+        $queryUserSections = "SELECT \"designationSection\" FROM section WHERE idsection IN ($sectionsParams)";
         $stmtUserSections = $db->prepare($queryUserSections);
         $stmtUserSections->execute($userSections);
         $userSectionsNames = $stmtUserSections->fetchAll(PDO::FETCH_COLUMN);

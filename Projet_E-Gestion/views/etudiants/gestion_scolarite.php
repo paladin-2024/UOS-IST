@@ -4,7 +4,7 @@ $configUniversite = $universite->getConfigurationUniversite();
 
 // Récupérer l'année académique active
 $connexion = Connexion::getInstance()->getPDO();
-$stmt = $connexion->prepare("SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC LIMIT 1");
+$stmt = $connexion->prepare("SELECT idannee_acad, designation FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1");
 $stmt->execute();
 $anneeAcad = $stmt->fetch(PDO::FETCH_ASSOC);
 $idAnneeAcad = $anneeAcad['idannee_acad'] ?? null;

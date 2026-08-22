@@ -8,12 +8,12 @@ $connexion = Connexion::getInstance()->getPDO();
 $userId = $_SESSION['id'] ?? 0;
 
 // Vérifier si l'utilisateur est un enseignant
-$stmt = $connexion->prepare("
-    SELECT a.idAgent 
-    FROM agent a 
-    JOIN t_users u ON a.idAgent = u.idAgent 
-    WHERE u.idUser = ? AND a.type_agent = 'Enseignant'
-");
+$stmt = $connexion->prepare('
+    SELECT a."idAgent"
+    FROM agent a
+    JOIN t_users u ON a."idAgent" = u."idAgent"
+    WHERE u."idUser" = ? AND a.type_agent = \'Enseignant\'
+');
 $stmt->execute([$userId]);
 $enseignant = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -49,7 +49,7 @@ if ($idEcue <= 0) {
 }
 
 // Récupérer l'année académique actuelle
-$stmt = $connexion->query("SELECT * FROM annee_acad WHERE dateCreation = (SELECT MAX(dateCreation) FROM annee_acad)");
+$stmt = $connexion->query('SELECT * FROM annee_acad WHERE "dateCreation" = (SELECT MAX("dateCreation") FROM annee_acad)');
 $currentYear = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
@@ -66,11 +66,11 @@ if (!$currentYear) {
 }
 
 // Vérifier si l'enseignant est autorisé à accéder à cet ECUE
-$stmt = $connexion->prepare("
-    SELECT COUNT(*) as count 
-    FROM enseignant_ecue 
-    WHERE idAgent = ? AND idECUE = ? AND anneeAcad = ?
-");
+$stmt = $connexion->prepare('
+    SELECT COUNT(*) as count
+    FROM enseignant_ecue
+    WHERE "idAgent" = ? AND "idECUE" = ? AND "anneeAcad" = ?
+');
 $stmt->execute([$idEnseignant, $idEcue, $currentYear['idannee_acad']]);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -88,15 +88,15 @@ if ($result['count'] == 0) {
 }
 
 // Récupérer les détails de l'ECUE
-$stmt = $connexion->prepare("
-    SELECT e.idECUE, e.designationECUE, e.CMI, e.TD, e.TP, 
-           u.designationUE, s.numeroSemestre, p.designationPromotion
+$stmt = $connexion->prepare('
+    SELECT e."idECUE", e."designationECUE", e."CMI", e."TD", e."TP",
+           u."designationUE", s."numeroSemestre", p."designationPromotion"
     FROM ecue e
-    JOIN ue u ON e.UE_idUE = u.idUE
+    JOIN ue u ON e."UE_idUE" = u."idUE"
     JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
     JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-    WHERE e.idECUE = ?
-");
+    WHERE e."idECUE" = ?
+');
 $stmt->execute([$idEcue]);
 $ecueDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -118,46 +118,46 @@ $stmt = $connexion->query("SELECT * FROM session ORDER BY idsession");
 $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer la première session
-$stmt = $connexion->prepare("SELECT * FROM session WHERE designSession LIKE ? LIMIT 1");
+$stmt = $connexion->prepare('SELECT * FROM session WHERE "designSession" LIKE ? LIMIT 1');
 $stmt->execute(['%Première%']);
 $s1 = $stmt->fetch(PDO::FETCH_ASSOC);
 $premiereSession = $s1['idsession'];
 
 // Récupérer les types d'évaluation (contrôle continu, examen, etc.)
-$stmt = $connexion->query("SELECT * FROM typeevaluation ORDER BY idType");
+$stmt = $connexion->query('SELECT * FROM typeevaluation ORDER BY "idType"');
 $typesEvaluation = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les évaluations existantes pour cet ECUE
-$stmt = $connexion->prepare("
-    SELECT e.*, t.designationT, t.categorie, s.description 
+$stmt = $connexion->prepare('
+    SELECT e.*, t."designationT", t.categorie, s.description
     FROM evaluations e
-    JOIN typeevaluation t ON e.idType = t.idType
+    JOIN typeevaluation t ON e."idType" = t."idType"
     JOIN session s ON e.session_idsession = s.idsession
-    WHERE e.idECUE = ? AND e.annee_acad_id = ?
+    WHERE e."idECUE" = ? AND e.annee_acad_id = ?
     ORDER BY e.date_evaluation DESC
-");
+');
 $stmt->execute([$idEcue, $currentYear['idannee_acad']]);
 $evaluations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer la liste des étudiants inscrits à ce cours
-$stmt = $connexion->prepare("
+$stmt = $connexion->prepare('
     SELECT DISTINCT e.idetudiant, e.matricule, e.noms
     FROM etudiant e
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
     JOIN semestre s ON s.promotion_idpromotion = p.idpromotion
     JOIN ue u ON u.semestre_idsemestre = s.idsemestre
-    JOIN ecue ec ON ec.UE_idUE = u.idUE
-    WHERE ec.idECUE = ? AND e.annee_acad_idannee_acad = ?
+    JOIN ecue ec ON ec."UE_idUE" = u."idUE"
+    WHERE ec."idECUE" = ? AND e.annee_acad_idannee_acad = ?
     ORDER BY e.noms
-");
+');
 $stmt->execute([$idEcue, $currentYear['idannee_acad']]);
 $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer la configuration des moyennes pour cet ECUE
-$stmt = $connexion->prepare("
-    SELECT * FROM configuration_moyenne 
-    WHERE idECUE = ? AND annee_acad_id = ? AND session_idsession = ?
-");
+$stmt = $connexion->prepare('
+    SELECT * FROM configuration_moyenne
+    WHERE "idECUE" = ? AND annee_acad_id = ? AND session_idsession = ?
+');
 $stmt->execute([$idEcue, $currentYear['idannee_acad'], $premiereSession]);
 $configMoyenne = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -172,10 +172,10 @@ if (!$configMoyenne) {
 }
 
 // Récupérer l'état de verrouillage des sessions
-$stmt = $connexion->prepare("
-    SELECT * FROM ecue_notes_verrouillage 
-    WHERE idECUE = ? AND idannee_acad = ?
-");
+$stmt = $connexion->prepare('
+    SELECT * FROM ecue_notes_verrouillage
+    WHERE "idECUE" = ? AND idannee_acad = ?
+');
 $stmt->execute([$idEcue, $currentYear['idannee_acad']]);
 $sessionsVerrouillees = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -407,26 +407,26 @@ foreach ($sessionsVerrouillees as $verrouillage) {
                                                     <?php
                                                     $i = 1;
                                                     // Récupérer tous les étudiants d'abord
-                                                    $stmtEtudiants = $connexion->prepare("
+                                                    $stmtEtudiants = $connexion->prepare('
         SELECT e.idetudiant, e.matricule, e.noms
         FROM etudiant e
         JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
         JOIN semestre s ON s.promotion_idpromotion = p.idpromotion
         JOIN ue u ON u.semestre_idsemestre = s.idsemestre
-        JOIN ecue ec ON ec.UE_idUE = u.idUE
-        WHERE ec.idECUE = ? AND e.annee_acad_idannee_acad = ?
+        JOIN ecue ec ON ec."UE_idUE" = u."idUE"
+        WHERE ec."idECUE" = ? AND e.annee_acad_idannee_acad = ?
         ORDER BY e.noms
-    ");
+    ');
                                                     $stmtEtudiants->execute([$idEcue, $currentYear['idannee_acad']]);
                                                     $etudiants = $stmtEtudiants->fetchAll(PDO::FETCH_ASSOC);
 
                                                     // Récupérer les cotes compilées
-                                                    $stmt = $connexion->prepare("
-        SELECT cg.*, s.designSession 
+                                                    $stmt = $connexion->prepare('
+        SELECT cg.*, s."designSession"
         FROM cotes_grille cg
         JOIN session s ON cg.session_idsession = s.idsession
-        WHERE cg.ECUE_idECUE = ? AND cg.annee_acad_id = ?
-    ");
+        WHERE cg."ECUE_idECUE" = ? AND cg.annee_acad_id = ?
+    ');
                                                     $stmt->execute([$idEcue, $currentYear['idannee_acad']]);
                                                     $cotesGrille = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

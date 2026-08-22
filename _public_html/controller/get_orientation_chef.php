@@ -22,7 +22,7 @@ try {
     
     if ($activeYearId) {
         // Récupérer le chef actuel pour cette orientation et cette année
-        $query = "SELECT idUser 
+        $query = "SELECT \"idUser\" 
                  FROM responsable_orientation 
                  WHERE orientation_idorientation = :orientationId 
                  AND est_chef = 1 

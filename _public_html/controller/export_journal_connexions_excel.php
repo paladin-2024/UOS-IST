@@ -16,8 +16,8 @@ try {
     $db = Connexion::getInstance()->getPDO();
     
     // Construire la requête avec les mêmes filtres que la vue
-    $sql = "SELECT u.idUser, u.nomUser, ual.* FROM user_activity_log ual 
-            LEFT JOIN t_users u ON ual.user_id = u.idUser 
+    $sql = "SELECT u.\"idUser\", u.\"nomUser\", ual.* FROM user_activity_log ual 
+            LEFT JOIN t_users u ON ual.user_id = u.\"idUser\" 
             WHERE 1=1";
     $parametres = [];
 

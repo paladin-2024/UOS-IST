@@ -18,22 +18,22 @@ $studentMatricule = $_SESSION['student_matricule'] ?? '';
 $conn = Connexion::getInstance()->getPDO();
 
 // Récupérer les informations du recours (requête complète)
-$query_recours = "
+$query_recours = '
     SELECT r.id_recours, r.matricule, r.motif, r.description, r.date_creation, r.statut,
            r.preuve, r.est_paye, r.id_ecue, r.id_session, r.id_annee_acad,
-           e.designationECUE, ue.designationUE, s.designSession, s.description as descSession,
+           e."designationECUE", ue."designationUE", s."designSession", s.description as descSession,
            et.noms,
-           p.designationPromotion, o.designationOrientation,
+           p."designationPromotion", o."designationOrientation",
            a.designation as annee_academique
     FROM recours r
     JOIN etudiant et ON r.matricule = et.matricule
-    JOIN ecue e ON r.id_ecue = e.idECUE
-    JOIN ue ON e.ue_idUE = ue.idUE
+    JOIN ecue e ON r.id_ecue = e."idECUE"
+    JOIN ue ON e."UE_idUE" = ue."idUE"
     JOIN session s ON r.id_session = s.idsession
     JOIN promotion p ON et.promotion_idpromotion = p.idpromotion
     JOIN orientation o ON p.orientation_idorientation = o.idorientation
     JOIN annee_acad a ON r.id_annee_acad = a.idannee_acad
-    WHERE r.id_recours = :id AND r.matricule = :matricule";
+    WHERE r.id_recours = :id AND r.matricule = :matricule';
 
 $stmt_recours = $conn->prepare($query_recours);
 $stmt_recours->bindParam(':id', $recoursId, PDO::PARAM_INT);

@@ -22,10 +22,10 @@ try {
     $db = Connexion::getInstance()->getPDO();
     
     // Requête pour obtenir les orientations associées à la section
-    $query = "SELECT idorientation, designationOrientation 
+    $query = "SELECT idorientation, \"designationOrientation\" 
               FROM orientation 
               WHERE section_idsection = :section_id 
-              ORDER BY designationOrientation";
+              ORDER BY \"designationOrientation\"";
     
     $stmt = $db->prepare($query);
     $stmt->bindParam(':section_id', $sectionId, PDO::PARAM_INT);

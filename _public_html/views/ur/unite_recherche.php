@@ -21,7 +21,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $db->prepare($queryAnnee);
@@ -29,7 +29,7 @@ $stmtAnnee->execute();
 $currentYearActive = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYearActive) {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $db->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYearActive = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -60,7 +60,7 @@ if (!$currentYear && !empty($allAcademicYears)) {
 // Fonctions utilitaires pour le contrôle d'accès
 function getUserSections($db, $userId, $anneeAcadId = null) {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = ?";
+              WHERE \"idUser\" = ?";
     
     $params = [$userId];
     
@@ -105,11 +105,11 @@ if (!$hasFullAccess) {
 if ($hasFullAccess) {
     // Admin - toutes les sections de l'année sélectionnée
     $stmt = $db->prepare("
-        SELECT s.idsection, s.designationSection, s.dateCreation, s.idAnnee, a.designation as anneeDesignation
+        SELECT s.idsection, s.\"designationSection\", s.\"dateCreation\", s.\"idAnnee\", a.designation as anneeDesignation
         FROM section s
-        LEFT JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+        LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
         WHERE a.idannee_acad = ?
-        ORDER BY s.designationSection
+        ORDER BY s.\"designationSection\"
     ");
     $stmt->execute([$selectedYear]);
     $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -120,11 +120,11 @@ if ($hasFullAccess) {
     } else {
         $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
         $stmt = $db->prepare("
-            SELECT s.idsection, s.designationSection, s.dateCreation, s.idAnnee, a.designation as anneeDesignation
+            SELECT s.idsection, s.\"designationSection\", s.\"dateCreation\", s.\"idAnnee\", a.designation as anneeDesignation
             FROM section s
-            LEFT JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+            LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
             WHERE s.idsection IN ($sectionsParams) AND a.idannee_acad = ?
-            ORDER BY s.designationSection
+            ORDER BY s.\"designationSection\"
         ");
 
         $params = $userSections;
@@ -142,13 +142,13 @@ if ($hasFullAccess) {
 if ($hasFullAccess) {
     // Admin - toutes les orientations
     $stmt = $db->prepare("
-        SELECT o.idorientation, o.designationOrientation, o.dateCreation, 
-               s.idsection, s.designationSection, s.idAnnee, a.designation as anneeDesignation 
+        SELECT o.idorientation, o.\"designationOrientation\", o.\"dateCreation\", 
+               s.idsection, s.\"designationSection\", s.\"idAnnee\", a.designation as anneeDesignation 
         FROM orientation o
         JOIN section s ON o.section_idsection = s.idsection
-        LEFT JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+        LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
         WHERE a.idannee_acad = ?
-        ORDER BY s.designationSection, o.designationOrientation
+        ORDER BY s.\"designationSection\", o.\"designationOrientation\"
     ");
     $stmt->execute([$selectedYear]);
     $orientations = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -159,13 +159,13 @@ if ($hasFullAccess) {
     } else {
         $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
         $stmt = $db->prepare("
-            SELECT o.idorientation, o.designationOrientation, o.dateCreation, 
-                   s.idsection, s.designationSection, s.idAnnee, a.designation as anneeDesignation 
+            SELECT o.idorientation, o.\"designationOrientation\", o.\"dateCreation\", 
+                   s.idsection, s.\"designationSection\", s.\"idAnnee\", a.designation as anneeDesignation 
             FROM orientation o
             JOIN section s ON o.section_idsection = s.idsection
-            LEFT JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+            LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
             WHERE s.idsection IN ($sectionsParams) AND a.idannee_acad = ?
-            ORDER BY s.designationSection, o.designationOrientation
+            ORDER BY s.\"designationSection\", o.\"designationOrientation\"
         ");
         
         $params = $userSections;
@@ -182,11 +182,11 @@ if ($hasFullAccess) {
 // Récupérer les unités de recherche selon les droits d'accès
 if ($hasFullAccess) {
     // Admin - toutes les unités de recherche
-    $queryUR = "SELECT DISTINCT ur.idunite_recherche as idunite_recherche, ur.designation_UR, ur.description 
+    $queryUR = "SELECT DISTINCT ur.idunite_recherche as idunite_recherche, ur.\"designation_UR\", ur.description 
                 FROM unite_recherche ur
                 LEFT JOIN unite_recherche_section urs ON ur.idunite_recherche = urs.idunite_recherche
                 LEFT JOIN section s ON urs.idsection = s.idsection
-                WHERE s.idAnnee = ?";
+                WHERE s.\"idAnnee\" = ?";
     $params = [$selectedYear];
 
     if ($selectedSection > 0) {
@@ -195,12 +195,12 @@ if ($hasFullAccess) {
     }
 
     if (!empty($search)) {
-        $queryUR .= " AND (ur.designation_UR LIKE ? OR ur.description LIKE ?)";
+        $queryUR .= " AND (ur.\"designation_UR\" LIKE ? OR ur.description LIKE ?)";
         $params[] = "%$search%";
         $params[] = "%$search%";
     }
 
-    $queryUR .= " ORDER BY ur.designation_UR";
+    $queryUR .= " ORDER BY ur.\"designation_UR\"";
     $stmtUR = $db->prepare($queryUR);
     $stmtUR->execute($params);
     $researchUnits = $stmtUR->fetchAll(PDO::FETCH_ASSOC);
@@ -211,11 +211,11 @@ if ($hasFullAccess) {
     } else {
         $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
         $queryUR = "
-            SELECT DISTINCT ur.idunite_recherche as idunite_recherche, ur.designation_UR, ur.description 
+            SELECT DISTINCT ur.idunite_recherche as idunite_recherche, ur.\"designation_UR\", ur.description 
             FROM unite_recherche ur
             INNER JOIN unite_recherche_section urs ON ur.idunite_recherche = urs.idunite_recherche
             INNER JOIN section s ON urs.idsection = s.idsection
-            WHERE s.idAnnee = ? AND urs.idsection IN ($sectionsParams)
+            WHERE s.\"idAnnee\" = ? AND urs.idsection IN ($sectionsParams)
         ";
         
         $params = [$selectedYear];
@@ -234,13 +234,13 @@ if ($hasFullAccess) {
         }
 
         if (!empty($search)) {
-            $queryUR .= " AND (ur.designation_UR LIKE ? OR ur.description LIKE ?)";
+            $queryUR .= " AND (ur.\"designation_UR\" LIKE ? OR ur.description LIKE ?)";
             $searchParam = "%$search%";
             $params[$paramIndex] = $searchParam;
             $params[$paramIndex + 1] = $searchParam;
         }
 
-        $queryUR .= " ORDER BY ur.designation_UR";
+        $queryUR .= " ORDER BY ur.\"designation_UR\"";
         $stmtUR = $db->prepare($queryUR);
         
         foreach ($params as $i => $value) {
@@ -257,7 +257,7 @@ if ($hasFullAccess) {
 // Compter les specialisations pour les stats
 $totalSpecialisations = 0;
 foreach ($researchUnits as $unit) {
-    $stmtCount = $db->prepare("SELECT COUNT(*) FROM specialisation WHERE idUnite_recherche = ?");
+    $stmtCount = $db->prepare("SELECT COUNT(*) FROM specialisation WHERE \"idUnite_recherche\" = ?");
     $stmtCount->execute([$unit['idunite_recherche']]);
     $totalSpecialisations += $stmtCount->fetchColumn();
 }
@@ -285,7 +285,7 @@ foreach ($researchUnits as $unit) {
             $sectionNames = [];
             if (!empty($userSections)) {
                 $placeholders = implode(',', array_fill(0, count($userSections), '?'));
-                $querySections = "SELECT designationSection FROM section WHERE idsection IN ($placeholders)";
+                $querySections = "SELECT \"designationSection\" FROM section WHERE idsection IN ($placeholders)";
                 $stmtSections = $db->prepare($querySections);
                 $stmtSections->execute($userSections);
                 $sectionNames = $stmtSections->fetchAll(PDO::FETCH_COLUMN);
@@ -461,10 +461,10 @@ foreach ($researchUnits as $unit) {
                                         foreach ($researchUnits as $unit) {
                                             // Récupérer les sections associées à cette unité de recherche
                                             $stmtSections = $db->prepare("
-                                                SELECT s.idsection, s.designationSection, a.designation as anneeDesignation
+                                                SELECT s.idsection, s.\"designationSection\", a.designation as anneeDesignation
                                                 FROM unite_recherche_section urs
                                                 JOIN section s ON urs.idsection = s.idsection
-                                                LEFT JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+                                                LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
                                                 WHERE urs.idunite_recherche = ?
                                             ");
 
@@ -478,7 +478,7 @@ foreach ($researchUnits as $unit) {
                                             $sectionsList = implode(', ', $sectionNames);
                                             
                                             // Compter les specialisations
-                                            $stmtSpecCount = $db->prepare("SELECT COUNT(*) FROM specialisation WHERE idUnite_recherche = ?");
+                                            $stmtSpecCount = $db->prepare("SELECT COUNT(*) FROM specialisation WHERE \"idUnite_recherche\" = ?");
                                             $stmtSpecCount->execute([$unit['idunite_recherche']]);
                                             $specCount = $stmtSpecCount->fetchColumn();
                                             ?>
@@ -535,7 +535,7 @@ foreach ($researchUnits as $unit) {
                                                                     <?php
                                                                     foreach ($unitSections as $section) {
                                                                         $stmtOrientations = $db->prepare("
-                                                                            SELECT o.idorientation, o.designationOrientation
+                                                                            SELECT o.idorientation, o.\"designationOrientation\"
                                                                             FROM orientation o
                                                                             WHERE o.section_idsection = ?
                                                                         ");
@@ -546,7 +546,7 @@ foreach ($researchUnits as $unit) {
                                                                             $stmtSpec = $db->prepare("
                                                                                 SELECT s.*
                                                                                 FROM specialisation s
-                                                                                WHERE s.idUnite_recherche = ? AND s.idorientation = ?
+                                                                                WHERE s.\"idUnite_recherche\" = ? AND s.idorientation = ?
                                                                             ");
                                                                             $stmtSpec->execute([$unit['idunite_recherche'], $orientation['idorientation']]);
                                                                             $specialisations = $stmtSpec->fetchAll(PDO::FETCH_ASSOC);
@@ -628,8 +628,8 @@ foreach ($researchUnits as $unit) {
                             <textarea name="description" id="description" class="form-control" rows="3"></textarea>
                         </div>
                         <div class="col-md-12">
-                            <label for="idSection" class="form-label">Section(s)</label>
-                            <select name="idSection[]" id="idSection" class="form-select" multiple required>
+                            <label for=idSection class="form-label">Section(s)</label>
+                            <select name="idSection[]" id=idSection class="form-select" multiple required>
                                 <?php foreach ($sections as $section): ?>
                                     <option value="<?= $section['idsection'] ?>"><?= $section['designationSection'] ?> (<?= $section['anneeDesignation'] ?? 'Année non définie' ?>)</option>
                                 <?php endforeach; ?>

@@ -71,10 +71,10 @@ try {
 
             // Récupérer TOUTES les notes de l'UE
             $getNotesQuery = $db->prepare("
-                SELECT cg.ECUE_idECUE, cg.MF, e.CMI, e.TD, e.TP
+                SELECT cg.\"ECUE_idECUE\", cg.MF, e.CMI, e.TD, e.TP
                 FROM cotes_grille cg
-                JOIN ecue e ON cg.ECUE_idECUE = e.idECUE
-                WHERE cg.matricule = ? AND e.UE_idUE = ? AND cg.session_idsession = ? AND cg.annee_acad_id = ?
+                JOIN ecue e ON cg.\"ECUE_idECUE\" = e.\"idECUE\"
+                WHERE cg.matricule = ? AND e.\"UE_idUE\" = ? AND cg.session_idsession = ? AND cg.annee_acad_id = ?
             ");
             $getNotesQuery->execute([$matricule, $ueId, $sessionId, $anneeId]);
             $notesUE = $getNotesQuery->fetchAll(PDO::FETCH_ASSOC);
@@ -167,7 +167,7 @@ try {
                 $updateQuery = $db->prepare("
                     UPDATE cotes_grille 
                     SET MF = ?, date_compilation = NOW()
-                    WHERE matricule = ? AND ECUE_idECUE = ? AND session_idsession = ? AND annee_acad_id = ?
+                    WHERE matricule = ? AND \"ECUE_idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?
                 ");
                 $updateQuery->execute([$nouvelleNote, $matricule, $ecueId, $sessionId, $anneeId]);
             }

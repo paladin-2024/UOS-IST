@@ -33,9 +33,9 @@ try {
     // 3. Test de récupération des promotions avec chefs
     echo "<h3>3. Test de récupération des promotions avec chefs</h3>";
     
-    $query = "SELECT p.idpromotion, p.designationPromotion,
-                s.designationSection as section,
-                o.designationOrientation as orientation,
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\",
+                s.\"designationSection\" as section,
+                o.\"designationOrientation\" as orientation,
                 cp.id_chef,
                 e.noms as chef_nom,
                 e.matricule as chef_matricule,
@@ -75,8 +75,8 @@ try {
     echo "<h3>4. Test de récupération des étudiants</h3>";
     
     // Prendre la première promotion disponible
-    $query = "SELECT p.idpromotion, p.designationPromotion, 
-                     (SELECT idannee_acad FROM annee_acad ORDER BY dateCreation DESC LIMIT 1) as annee_id
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\", 
+                     (SELECT idannee_acad FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1) as annee_id
               FROM promotion p LIMIT 1";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
@@ -178,8 +178,8 @@ try {
     $start = microtime(true);
     
     $query = "SELECT p.*, 
-                s.designationSection as section,
-                o.designationOrientation as orientation,
+                s.\"designationSection\" as section,
+                o.\"designationOrientation\" as orientation,
                 cp.id_chef,
                 e.noms as chef_nom,
                 e.matricule as chef_matricule

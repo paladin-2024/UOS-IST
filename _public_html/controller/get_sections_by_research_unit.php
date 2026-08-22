@@ -17,7 +17,7 @@ try {
     $query = "SELECT s.*, a.designation as anneeDesignation, a.idannee_acad as idAnnee
           FROM unite_recherche_section urs
           JOIN section s ON urs.idsection = s.idsection
-          LEFT JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+          LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
           WHERE urs.idunite_recherche = ?";
     
     $params = [$idUniteRecherche];
@@ -27,7 +27,7 @@ try {
         $params[] = $anneeAcad;
     }
     
-    $query .= " ORDER BY s.designationSection";
+    $query .= " ORDER BY s.\"designationSection\"";
 
     
     $stmt = $db->prepare($query);

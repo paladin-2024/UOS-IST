@@ -17,43 +17,43 @@ class SuiviCours
         $query = "
             SELECT
                 p.idpromotion,
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 p.cycle,
                 s.idsemestre,
-                s.numeroSemestre,
-                u.idUE,
-                u.codeUE,
-                u.designationUE,
-                e.idECUE,
-                e.designationECUE,
+                s.\"numeroSemestre\",
+                u.\"idUE\",
+                u.\"codeUE\",
+                u.\"designationUE\",
+                e.\"idECUE\",
+                e.\"designationECUE\",
                 e.CMI,
                 e.TD,
                 e.TP,
                 COALESCE(
                     (SELECT sc.statut FROM suivi_cours sc
-                     WHERE sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee
+                     WHERE sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee
                      LIMIT 1),
                     'non_commence'
                 ) AS statut,
                 (SELECT sc.observations FROM suivi_cours sc
-                 WHERE sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee2
+                 WHERE sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee2
                  LIMIT 1) AS observations,
                 (SELECT sc.date_mise_a_jour FROM suivi_cours sc
-                 WHERE sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee3
+                 WHERE sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee3
                  LIMIT 1) AS date_mise_a_jour,
-                (SELECT sc.idUser FROM suivi_cours sc
-                 WHERE sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee4
-                 LIMIT 1) AS idUser
+                (SELECT sc.\"idUser\" FROM suivi_cours sc
+                 WHERE sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee4
+                 LIMIT 1) AS \"idUser\"
             FROM promotion p
             INNER JOIN orientation o   ON o.idorientation        = p.orientation_idorientation
             INNER JOIN semestre s      ON s.promotion_idpromotion = p.idpromotion
             INNER JOIN ue u            ON u.semestre_idsemestre   = s.idsemestre
-            INNER JOIN ecue e          ON e.UE_idUE               = u.idUE
+            INNER JOIN ecue e          ON e.\"UE_idUE\"               = u.\"idUE\"
             WHERE o.section_idsection         = :idsection
               AND p.annee_acad_idannee_acad    = :idannee5
-              AND COALESCE(e.estVisible, 1)    = 1
-            GROUP BY e.idECUE, p.idpromotion, s.idsemestre, u.idUE
-            ORDER BY p.designationPromotion, s.numeroSemestre, u.codeUE, e.designationECUE
+              AND COALESCE(e.\"estVisible\", 1)    = 1
+            GROUP BY e.\"idECUE\", p.idpromotion, s.idsemestre, u.\"idUE\"
+            ORDER BY p.\"designationPromotion\", s.\"numeroSemestre\", u.\"codeUE\", e.\"designationECUE\"
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idsection', $idsection, PDO::PARAM_INT);
@@ -77,13 +77,13 @@ class SuiviCours
         }
 
         $query = "
-            INSERT INTO suivi_cours (idECUE, annee_acad_idannee, statut, observations, date_mise_a_jour, idUser)
+            INSERT INTO suivi_cours (\"idECUE\", annee_acad_idannee, statut, observations, date_mise_a_jour, \"idUser\")
             VALUES (:idECUE, :idannee, :statut, :obs, NOW(), :idUser)
             ON DUPLICATE KEY UPDATE
                 statut           = VALUES(statut),
                 observations     = VALUES(observations),
                 date_mise_a_jour = NOW(),
-                idUser           = VALUES(idUser)
+                \"idUser\"           = VALUES(\"idUser\")
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idECUE',  $idECUE,       PDO::PARAM_INT);
@@ -101,7 +101,7 @@ class SuiviCours
     {
         $query = "
             SELECT
-                COUNT(DISTINCT e.idECUE)                                              AS total,
+                COUNT(DISTINCT e.\"idECUE\")                                              AS total,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'termine'         THEN 1 ELSE 0 END) AS termines,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'en_cours'        THEN 1 ELSE 0 END) AS en_cours,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'non_commence'    THEN 1 ELSE 0 END) AS non_commences
@@ -109,10 +109,10 @@ class SuiviCours
             INNER JOIN orientation o  ON o.idorientation        = p.orientation_idorientation
             INNER JOIN semestre s     ON s.promotion_idpromotion = p.idpromotion
             INNER JOIN ue u           ON u.semestre_idsemestre   = s.idsemestre
-            INNER JOIN ecue e         ON e.UE_idUE               = u.idUE
-            LEFT  JOIN suivi_cours sc ON sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee
+            INNER JOIN ecue e         ON e.\"UE_idUE\"               = u.\"idUE\"
+            LEFT  JOIN suivi_cours sc ON sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee
             WHERE p.annee_acad_idannee_acad = :idannee2
-              AND COALESCE(e.estVisible, 1) = 1
+              AND COALESCE(e.\"estVisible\", 1) = 1
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idannee',  $idannee, PDO::PARAM_INT);
@@ -129,8 +129,8 @@ class SuiviCours
         $query = "
             SELECT
                 sec.idsection,
-                sec.designationSection,
-                COUNT(DISTINCT e.idECUE)                                                          AS total,
+                sec.\"designationSection\",
+                COUNT(DISTINCT e.\"idECUE\")                                                          AS total,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'termine'      THEN 1 ELSE 0 END) AS termines,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'en_cours'     THEN 1 ELSE 0 END) AS en_cours,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'non_commence' THEN 1 ELSE 0 END) AS non_commences
@@ -140,11 +140,11 @@ class SuiviCours
                                      AND p.annee_acad_idannee_acad = :idannee
             INNER JOIN semestre s     ON s.promotion_idpromotion   = p.idpromotion
             INNER JOIN ue u           ON u.semestre_idsemestre     = s.idsemestre
-            INNER JOIN ecue e         ON e.UE_idUE                 = u.idUE
-            LEFT  JOIN suivi_cours sc ON sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee2
-            WHERE COALESCE(e.estVisible, 1) = 1
-            GROUP BY sec.idsection, sec.designationSection
-            ORDER BY sec.designationSection
+            INNER JOIN ecue e         ON e.\"UE_idUE\"                 = u.\"idUE\"
+            LEFT  JOIN suivi_cours sc ON sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee2
+            WHERE COALESCE(e.\"estVisible\", 1) = 1
+            GROUP BY sec.idsection, sec.\"designationSection\"
+            ORDER BY sec.\"designationSection\"
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idannee',  $idannee, PDO::PARAM_INT);
@@ -161,8 +161,8 @@ class SuiviCours
         $query = "
             SELECT
                 p.idpromotion,
-                p.designationPromotion,
-                COUNT(DISTINCT e.idECUE)                                                          AS total,
+                p.\"designationPromotion\",
+                COUNT(DISTINCT e.\"idECUE\")                                                          AS total,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'termine'      THEN 1 ELSE 0 END) AS termines,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'en_cours'     THEN 1 ELSE 0 END) AS en_cours,
                 SUM(CASE WHEN COALESCE(sc.statut,'non_commence') = 'non_commence' THEN 1 ELSE 0 END) AS non_commences
@@ -170,13 +170,13 @@ class SuiviCours
             INNER JOIN orientation o  ON o.idorientation          = p.orientation_idorientation
             INNER JOIN semestre s     ON s.promotion_idpromotion   = p.idpromotion
             INNER JOIN ue u           ON u.semestre_idsemestre     = s.idsemestre
-            INNER JOIN ecue e         ON e.UE_idUE                 = u.idUE
-            LEFT  JOIN suivi_cours sc ON sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee
+            INNER JOIN ecue e         ON e.\"UE_idUE\"                 = u.\"idUE\"
+            LEFT  JOIN suivi_cours sc ON sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee
             WHERE o.section_idsection            = :idsection
               AND p.annee_acad_idannee_acad       = :idannee2
-              AND COALESCE(e.estVisible, 1)       = 1
-            GROUP BY p.idpromotion, p.designationPromotion
-            ORDER BY p.designationPromotion
+              AND COALESCE(e.\"estVisible\", 1)       = 1
+            GROUP BY p.idpromotion, p.\"designationPromotion\"
+            ORDER BY p.\"designationPromotion\"
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idsection', $idsection, PDO::PARAM_INT);
@@ -192,11 +192,11 @@ class SuiviCours
     public function getUserSections($idUser, $idannee)
     {
         $query = "
-            SELECT DISTINCT sec.idsection, sec.designationSection
+            SELECT DISTINCT sec.idsection, sec.\"designationSection\"
             FROM responsable_section rs
             INNER JOIN section sec ON sec.idsection = rs.section_idsection
-                                  AND sec.idAnnee   = :idannee
-            WHERE rs.idUser                    = :idUser
+                                  AND sec.\"idAnnee\"   = :idannee
+            WHERE rs.\"idUser\"                    = :idUser
               AND rs.annee_acad_idannee_acad   = :idannee2
         ";
         $stmt = $this->db->prepare($query);
@@ -212,7 +212,7 @@ class SuiviCours
     // ---------------------------------------------------------------
     public function getAnneesAcad()
     {
-        $stmt = $this->db->query("SELECT * FROM annee_acad ORDER BY dateCreation DESC");
+        $stmt = $this->db->query("SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -224,7 +224,7 @@ class SuiviCours
         $stmt = $this->db->query("SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$row) {
-            $stmt2 = $this->db->query("SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1");
+            $stmt2 = $this->db->query("SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1");
             $row = $stmt2->fetch(PDO::FETCH_ASSOC);
         }
         return $row;
@@ -236,11 +236,11 @@ class SuiviCours
     public function getAllSections($idannee = null)
     {
         if ($idannee) {
-            $stmt = $this->db->prepare("SELECT idsection, designationSection FROM section WHERE idAnnee = :idannee ORDER BY designationSection");
+            $stmt = $this->db->prepare("SELECT idsection, \"designationSection\" FROM section WHERE \"idAnnee\" = :idannee ORDER BY designationSection");
             $stmt->bindParam(':idannee', $idannee, PDO::PARAM_INT);
             $stmt->execute();
         } else {
-            $stmt = $this->db->query("SELECT idsection, designationSection FROM section ORDER BY designationSection");
+            $stmt = $this->db->query("SELECT idsection, \"designationSection\" FROM section ORDER BY designationSection");
         }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -250,7 +250,7 @@ class SuiviCours
     // ---------------------------------------------------------------
     public function getOrCreateOrientation($designationOrientation, $idsection)
     {
-        $stmt = $this->db->prepare("SELECT idorientation FROM orientation WHERE designationOrientation = :nom AND section_idsection = :sec LIMIT 1");
+        $stmt = $this->db->prepare("SELECT idorientation FROM orientation WHERE \"designationOrientation\" = :nom AND section_idsection = :sec LIMIT 1");
         $stmt->bindParam(':nom', $designationOrientation);
         $stmt->bindParam(':sec', $idsection, PDO::PARAM_INT);
         $stmt->execute();
@@ -258,7 +258,7 @@ class SuiviCours
         if ($row) {
             return $row['idorientation'];
         }
-        $ins = $this->db->prepare("INSERT INTO orientation (designationOrientation, dateCreation, section_idsection) VALUES (:nom, NOW(), :sec)");
+        $ins = $this->db->prepare("INSERT INTO orientation (\"designationOrientation\", \"dateCreation\", section_idsection) VALUES (:nom, NOW(), :sec)");
         $ins->bindParam(':nom', $designationOrientation);
         $ins->bindParam(':sec', $idsection, PDO::PARAM_INT);
         $ins->execute();
@@ -271,7 +271,7 @@ class SuiviCours
     public function addPromotion($designationPromotion, $cycle, $idorientation, $idannee, $est_terminale = 0)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO promotion (designationPromotion, dateCreation, cycle, orientation_idorientation, annee_acad_idannee_acad, est_terminale)
+            INSERT INTO promotion (\"designationPromotion\", \"dateCreation\", cycle, orientation_idorientation, annee_acad_idannee_acad, est_terminale)
             VALUES (:nom, NOW(), :cycle, :idorientation, :idannee, :est_terminale)
         ");
         $stmt->bindParam(':nom',          $designationPromotion);
@@ -289,7 +289,7 @@ class SuiviCours
     public function addSemestre($numeroSemestre, $idpromotion)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO semestre (numeroSemestre, dateEnregistrement, promotion_idpromotion)
+            INSERT INTO semestre (\"numeroSemestre\", \"dateEnregistrement\", promotion_idpromotion)
             VALUES (:num, NOW(), :idpromotion)
         ");
         $stmt->bindParam(':num',        $numeroSemestre);
@@ -304,7 +304,7 @@ class SuiviCours
     public function addUE($codeUE, $designationUE, $description, $idsemestre)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO ue (codeUE, designationUE, description, semestre_idsemestre)
+            INSERT INTO ue (\"codeUE\", \"designationUE\", description, semestre_idsemestre)
             VALUES (:code, :nom, :desc, :idsemestre)
         ");
         $stmt->bindParam(':code',      $codeUE);
@@ -321,7 +321,7 @@ class SuiviCours
     public function addECUE($designationECUE, $CMI, $TD, $TP, $idUE, $idCreateur)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO ecue (designationECUE, CMI, TD, TP, UE_idUE, idCreateur, estVisible)
+            INSERT INTO ecue (\"designationECUE\", CMI, TD, TP, \"UE_idUE\", \"idCreateur\", \"estVisible\")
             VALUES (:nom, :cmi, :td, :tp, :idUE, :idCreateur, 1)
         ");
         $stmt->bindParam(':nom',       $designationECUE);
@@ -373,12 +373,12 @@ class SuiviCours
     public function getPromotionsBySection($idsection, $idannee)
     {
         $stmt = $this->db->prepare("
-            SELECT p.idpromotion, p.designationPromotion
+            SELECT p.idpromotion, p.\"designationPromotion\"
             FROM promotion p
             INNER JOIN orientation o ON o.idorientation = p.orientation_idorientation
             WHERE o.section_idsection          = :idsection
               AND p.annee_acad_idannee_acad     = :idannee
-            ORDER BY p.designationPromotion
+            ORDER BY p.\"designationPromotion\"
         ");
         $stmt->bindParam(':idsection', $idsection, PDO::PARAM_INT);
         $stmt->bindParam(':idannee',   $idannee,   PDO::PARAM_INT);
@@ -393,35 +393,35 @@ class SuiviCours
     {
         $query = "
             SELECT
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 p.cycle,
-                s.numeroSemestre,
-                u.codeUE,
-                u.designationUE,
-                e.designationECUE,
+                s.\"numeroSemestre\",
+                u.\"codeUE\",
+                u.\"designationUE\",
+                e.\"designationECUE\",
                 e.CMI, e.TD, e.TP,
                 COALESCE(
                     (SELECT sc.statut FROM suivi_cours sc
-                     WHERE sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee
+                     WHERE sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee
                      LIMIT 1),
                     'non_commence'
                 ) AS statut,
                 (SELECT sc.observations FROM suivi_cours sc
-                 WHERE sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee2
+                 WHERE sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee2
                  LIMIT 1) AS observations,
                 (SELECT sc.date_mise_a_jour FROM suivi_cours sc
-                 WHERE sc.idECUE = e.idECUE AND sc.annee_acad_idannee = :idannee3
+                 WHERE sc.\"idECUE\" = e.\"idECUE\" AND sc.annee_acad_idannee = :idannee3
                  LIMIT 1) AS date_mise_a_jour
             FROM promotion p
             INNER JOIN orientation o  ON o.idorientation          = p.orientation_idorientation
             INNER JOIN semestre s     ON s.promotion_idpromotion   = p.idpromotion
             INNER JOIN ue u           ON u.semestre_idsemestre     = s.idsemestre
-            INNER JOIN ecue e         ON e.UE_idUE                 = u.idUE
+            INNER JOIN ecue e         ON e.\"UE_idUE\"                 = u.\"idUE\"
             WHERE o.section_idsection          = :idsection
               AND p.annee_acad_idannee_acad     = :idannee4
-              AND COALESCE(e.estVisible, 1)     = 1
-            GROUP BY e.idECUE, p.idpromotion, s.idsemestre, u.idUE
-            ORDER BY p.designationPromotion, s.numeroSemestre, u.codeUE, e.designationECUE
+              AND COALESCE(e.\"estVisible\", 1)     = 1
+            GROUP BY e.\"idECUE\", p.idpromotion, s.idsemestre, u.\"idUE\"
+            ORDER BY p.\"designationPromotion\", s.\"numeroSemestre\", u.\"codeUE\", e.\"designationECUE\"
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idsection', $idsection, PDO::PARAM_INT);

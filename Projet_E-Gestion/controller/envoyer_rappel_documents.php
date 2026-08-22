@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Enregistrer l'envoi dans la base de données
                 $stmt = $conn->prepare("
                     INSERT INTO notifications_documents 
-                    (idetudiant, matricule, objet, contenu, date_envoi, idUser) 
+                    (idetudiant, matricule, objet, contenu, date_envoi, \"idUser\") 
                     VALUES (?, ?, ?, ?, NOW(), ?)
                 ");
                 

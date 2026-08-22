@@ -22,10 +22,10 @@ try {
     $db = Connexion::getInstance()->getPDO();
     
     // Requête pour obtenir les sections associées à l'année académique
-    $query = "SELECT idsection, designationSection 
+    $query = "SELECT idsection, \"designationSection\" 
               FROM section 
-              WHERE idAnnee = :annee_id 
-              ORDER BY designationSection";
+              WHERE \"idAnnee\" = :annee_id 
+              ORDER BY \"designationSection\"";
     
     $stmt = $db->prepare($query);
     $stmt->bindParam(':annee_id', $anneeId, PDO::PARAM_INT);

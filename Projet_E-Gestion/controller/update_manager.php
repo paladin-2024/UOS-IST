@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $query = "UPDATE responsable_section 
                   SET noms = :noms, 
                       fonction = :fonction, 
-                      idUser = :idUser, 
+                      \"idUser\" = :\"idUser\", 
                       annee_acad_idannee_acad = :anneeAcadId,
                       est_chef = :est_chef,
                       date_debut = :date_debut,

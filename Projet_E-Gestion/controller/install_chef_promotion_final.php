@@ -76,7 +76,7 @@ try {
         'fk_chef_promotion_etudiant' => 'FOREIGN KEY (`idetudiant`) REFERENCES `etudiant` (`idetudiant`) ON DELETE CASCADE ON UPDATE CASCADE',
         'fk_chef_promotion_promotion' => 'FOREIGN KEY (`promotion_idpromotion`) REFERENCES `promotion` (`idpromotion`) ON DELETE CASCADE ON UPDATE CASCADE',
         'fk_chef_promotion_annee_acad' => 'FOREIGN KEY (`annee_acad_idannee_acad`) REFERENCES `annee_acad` (`idannee_acad`) ON DELETE CASCADE ON UPDATE CASCADE',
-        'fk_chef_promotion_user' => 'FOREIGN KEY (`idUser`) REFERENCES `t_users` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE'
+        'fk_chef_promotion_user' => 'FOREIGN KEY (`"idUser"`) REFERENCES `t_users` (`"idUser"`) ON DELETE CASCADE ON UPDATE CASCADE'
     ];
     
     foreach ($foreignKeys as $keyName => $keyDefinition) {
@@ -145,7 +145,7 @@ try {
         echo "<p>✓ Lecture : {$count} enregistrement(s) dans chef_promotion</p>";
         
         // Test de jointure
-        $query = "SELECT p.designationPromotion, e.noms, cp.date_nomination
+        $query = "SELECT p.\"designationPromotion\", e.noms, cp.date_nomination
                   FROM chef_promotion cp
                   INNER JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion
                   INNER JOIN etudiant e ON cp.idetudiant = e.idetudiant

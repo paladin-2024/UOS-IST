@@ -80,8 +80,8 @@ try {
                       filiere = :filiere, 
                       annee_obtention = :annee_obtention, 
                       diplome_fichier = :diplome_fichier,
-                      idUser = :idUser
-                  WHERE idformation = :idformation AND idAgent = :idAgent";
+                      \"idUser\" = :idUser
+                  WHERE idformation = :idformation AND \"idAgent\" = :idAgent";
         
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(':niveau', $niveau, PDO::PARAM_STR);
@@ -98,7 +98,7 @@ try {
     } else {
         // Ajout d'une nouvelle formation
         $query = "INSERT INTO formation_agent 
-                  (idAgent, niveau, etablissement, filiere, annee_obtention, diplome_fichier, idUser) 
+                  (\"idAgent\", niveau, etablissement, filiere, annee_obtention, diplome_fichier, \"idUser\") 
                   VALUES 
                   (:idAgent, :niveau, :etablissement, :filiere, :annee_obtention, :diplome_fichier, :idUser)";
         

@@ -15,7 +15,7 @@ $pdo = Connexion::getInstance()->getPDO();
 
 $userSections = [];
 if (!$hasFullAccess) {
-    $query = "SELECT section_idsection FROM responsable_section WHERE idUser = :userId";
+    $query = "SELECT section_idsection FROM responsable_section WHERE \"idUser\" = :userId";
     $stmt = $pdo->prepare($query);
     $stmt->execute(['userId' => $currentUserId]);
     $userSections = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -53,20 +53,20 @@ try {
     $baseQuery[] = "       e.idetudiant AS etudiant_id,";
     $baseQuery[] = "       e.noms AS etudiant_nom,";
     $baseQuery[] = "       e.matricule AS etudiant_matricule,";
-    $baseQuery[] = "       dir.idAgent AS directeur_id,";
+    $baseQuery[] = "       dir.\"idAgent\" AS directeur_id,";
     $baseQuery[] = "       dir.noms AS directeur_nom,";
     $baseQuery[] = "       gdir.designation AS directeur_grade,";
-    $baseQuery[] = "       enc.idAgent AS encadreur_id,";
+    $baseQuery[] = "       enc.\"idAgent\" AS encadreur_id,";
     $baseQuery[] = "       enc.noms AS encadreur_nom,";
     $baseQuery[] = "       genc.designation AS encadreur_grade,";
     $baseQuery[] = "       (SELECT COUNT(*) FROM sujet_reformulations sr WHERE sr.idsujets = s.idsujets AND sr.statut_reformulation = 'En attente') AS reformulation_pending";
     $baseQuery[] = "  FROM sujets s";
     $baseQuery[] = "  LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad";
-    $baseQuery[] = "  LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation";
+    $baseQuery[] = "  LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"";
     $baseQuery[] = "  LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant";
-    $baseQuery[] = "  LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent";
+    $baseQuery[] = "  LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"";
     $baseQuery[] = "  LEFT JOIN grade gdir ON dir.grade_id = gdir.idgrade";
-    $baseQuery[] = "  LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent";
+    $baseQuery[] = "  LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"";
     $baseQuery[] = "  LEFT JOIN grade genc ON enc.grade_id = genc.idgrade";
     $baseQuery[] = "  LEFT JOIN orientation o ON spec.idorientation = o.idorientation";
     $baseQuery[] = "  LEFT JOIN section sec ON o.section_idsection = sec.idsection";
@@ -102,7 +102,7 @@ try {
     }
 
     if (!empty($filter_specialisation)) {
-        $baseQuery[] = "   AND s.idSpecialisation = :filter_specialisation";
+        $baseQuery[] = "   AND s.\"idSpecialisation\" = :filter_specialisation";
         $bindings[':filter_specialisation'] = $filter_specialisation;
     }
 

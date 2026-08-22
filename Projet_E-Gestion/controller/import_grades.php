@@ -55,9 +55,9 @@ try {
     $pdo = $connexion->getPDO();
     
     // Récupérer les informations sur l'évaluation
-    $query = "SELECT e.*, t.idType, t.designationT, s.idsession, s.designSession, s.description as session_description 
+    $query = "SELECT e.*, t.\"idType\", t.\"designationT\", s.idsession, s.\"designSession\", s.description as session_description 
              FROM evaluations e 
-             JOIN typeevaluation t ON e.idType = t.idType 
+             JOIN typeevaluation t ON e.\"idType\" = t.\"idType\" 
              JOIN session s ON e.session_idsession = s.idsession 
              WHERE e.idevaluation = ?";
     $stmt = $pdo->prepare($query);
@@ -118,7 +118,7 @@ try {
     $noteMax = $evaluation['note_max'] ?? 20;
     
     // Récupérer l'année académique actuelle
-    $query = "SELECT idannee_acad FROM annee_acad WHERE dateCreation = (SELECT MAX(dateCreation) FROM annee_acad)";
+    $query = "SELECT idannee_acad FROM annee_acad WHERE \"dateCreation\" = (SELECT MAX(\"dateCreation\") FROM annee_acad)";
 $stmt = $pdo->prepare($query);
 $stmt->execute();
 $anneeAcad = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -128,12 +128,12 @@ $anneeAcadId = $anneeAcad ? $anneeAcad['idannee_acad'] : 0;
     }
     
     // Récupérer les détails de l'ECUE pour obtenir l'UE et la promotion associées
-    $query = "SELECT e.UE_idUE, p.idpromotion 
+    $query = "SELECT e.\"UE_idUE\", p.idpromotion 
              FROM ecue e 
-             JOIN ue u ON e.UE_idUE = u.idUE 
+             JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\" 
              JOIN semestre s ON u.semestre_idsemestre = s.idsemestre 
              JOIN promotion p ON s.promotion_idpromotion = p.idpromotion 
-             WHERE e.idECUE = ?";
+             WHERE e.\"idECUE\" = ?";
     $stmt = $pdo->prepare($query);
     $stmt->execute([$idECUE]);
     $ecueDetails = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -223,18 +223,18 @@ $anneeAcadId = $anneeAcad ? $anneeAcad['idannee_acad'] : 0;
         
         // Préparation des requêtes
         $sqlCheckExist = "SELECT COUNT(*) FROM points 
-                        WHERE matricule = ? AND ECUE_idECUE = ? 
+                        WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                         AND typeEvaluation = ? AND session_idsession = ? 
                         AND annee_acad_id = ?";
         $stmtCheckExist = $pdo->prepare($sqlCheckExist);
         
-        $sqlInsert = "INSERT INTO points (coteObtenu, typeEvaluation, ECUE_idECUE, 
+        $sqlInsert = "INSERT INTO points (\"coteObtenu\", typeEvaluation, \"ECUE_idECUE\", 
                      session_idsession, matricule, annee_acad_id) 
                      VALUES (?, ?, ?, ?, ?, ?)";
         $stmtInsert = $pdo->prepare($sqlInsert);
         
-        $sqlUpdate = "UPDATE points SET coteObtenu = ? 
-                     WHERE matricule = ? AND ECUE_idECUE = ? 
+        $sqlUpdate = "UPDATE points SET \"coteObtenu\" = ? 
+                     WHERE matricule = ? AND \"ECUE_idECUE\" = ? 
                      AND typeEvaluation = ? AND session_idsession = ? 
                      AND annee_acad_id = ?";
         $stmtUpdate = $pdo->prepare($sqlUpdate);

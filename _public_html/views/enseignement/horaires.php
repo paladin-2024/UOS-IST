@@ -233,10 +233,10 @@ foreach ($horaires as $h) {
             <?php 
             // Récupérer les noms des sections du responsable
             $pdo = Connexion::getInstance()->getPDO();
-            $querySections = "SELECT DISTINCT s.designationSection
+            $querySections = "SELECT DISTINCT s.\"designationSection\"
                               FROM section s
                               INNER JOIN responsable_section rs ON rs.section_idsection = s.idsection
-                              WHERE rs.idUser = :userId
+                              WHERE rs.\"idUser\" = :userId
                               AND rs.annee_acad_idannee_acad = :anneeId";
             $stmtSections = $pdo->prepare($querySections);
             $stmtSections->bindParam(':userId', $userId);

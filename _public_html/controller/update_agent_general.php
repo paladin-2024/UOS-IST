@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $query .= ", photo = :photo";
         }
         
-        $query .= " WHERE idAgent = :idAgent";
+        $query .= " WHERE \"idAgent\" = :idAgent";
         
         $stmt = $pdo->prepare($query);
         

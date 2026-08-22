@@ -143,7 +143,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                             e.idetudiant,
                             e.matricule,
                             e.noms,
-                            p.designationPromotion,
+                            p.\"designationPromotion\",
                             p.idpromotion,
                             s.idstage,
                             s.lieu_stage,
@@ -157,8 +157,8 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                         FROM stage_assignments s
                         JOIN etudiant e ON s.idetudiant = e.idetudiant
                         JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-                        LEFT JOIN agent a ON s.idencadreur = a.idAgent
-                        LEFT JOIN agent al ON s.idlecteur = al.idAgent
+                        LEFT JOIN agent a ON s.idencadreur = a.\"idAgent\"
+                        LEFT JOIN agent al ON s.idlecteur = al.\"idAgent\"
                         WHERE e.annee_acad_idannee_acad = :yearId";
 
                 $params = ['yearId' => $selectedYearId];
@@ -177,7 +177,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                     $params = array_merge($params, $promotionIds);
                 }
 
-                $sql .= " ORDER BY p.designationPromotion, e.noms";
+                $sql .= " ORDER BY p.\"designationPromotion\", e.noms";
 
                 $stmt = $db->prepare($sql);
                 $stmt->execute($params);

@@ -15,8 +15,8 @@ class Enseignant
         $query = "SELECT a.*, g.designation as grade 
                   FROM agent a 
                   LEFT JOIN grade g ON a.grade_id = g.idgrade 
-                  INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                  WHERE u.idUser = :userId AND a.type_agent = 'Enseignant'";
+                  INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                  WHERE u.\"idUser\" = :userId AND a.type_agent = 'Enseignant'";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['userId' => $userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -24,10 +24,10 @@ class Enseignant
 
     public function getEnseignants($orientationId = null)
     {
-        $query = "SELECT a.idAgent as idenseignant, a.noms as nomEnseignant, g.designation as grade 
+        $query = "SELECT a.\"idAgent\" as idenseignant, a.noms as \"nomEnseignant\", g.designation as grade 
                   FROM agent a 
                   INNER JOIN grade g ON a.grade_id = g.idgrade
-                  LEFT JOIN agent_section as ON a.idAgent = as.idAgent";
+                  LEFT JOIN agent_section as ON a.\"idAgent\" = as.idAgent";
                   
         if ($orientationId) {
             $query .= " LEFT JOIN section s ON as.idsection = s.idsection
@@ -58,12 +58,12 @@ class Enseignant
                     dir.noms as nom_directeur,
                     enc.noms as nom_encadreur
                   FROM sujets s
-                  INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                  INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                   INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                  LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-                  LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
-                  WHERE (s.idDirecteur = :idEnseignant OR s.idEncadreur = :idEnseignant)
+                  LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+                  LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
+                  WHERE (s.\"idDirecteur\" = :idEnseignant OR s.\"idEncadreur\" = :idEnseignant)
                   AND s.statut_validation = :statutValidation";
         
         if (!empty($search)) {
@@ -90,13 +90,13 @@ class Enseignant
     {
         $query = "SELECT 
                     COUNT(*) as total,
-                    SUM(CASE WHEN s.idDirecteur = :idEnseignant THEN 1 ELSE 0 END) as directeur,
-                    SUM(CASE WHEN s.idEncadreur = :idEnseignant THEN 1 ELSE 0 END) as encadreur,
-                    SUM(CASE WHEN s.etatSujet = 'En attente' THEN 1 ELSE 0 END) as en_attente,
-                    SUM(CASE WHEN s.etatSujet = 'Validé' THEN 1 ELSE 0 END) as valide,
-                    SUM(CASE WHEN s.etatSujet = 'Rejeté' THEN 1 ELSE 0 END) as rejete
+                    SUM(CASE WHEN s.\"idDirecteur\" = :idEnseignant THEN 1 ELSE 0 END) as directeur,
+                    SUM(CASE WHEN s.\"idEncadreur\" = :idEnseignant THEN 1 ELSE 0 END) as encadreur,
+                    SUM(CASE WHEN s.\"etatSujet\" = 'En attente' THEN 1 ELSE 0 END) as en_attente,
+                    SUM(CASE WHEN s.\"etatSujet\" = 'Validé' THEN 1 ELSE 0 END) as valide,
+                    SUM(CASE WHEN s.\"etatSujet\" = 'Rejeté' THEN 1 ELSE 0 END) as rejete
                   FROM sujets s
-                  WHERE (s.idDirecteur = :idEnseignant OR s.idEncadreur = :idEnseignant)
+                  WHERE (s.\"idDirecteur\" = :idEnseignant OR s.\"idEncadreur\" = :idEnseignant)
                   AND s.annee_acad_idannee_acad = :idAnneeAcad
                   AND s.statut_validation = 'Validé'";
         
@@ -112,7 +112,7 @@ class Enseignant
     public function updateEtatSujet($idSujet, $etatSujet, $idEnseignant)
     {
         // Vérifier si l'enseignant est le directeur du sujet
-        $query = "SELECT idDirecteur FROM sujets WHERE idsujets = :idSujet";
+        $query = "SELECT \"idDirecteur\" FROM sujets WHERE idsujets = :idSujet";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['idSujet' => $idSujet]);
         $sujet = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -121,7 +121,7 @@ class Enseignant
             return false; // Seul le directeur peut changer l'état
         }
         
-        $query = "UPDATE sujets SET etatSujet = :etatSujet WHERE idsujets = :idSujet";
+        $query = "UPDATE sujets SET \"etatSujet\" = :etatSujet WHERE idsujets = :idSujet";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
             'etatSujet' => $etatSujet,
@@ -135,7 +135,7 @@ class Enseignant
     public function updateSujet($idSujet, $intitule, $idSpecialisation, $idEncadreur, $idEnseignant)
     {
         // Vérifier si l'enseignant est le directeur du sujet
-        $query = "SELECT idDirecteur FROM sujets WHERE idsujets = :idSujet";
+        $query = "SELECT \"idDirecteur\" FROM sujets WHERE idsujets = :idSujet";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['idSujet' => $idSujet]);
         $sujet = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -146,8 +146,8 @@ class Enseignant
         
         $query = "UPDATE sujets 
                   SET intitule = :intitule, 
-                      idSpecialisation = :idSpecialisation,
-                      idEncadreur = :idEncadreur
+                      \"idSpecialisation\" = :idSpecialisation,
+                      \"idEncadreur\" = :idEncadreur
                   WHERE idsujets = :idSujet";
         
         $stmt = $this->db->prepare($query);
@@ -167,17 +167,17 @@ public function getSoutenancesBySujets($idEnseignant)
     $query = "SELECT DISTINCT so.*, s.intitule, s.cycle, sp.designation as specialisation,
                 CONCAT(e.noms) as etudiant,
                 CASE
-                    WHEN s.idDirecteur = :idEnseignant THEN 'Directeur'
-                    WHEN s.idEncadreur = :idEnseignant THEN 'Encadreur'
+                    WHEN s.\"idDirecteur\" = :idEnseignant THEN 'Directeur'
+                    WHEN s.\"idEncadreur\" = :idEnseignant THEN 'Encadreur'
                     ELSE 'Membre du jury'
                 END as role
               FROM soutenance so
               INNER JOIN sujets s ON so.sujets_idsujets = s.idsujets
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN jury_soutenance js ON so.idsoutenance = js.idsoutenance AND js.idenseignant = :idEnseignant
-              WHERE s.idDirecteur = :idEnseignant
-                 OR s.idEncadreur = :idEnseignant
+              WHERE s.\"idDirecteur\" = :idEnseignant
+                 OR s.\"idEncadreur\" = :idEnseignant
                  OR js.idenseignant = :idEnseignant
               ORDER BY so.date_soutenance DESC";
    
@@ -192,7 +192,7 @@ public function getSoutenancesBySujets($idEnseignant)
     // Récupérer les enseignants pour le choix d'encadreur
     public function getAllEnseignants()
     {
-        $query = "SELECT a.idAgent, a.noms, g.designation as grade
+        $query = "SELECT a.\"idAgent\", a.noms, g.designation as grade
                   FROM agent a
                   LEFT JOIN grade g ON a.grade_id = g.idgrade
                   WHERE a.type_agent = 'Enseignant'
@@ -212,7 +212,7 @@ public function getSoutenancesBySujets($idEnseignant)
     public function isUserEnseignant($userId)
     {
         // Récupérer d'abord l'idAgent à partir de l'ID utilisateur
-        $query = "SELECT idAgent FROM t_users WHERE idUser = :userId";
+        $query = "SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :userId";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['userId' => $userId]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -222,7 +222,7 @@ public function getSoutenancesBySujets($idEnseignant)
         }
         
         // Vérifier si l'agent est de type Enseignant
-        $query = "SELECT type_agent FROM agent WHERE idAgent = :idAgent";
+        $query = "SELECT type_agent FROM agent WHERE \"idAgent\" = :idAgent";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['idAgent' => $user['idAgent']]);
         $agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -237,10 +237,10 @@ public function getSoutenancesBySujets($idEnseignant)
      */
     public function getAgentIdByUserId($userId)
     {
-        $query = "SELECT a.idAgent 
+        $query = "SELECT a.\"idAgent\" 
                 FROM agent a 
-                INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                WHERE u.idUser = :userId AND a.type_agent = 'Enseignant'";
+                INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                WHERE u.\"idUser\" = :userId AND a.type_agent = 'Enseignant'";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['userId' => $userId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -256,14 +256,14 @@ public function getSoutenancesBySujets($idEnseignant)
     public function getSujetsForCommissionValidation($search = '', $filters = []) {
         $query = "SELECT s.*, spec.designation as specialisation, aa.designation as annee,
                          CONCAT(e.noms, ' (', e.matricule, ')') as etudiant,
-                         CONCAT(d.nomEnseignant, ' (', d.grade, ')') as directeur,
-                         CONCAT(enc.nomEnseignant, ' (', enc.grade, ')') as encadreur
+                         CONCAT(d.\"nomEnseignant\", ' (', d.grade, ')') as directeur,
+                         CONCAT(enc.\"nomEnseignant\", ' (', enc.grade, ')') as encadreur
                   FROM sujets s
-                  LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+                  LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
                   LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                  LEFT JOIN enseignant d ON s.idDirecteur = d.idenseignant
-                  LEFT JOIN enseignant enc ON s.idEncadreur = enc.idenseignant
+                  LEFT JOIN enseignant d ON s.\"idDirecteur\" = d.idenseignant
+                  LEFT JOIN enseignant enc ON s.\"idEncadreur\" = enc.idenseignant
                   WHERE 1=1";
     
         $params = [];
@@ -280,7 +280,7 @@ public function getSoutenancesBySujets($idEnseignant)
         }
         
         if (!empty($filters['specialisation'])) {
-            $query .= " AND s.idSpecialisation = ?";
+            $query .= " AND s.\"idSpecialisation\" = ?";
             $params[] = $filters['specialisation'];
         }
         
@@ -348,7 +348,7 @@ public function getSoutenancesBySujets($idEnseignant)
                       SET statut_validation = :statutValidation,
                           commentaire_commission = :commentaire,
                           date_validation = NOW(),
-                          idValidateur = :idValidateur
+                          \"idValidateur\" = :idValidateur
                       WHERE idsujets = :idSujet";
             
             $stmt = $this->db->prepare($query);
@@ -364,7 +364,7 @@ public function getSoutenancesBySujets($idEnseignant)
 
             // Ajouter après la mise à jour du statut du sujet:
             $now = date('Y-m-d H:i:s');
-            $query = "INSERT INTO sujet_validation_history (idsujets, status, commentaire, idUser, date_action)
+            $query = "INSERT INTO sujet_validation_history (idsujets, status, commentaire, \"idUser\", date_action)
                     VALUES (:idsujets, :status, :commentaire, :idUser, :date_action)";
             $stmt = $this->db->prepare($query);
             $stmt->execute([
@@ -409,12 +409,12 @@ public function getSoutenancesBySujets($idEnseignant)
         $query = "UPDATE sujets SET
                   intitule = :intitule,
                   cycle = :cycle,
-                  idSpecialisation = :idSpecialisation,
+                  \"idSpecialisation\" = :idSpecialisation,
                   annee_acad_idannee_acad = :anneeAcad,
                   statut_validation = :statutValidation,
                   commentaire_commission = :commentaire,
                   date_validation = NOW(),
-                  idValidateur = :idValidateur";
+                  \"idValidateur\" = :idValidateur";
         
         // Ajouter les champs optionnels s'ils sont présents
         if ($hasEtudiant) {
@@ -422,11 +422,11 @@ public function getSoutenancesBySujets($idEnseignant)
         }
         
         if ($hasDirecteur) {
-            $query .= ", idDirecteur = :directeurId";
+            $query .= ", \"idDirecteur\" = :directeurId";
         }
         
         if ($hasEncadreur) {
-            $query .= ", idEncadreur = :encadreurId";
+            $query .= ", \"idEncadreur\" = :encadreurId";
         }
         
         $query .= " WHERE idsujets = :idSujet";
@@ -479,7 +479,7 @@ public function getSoutenancesBySujets($idEnseignant)
  */
 public function sujetHasDirectorAndStudent($idSujet)
 {
-    $query = "SELECT idDirecteur, etudiant_idetudiant 
+    $query = "SELECT \"idDirecteur\", etudiant_idetudiant 
               FROM sujets 
               WHERE idsujets = :idSujet";
     
@@ -504,8 +504,8 @@ public function sujetHasDirectorAndStudent($idSujet)
 public function getTeachers()
 {
     $query = "SELECT 
-                a.idAgent as idenseignant, 
-                a.noms as nomEnseignant, 
+                a.\"idAgent\" as idenseignant, 
+                a.noms as \"nomEnseignant\", 
                 g.designation as grade
               FROM agent a
               LEFT JOIN grade g ON a.grade_id = g.idgrade
@@ -534,11 +534,11 @@ public function getSujetsByAnneeForCommission($anneeId)
                 g_dir.designation as grade_directeur,
                 g_enc.designation as grade_encadreur
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               WHERE s.annee_acad_idannee_acad = :anneeId
@@ -562,9 +562,9 @@ public function getStatistiquesSujetsByAnnee($anneeId)
 {
     $query = "SELECT 
                 COUNT(*) as total,
-                SUM(CASE WHEN s.etatSujet = 'Validé' THEN 1 ELSE 0 END) as valides,
-                SUM(CASE WHEN s.etatSujet = 'En attente' THEN 1 ELSE 0 END) as en_attente,
-                SUM(CASE WHEN s.etatSujet = 'Rejeté' THEN 1 ELSE 0 END) as rejetes,
+                SUM(CASE WHEN s.\"etatSujet\" = 'Validé' THEN 1 ELSE 0 END) as valides,
+                SUM(CASE WHEN s.\"etatSujet\" = 'En attente' THEN 1 ELSE 0 END) as en_attente,
+                SUM(CASE WHEN s.\"etatSujet\" = 'Rejeté' THEN 1 ELSE 0 END) as rejetes,
                 SUM(CASE WHEN s.statut_validation = 'Validé' THEN 1 ELSE 0 END) as commission_valides,
                 SUM(CASE WHEN s.statut_validation = 'En attente' THEN 1 ELSE 0 END) as commission_en_attente,
                 SUM(CASE WHEN s.statut_validation = 'Rejeté' THEN 1 ELSE 0 END) as commission_rejetes
@@ -618,13 +618,13 @@ public function getSujetsValidesParCommission($search = '')
                 p.designation as promotion,
                 d.designation as departement
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN departement d ON p.departement_iddepartement = d.iddepartement
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               WHERE s.statut_validation = 'Validé'";
@@ -674,14 +674,14 @@ public function getDetailsSujet($idSujet)
                 val.noms as validateur,
                 g_val.designation as grade_validateur
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN departement d ON p.departement_iddepartement = d.iddepartement
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
-              LEFT JOIN agent val ON s.idValidateur = val.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
+              LEFT JOIN agent val ON s.\"idValidateur\" = val.\"idAgent\"
               LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               LEFT JOIN grade g_val ON val.grade_id = g_val.idgrade
@@ -702,12 +702,12 @@ public function getDetailsSujet($idSujet)
 public function getTachesBySujet($idSujet)
 {
     $query = "SELECT t.*, 
-                u.nomUser as createur,
+                u.\"nomUser\" as createur,
                 (SELECT COUNT(*) FROM echanges_taches WHERE taches_idtaches = t.idtaches) as nombre_echanges
               FROM taches t
-              LEFT JOIN t_users u ON t.idUser = u.idUser
+              LEFT JOIN t_users u ON t.\"idUser\" = u.\"idUser\"
               WHERE t.sujets_idsujets = :idSujet
-              ORDER BY t.dateTache DESC, t.idtaches DESC";
+              ORDER BY t.\"dateTache\" DESC, t.idtaches DESC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idSujet', $idSujet, PDO::PARAM_INT);
@@ -725,12 +725,12 @@ public function getEchangesByTache($idTache)
 {
     $query = "SELECT e.*,
                 CASE 
-                    WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.idAuteur)
-                    ELSE (SELECT noms FROM agent WHERE idAgent = e.idAuteur)
+                    WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.\"idAuteur\")
+                    ELSE (SELECT noms FROM agent WHERE \"idAgent\" = e.\"idAuteur\")
                 END as nom_auteur
               FROM echanges_taches e
               WHERE e.taches_idtaches = :idTache
-              ORDER BY e.dateEchange ASC";
+              ORDER BY e.\"dateEchange\" ASC";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idTache', $idTache, PDO::PARAM_INT);
@@ -788,10 +788,10 @@ public function getSujetsAvecProgressionParEtudiant($etudiantId)
                 enc.noms as encadreur,
                 g_enc.designation as grade_encadreur
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               WHERE s.etudiant_idetudiant = :etudiantId
@@ -821,12 +821,12 @@ public function getStatistiquesGlobalesSujetsValides()
 {
     $query = "SELECT 
                 COUNT(*) as total_sujets,
-                SUM(CASE WHEN s.etatSujet = 'Validé' THEN 1 ELSE 0 END) as sujets_valides,
-                SUM(CASE WHEN s.etatSujet = 'En attente' THEN 1 ELSE 0 END) as sujets_en_attente,
-                SUM(CASE WHEN s.etatSujet = 'Rejeté' THEN 1 ELSE 0 END) as sujets_rejetes,
+                SUM(CASE WHEN s.\"etatSujet\" = 'Validé' THEN 1 ELSE 0 END) as sujets_valides,
+                SUM(CASE WHEN s.\"etatSujet\" = 'En attente' THEN 1 ELSE 0 END) as sujets_en_attente,
+                SUM(CASE WHEN s.\"etatSujet\" = 'Rejeté' THEN 1 ELSE 0 END) as sujets_rejetes,
                 COUNT(DISTINCT s.etudiant_idetudiant) as total_etudiants,
-                COUNT(DISTINCT s.idDirecteur) as total_directeurs,
-                COUNT(DISTINCT s.idEncadreur) as total_encadreurs
+                COUNT(DISTINCT s.\"idDirecteur\") as total_directeurs,
+                COUNT(DISTINCT s.\"idEncadreur\") as total_encadreurs
               FROM sujets s
               WHERE s.statut_validation = 'Validé'";
     
@@ -846,7 +846,7 @@ public function getDernieresActivitesSujet($idSujet, $limit = 10)
 {
     $query = "SELECT 'tache' as type, 
                 t.idtaches as id,
-                t.dateTache as date,
+                t.\"dateTache\" as date,
                 t.description as contenu,
                 t.validation as statut,
                 NULL as auteur,
@@ -858,12 +858,12 @@ public function getDernieresActivitesSujet($idSujet, $limit = 10)
               
               SELECT 'echange' as type,
                 e.idechange as id,
-                e.dateEchange as date,
+                e.\"dateEchange\" as date,
                 e.commentaire as contenu,
                 NULL as statut,
                 CASE 
-                    WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.idAuteur)
-                    ELSE (SELECT noms FROM agent WHERE idAgent = e.idAuteur)
+                    WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.\"idAuteur\")
+                    ELSE (SELECT noms FROM agent WHERE \"idAgent\" = e.\"idAuteur\")
                 END as auteur,
                 e.type_auteur
               FROM echanges_taches e
@@ -899,12 +899,12 @@ public function getSujetsValidesByAnnee($anneeId)
                 g_enc.designation as grade_encadreur,
                 p.designation as promotion
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
                             LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               WHERE s.statut_validation = 'Validé'
@@ -936,13 +936,13 @@ public function getSujetsValidesByDepartement($departementId)
                 g_enc.designation as grade_encadreur,
                 p.designation as promotion
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN departement d ON p.departement_iddepartement = d.iddepartement
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               WHERE s.statut_validation = 'Validé'
@@ -973,12 +973,12 @@ public function getSujetsValidesByPromotion($promotionId)
                 enc.noms as encadreur,
                 g_enc.designation as grade_encadreur
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               WHERE s.statut_validation = 'Validé'
@@ -1000,8 +1000,8 @@ public function getSujetsValidesByPromotion($promotionId)
 public function getEtudiantsAvecSujetsValides($search = '')
 {
     $query = "SELECT DISTINCT e.idetudiant, e.noms, e.matricule, 
-                p.designationPromotion as promotion,
-                d.designationOrientation as departement,
+                p.\"designationPromotion\" as promotion,
+                d.\"designationOrientation\" as departement,
                 aa.designation as annee_academique
               FROM etudiant e
               INNER JOIN sujets s ON e.idetudiant = s.etudiant_idetudiant
@@ -1013,8 +1013,8 @@ public function getEtudiantsAvecSujetsValides($search = '')
     if (!empty($search)) {
         $query .= " AND (e.noms LIKE :search 
                     OR e.matricule LIKE :search 
-                    OR p.designationPromotion LIKE :search
-                    OR d.designationOrientation LIKE :search)";
+                    OR p.\"designationPromotion\" LIKE :search
+                    OR d.\"designationOrientation\" LIKE :search)";
     }
     
     $query .= " ORDER BY e.noms ASC";
@@ -1040,8 +1040,8 @@ public function getDetailsEtudiantAvecSujets($etudiantId)
 {
     // Récupérer les informations de l'étudiant
     $query = "SELECT e.*, 
-                p.designationPromotion as promotion,
-                d.designationOrientation as departement,
+                p.\"designationPromotion\" as promotion,
+                d.\"designationOrientation\" as departement,
                 aa.designation as annee_academique
               FROM etudiant e
               INNER JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -1072,7 +1072,7 @@ public function getDetailsEtudiantAvecSujets($etudiantId)
 public function getStatistiquesProgressionEtudiants()
 {
     $query = "SELECT e.idetudiant, e.noms, e.matricule, 
-                p.designationPromotion as promotion,
+                p.\"designationPromotion\" as promotion,
                 COUNT(DISTINCT s.idsujets) as nombre_sujets,
                 (SELECT COUNT(*) FROM taches t WHERE t.sujets_idsujets IN 
                     (SELECT idsujets FROM sujets WHERE etudiant_idetudiant = e.idetudiant)
@@ -1117,7 +1117,7 @@ public function getDetailsTache($idTache)
                 u.username as createur_username
               FROM taches t
               INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
-              LEFT JOIN t_users u ON t.idUser = u.idUser
+              LEFT JOIN t_users u ON t.\"idUser\" = u.\"idUser\"
               WHERE t.idtaches = :idTache";
     
     $stmt = $this->db->prepare($query);
@@ -1143,9 +1143,9 @@ public function getTachesRecentes($limit = 10)
               FROM taches t
               INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN t_users u ON t.idUser = u.idUser
+              LEFT JOIN t_users u ON t.\"idUser\" = u.\"idUser\"
               WHERE s.statut_validation = 'Validé'
-              ORDER BY t.dateTache DESC, t.idtaches DESC
+              ORDER BY t.\"dateTache\" DESC, t.idtaches DESC
               LIMIT :limit";
     
     $stmt = $this->db->prepare($query);
@@ -1168,14 +1168,14 @@ public function getEchangesRecents($limit = 10)
                 s.intitule as sujet_intitule,
                 s.idsujets,
                 CASE 
-                    WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.idAuteur)
-                    ELSE (SELECT noms FROM agent WHERE idAgent = e.idAuteur)
+                    WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.\"idAuteur\")
+                    ELSE (SELECT noms FROM agent WHERE \"idAgent\" = e.\"idAuteur\")
                 END as nom_auteur
               FROM echanges_taches e
               INNER JOIN taches t ON e.taches_idtaches = t.idtaches
               INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
               WHERE s.statut_validation = 'Validé'
-              ORDER BY e.dateEchange DESC
+              ORDER BY e.\"dateEchange\" DESC
               LIMIT :limit";
     
     $stmt = $this->db->prepare($query);
@@ -1265,12 +1265,12 @@ public function genererRapportProgressionEtudiant($etudiantId)
                     g_enc.designation as grade_encadreur,
                     p.designation as promotion
                   FROM sujets s
-                  INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                  INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                   INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
                   LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-                  LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-                  LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+                  LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+                  LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
                   LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
                   LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
                   WHERE s.statut_validation = 'Validé'
@@ -1302,21 +1302,21 @@ public function genererRapportProgressionEtudiant($etudiantId)
                     g_enc.designation as grade_encadreur,
                     p.designation as promotion,
                     CASE 
-                        WHEN s.idDirecteur = :enseignantId THEN 'Directeur'
-                        WHEN s.idEncadreur = :enseignantId THEN 'Encadreur'
+                        WHEN s.\"idDirecteur\" = :enseignantId THEN 'Directeur'
+                        WHEN s.\"idEncadreur\" = :enseignantId THEN 'Encadreur'
                         ELSE 'Autre'
                     END as role
                   FROM sujets s
-                  INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                  INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                   INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
                   LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-                  LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-                  LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+                  LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+                  LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
                   LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
                   LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
                   WHERE s.statut_validation = 'Validé'
-                  AND (s.idDirecteur = :enseignantId OR s.idEncadreur = :enseignantId)
+                  AND (s.\"idDirecteur\" = :enseignantId OR s.\"idEncadreur\" = :enseignantId)
                   ORDER BY aa.designation DESC, sp.designation, s.idsujets DESC";
         
         $stmt = $this->db->prepare($query);
@@ -1340,9 +1340,9 @@ public function genererRapportProgressionEtudiant($etudiantId)
                     SUM(CASE WHEN validation = 'En attente' THEN 1 ELSE 0 END) as en_attente,
                     SUM(CASE WHEN validation = 'Rejeté' THEN 1 ELSE 0 END) as rejetees,
                     AVG(pourcentage_avancement) as moyenne_avancement,
-                    MIN(dateTache) as premiere_tache,
-                    MAX(dateTache) as derniere_tache,
-                    DATEDIFF(MAX(dateTache), MIN(dateTache)) as duree_jours
+                    MIN(\"dateTache\") as premiere_tache,
+                    MAX(\"dateTache\") as derniere_tache,
+                    DATEDIFF(MAX(\"dateTache\"), MIN(\"dateTache\")) as duree_jours
                   FROM taches
                   WHERE sujets_idsujets = :idSujet";
         
@@ -1375,8 +1375,8 @@ public function genererRapportProgressionEtudiant($etudiantId)
                     SUM(CASE WHEN e.type_auteur = 'Directeur' THEN 1 ELSE 0 END) as echanges_directeur,
                     SUM(CASE WHEN e.type_auteur = 'Encadreur' THEN 1 ELSE 0 END) as echanges_encadreur,
                     COUNT(DISTINCT e.taches_idtaches) as taches_avec_echanges,
-                    MIN(e.dateEchange) as premier_echange,
-                    MAX(e.dateEchange) as dernier_echange
+                    MIN(e.\"dateEchange\") as premier_echange,
+                    MAX(e.\"dateEchange\") as dernier_echange
                   FROM echanges_taches e
                   JOIN taches t ON e.taches_idtaches = t.idtaches
                   WHERE t.sujets_idsujets = :idSujet";
@@ -1396,12 +1396,12 @@ public function genererRapportProgressionEtudiant($etudiantId)
     public function getTachesParMoisBySujet($idSujet)
     {
         $query = "SELECT 
-                    DATE_FORMAT(dateTache, '%Y-%m') as mois,
+                    DATE_FORMAT(\"dateTache\", '%Y-%m') as mois,
                     COUNT(*) as nombre_taches,
                     SUM(CASE WHEN validation = 'Validé' THEN 1 ELSE 0 END) as taches_validees
                   FROM taches
                   WHERE sujets_idsujets = :idSujet
-                  GROUP BY DATE_FORMAT(dateTache, '%Y-%m')
+                  GROUP BY DATE_FORMAT(\"dateTache\", '%Y-%m')
                   ORDER BY mois ASC";
         
         $stmt = $this->db->prepare($query);
@@ -1419,14 +1419,14 @@ public function genererRapportProgressionEtudiant($etudiantId)
     public function getEchangesParMoisBySujet($idSujet)
     {
         $query = "SELECT 
-                    DATE_FORMAT(e.dateEchange, '%Y-%m') as mois,
+                    DATE_FORMAT(e.\"dateEchange\", '%Y-%m') as mois,
                     COUNT(*) as nombre_echanges,
                     SUM(CASE WHEN e.type_auteur = 'Etudiant' THEN 1 ELSE 0 END) as echanges_etudiant,
                     SUM(CASE WHEN e.type_auteur IN ('Directeur', 'Encadreur') THEN 1 ELSE 0 END) as echanges_enseignants
                   FROM echanges_taches e
                   JOIN taches t ON e.taches_idtaches = t.idtaches
                   WHERE t.sujets_idsujets = :idSujet
-                  GROUP BY DATE_FORMAT(e.dateEchange, '%Y-%m')
+                  GROUP BY DATE_FORMAT(e.\"dateEchange\", '%Y-%m')
                   ORDER BY mois ASC";
         
         $stmt = $this->db->prepare($query);
@@ -1456,8 +1456,8 @@ public function genererRapportProgressionEtudiant($etudiantId)
                   INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
                   LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-                  LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-                  LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+                  LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+                  LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
                   WHERE s.statut_validation = 'Validé'
                   ORDER BY aa.designation DESC, s.idsujets DESC
                   LIMIT :limit";
@@ -1489,7 +1489,7 @@ public function genererRapportProgressionEtudiant($etudiantId)
     public function userCanViewSujet($userId, $sujetId)
     {
         // Récupérer l'ID de l'agent associé à cet utilisateur
-        $query = "SELECT idAgent FROM t_users WHERE idUser = :userId";
+        $query = "SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :userId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1502,7 +1502,7 @@ public function genererRapportProgressionEtudiant($etudiantId)
         $idAgent = $user['idAgent'];
         
         // Vérifier si l'utilisateur est un administrateur
-        $query = "SELECT role FROM t_users WHERE idUser = :userId";
+        $query = "SELECT role FROM t_users WHERE \"idUser\" = :userId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
@@ -1513,7 +1513,7 @@ public function genererRapportProgressionEtudiant($etudiantId)
         }
         
         // Vérifier si l'utilisateur est le directeur ou l'encadreur du sujet
-        $query = "SELECT * FROM sujets WHERE idsujets = :sujetId AND (idDirecteur = :idAgent OR idEncadreur = :idAgent)";
+        $query = "SELECT * FROM sujets WHERE idsujets = :sujetId AND (\"idDirecteur\" = :idAgent OR \"idEncadreur\" = :idAgent)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':sujetId', $sujetId, PDO::PARAM_INT);
         $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -1526,9 +1526,9 @@ public function genererRapportProgressionEtudiant($etudiantId)
         // Vérifier si l'utilisateur est l'étudiant associé au sujet
         $query = "SELECT e.idetudiant 
                   FROM etudiant e 
-                  INNER JOIN t_users u ON e.idUser = u.idUser
+                  INNER JOIN t_users u ON e.\"idUser\" = u.\"idUser\"
                   INNER JOIN sujets s ON e.idetudiant = s.etudiant_idetudiant
-                  WHERE u.idUser = :userId AND s.idsujets = :sujetId";
+                  WHERE u.\"idUser\" = :userId AND s.idsujets = :sujetId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':sujetId', $sujetId, PDO::PARAM_INT);
@@ -1539,7 +1539,7 @@ public function genererRapportProgressionEtudiant($etudiantId)
         }
         
         // Vérifier si l'utilisateur fait partie de la commission
-        $query = "SELECT * FROM commission_membres WHERE idAgent = :idAgent";
+        $query = "SELECT * FROM commission_membres WHERE \"idAgent\" = :idAgent";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $stmt->execute();
@@ -1569,16 +1569,16 @@ public function genererRapportProgressionEtudiant($etudiantId)
                     g_enc.designation as grade_encadreur,
                     p.designation as promotion
                   FROM sujets s
-                  INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                  INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                   INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
                   LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-                  LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-                  LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+                  LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+                  LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
                   LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
                   LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
                   WHERE s.statut_validation = 'Validé'
-                  AND s.idSpecialisation = :specialisationId
+                  AND s.\"idSpecialisation\" = :specialisationId
                   ORDER BY aa.designation DESC, s.idsujets DESC";
         
         $stmt = $this->db->prepare($query);
@@ -1674,7 +1674,7 @@ public function genererRapportProgressionEtudiant($etudiantId)
                   FROM taches t
                   INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
                   WHERE t.sujets_idsujets IN ($placeholders)
-                  ORDER BY t.dateTache DESC, t.idtaches DESC";
+                  ORDER BY t.\"dateTache\" DESC, t.idtaches DESC";
         
         $stmt = $this->db->prepare($query);
         foreach ($sujets as $index => $sujetId) {
@@ -1694,14 +1694,14 @@ public function genererRapportProgressionEtudiant($etudiantId)
                         s.intitule as sujet_intitule,
                         s.idsujets,
                         CASE 
-                            WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.idAuteur)
-                            ELSE (SELECT noms FROM agent WHERE idAgent = e.idAuteur)
+                            WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.\"idAuteur\")
+                            ELSE (SELECT noms FROM agent WHERE \"idAgent\" = e.\"idAuteur\")
                         END as nom_auteur
                       FROM echanges_taches e
                       INNER JOIN taches t ON e.taches_idtaches = t.idtaches
                       INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
                       WHERE e.taches_idtaches IN ($placeholders)
-                      ORDER BY e.dateEchange DESC";
+                      ORDER BY e.\"dateEchange\" DESC";
             
             $stmt = $this->db->prepare($query);
             foreach ($tacheIds as $index => $tacheId) {
@@ -1726,7 +1726,7 @@ public function genererRapportProgressionEtudiant($etudiantId)
     {
         // Récupérer tous les sujets où l'enseignant est directeur ou encadreur
         $query = "SELECT idsujets FROM sujets 
-                  WHERE (idDirecteur = :enseignantId OR idEncadreur = :enseignantId) 
+                  WHERE (\"idDirecteur\" = :enseignantId OR \"idEncadreur\" = :enseignantId) 
                   AND statut_validation = 'Validé'";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':enseignantId', $enseignantId, PDO::PARAM_INT);
@@ -1751,7 +1751,7 @@ public function genererRapportProgressionEtudiant($etudiantId)
                   INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
                   WHERE t.sujets_idsujets IN ($placeholders)
-                  ORDER BY t.dateTache DESC, t.idtaches DESC";
+                  ORDER BY t.\"dateTache\" DESC, t.idtaches DESC";
         
         $stmt = $this->db->prepare($query);
         foreach ($sujets as $index => $sujetId) {
@@ -1771,14 +1771,14 @@ public function genererRapportProgressionEtudiant($etudiantId)
                         s.intitule as sujet_intitule,
                         s.idsujets,
                         CASE 
-                            WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.idAuteur)
-                            ELSE (SELECT noms FROM agent WHERE idAgent = e.idAuteur)
+                            WHEN e.type_auteur = 'Etudiant' THEN (SELECT noms FROM etudiant WHERE idetudiant = e.\"idAuteur\")
+                            ELSE (SELECT noms FROM agent WHERE \"idAgent\" = e.\"idAuteur\")
                         END as nom_auteur
                       FROM echanges_taches e
                       INNER JOIN taches t ON e.taches_idtaches = t.idtaches
                       INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
                       WHERE e.taches_idtaches IN ($placeholders)
-                      ORDER BY e.dateEchange DESC";
+                      ORDER BY e.\"dateEchange\" DESC";
             
             $stmt = $this->db->prepare($query);
             foreach ($tacheIds as $index => $tacheId) {
@@ -1816,12 +1816,12 @@ public function getSujetsValidesAvecProgressionPourExport($anneeId = null)
                 (SELECT COUNT(*) FROM echanges_taches et JOIN taches t ON et.taches_idtaches = t.idtaches 
                  WHERE t.sujets_idsujets = s.idsujets) as total_echanges
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               WHERE s.statut_validation = 'Validé'";
@@ -1913,13 +1913,13 @@ public function getSujetsValidesAvecFiltres($filtres = [], $search = '', $limit 
                 (SELECT COUNT(*) FROM taches WHERE sujets_idsujets = s.idsujets) as total_taches,
                 (SELECT COUNT(*) FROM taches WHERE sujets_idsujets = s.idsujets AND validation = 'Validé') as taches_validees
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN departement d ON p.departement_iddepartement = d.iddepartement
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               LEFT JOIN grade g_dir ON dir.grade_id = g_dir.idgrade
               LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
               WHERE s.statut_validation = 'Validé'";
@@ -1948,7 +1948,7 @@ public function getSujetsValidesAvecFiltres($filtres = [], $search = '', $limit 
     }
     
     if (!empty($filtres['specialisation'])) {
-        $query .= " AND s.idSpecialisation = :specialisation";
+        $query .= " AND s.\"idSpecialisation\" = :specialisation";
         $params[':specialisation'] = $filtres['specialisation'];
     }
     
@@ -2002,13 +2002,13 @@ public function countSujetsValidesAvecFiltres($filtres = [], $search = '')
 {
     $query = "SELECT COUNT(*) as total
               FROM sujets s
-              INNER JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+              INNER JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
               INNER JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN departement d ON p.departement_iddepartement = d.iddepartement
-              LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+              LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
               WHERE s.statut_validation = 'Validé'";
     
     $params = [];
@@ -2035,7 +2035,7 @@ public function countSujetsValidesAvecFiltres($filtres = [], $search = '')
     }
     
     if (!empty($filtres['specialisation'])) {
-        $query .= " AND s.idSpecialisation = :specialisation";
+        $query .= " AND s.\"idSpecialisation\" = :specialisation";
         $params[':specialisation'] = $filtres['specialisation'];
     }
     
@@ -2075,11 +2075,11 @@ public function getSujetsForCommissionValidationBySections($search = '', $sectio
                      CONCAT(d.noms, ' (', d.grade, ')') as directeur,
                      CONCAT(enc.noms, ' (', enc.grade, ')') as encadreur
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN agent d ON s.idDirecteur = d.idagent
-              LEFT JOIN agent enc ON s.idEncadreur = enc.idagent
+              LEFT JOIN agent d ON s.\"idDirecteur\" = d.idagent
+              LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.idagent
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
@@ -2099,7 +2099,7 @@ public function getSujetsForCommissionValidationBySections($search = '', $sectio
     }
     
     if (!empty($filters['specialisation'])) {
-        $query .= " AND s.idSpecialisation = ?";
+        $query .= " AND s.\"idSpecialisation\" = ?";
         $params[] = $filters['specialisation'];
     }
     
@@ -2174,7 +2174,7 @@ public function getSujetValidationHistory($sujetId) {
                 h.status, 
                 h.date_action, 
                 h.commentaire, 
-                h.idUser
+                h.\"idUser\"
               FROM sujet_validation_history h
               WHERE h.idsujets = ?
               ORDER BY h.date_action DESC";
@@ -2196,14 +2196,14 @@ public function getSujetsByAnneeAndSectionsForCommission($anneeId, $sections, $s
     
     $query = "SELECT s.*, spec.designation as specialisation, aa.designation as annee,
                      e.noms as etudiant, e.matricule,
-                     d.nomEnseignant as directeur, d.grade as grade_directeur,
-                     enc.nomEnseignant as encadreur, enc.grade as grade_encadreur
+                     d.\"nomEnseignant\" as directeur, d.grade as grade_directeur,
+                     enc.\"nomEnseignant\" as encadreur, enc.grade as grade_encadreur
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN enseignant d ON s.idDirecteur = d.idenseignant
-              LEFT JOIN enseignant enc ON s.idEncadreur = enc.idenseignant
+              LEFT JOIN enseignant d ON s.\"idDirecteur\" = d.idenseignant
+              LEFT JOIN enseignant enc ON s.\"idEncadreur\" = enc.idenseignant
               LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
@@ -2374,9 +2374,9 @@ public function getStatistiquesSujetsByAnneeAndSections($anneeId, $sections) {
 
 public function checkAffectationExists($idAgent, $idEcue, $idAnneeAcad) {
     $query = "SELECT COUNT(*) FROM enseignant_ecue 
-              WHERE idAgent = :idAgent 
-              AND idECUE = :idEcue 
-              AND anneeAcad = :anneeAcad";
+              WHERE \"idAgent\" = :idAgent 
+              AND \"idECUE\" = :idEcue 
+              AND \"anneeAcad\" = :anneeAcad";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -2391,9 +2391,9 @@ public function checkAffectationExists($idAgent, $idEcue, $idAnneeAcad) {
 public function updateAffectation($idAgent, $idEcue, $poste, $idAnneeAcad) {
     $query = "UPDATE enseignant_ecue 
               SET poste = :poste 
-              WHERE idAgent = :idAgent 
-              AND idECUE = :idEcue 
-              AND anneeAcad = :anneeAcad";
+              WHERE \"idAgent\" = :idAgent 
+              AND \"idECUE\" = :idEcue 
+              AND \"anneeAcad\" = :anneeAcad";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':poste', $poste, PDO::PARAM_STR);
@@ -2406,7 +2406,7 @@ public function updateAffectation($idAgent, $idEcue, $poste, $idAnneeAcad) {
 
 
 public function affecterEnseignant($idAgent, $idEcue, $poste, $idAnneeAcad) {
-    $query = "INSERT INTO enseignant_ecue (poste, idAgent, idECUE, anneeAcad) 
+    $query = "INSERT INTO enseignant_ecue (poste, \"idAgent\", \"idECUE\", \"anneeAcad\") 
               VALUES (:poste, :idAgent, :idEcue, :anneeAcad)";
     
     $stmt = $this->db->prepare($query);
@@ -2422,10 +2422,10 @@ public function affecterEnseignant($idAgent, $idEcue, $poste, $idAnneeAcad) {
 public function getEnseignantsAffectesByCours($idEcue, $idAnneeAcad) {
     $query = "SELECT ee.*, a.noms, a.photo, g.designation as gradeDesignation
               FROM enseignant_ecue ee
-              JOIN agent a ON ee.idAgent = a.idAgent
+              JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
               LEFT JOIN grade g ON a.grade_id = g.idgrade
-              WHERE ee.idECUE = :idEcue 
-              AND ee.anneeAcad = :anneeAcad
+              WHERE ee.\"idECUE\" = :idEcue 
+              AND ee.\"anneeAcad\" = :anneeAcad
               ORDER BY ee.poste ASC, a.noms ASC";
     
     $stmt = $this->db->prepare($query);
@@ -2448,18 +2448,18 @@ public function supprimerAffectation($idAffectation) {
 
 public function getCoursAffectesEnseignant($idEnseignant, $idAnneeAcad) {
     try {
-        $query = "SELECT e.idECUE, e.designationECUE, e.CMI, e.TD, e.TP, 
-                         u.idUE, u.designationUE, u.codeUE, s.numeroSemestre,
-                         p.designationPromotion, ee.poste
+        $query = "SELECT e.\"idECUE\", e.\"designationECUE\", e.CMI, e.TD, e.TP, 
+                         u.\"idUE\", u.\"designationUE\", u.\"codeUE\", s.\"numeroSemestre\",
+                         p.\"designationPromotion\", ee.poste
                   FROM ecue e
-                  INNER JOIN enseignant_ecue ee ON e.idECUE = ee.idECUE
-                  INNER JOIN ue u ON e.UE_idUE = u.idUE
+                  INNER JOIN enseignant_ecue ee ON e.\"idECUE\" = ee.\"idECUE\"
+                  INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                   INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                   INNER JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-                  WHERE ee.idAgent = ?
-                    AND ee.anneeAcad = ?
-                    AND e.estVisible = 1
-                  ORDER BY s.numeroSemestre, u.designationUE, e.designationECUE";
+                  WHERE ee.\"idAgent\" = ?
+                    AND ee.\"anneeAcad\" = ?
+                    AND e.\"estVisible\" = 1
+                  ORDER BY s.\"numeroSemestre\", u.\"designationUE\", e.designationECUE";
         
         $stmt = $this->db->prepare($query);
         $stmt->execute([$idEnseignant, $idAnneeAcad]);
@@ -2475,7 +2475,7 @@ public function getCoursAffectesEnseignant($idEnseignant, $idAnneeAcad) {
 public function isEnseignantAssignedToEcue($idEnseignant, $idEcue, $idAnneeAcad) {
     try {
         $query = "SELECT COUNT(*) FROM enseignant_ecue 
-                 WHERE idAgent = ? AND idECUE = ? AND anneeAcad = ?";
+                 WHERE \"idAgent\" = ? AND \"idECUE\" = ? AND \"anneeAcad\" = ?";
         
         $stmt = $this->db->prepare($query);
         $stmt->execute([$idEnseignant, $idEcue, $idAnneeAcad]);
@@ -2498,7 +2498,7 @@ public function isEnseignantAssignedToEcue($idEnseignant, $idEcue, $idAnneeAcad)
 public function isEnseignantTitulaire($idEnseignant, $idEcue, $anneeAcadId) {
     try {
         $query = "SELECT COUNT(*) FROM enseignant_ecue 
-                  WHERE idAgent = ? AND idECUE = ? AND anneeAcad = ? AND poste = 'Titulaire'";
+                  WHERE \"idAgent\" = ? AND \"idECUE\" = ? AND \"anneeAcad\" = ? AND poste = 'Titulaire'";
         
         $stmt = $this->db->prepare($query);
         $stmt->execute([$idEnseignant, $idEcue, $anneeAcadId]);
@@ -2521,7 +2521,7 @@ public function isEnseignantTitulaire($idEnseignant, $idEcue, $anneeAcadId) {
  */
 public function addEnseignantToEcue($idEnseignant, $idEcue, $poste, $anneeAcadId) {
     try {
-        $query = "INSERT INTO enseignant_ecue (idAgent, idECUE, poste, anneeAcad) 
+        $query = "INSERT INTO enseignant_ecue (\"idAgent\", \"idECUE\", poste, \"anneeAcad\") 
                   VALUES (?, ?, ?, ?)";
         
         $stmt = $this->db->prepare($query);
@@ -2545,7 +2545,7 @@ public function addEnseignantToEcue($idEnseignant, $idEcue, $poste, $anneeAcadId
 public function removeEnseignantFromEcue($idEnseignant, $idEcue, $anneeAcadId) {
     try {
         $query = "DELETE FROM enseignant_ecue 
-                  WHERE idAgent = ? AND idECUE = ? AND anneeAcad = ?";
+                  WHERE \"idAgent\" = ? AND \"idECUE\" = ? AND \"anneeAcad\" = ?";
         
         $stmt = $this->db->prepare($query);
         $result = $stmt->execute([$idEnseignant, $idEcue, $anneeAcadId]);

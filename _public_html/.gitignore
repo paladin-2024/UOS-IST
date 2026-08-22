@@ -1,30 +1,34 @@
 # Ignorer tout par défaut
 /*
 
-# Ne PAS ignorer ces dossiers spécifiques
-!/models/
-!/views/
+# Ne PAS ignorer ces dossiers/fichiers de l'application
+!/api_controller/
+!/assets/
+!/config/
 !/controller/
 !/dossiers/
-
-# Suivre tout le contenu de ces dossiers
-!models/**
+!/models/
+!/utils/
+!/views/
+!api_controller/**
+!assets/**
+!config/**
 !controller/**
-!views/**
 !dossiers/**
+!models/**
+!utils/**
+!views/**
+!/*.php
+!/composer.json
+!/composer.lock
+!/.htaccess
+!/.env.example
 
-# Configuration FlexPay (contient le token secret)
-config/flexpay.php
-
-# Variables d'environnement (contient les identifiants base de données)
+# Secrets réels : jamais suivis, même sous les dossiers ré-inclus ci-dessus
 config/.env
+config/flexpay.php
 config/Config.php
+dossiers/uploads/*
 
 # Ne pas ignorer le fichier .gitignore lui-même
 !.gitignore
-
-# Optionnel : Si vous voulez aussi garder certains fichiers à la racine
-# Décommentez les lignes suivantes si nécessaire :
-# !index.php
-# !README.md
-# !AGENT.md

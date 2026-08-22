@@ -28,24 +28,24 @@ $querySujet = "SELECT s.*,
                    e.idetudiant,
                    e.matricule as etudiant_matricule,
                    sp.designation as specialisation_designation,
-                   ur.designation_UR as unite_recherche,
+                   ur.\"designation_UR\" as unite_recherche,
                    direc.noms as directeur_nom,
-                   direc.idAgent as directeur_id,
+                   direc.\"idAgent\" as directeur_id,
                    g_direc.designation as directeur_grade,
                    enc.noms as encadreur_nom,
-                   enc.idAgent as encadreur_id,
+                   enc.\"idAgent\" as encadreur_id,
                    g_enc.designation as encadreur_grade,
-                   p.designationPromotion as promotion,
+                   p.\"designationPromotion\" as promotion,
                    p.idpromotion
             FROM sujets s
             LEFT JOIN annee_acad a ON s.annee_acad_idannee_acad = a.idannee_acad
             LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
             LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-            LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
-            LEFT JOIN unite_recherche ur ON sp.idUnite_recherche = ur.idunite_recherche
-            LEFT JOIN agent direc ON s.idDirecteur = direc.idAgent
+            LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
+            LEFT JOIN unite_recherche ur ON sp.\"idUnite_recherche\" = ur.idunite_recherche
+            LEFT JOIN agent direc ON s.\"idDirecteur\" = direc.\"idAgent\"
             LEFT JOIN grade g_direc ON direc.grade_id = g_direc.idgrade
-            LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+            LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
             LEFT JOIN grade g_enc ON enc.grade_id = g_enc.idgrade
             WHERE s.idsujets = :sujetId";
 
@@ -72,15 +72,15 @@ $queryTaches = "SELECT t.*,
                        s.etudiant_idetudiant,
                        e.noms as etudiant_nom, 
                        a.noms as agent_nom, 
-                       a.idAgent,
+                       a.\"idAgent\",
                        g.designation as grade
                 FROM taches t
                 LEFT JOIN sujets s ON t.sujets_idsujets = s.idsujets
                 LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                LEFT JOIN agent a ON t.idUser = a.idAgent
+                LEFT JOIN agent a ON t.\"idUser\" = a.\"idAgent\"
                 LEFT JOIN grade g ON a.grade_id = g.idgrade
                 WHERE t.sujets_idsujets = :sujetId
-                ORDER BY t.dateTache DESC";
+                ORDER BY t.\"dateTache\" DESC";
 
 
 $stmtTaches = $connexion->prepare($queryTaches);
@@ -90,9 +90,9 @@ $taches = $stmtTaches->fetchAll(PDO::FETCH_ASSOC);
 
 // Fonction pour obtenir l'historique des validations du sujet
 function getHistoriqueValidations($connexion, $sujetId) {
-    $query = "SELECT h.*, u.loginUser as validateur
+    $query = "SELECT h.*, u.\"loginUser\" as validateur
               FROM sujet_validation_history h
-              LEFT JOIN t_users u ON h.idUser = u.idUser
+              LEFT JOIN t_users u ON h.\"idUser\" = u.\"idUser\"
               WHERE h.idsujets = :sujetId
               ORDER BY h.date_action DESC";
     
@@ -552,7 +552,7 @@ $canEdit = $isDirecteur || $isEncadreur || isset($_SESSION['isAdmin']);
                             <option value="">Sélectionnez un directeur</option>
                             <?php
                             // Récupérer tous les enseignants
-                            $queryEnseignants = "SELECT a.idAgent, a.noms, g.designation as grade 
+                            $queryEnseignants = "SELECT a.\"idAgent\", a.noms, g.designation as grade 
                                                FROM agent a 
                                                LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                WHERE a.type_agent = 'Enseignant' 

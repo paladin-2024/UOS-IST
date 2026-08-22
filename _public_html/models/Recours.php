@@ -16,9 +16,9 @@ class Recours {
 
     // Récupérer tous les recours pour un étudiant spécifique
     public function getRecoursByEtudiant($matricule) {
-        $sql = "SELECT r.*, e.designationECUE, s.description as session_desc, a.designation as annee_desc 
+        $sql = "SELECT r.*, e.\"designationECUE\", s.description as session_desc, a.designation as annee_desc 
                 FROM recours r 
-                JOIN ecue e ON r.id_ecue = e.idECUE 
+                JOIN ecue e ON r.id_ecue = e.\"idECUE\" 
                 JOIN session s ON r.id_session = s.idsession 
                 JOIN annee_academique a ON r.id_annee_acad = a.idannee_acad 
                 WHERE r.matricule = ? 
@@ -30,15 +30,15 @@ class Recours {
 
     // Récupérer tous les recours pour un enseignant spécifique
     public function getRecoursByEnseignant($idEnseignant) {
-        $sql = "SELECT r.*, e.designationECUE, et.noms as nom_etudiant, s.description as session_desc, 
+        $sql = "SELECT r.*, e.\"designationECUE\", et.noms as nom_etudiant, s.description as session_desc, 
                       a.designation as annee_desc, u.attributions 
                 FROM recours r 
-                JOIN ecue e ON r.id_ecue = e.idECUE 
+                JOIN ecue e ON r.id_ecue = e.\"idECUE\" 
                 JOIN etudiant et ON r.matricule = et.matricule 
                 JOIN session s ON r.id_session = s.idsession 
                 JOIN annee_academique a ON r.id_annee_acad = a.idannee_acad 
-                JOIN ue_enseignant ue ON e.idUE = ue.idUE 
-                LEFT JOIN affectation_ecue af ON e.idECUE = af.idECUE AND af.idagent = ? 
+                JOIN ue_enseignant ue ON e.\"idUE\" = ue.\"idUE\" 
+                LEFT JOIN affectation_ecue af ON e.\"idECUE\" = af.\"idECUE\" AND af.idagent = ? 
                 WHERE (ue.idenseignant = ? OR af.idagent = ?) 
                 ORDER BY r.date_creation DESC";
         $stmt = $this->conn->prepare($sql);
@@ -48,11 +48,11 @@ class Recours {
 
     // Récupérer tous les recours pour un bureau de jury spécifique
     public function getRecoursByJury($idBureau) {
-        $sql = "SELECT r.*, e.designationECUE, et.noms as nom_etudiant, s.description as session_desc, 
+        $sql = "SELECT r.*, e.\"designationECUE\", et.noms as nom_etudiant, s.description as session_desc, 
                       a.designation as annee_desc, rr.id_reponse, rr.nouvelle_note, rr.commentaire, 
                       rr.valide_jury, rr.date_reponse 
                 FROM recours r 
-                JOIN ecue e ON r.id_ecue = e.idECUE 
+                JOIN ecue e ON r.id_ecue = e.\"idECUE\" 
                 JOIN etudiant et ON r.matricule = et.matricule 
                 JOIN session s ON r.id_session = s.idsession 
                 JOIN annee_academique a ON r.id_annee_acad = a.idannee_acad 
@@ -132,7 +132,7 @@ class Recours {
         if ($recours) {
             // Vérifier si une note existe déjà
             $sql = "SELECT idnote FROM notes 
-                    WHERE matricule = ? AND idECUE = ? AND idsession = ? AND idannee = ?";
+                    WHERE matricule = ? AND \"idECUE\" = ? AND idsession = ? AND idannee = ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([
                 $recours['matricule'], 
@@ -149,7 +149,7 @@ class Recours {
                 return $stmt->execute([$nouvelleNote, $note['idnote']]);
             } else {
                 // Insérer une nouvelle note
-                $sql = "INSERT INTO notes (matricule, idECUE, idsession, idannee, MF) 
+                $sql = "INSERT INTO notes (matricule, \"idECUE\", idsession, idannee, MF) 
                         VALUES (?, ?, ?, ?, ?)";
                 $stmt = $this->conn->prepare($sql);
                 return $stmt->execute([
@@ -167,9 +167,9 @@ class Recours {
 
     public function getRecoursByMatricule($matricule, $anneeAcadId) {
         try {
-            $query = "SELECT r.*, e.designationECUE, s.designSession
+            $query = "SELECT r.*, e.\"designationECUE\", s.\"designSession\"
                       FROM recours r
-                      JOIN ecue e ON r.id_ecue = e.idECUE
+                      JOIN ecue e ON r.id_ecue = e.\"idECUE\"
                       JOIN session s ON r.id_session = s.idsession
                       WHERE r.matricule = :matricule 
                       AND r.id_annee_acad = :annee_acad
@@ -210,12 +210,12 @@ class Recours {
  * @return array|false Les données du recours ou false si non trouvé
  */
 public function getRecoursById($id) {
-    $query = "SELECT r.*, e.designationECUE, ue.designationUE, s.designSession,
+    $query = "SELECT r.*, e.\"designationECUE\", ue.\"designationUE\", s.\"designSession\",
                      et.noms, et.matricule,
-                     p.designationPromotion as promotion, o.designationOrientation as orientation
+                     p.\"designationPromotion\" as promotion, o.\"designationOrientation\" as orientation
               FROM recours r
-              LEFT JOIN ecue e ON r.id_ecue = e.idECUE
-              LEFT JOIN ue ON e.ue_idUE = ue.idUE
+              LEFT JOIN ecue e ON r.id_ecue = e.\"idECUE\"
+              LEFT JOIN ue ON e.ue_idUE = ue.\"idUE\"
               LEFT JOIN session s ON r.id_session = s.idsession
               LEFT JOIN etudiant et ON r.matricule = et.matricule
               LEFT JOIN promotion p ON et.promotion_idpromotion = p.idpromotion

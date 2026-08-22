@@ -67,10 +67,10 @@ $totalItems = $stmt->fetchColumn();
 $totalPages = ceil($totalItems / $limit);
 
 // Récupérer les sorties avec pagination
-$query = "SELECT s.*, d.libelle_depot, u.nomUser as user_creation 
+$query = "SELECT s.*, d.libelle_depot, u.\"nomUser\" as user_creation 
           FROM sortie_stock s
           LEFT JOIN depot d ON s.id_depot = d.id_depot
-          LEFT JOIN t_users u ON s.id_user_creation = u.idUser
+          LEFT JOIN t_users u ON s.id_user_creation = u.\"idUser\"
           $whereClause
           ORDER BY s.date_creation DESC
           LIMIT :limit OFFSET :offset";

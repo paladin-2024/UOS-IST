@@ -29,7 +29,7 @@ try {
     
     // Récupérer les informations sur la promotion
     $stmt = $conn->prepare("
-        SELECT p.designationPromotion, p.cycle, o.designationOrientation, s.designationSection,
+        SELECT p.\"designationPromotion\", p.cycle, o.\"designationOrientation\", s.\"designationSection\",
                aa.designation as annee_academique
         FROM promotion p
         JOIN orientation o ON p.orientation_idorientation = o.idorientation

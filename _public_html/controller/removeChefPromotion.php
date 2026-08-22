@@ -38,7 +38,7 @@ try {
     $db->beginTransaction();
     
     // Vérifier que le chef existe et est actif
-    $checkQuery = "SELECT cp.*, e.noms, p.designationPromotion 
+    $checkQuery = "SELECT cp.*, e.noms, p.\"designationPromotion\" 
                    FROM chef_promotion cp
                    JOIN etudiant e ON cp.idetudiant = e.idetudiant
                    JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion

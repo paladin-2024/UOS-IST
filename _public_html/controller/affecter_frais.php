@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         date_affectation, date_echeance, 
                         montant_specifique, devise, 
                         motif_specifique, est_exempte, statut_paiement, 
-                        montant_paye, montant_restant, idUser
+                        montant_paye, montant_restant, \"idUser\"
                     ) VALUES (
                         :frais_id, :promotion_id, NULL, 
                         :date_affectation, :date_echeance, 
@@ -351,7 +351,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         date_affectation, date_echeance, 
                         montant_specifique, devise, 
                         motif_specifique, est_exempte, statut_paiement, 
-                        montant_paye, montant_restant, idUser
+                        montant_paye, montant_restant, \"idUser\"
                     ) VALUES (
                         :frais_id, :promotion_id, NULL, 
                         :date_affectation, :date_echeance, 
@@ -504,7 +504,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 date_affectation, date_echeance, 
                 montant_specifique, devise, 
                 motif_specifique, est_exempte, statut_paiement, 
-                montant_paye, montant_restant, idUser
+                montant_paye, montant_restant, \"idUser\"
             ) VALUES (
                 :frais_id, :promotion_id, :matricule_etudiant, 
                 :date_affectation, :date_echeance, 

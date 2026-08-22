@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         foreach ($idOrientations as $idOrientation) {
             // Vérifier si la spécialisation existe déjà pour cette unité de recherche et cette orientation
             $stmtCheck = $db->prepare("SELECT COUNT(*) FROM specialisation 
-                                   WHERE idUnite_recherche = ? AND idorientation = ? AND designation = ?");
+                                   WHERE \"idUnite_recherche\" = ? AND idorientation = ? AND designation = ?");
             $stmtCheck->execute([$idUniteRecherche, $idOrientation, $designation]);
             $count = $stmtCheck->fetchColumn();
             
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             
             // Insérer la spécialisation
-            $stmtInsert = $db->prepare("INSERT INTO specialisation (designation, dateCreation, idUnite_recherche, idorientation) 
+            $stmtInsert = $db->prepare("INSERT INTO specialisation (designation, \"dateCreation\", \"idUnite_recherche\", idorientation) 
                                     VALUES (?, NOW(), ?, ?)");
             $stmtInsert->execute([$designation, $idUniteRecherche, $idOrientation]);
             $insertedCount++;

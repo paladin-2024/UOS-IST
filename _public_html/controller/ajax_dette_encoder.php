@@ -20,13 +20,13 @@ $sql = "SELECT
             d.*,
             e.noms,
             e.matricule,
-            ec.designationECUE,
+            ec.\"designationECUE\",
             d.credits_ecue as credits,  -- Utilisation directe du champ credits_ecue
-            s.numeroSemestre,
+            s.\"numeroSemestre\",
             aa.designation as annee_academique
         FROM dette_etudiant d
         JOIN etudiant e ON d.matricule = e.matricule
-        JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
+        JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
         JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
         JOIN annee_acad aa ON d.annee_acad_idannee_acad = aa.idannee_acad
         WHERE d.id_dette = :dette";

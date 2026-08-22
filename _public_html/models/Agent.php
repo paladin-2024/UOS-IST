@@ -15,17 +15,17 @@ class Agent
         $query = "SELECT
             a.*,
             str.designation as designationStructure,
-            str.idStructure as idStructure,
+            str.\"idStructure\" as \"idStructure\",
             g.designation as gradeDesignation,
             s.designation as serviceDesignation,
-            s.idService as idService,
-            (SELECT COUNT(*) FROM dossier_famille WHERE Agent_idAgent = a.idAgent) as totalFamilyMembers,
-            (SELECT COUNT(*) FROM contrat_agent WHERE Agent_idAgent = a.idAgent) as totalContracts,
-            (SELECT COUNT(*) FROM document_agent WHERE Agent_idAgent = a.idAgent) as totalDocuments
+            s.\"idService\" as \"idService\",
+            (SELECT COUNT(*) FROM dossier_famille WHERE \"Agent_idAgent\" = a.\"idAgent\") as totalFamilyMembers,
+            (SELECT COUNT(*) FROM contrat_agent WHERE \"Agent_idAgent\" = a.\"idAgent\") as totalContracts,
+            (SELECT COUNT(*) FROM document_agent WHERE \"Agent_idAgent\" = a.\"idAgent\") as totalDocuments
         FROM agent AS a
-        INNER JOIN structure AS str ON a.idStructure = str.idStructure
+        INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-        LEFT JOIN service AS s ON a.idService = s.idService";
+        LEFT JOIN service AS s ON a.\"idService\" = s.idService";
         
         if (!empty($search)) {
             $query .= " WHERE a.noms LIKE :search";
@@ -52,9 +52,9 @@ class Agent
     {
         $query = "SELECT
             a.*,str.* FROM agent AS a
-        INNER JOIN structure AS str ON a.idStructure = str.idStructure
-        INNER JOIN user_structure AS us ON us.idStructure = str.idStructure
-        WHERE us.idUser = :userId";
+        INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
+        INNER JOIN user_structure AS us ON us.\"idStructure\" = str.\"idStructure\"
+        WHERE us.\"idUser\" = :userId";
 
         if (!empty($search)) {
             $query .= " AND a.noms LIKE :search";
@@ -71,7 +71,7 @@ class Agent
     // Ajouter un agent
     public function addAgent($noms, $lieuNaissance, $dateNaissance, $sexe, $etatCivil, $niveauEtude, $telephone, $email, $codeAgent, $matricule, $type_agent, $grade_id, $idStructure, $idService)
     {
-        $query = "INSERT INTO agent (noms, lieuNaissance, dateNaissance, sexe, etatCivil, niveauEtude, telephone, email, codeAgent, matricule, type_agent, grade_id, idStructure, idService) 
+        $query = "INSERT INTO agent (noms, \"lieuNaissance\", \"dateNaissance\", sexe, \"etatCivil\", \"niveauEtude\", telephone, email, \"codeAgent\", matricule, type_agent, grade_id, \"idStructure\", \"idService\") 
                   VALUES (:noms, :lieuNaissance, :dateNaissance, :sexe, :etatCivil, :niveauEtude, :telephone, :email, :codeAgent, :matricule, :type_agent, :grade_id, :idStructure, :idService)";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
@@ -94,7 +94,7 @@ class Agent
 
     public function addAgent_returnID($noms, $lieuNaissance, $dateNaissance, $sexe, $etatCivil, $niveauEtude, $telephone, $email, $codeAgent, $matricule, $typeAgent, $gradeId, $idStructure, $idService) {
         try {
-            $sql = "INSERT INTO agent (noms, lieuNaissance, dateNaissance, sexe, etatCivil, niveauEtude, telephone, email, codeAgent, matricule, type_agent, grade_id, idStructure, idService) 
+            $sql = "INSERT INTO agent (noms, \"lieuNaissance\", \"dateNaissance\", sexe, \"etatCivil\", \"niveauEtude\", telephone, email, \"codeAgent\", matricule, type_agent, grade_id, \"idStructure\", \"idService\") 
                     VALUES (:noms, :lieuNaissance, :dateNaissance, :sexe, :etatCivil, :niveauEtude, :telephone, :email, :codeAgent, :matricule, :typeAgent, :gradeId, :idStructure, :idService)";
             
             $stmt = $this->db->prepare($sql);
@@ -128,7 +128,7 @@ class Agent
     public function checkDuplicateAgent($noms, $dateNaissance, $idStructure)
     {
         $query = "SELECT COUNT(*) as count FROM agent 
-                  WHERE noms = :noms AND dateNaissance = :dateNaissance AND idStructure = :idStructure";
+                  WHERE noms = :noms AND \"dateNaissance\" = :dateNaissance AND \"idStructure\" = :idStructure";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
             'noms' => $noms,
@@ -142,7 +142,7 @@ class Agent
     // Supprimer un agent
     public function deleteAgent($idAgent)
     {
-        $query = "DELETE FROM agent WHERE idAgent = :idAgent";
+        $query = "DELETE FROM agent WHERE \"idAgent\" = :idAgent";
         $stmt = $this->db->prepare($query);
         return $stmt->execute(['idAgent' => $idAgent]);
     }
@@ -150,11 +150,11 @@ class Agent
         // Récupérer un agent par son ID
         public function getAgentById($idAgent)
         {
-            $query = "SELECT a.idAgent, a.noms, a.type_agent as type_agent_agent, a.grade_id, a.telephone, a.email,
+            $query = "SELECT a.\"idAgent\", a.noms, a.type_agent as type_agent_agent, a.grade_id, a.telephone, a.email,
             g.designation as gradeDesignation
             FROM agent a 
             LEFT JOIN grade g ON a.grade_id = g.idgrade
-            WHERE a.idAgent = :idAgent";
+            WHERE a.\"idAgent\" = :idAgent";
             $stmt = $this->db->prepare($query);
             $stmt->execute(['idAgent' => $idAgent]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -168,12 +168,12 @@ class Agent
         public function updateAgent($idAgent, $noms, $lieuNaissance, $dateNaissance, $sexe, $etatCivil, $niveauEtude, $telephone, $email, $codeAgent, $matricule, $type_agent, $grade_id, $photo, $idStructure, $idService)
         {
             $query = "UPDATE agent 
-                      SET noms = :noms, lieuNaissance = :lieuNaissance, dateNaissance = :dateNaissance, 
-                          sexe = :sexe, etatCivil = :etatCivil, niveauEtude = :niveauEtude, 
-                          telephone = :telephone, email = :email, codeAgent = :codeAgent, 
+                      SET noms = :noms, \"lieuNaissance\" = :lieuNaissance, \"dateNaissance\" = :dateNaissance, 
+                          sexe = :sexe, \"etatCivil\" = :etatCivil, \"niveauEtude\" = :niveauEtude, 
+                          telephone = :telephone, email = :email, \"codeAgent\" = :codeAgent, 
                           matricule = :matricule, type_agent = :type_agent, grade_id = :grade_id, 
-                          photo = :photo, idStructure = :idStructure, idService = :idService 
-                      WHERE idAgent = :idAgent";
+                          photo = :photo, \"idStructure\" = :idStructure, \"idService\" = :idService 
+                      WHERE \"idAgent\" = :idAgent";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
                 'idAgent' => $idAgent,
@@ -198,7 +198,7 @@ class Agent
         // Récupérer tous les membres de la famille pour un agent
         public function getFamilyMembersByAgent($agentId, $search = '')
         {
-            $query = "SELECT * FROM dossier_famille WHERE Agent_idAgent = :agentId";
+            $query = "SELECT * FROM dossier_famille WHERE \"Agent_idAgent\" = :agentId";
             
             // Add search condition if search term is provided
             if (!empty($search)) {
@@ -220,7 +220,7 @@ class Agent
         // Ajouter un membre de la famille pour un agent
         public function addFamilyMember($agentId, $noms, $sexe, $dateNaissance, $lieuNaissance, $typeLiaison, $idUser)
         {
-            $query = "INSERT INTO dossier_famille (noms, sexe, dateNaissance, lieuNaissance, typeLiaison, Agent_idAgent, idUser, dateEnregistrement) 
+            $query = "INSERT INTO dossier_famille (noms, sexe, \"dateNaissance\", \"lieuNaissance\", typeLiaison, \"Agent_idAgent\", \"idUser\", \"dateEnregistrement\") 
                       VALUES (:noms, :sexe, :dateNaissance, :lieuNaissance, :typeLiaison, :agentId, :idUser, NOW())";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
@@ -238,9 +238,9 @@ class Agent
         public function updateFamilyMember($idDossierFamille, $noms, $sexe, $dateNaissance, $lieuNaissance, $typeLiaison)
         {
             $query = "UPDATE dossier_famille 
-                      SET noms = :noms, sexe = :sexe, dateNaissance = :dateNaissance, 
-                          lieuNaissance = :lieuNaissance, typeLiaison = :typeLiaison 
-                      WHERE idDossier_famille = :idDossierFamille";
+                      SET noms = :noms, sexe = :sexe, \"dateNaissance\" = :dateNaissance, 
+                          \"lieuNaissance\" = :lieuNaissance, typeLiaison = :typeLiaison 
+                      WHERE \"idDossier_famille\" = :idDossierFamille";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
                 'idDossierFamille' => $idDossierFamille,
@@ -255,7 +255,7 @@ class Agent
         // Supprimer un membre de la famille
         public function deleteFamilyMember($idDossierFamille)
         {
-            $query = "DELETE FROM dossier_famille WHERE idDossier_famille = :idDossierFamille";
+            $query = "DELETE FROM dossier_famille WHERE \"idDossier_famille\" = :idDossierFamille";
             $stmt = $this->db->prepare($query);
             return $stmt->execute(['idDossierFamille' => $idDossierFamille]);
         }
@@ -264,7 +264,7 @@ class Agent
         public function getContractsByAgent($agentId, $search = '')
         {
             $query = "SELECT c.*,s.designation as service FROM contrat_agent c INNER JOIN 
-            service s ON c.Service_idService=s.idService WHERE c.Agent_idAgent = :agentId";
+            service s ON c.\"Service_idService\"=s.\"idService\" WHERE c.\"Agent_idAgent\" = :agentId";
             
             // Add search condition if search term is provided
             if (!empty($search)) {
@@ -286,7 +286,7 @@ class Agent
         // Ajouter un contrat pour un agent
         public function addContract($agentId, $designation, $typeContrat, $dateDebut, $dateFin, $fonction, $salaireDeBase, $transport, $logement, $anciennete, $serviceId, $userId)
         {
-            $query = "INSERT INTO contrat_agent (designation, typeContrat, dateDebut, dateFin, fonction, salaireDeBase, transport, logement, anciennete, dateEnregistrement, Agent_idAgent, Service_idService, idUser) 
+            $query = "INSERT INTO contrat_agent (designation, typeContrat, \"dateDebut\", \"dateFin\", fonction, \"salaireDeBase\", transport, logement, anciennete, \"dateEnregistrement\", \"Agent_idAgent\", \"Service_idService\", \"idUser\") 
                     VALUES (:designation, :typeContrat, :dateDebut, :dateFin, :fonction, :salaireDeBase, :transport, :logement, :anciennete, NOW(), :agentId, :serviceId, :userId)";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
@@ -309,9 +309,9 @@ class Agent
         public function updateContract($idContratAgent, $designation, $typeContrat, $dateDebut, $dateFin, $fonction, $salaireDeBase, $transport, $logement, $anciennete)
         {
             $query = "UPDATE contrat_agent 
-                    SET designation = :designation, typeContrat = :typeContrat, dateDebut = :dateDebut, dateFin = :dateFin, 
-                        fonction = :fonction, salaireDeBase = :salaireDeBase, transport = :transport, logement = :logement, anciennete = :anciennete 
-                    WHERE idContrat_agent = :idContratAgent";
+                    SET designation = :designation, typeContrat = :typeContrat, \"dateDebut\" = :dateDebut, \"dateFin\" = :dateFin, 
+                        fonction = :fonction, \"salaireDeBase\" = :salaireDeBase, transport = :transport, logement = :logement, anciennete = :anciennete 
+                    WHERE \"idContrat_agent\" = :idContratAgent";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
                 'idContratAgent' => $idContratAgent,
@@ -330,7 +330,7 @@ class Agent
         // Supprimer un contrat
         public function deleteContract($idContratAgent)
         {
-            $query = "DELETE FROM contrat_agent WHERE idContrat_agent = :idContratAgent";
+            $query = "DELETE FROM contrat_agent WHERE \"idContrat_agent\" = :idContratAgent";
             $stmt = $this->db->prepare($query);
             return $stmt->execute(['idContratAgent' => $idContratAgent]);
         }
@@ -338,7 +338,7 @@ class Agent
         // Add a document for an agent
         public function addDocument($agentId, $titre, $description, $fichier, $userId)
         {
-            $query = "INSERT INTO document_agent (titre, description, fichier, dateEnregistrement, Agent_idAgent, idUser) 
+            $query = "INSERT INTO document_agent (titre, description, fichier, \"dateEnregistrement\", \"Agent_idAgent\", \"idUser\") 
                       VALUES (:titre, :description, :fichier, NOW(), :agentId, :userId)";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
@@ -353,7 +353,7 @@ class Agent
         // Get documents for an agent
         public function getDocumentsByAgent($agentId)
         {
-            $query = "SELECT * FROM document_agent WHERE Agent_idAgent = :agentId";
+            $query = "SELECT * FROM document_agent WHERE \"Agent_idAgent\" = :agentId";
             $stmt = $this->db->prepare($query);
             $stmt->execute(['agentId' => $agentId]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -364,7 +364,7 @@ class Agent
         {
             $query = "UPDATE document_agent 
                       SET titre = :titre, description = :description, fichier = :fichier 
-                      WHERE idDocument_agent = :idDocument";
+                      WHERE \"idDocument_agent\" = :idDocument";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
                 'idDocument' => $idDocument,
@@ -377,7 +377,7 @@ class Agent
         // Delete a document
         public function deleteDocument($idDocument)
         {
-            $query = "DELETE FROM document_agent WHERE idDocument_agent = :idDocument";
+            $query = "DELETE FROM document_agent WHERE \"idDocument_agent\" = :idDocument";
             $stmt = $this->db->prepare($query);
             return $stmt->execute(['idDocument' => $idDocument]);
         }
@@ -386,7 +386,7 @@ class Agent
         {
             $query = "UPDATE document_agent 
                     SET titre = :titre, description = :description 
-                    WHERE idDocument_agent = :idDocument";
+                    WHERE \"idDocument_agent\" = :idDocument";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
                 'idDocument' => $idDocument,
@@ -398,7 +398,7 @@ class Agent
         // Add a presence record for an agent
         public function addPresence($agentId, $annee, $mois, $joursPresence, $joursAbsence, $joursRetard, $userId)
         {
-            $query = "INSERT INTO presence_agent (annee, mois, joursPresence, joursAbsence, joursRetard, dateEnregistrement, Agent_idAgent, idUser) 
+            $query = "INSERT INTO presence_agent (annee, mois, \"joursPresence\", \"joursAbsence\", \"joursRetard\", \"dateEnregistrement\", \"Agent_idAgent\", \"idUser\") 
                     VALUES (:annee, :mois, :joursPresence, :joursAbsence, :joursRetard, NOW(), :agentId, :userId)";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
@@ -415,7 +415,7 @@ class Agent
         // Get presence records for an agent
         public function getPresenceByAgent($agentId)
         {
-            $query = "SELECT * FROM presence_agent WHERE Agent_idAgent = :agentId";
+            $query = "SELECT * FROM presence_agent WHERE \"Agent_idAgent\" = :agentId";
             $stmt = $this->db->prepare($query);
             $stmt->execute(['agentId' => $agentId]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -425,8 +425,8 @@ class Agent
         public function updatePresence($idPresence, $annee, $mois, $joursPresence, $joursAbsence, $joursRetard)
         {
             $query = "UPDATE presence_agent 
-                    SET annee = :annee, mois = :mois, joursPresence = :joursPresence, joursAbsence = :joursAbsence, joursRetard = :joursRetard 
-                    WHERE idPresence_agent = :idPresence";
+                    SET annee = :annee, mois = :mois, \"joursPresence\" = :joursPresence, \"joursAbsence\" = :joursAbsence, \"joursRetard\" = :joursRetard 
+                    WHERE \"idPresence_agent\" = :idPresence";
             $stmt = $this->db->prepare($query);
             return $stmt->execute([
                 'idPresence' => $idPresence,
@@ -441,7 +441,7 @@ class Agent
         // Delete a presence record
         public function deletePresence($idPresence)
         {
-            $query = "DELETE FROM presence_agent WHERE idPresence_agent = :idPresence";
+            $query = "DELETE FROM presence_agent WHERE \"idPresence_agent\" = :idPresence";
             $stmt = $this->db->prepare($query);
             return $stmt->execute(['idPresence' => $idPresence]);
         }
@@ -449,7 +449,7 @@ class Agent
         public function checkDuplicatePresence($agentId, $annee, $mois)
         {
             $query = "SELECT COUNT(*) as count FROM presence_agent 
-                    WHERE Agent_idAgent = :agentId AND annee = :annee AND mois = :mois";
+                    WHERE \"Agent_idAgent\" = :agentId AND annee = :annee AND mois = :mois";
             $stmt = $this->db->prepare($query);
             $stmt->execute([
                 'agentId' => $agentId,
@@ -464,8 +464,8 @@ class Agent
     public function getServiceByAgent($agentId)
     {
         $query = "SELECT s.* FROM service AS s
-                  INNER JOIN agent AS a ON s.idService = a.idService
-                  WHERE a.idAgent = :agentId";
+                  INNER JOIN agent AS a ON s.\"idService\" = a.\"idService\"
+                  WHERE a.\"idAgent\" = :agentId";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':agentId', $agentId, PDO::PARAM_INT);
@@ -477,9 +477,9 @@ class Agent
     // Retrieve presence data for a specific agent, month, and year
     public function getPresenceDataForAgent($agentId, $month, $year)
     {
-        $query = "SELECT joursPresence, joursAbsence, joursRetard 
+        $query = "SELECT \"joursPresence\", \"joursAbsence\", \"joursRetard\" 
                 FROM presence_agent 
-                WHERE Agent_idAgent = $agentId AND mois = '$month' AND annee = '$year'";
+                WHERE \"Agent_idAgent\" = $agentId AND mois = '$month' AND annee = '$year'";
 
         $stmt = $this->db->query($query);
         return $stmt;
@@ -489,7 +489,7 @@ class Agent
     public function addDailyPresence($agentId, $datePresence, $heureArrivee, $heureDepart, $commentaire, $userId, $ipAddress, $userAgent)
     {
         $query = "INSERT INTO presence_agent_daily
-                  (Agent_idAgent, date_presence, heure_arrivee, heure_depart, methode_enregistrement, commentaire, encode_par, ip_address, user_agent)
+                  (\"Agent_idAgent\", date_presence, heure_arrivee, heure_depart, methode_enregistrement, commentaire, encode_par, ip_address, user_agent)
                   VALUES (:agentId, :date_presence, :heure_arrivee, :heure_depart, 'manuel', :commentaire, :encode_par, :ip_address, :user_agent)";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
@@ -528,7 +528,7 @@ class Agent
     public function getDailyPresencesByAgent($agentId, $startDate = null, $endDate = null, $limit = 30)
     {
         $params = ['agentId' => $agentId];
-        $query = "SELECT * FROM presence_agent_daily WHERE Agent_idAgent = :agentId";
+        $query = "SELECT * FROM presence_agent_daily WHERE \"Agent_idAgent\" = :agentId";
         if (!empty($startDate)) { $query .= " AND date_presence >= :startDate"; $params['startDate'] = $startDate; }
         if (!empty($endDate)) { $query .= " AND date_presence <= :endDate"; $params['endDate'] = $endDate; }
         $query .= " ORDER BY date_presence DESC, heure_arrivee DESC LIMIT :limit";
@@ -544,7 +544,7 @@ class Agent
 
     public function existsDailyPresence($agentId, $datePresence)
     {
-        $query = "SELECT COUNT(*) AS c FROM presence_agent_daily WHERE Agent_idAgent = :agentId AND date_presence = :date_presence";
+        $query = "SELECT COUNT(*) AS c FROM presence_agent_daily WHERE \"Agent_idAgent\" = :agentId AND date_presence = :date_presence";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['agentId' => $agentId, 'date_presence' => $datePresence]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -558,7 +558,7 @@ class Agent
             'end' => $endDate,
         ];
         $query = "SELECT 
-                    a.idAgent,
+                    a.\"idAgent\",
                     a.noms,
                     a.matricule,
                     a.telephone,
@@ -566,23 +566,23 @@ class Agent
                     s.designation AS service,
                     COUNT(DISTINCT pad.date_presence) AS jours_presence
                   FROM agent a
-                  INNER JOIN structure str ON a.idStructure = str.idStructure
-                  LEFT JOIN service s ON a.idService = s.idService
+                  INNER JOIN structure str ON a.\"idStructure\" = str.\"idStructure\"
+                  LEFT JOIN service s ON a.\"idService\" = s.\"idService\"
                   LEFT JOIN presence_agent_daily pad 
-                    ON pad.Agent_idAgent = a.idAgent 
+                    ON pad.\"Agent_idAgent\" = a.\"idAgent\" 
                    AND pad.date_presence BETWEEN :start AND :end
                   WHERE a.type_agent = 'Administratif'";
 
         if (!empty($structureId)) {
-            $query .= " AND a.idStructure = :structureId";
+            $query .= " AND a.\"idStructure\" = :structureId";
             $params['structureId'] = (int)$structureId;
         }
         if (!empty($serviceId)) {
-            $query .= " AND a.idService = :serviceId";
+            $query .= " AND a.\"idService\" = :serviceId";
             $params['serviceId'] = (int)$serviceId;
         }
 
-        $query .= " GROUP BY a.idAgent, a.noms, a.matricule, a.telephone, str.designation, s.designation
+        $query .= " GROUP BY a.\"idAgent\", a.noms, a.matricule, a.telephone, str.designation, s.designation
                     ORDER BY str.designation, a.noms";
 
         $stmt = $this->db->prepare($query);
@@ -648,10 +648,10 @@ class Agent
 
     public function getAgentIdByUserId($userId)
     {
-        $query = "SELECT a.idAgent 
+        $query = "SELECT a.\"idAgent\" 
                 FROM t_users u
-                JOIN agent a ON u.idAgent = a.idAgent
-                WHERE u.idUser = :userId 
+                JOIN agent a ON u.\"idAgent\" = a.\"idAgent\"
+                WHERE u.\"idUser\" = :userId 
                 AND a.type_agent = 'Enseignant'";
                 
         $stmt = $this->db->prepare($query);
@@ -669,14 +669,14 @@ class Agent
         $query = "SELECT
             a.*,
             str.designation as designationStructure,
-            str.idStructure as idStructure,
+            str.\"idStructure\" as \"idStructure\",
             g.designation as gradeDesignation,
             s.designation as serviceDesignation,
-            s.idService as idService
+            s.\"idService\" as \"idService\"
         FROM agent AS a
-        INNER JOIN structure AS str ON a.idStructure = str.idStructure
+        INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-        LEFT JOIN service AS s ON a.idService = s.idService
+        LEFT JOIN service AS s ON a.\"idService\" = s.\"idService\"
         WHERE a.type_agent = :type";
         
         if (!empty($search)) {
@@ -706,19 +706,19 @@ class Agent
         $query = "SELECT
             a.*,
             str.designation as designationStructure,
-            str.idStructure as idStructure,
+            str.\"idStructure\" as \"idStructure\",
             g.designation as gradeDesignation,
             s.designation as serviceDesignation,
             CASE 
-                WHEN str.idStructure IS NULL THEN 'Structure manquante'
+                WHEN str.\"idStructure\" IS NULL THEN 'Structure manquante'
                 WHEN g.idgrade IS NULL THEN 'Grade manquant'
-                WHEN s.idService IS NULL THEN 'Service manquant'
+                WHEN s.\"idService\" IS NULL THEN 'Service manquant'
                 ELSE 'OK'
             END as statut_diagnostic
         FROM agent AS a
-        LEFT JOIN structure AS str ON a.idStructure = str.idStructure
+        LEFT JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-        LEFT JOIN service AS s ON a.idService = s.idService
+        LEFT JOIN service AS s ON a.\"idService\" = s.\"idService\"
         WHERE a.type_agent = :type";
         
         if (!empty($search)) {
@@ -773,8 +773,8 @@ class Agent
             
             // 2. Identifier les agents sans structure valide
             $query2 = "SELECT COUNT(*) as count FROM agent a 
-                      LEFT JOIN structure s ON a.idStructure = s.idStructure 
-                      WHERE a.type_agent = 'Enseignant' AND s.idStructure IS NULL";
+                      LEFT JOIN structure s ON a.\"idStructure\" = s.\"idStructure\" 
+                      WHERE a.type_agent = 'Enseignant' AND s.\"idStructure\" IS NULL";
             $stmt2 = $this->db->prepare($query2);
             $stmt2->execute();
             $result2 = $stmt2->fetch();
@@ -803,13 +803,13 @@ class Agent
         $query = "SELECT
             a.*,
             str.designation as designationStructure,
-            str.idStructure as idStructure,
+            str.\"idStructure\" as \"idStructure\",
             g.designation as gradeDesignation,
             s.designation as serviceDesignation
         FROM agent AS a
-        INNER JOIN structure AS str ON a.idStructure = str.idStructure
+        INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-        LEFT JOIN service AS s ON a.idService = s.idService
+        LEFT JOIN service AS s ON a.\"idService\" = s.\"idService\"
         WHERE a.grade_id = :gradeId";
         
         if (!empty($search)) {
@@ -838,14 +838,14 @@ class Agent
         $query = "SELECT
             a.*,
             str.designation as designationStructure,
-            str.idStructure as idStructure,
+            str.\"idStructure\" as \"idStructure\",
             g.designation as gradeDesignation,
             s.designation as serviceDesignation
         FROM agent AS a
-        INNER JOIN structure AS str ON a.idStructure = str.idStructure
+        INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-        LEFT JOIN service AS s ON a.idService = s.idService
-        WHERE a.idService = :serviceId";
+        LEFT JOIN service AS s ON a.\"idService\" = s.\"idService\"
+        WHERE a.\"idService\" = :serviceId";
         
         if (!empty($search)) {
             $query .= " AND a.noms LIKE :search";
@@ -869,13 +869,13 @@ class Agent
 
     // Récupérer les enseignants avec leurs cours affectés
 public function getEnseignantsWithCourses($idAnneeAcad, $idSection = null) {
-    $query = "SELECT a.idAgent, a.noms, a.type_agent, g.designation as grade, 
-              e.idenseignant_ecue, e.poste, ec.designationECUE, u.designationUE,
-              s.numeroSemestre, p.designationPromotion
+    $query = "SELECT a.\"idAgent\", a.noms, a.type_agent, g.designation as grade, 
+              e.idenseignant_ecue, e.poste, ec.\"designationECUE\", u.\"designationUE\",
+              s.\"numeroSemestre\", p.\"designationPromotion\"
               FROM agent a 
-              LEFT JOIN enseignant_ecue e ON a.idAgent = e.idAgent AND e.anneeAcad = :idAnneeAcad
-              LEFT JOIN ecue ec ON e.idECUE = ec.idECUE
-              LEFT JOIN ue u ON ec.UE_idUE = u.idUE
+              LEFT JOIN enseignant_ecue e ON a.\"idAgent\" = e.\"idAgent\" AND e.\"anneeAcad\" = :idAnneeAcad
+              LEFT JOIN ecue ec ON e.\"idECUE\" = ec.\"idECUE\"
+              LEFT JOIN ue u ON ec.\"UE_idUE\" = u.\"idUE\"
               LEFT JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
               LEFT JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
               LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -886,7 +886,7 @@ public function getEnseignantsWithCourses($idAnneeAcad, $idSection = null) {
         $query .= " AND o.section_idsection = :idSection";
     }
     
-    $query .= " ORDER BY a.noms, p.designationPromotion, s.numeroSemestre";
+    $query .= " ORDER BY a.noms, p.\"designationPromotion\", s.numeroSemestre";
     
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idAnneeAcad', $idAnneeAcad);
@@ -945,7 +945,7 @@ public function updateAgentAdditionalInfo($idAgent, $adresse_avenue, $adresse_qu
             $query .= ", photo = :photo";
         }
         
-        $query .= " WHERE idAgent = :idAgent";
+        $query .= " WHERE \"idAgent\" = :idAgent";
         
         $stmt = $this->db->prepare($query);
         $params = [
@@ -980,7 +980,7 @@ public function updateAgentAdditionalInfo($idAgent, $adresse_avenue, $adresse_qu
 public function addFormation($idAgent, $niveau, $etablissement, $filiere, $annee_obtention, $diplome_fichier, $idUser)
 {
     try {
-        $query = "INSERT INTO formation_agent (idAgent, niveau, etablissement, filiere, annee_obtention, diplome_fichier, idUser) 
+        $query = "INSERT INTO formation_agent (\"idAgent\", niveau, etablissement, filiere, annee_obtention, diplome_fichier, \"idUser\") 
                   VALUES (:idAgent, :niveau, :etablissement, :filiere, :annee_obtention, :diplome_fichier, :idUser)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -1003,7 +1003,7 @@ public function addFormation($idAgent, $niveau, $etablissement, $filiere, $annee
 public function addGradeHistory($idAgent, $idgrade, $date_promotion, $reference_decision, $reference_notification, $idUser)
 {
     try {
-        $query = "INSERT INTO historique_grade (idAgent, idgrade, date_promotion, reference_decision, reference_notification, idUser) 
+        $query = "INSERT INTO historique_grade (\"idAgent\", idgrade, date_promotion, reference_decision, reference_notification, \"idUser\") 
                   VALUES (:idAgent, :idgrade, :date_promotion, :reference_decision, :reference_notification, :idUser)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -1027,12 +1027,12 @@ public function addAffectation($idAgent, $idStructure, $idService, $date_affecta
     try {
         // Si c'est l'affectation actuelle, mettre à jour les anciennes affectations
         if ($est_actuelle) {
-            $updateQuery = "UPDATE affectation_agent SET est_actuelle = 0 WHERE idAgent = :idAgent";
+            $updateQuery = "UPDATE affectation_agent SET est_actuelle = 0 WHERE \"idAgent\" = :idAgent";
             $updateStmt = $this->db->prepare($updateQuery);
             $updateStmt->execute(['idAgent' => $idAgent]);
         }
         
-        $query = "INSERT INTO affectation_agent (idAgent, idStructure, idService, date_affectation, reference_decision, est_actuelle, idUser) 
+        $query = "INSERT INTO affectation_agent (\"idAgent\", \"idStructure\", \"idService\", date_affectation, reference_decision, est_actuelle, \"idUser\") 
                   VALUES (:idAgent, :idStructure, :idService, :date_affectation, :reference_decision, :est_actuelle, :idUser)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -1055,7 +1055,7 @@ public function addAffectation($idAgent, $idStructure, $idService, $date_affecta
 public function addAdminInfo($idAgent, $direction, $division, $decision_grade, $notification_grade, $idUser)
 {
     try {
-        $query = "INSERT INTO admin_info (idAgent, direction, division, decision_grade, notification_grade, idUser) 
+        $query = "INSERT INTO admin_info (\"idAgent\", direction, division, decision_grade, notification_grade, \"idUser\") 
                   VALUES (:idAgent, :direction, :division, :decision_grade, :notification_grade, :idUser)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -1077,7 +1077,7 @@ public function addAdminInfo($idAgent, $direction, $division, $decision_grade, $
 public function addTeacherInfo($idAgent, $specialisation, $domaine_recherche, $idUser)
 {
     try {
-        $query = "INSERT INTO teacher_info (idAgent, specialisation, domaine_recherche, idUser) 
+        $query = "INSERT INTO teacher_info (\"idAgent\", specialisation, domaine_recherche, \"idUser\") 
                   VALUES (:idAgent, :specialisation, :domaine_recherche, :idUser)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -1097,7 +1097,7 @@ public function addTeacherInfo($idAgent, $specialisation, $domaine_recherche, $i
 public function addResearchInfo($idAgent, $unite_recherche, $projet_recherche, $idUser)
 {
     try {
-        $query = "INSERT INTO research_info (idAgent, unite_recherche, projet_recherche, idUser) 
+        $query = "INSERT INTO research_info (\"idAgent\", unite_recherche, projet_recherche, \"idUser\") 
                   VALUES (:idAgent, :unite_recherche, :projet_recherche, :idUser)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -1119,7 +1119,7 @@ public function addResearchInfo($idAgent, $unite_recherche, $projet_recherche, $
  * @return bool True si le code existe, false sinon
  */
 public function checkCodeExists($code) {
-    $sql = "SELECT COUNT(*) AS count FROM agent WHERE codeAgent = :code";
+    $sql = "SELECT COUNT(*) AS count FROM agent WHERE \"codeAgent\" = :code";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(':code', $code);
     $stmt->execute();
@@ -1143,13 +1143,13 @@ public function getAgentByCode($code) {
                  ti.specialisation, ti.domaine_recherche,
                  ri.unite_recherche, ri.projet_recherche
                  FROM agent AS a
-                 INNER JOIN structure AS str ON a.idStructure = str.idStructure
+                 INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
                  LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-                 LEFT JOIN service AS s ON a.idService = s.idService
-                 LEFT JOIN admin_info AS ai ON a.idAgent = ai.idAgent
-                 LEFT JOIN teacher_info AS ti ON a.idAgent = ti.idAgent
-                 LEFT JOIN research_info AS ri ON a.idAgent = ri.idAgent
-                 WHERE a.codeAgent = :code";
+                 LEFT JOIN service AS s ON a.\"idService\" = s.\"idService\"
+                 LEFT JOIN admin_info AS ai ON a.\"idAgent\" = ai.\"idAgent\"
+                 LEFT JOIN teacher_info AS ti ON a.\"idAgent\" = ti.\"idAgent\"
+                 LEFT JOIN research_info AS ri ON a.\"idAgent\" = ri.\"idAgent\"
+                 WHERE a.\"codeAgent\" = :code";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':code', $code, PDO::PARAM_STR);
@@ -1178,12 +1178,12 @@ public function getAgentByMatricule($matricule) {
                  ti.specialisation, ti.domaine_recherche,
                  ri.unite_recherche, ri.projet_recherche
                  FROM agent AS a
-                 INNER JOIN structure AS str ON a.idStructure = str.idStructure
+                 INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
                  LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-                 LEFT JOIN service AS s ON a.idService = s.idService
-                 LEFT JOIN admin_info AS ai ON a.idAgent = ai.idAgent
-                 LEFT JOIN teacher_info AS ti ON a.idAgent = ti.idAgent
-                 LEFT JOIN research_info AS ri ON a.idAgent = ri.idAgent
+                 LEFT JOIN service AS s ON a.\"idService\" = s.\"idService\"
+                 LEFT JOIN admin_info AS ai ON a.\"idAgent\" = ai.\"idAgent\"
+                 LEFT JOIN teacher_info AS ti ON a.\"idAgent\" = ti.\"idAgent\"
+                 LEFT JOIN research_info AS ri ON a.\"idAgent\" = ri.\"idAgent\"
                  WHERE a.matricule = :matricule";
         
         $stmt = $this->db->prepare($query);
@@ -1207,19 +1207,19 @@ public function searchAgentsByName($searchTerm, $limit = 100) {
     try {
         $query = "SELECT a.*,
                  str.designation as designationStructure,
-                 str.idStructure as idStructure,
+                 str.\"idStructure\" as \"idStructure\",
                  g.designation as gradeDesignation,
                  s.designation as serviceDesignation,
                  ai.direction, ai.division, ai.decision_grade, ai.notification_grade,
                  ti.specialisation, ti.domaine_recherche,
                  ri.unite_recherche, ri.projet_recherche
                  FROM agent AS a
-                 INNER JOIN structure AS str ON a.idStructure = str.idStructure
+                 INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
                  LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-                 LEFT JOIN service AS s ON a.idService = s.idService
-                 LEFT JOIN admin_info AS ai ON a.idAgent = ai.idAgent
-                 LEFT JOIN teacher_info AS ti ON a.idAgent = ti.idAgent
-                 LEFT JOIN research_info AS ri ON a.idAgent = ri.idAgent
+                 LEFT JOIN service AS s ON a.\"idService\" = s.\"idService\"
+                 LEFT JOIN admin_info AS ai ON a.\"idAgent\" = ai.\"idAgent\"
+                 LEFT JOIN teacher_info AS ti ON a.\"idAgent\" = ti.\"idAgent\"
+                 LEFT JOIN research_info AS ri ON a.\"idAgent\" = ri.\"idAgent\"
                  WHERE a.noms LIKE :searchTerm
                  ORDER BY a.noms ASC
                  LIMIT :limit";
@@ -1246,7 +1246,7 @@ public function searchAgentsByName($searchTerm, $limit = 100) {
 public function getFormationsForAgent($idAgent) {
     try {
         $query = "SELECT * FROM formation_agent 
-                 WHERE idAgent = :idAgent 
+                 WHERE \"idAgent\" = :idAgent 
                  ORDER BY annee_obtention DESC";
         
         $stmt = $this->db->prepare($query);
@@ -1270,7 +1270,7 @@ public function getGradeHistoryForAgent($idAgent) {
         $query = "SELECT hg.*, g.designation as gradeDesignation 
                  FROM historique_grade hg
                  INNER JOIN grade g ON hg.idgrade = g.idgrade
-                 WHERE hg.idAgent = :idAgent 
+                 WHERE hg.\"idAgent\" = :idAgent 
                  ORDER BY hg.date_promotion DESC";
         
         $stmt = $this->db->prepare($query);
@@ -1307,7 +1307,7 @@ public function editAgent($idAgent, $agentData)
         }
         
         // Retirer la virgule finale et ajouter la clause WHERE
-        $query = rtrim($query, ", ") . " WHERE idAgent = :idAgent";
+        $query = rtrim($query, ", ") . " WHERE \"idAgent\" = :idAgent";
         $params['idAgent'] = $idAgent;
         
         $stmt = $this->db->prepare($query);
@@ -1323,7 +1323,7 @@ public function editAgent($idAgent, $agentData)
                      isset($agentData['decision_grade']) || isset($agentData['notification_grade']))) {
                     
                     // Vérifier si une entrée admin_info existe déjà pour cet agent
-                    $checkQuery = "SELECT COUNT(*) FROM admin_info WHERE idAgent = :idAgent";
+                    $checkQuery = "SELECT COUNT(*) FROM admin_info WHERE \"idAgent\" = :idAgent";
                     $checkStmt = $this->db->prepare($checkQuery);
                     $checkStmt->execute(['idAgent' => $idAgent]);
                     
@@ -1334,10 +1334,10 @@ public function editAgent($idAgent, $agentData)
                             division = :division, 
                             decision_grade = :decision_grade, 
                             notification_grade = :notification_grade
-                            WHERE idAgent = :idAgent";
+                            WHERE \"idAgent\" = :idAgent";
                     } else {
                         // Ajouter de nouvelles informations administratives
-                        $adminQuery = "INSERT INTO admin_info (idAgent, direction, division, decision_grade, notification_grade, idUser) 
+                        $adminQuery = "INSERT INTO admin_info (\"idAgent\", direction, division, decision_grade, notification_grade, \"idUser\") 
                             VALUES (:idAgent, :direction, :division, :decision_grade, :notification_grade, :idUser)";
                     }
                     
@@ -1359,7 +1359,7 @@ public function editAgent($idAgent, $agentData)
                           (isset($agentData['specialisation']) || isset($agentData['domaine_recherche']))) {
                     
                     // Vérifier si une entrée teacher_info existe déjà pour cet agent
-                    $checkQuery = "SELECT COUNT(*) FROM teacher_info WHERE idAgent = :idAgent";
+                    $checkQuery = "SELECT COUNT(*) FROM teacher_info WHERE \"idAgent\" = :idAgent";
                     $checkStmt = $this->db->prepare($checkQuery);
                     $checkStmt->execute(['idAgent' => $idAgent]);
                     
@@ -1368,10 +1368,10 @@ public function editAgent($idAgent, $agentData)
                         $teacherQuery = "UPDATE teacher_info SET 
                             specialisation = :specialisation, 
                             domaine_recherche = :domaine_recherche
-                            WHERE idAgent = :idAgent";
+                            WHERE \"idAgent\" = :idAgent";
                     } else {
                         // Ajouter de nouvelles informations d'enseignant
-                        $teacherQuery = "INSERT INTO teacher_info (idAgent, specialisation, domaine_recherche, idUser) 
+                        $teacherQuery = "INSERT INTO teacher_info (\"idAgent\", specialisation, domaine_recherche, \"idUser\") 
                             VALUES (:idAgent, :specialisation, :domaine_recherche, :idUser)";
                     }
                     
@@ -1391,7 +1391,7 @@ public function editAgent($idAgent, $agentData)
                           (isset($agentData['unite_recherche']) || isset($agentData['projet_recherche']))) {
                     
                     // Vérifier si une entrée research_info existe déjà pour cet agent
-                    $checkQuery = "SELECT COUNT(*) FROM research_info WHERE idAgent = :idAgent";
+                    $checkQuery = "SELECT COUNT(*) FROM research_info WHERE \"idAgent\" = :idAgent";
                     $checkStmt = $this->db->prepare($checkQuery);
                     $checkStmt->execute(['idAgent' => $idAgent]);
                     
@@ -1400,10 +1400,10 @@ public function editAgent($idAgent, $agentData)
                         $researchQuery = "UPDATE research_info SET 
                             unite_recherche = :unite_recherche, 
                             projet_recherche = :projet_recherche
-                            WHERE idAgent = :idAgent";
+                            WHERE \"idAgent\" = :idAgent";
                     } else {
                         // Ajouter de nouvelles informations de recherche
-                        $researchQuery = "INSERT INTO research_info (idAgent, unite_recherche, projet_recherche, idUser) 
+                        $researchQuery = "INSERT INTO research_info (\"idAgent\", unite_recherche, projet_recherche, \"idUser\") 
                             VALUES (:idAgent, :unite_recherche, :projet_recherche, :idUser)";
                     }
                     
@@ -1483,7 +1483,7 @@ public function updateFormation($formationId, $formation)
 public function deleteFormationsNotIn($idAgent, $formationIds)
 {
     try {
-        $query = "DELETE FROM formation_agent WHERE idAgent = :idAgent";
+        $query = "DELETE FROM formation_agent WHERE \"idAgent\" = :idAgent";
         
         if (!empty($formationIds)) {
             $placeholders = implode(',', array_fill(0, count($formationIds), '?'));
@@ -1547,7 +1547,7 @@ public function updateGradeHistory($gradeHistoryId, $gradeHistory)
 public function deleteGradeHistoriesNotIn($idAgent, $gradeHistoryIds)
 {
     try {
-        $query = "DELETE FROM historique_grade WHERE idAgent = :idAgent";
+        $query = "DELETE FROM historique_grade WHERE \"idAgent\" = :idAgent";
         
         if (!empty($gradeHistoryIds)) {
             $placeholders = implode(',', array_fill(0, count($gradeHistoryIds), '?'));
@@ -1611,7 +1611,7 @@ public function getFilteredAgents($search = '', $typeAgent = '', $gradeId = 0, $
     
     $query = "SELECT a.*, s.designation as designationStructure 
               FROM agent a 
-              LEFT JOIN structure s ON a.idStructure = s.idStructure";
+              LEFT JOIN structure s ON a.\"idStructure\" = s.idStructure";
     
     // Ajouter les conditions de filtrage
     if (!empty($search)) {
@@ -1630,12 +1630,12 @@ public function getFilteredAgents($search = '', $typeAgent = '', $gradeId = 0, $
     }
     
     if ($structureId > 0) {
-        $conditions[] = "a.idStructure = :structureId";
+        $conditions[] = "a.\"idStructure\" = :structureId";
         $params[':structureId'] = $structureId;
     }
     
     if ($serviceId > 0) {
-        $conditions[] = "a.idService = :serviceId";
+        $conditions[] = "a.\"idService\" = :serviceId";
         $params[':serviceId'] = $serviceId;
     }
     
@@ -1681,10 +1681,10 @@ public function getAgentCountsByType() {
  * @return array Statistiques des agents par structure
  */
 public function getAgentCountsByStructure() {
-    $query = "SELECT s.designation as structure, COUNT(a.idAgent) as count
+    $query = "SELECT s.designation as structure, COUNT(a.\"idAgent\") as count
               FROM structure s
-              LEFT JOIN agent a ON s.idStructure = a.idStructure
-              GROUP BY s.idStructure
+              LEFT JOIN agent a ON s.\"idStructure\" = a.\"idStructure\"
+              GROUP BY s.\"idStructure\"
               ORDER BY count DESC";
     
     $stmt = $this->db->prepare($query);
@@ -1697,7 +1697,7 @@ public function getAgentCountsByStructure() {
  * @return array Statistiques des agents par grade
  */
 public function getAgentCountsByGrade() {
-    $query = "SELECT g.designation as grade, COUNT(a.idAgent) as count
+    $query = "SELECT g.designation as grade, COUNT(a.\"idAgent\") as count
               FROM grade g
               LEFT JOIN agent a ON g.idgrade = a.grade_id
               GROUP BY g.idgrade
@@ -1716,8 +1716,8 @@ public function getAgentCountsByGrade() {
 public function getRecentlyAddedAgents($limit = 5) {
     $query = "SELECT a.*, s.designation as structureName 
               FROM agent a
-              LEFT JOIN structure s ON a.idStructure = s.idStructure
-              ORDER BY a.dateEnregistrement DESC 
+              LEFT JOIN structure s ON a.\"idStructure\" = s.\"idStructure\"
+              ORDER BY a.\"dateEnregistrement\" DESC 
               LIMIT :limit";
     
     $stmt = $this->db->prepare($query);
@@ -1731,10 +1731,10 @@ public function getRecentlyAddedAgents($limit = 5) {
  * @return array Statistiques des enseignants par section
  */
 public function getTeacherStatsBySection() {
-    $query = "SELECT s.designationSection as section, COUNT(as.idAgent) as count
+    $query = "SELECT s.\"designationSection\" as section, COUNT(as.\"idAgent\") as count
               FROM section s
               LEFT JOIN agent_section as ON s.idsection = as.idsection
-              LEFT JOIN agent a ON as.idAgent = a.idAgent AND a.type_agent = 'Enseignant'
+              LEFT JOIN agent a ON as.\"idAgent\" = a.\"idAgent\" AND a.type_agent = 'Enseignant'
               GROUP BY s.idsection
               ORDER BY count DESC";
     
@@ -1748,10 +1748,10 @@ public function getTeacherStatsBySection() {
  * @return array Liste des enseignants avec leur section principale
  */
 public function getTeachersWithMainSection() {
-    $query = "SELECT a.idAgent, a.noms, a.matricule, a.type_agent, a.grade_id, 
-                    g.designation as grade_name, s.designationSection as section_name
+    $query = "SELECT a.\"idAgent\", a.noms, a.matricule, a.type_agent, a.grade_id, 
+                    g.designation as grade_name, s.\"designationSection\" as section_name
               FROM agent a
-              JOIN agent_section as ON a.idAgent = as.idAgent AND as.estPrincipal = 1
+              JOIN agent_section as ON a.\"idAgent\" = as.\"idAgent\" AND as.\"estPrincipal\" = 1
               JOIN section s ON as.idsection = s.idsection
               LEFT JOIN grade g ON a.grade_id = g.idgrade
               WHERE a.type_agent = 'Enseignant'
@@ -1771,7 +1771,7 @@ public function getAgentGradeHistory($idAgent) {
     $query = "SELECT hg.*, g.designation as grade_name 
               FROM historique_grade hg
               JOIN grade g ON hg.idgrade = g.idgrade
-              WHERE hg.idAgent = :idAgent
+              WHERE hg.\"idAgent\" = :idAgent
               ORDER BY hg.date_promotion DESC";
     
     $stmt = $this->db->prepare($query);
@@ -1787,7 +1787,7 @@ public function getAgentGradeHistory($idAgent) {
  */
 public function getAgentFormations($idAgent) {
     $query = "SELECT * FROM formation_agent 
-              WHERE idAgent = :idAgent
+              WHERE \"idAgent\" = :idAgent
               ORDER BY annee_obtention DESC";
     
     $stmt = $this->db->prepare($query);
@@ -1804,9 +1804,9 @@ public function getAgentFormations($idAgent) {
 public function getAgentAffectationHistory($idAgent) {
     $query = "SELECT af.*, str.designation as structure_name, srv.designation as service_name 
               FROM affectation_agent af
-              JOIN structure str ON af.idStructure = str.idStructure
-              LEFT JOIN service srv ON af.idService = srv.idService
-              WHERE af.idAgent = :idAgent
+              JOIN structure str ON af.\"idStructure\" = str.\"idStructure\"
+              LEFT JOIN service srv ON af.\"idService\" = srv.\"idService\"
+              WHERE af.\"idAgent\" = :idAgent
               ORDER BY af.date_affectation DESC";
     
     $stmt = $this->db->prepare($query);
@@ -1847,12 +1847,12 @@ public function getFilteredAgents2($filters) {
         }
         
         if (!empty($filters['idStructure'])) {
-            $query .= " AND a.idStructure = :idStructure";
+            $query .= " AND a.\"idStructure\" = :idStructure";
             $params[':idStructure'] = $filters['idStructure'];
         }
         
         if (!empty($filters['idService'])) {
-            $query .= " AND a.idService = :idService";
+            $query .= " AND a.\"idService\" = :idService";
             $params[':idService'] = $filters['idService'];
         }
         
@@ -1877,12 +1877,12 @@ public function getFilteredAgents2($filters) {
         }
         
         if (!empty($filters['niveauEtude'])) {
-            $query .= " AND a.niveauEtude = :niveauEtude";
+            $query .= " AND a.\"niveauEtude\" = :niveauEtude";
             $params[':niveauEtude'] = $filters['niveauEtude'];
         }
         
         if (!empty($filters['etatCivil'])) {
-            $query .= " AND a.etatCivil = :etatCivil";
+            $query .= " AND a.\"etatCivil\" = :etatCivil";
             $params[':etatCivil'] = $filters['etatCivil'];
         }
         

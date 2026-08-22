@@ -47,13 +47,13 @@ try {
             so.date_soutenance,
             so.note_finale,
             j.designation AS jury_designation,
-            p.designationPromotion AS promotion_designation
+            p.\"designationPromotion\" AS promotion_designation
         FROM soutenance so
         INNER JOIN sujets sj ON so.sujets_idsujets = sj.idsujets
         INNER JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
         LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-        LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
-        LEFT JOIN agent ad ON sj.idDirecteur = ad.idAgent
+        LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
+        LEFT JOIN agent ad ON sj.\"idDirecteur\" = ad.\"idAgent\"
         LEFT JOIN jury j ON so.jury_id = j.idjury
         WHERE so.annee_acad_idannee_acad = :annee_acad
     ";

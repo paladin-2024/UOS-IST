@@ -46,18 +46,18 @@ try {
         
         // Vérifier si l'utilisateur a accès à cet horaire via la promotion
         $pdo = Connexion::getInstance()->getPDO();
-        $query = "SELECT COUNT(*) 
+        $query = 'SELECT COUNT(*)
                   FROM horaire h
-                  INNER JOIN ecue e ON e.idECUE = h.ecue_idECUE
-                  INNER JOIN ue u ON u.idUE = e.ue_idUE
+                  INNER JOIN ecue e ON e."idECUE" = h."ECUE_idECUE"
+                  INNER JOIN ue u ON u."idUE" = e."UE_idUE"
                   INNER JOIN semestre sem ON sem.idsemestre = u.semestre_idsemestre
                   INNER JOIN promotion p ON p.idpromotion = sem.promotion_idpromotion
                   INNER JOIN orientation o ON o.idorientation = p.orientation_idorientation
                   INNER JOIN section s ON s.idsection = o.section_idsection
                   INNER JOIN responsable_section rs ON rs.section_idsection = s.idsection
                   WHERE h.idhoraire = :horaireId
-                  AND rs.idUser = :userId
-                  AND rs.annee_acad_idannee_acad = :anneeId";
+                  AND rs."idUser" = :userId
+                  AND rs.annee_acad_idannee_acad = :anneeId';
         
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(':horaireId', $idHoraire);

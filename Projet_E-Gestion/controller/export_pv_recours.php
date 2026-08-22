@@ -45,7 +45,7 @@ if (!$annee) {
 // Récupérer les informations sur la session si spécifiée
 $session_info = null;
 if ($id_session > 0) {
-    $query_session = "SELECT designSession,description FROM session WHERE idsession = :id_session";
+    $query_session = "SELECT \"designSession\",description FROM session WHERE idsession = :id_session";
     $stmt_session = $conn->prepare($query_session);
     $stmt_session->bindParam(':id_session', $id_session);
     $stmt_session->execute();
@@ -55,7 +55,7 @@ if ($id_session > 0) {
 // Récupérer les informations sur la promotion si spécifiée
 $promotion_info = null;
 if ($id_promotion > 0) {
-    $query_promotion = "SELECT p.designationPromotion, o.designationOrientation, s.designationSection
+    $query_promotion = "SELECT p.\"designationPromotion\", o.\"designationOrientation\", s.\"designationSection\"
                         FROM promotion p
                         JOIN orientation o ON p.orientation_idorientation = o.idorientation
                         JOIN section s ON o.section_idsection = s.idsection
@@ -67,35 +67,35 @@ if ($id_promotion > 0) {
 }
 
 $query_recours = "
-    SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p.designationPromotion,
-           ec.designationECUE, u.designationUE, r.motif, r.date_creation, r.statut,
-           s.designSession, s.description, a.designation as annee_acad,
+    SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p.\"designationPromotion\",
+           ec.\"designationECUE\", u.\"designationUE\", r.motif, r.date_creation, r.statut,
+           s.\"designSession\", s.description, a.designation as annee_acad,
            rr.id_reponse, rr.nouvelle_note_cc, rr.nouvelle_note_ex, rr.commentaire,
            rr.date_reponse, rr.valide_jury, rr.date_validation,
-           ag.noms as nom_enseignant, vl.nomUser as validateur,
-           o.designationOrientation, sec.designationSection,
+           ag.noms as nom_enseignant, vl.\"nomUser\" as validateur,
+           o.\"designationOrientation\", sec.\"designationSection\",
            hc.cc_avant, hc.ex_avant, hc.mf_avant,
            hc.cc_apres, hc.ex_apres, hc.mf_apres
     FROM recours r
     JOIN etudiant e ON r.matricule = e.matricule
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-    JOIN ecue ec ON r.id_ecue = ec.idECUE
-    JOIN ue u ON ec.UE_idUE = u.idUE
+    JOIN ecue ec ON r.id_ecue = ec.\"idECUE\"
+    JOIN ue u ON ec.\"UE_idUE\" = u.\"idUE\"
     JOIN session s ON r.id_session = s.idsession
     JOIN annee_acad a ON r.id_annee_acad = a.idannee_acad
     JOIN recours_reponse rr ON r.id_recours = rr.id_recours
-    LEFT JOIN agent ag ON rr.id_enseignant = ag.idAgent
-    LEFT JOIN t_users vl ON rr.id_validateur = vl.idUser
+    LEFT JOIN agent ag ON rr.id_enseignant = ag.\"idAgent\"
+    LEFT JOIN t_users vl ON rr.id_validateur = vl.\"idUser\"
     JOIN orientation o ON p.orientation_idorientation = o.idorientation
     JOIN section sec ON o.section_idsection = sec.idsection
-    LEFT JOIN historique_cotes hc ON r.id_ecue = hc.ECUE_idECUE 
+    LEFT JOIN historique_cotes hc ON r.id_ecue = hc.\"ECUE_idECUE\" 
        AND r.id_session = hc.session_idsession 
        AND r.matricule = hc.matricule 
        AND r.id_annee_acad = hc.annee_acad_id
        AND hc.idhistorique = (
            SELECT MAX(h2.idhistorique) 
            FROM historique_cotes h2 
-           WHERE h2.ECUE_idECUE = r.id_ecue
+           WHERE h2.\"ECUE_idECUE\" = r.id_ecue
              AND h2.session_idsession = r.id_session
              AND h2.matricule = r.matricule
              AND h2.annee_acad_id = r.id_annee_acad
@@ -127,7 +127,7 @@ if ($id_promotion > 0) {
 }
 
 // Trier par section, promotion, nom de l'étudiant
-$query_recours .= " ORDER BY sec.designationSection, o.designationOrientation, p.designationPromotion, e.noms";
+$query_recours .= " ORDER BY sec.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\", e.noms";
 
 $stmt_recours = $conn->prepare($query_recours);
 foreach ($params as $key => $value) {
@@ -151,8 +151,8 @@ $etablissement = $stmt_etablissement->fetch(PDO::FETCH_ASSOC);
 $query_bureau = "SELECT DISTINCT bjd.idbureau, bjd.designation, bjd.numero_decision, 
                 p.noms as president, s.noms as secretaire
                 FROM bureau_jury_deliberation bjd
-                JOIN agent p ON bjd.president_id = p.idAgent
-                JOIN agent s ON bjd.secretaire_id = s.idAgent
+                JOIN agent p ON bjd.president_id = p.\"idAgent\"
+                JOIN agent s ON bjd.secretaire_id = s.\"idAgent\"
                 JOIN bureau_jury_promotion bjp ON bjd.idbureau = bjp.idbureau
                 WHERE bjd.annee_acad_idannee_acad = :id_annee
                 AND bjd.est_actif = 1";
@@ -174,7 +174,7 @@ $bureaux_membres = [];
 foreach ($bureaux as $bureau) {
     $query_membres = "SELECT mbj.idmembre, a.noms, mbj.fonction
                      FROM membre_bureau_jury mbj
-                     JOIN agent a ON mbj.idAgent = a.idAgent
+                     JOIN agent a ON mbj.\"idAgent\" = a.\"idAgent\"
                      WHERE mbj.idbureau = :idbureau";
     $stmt_membres = $conn->prepare($query_membres);
     $stmt_membres->bindParam(':idbureau', $bureau['idbureau']);

@@ -34,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Vérifier si l'utilisateur existe
         $checkUserQuery = "SELECT u.*, a.noms FROM t_users u 
-                          INNER JOIN agent a ON u.idAgent = a.idAgent 
-                          WHERE u.idUser = :idUser AND u.idAgent = :idAgent";
+                          INNER JOIN agent a ON u.\"idAgent\" = a.\"idAgent\" 
+                          WHERE u.\"idUser\" = :idUser AND u.\"idAgent\" = :idAgent";
         $checkUserStmt = $connexion->prepare($checkUserQuery);
         $checkUserStmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
         $checkUserStmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Vérifier si les rôles existent
             foreach ($roles as $roleId) {
-                $roleQuery = "SELECT idRole FROM t_roles WHERE idRole = :idRole";
+                $roleQuery = "SELECT \"idRole\" FROM t_roles WHERE \"idRole\" = :idRole";
             $roleStmt = $connexion->prepare($roleQuery);
             $roleStmt->bindParam(':idRole', $roleId, PDO::PARAM_INT);
             $roleStmt->execute();
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                            }
 
             // Vérifier les doublons pour le login (exclure l'utilisateur actuel)
-            $checkLoginQuery = "SELECT idUser FROM t_users WHERE loginUser = :loginUser AND idUser != :idUser";
+            $checkLoginQuery = "SELECT \"idUser\" FROM t_users WHERE \"loginUser\" = :loginUser AND \"idUser\" != :idUser";
             $checkLoginStmt = $connexion->prepare($checkLoginQuery);
             $checkLoginStmt->bindParam(':loginUser', $loginUser, PDO::PARAM_STR);
             $checkLoginStmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $updateParams[':pw'] = $hashedPassword;
             }
 
-            $updateQuery = "UPDATE t_users SET " . implode(', ', $updateFields) . " WHERE idUser = :idUser";
+            $updateQuery = "UPDATE t_users SET " . implode(', ', $updateFields) . " WHERE \"idUser\" = :idUser";
             $updateStmt = $connexion->prepare($updateQuery);
             
             foreach ($updateParams as $key => $value) {
@@ -141,14 +141,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             if ($updateStmt->execute()) {
             // Mettre à jour les rôles
-                $deleteRolesQuery = "DELETE FROM t_user_roles WHERE idUser = :idUser";
+                $deleteRolesQuery = "DELETE FROM t_user_roles WHERE \"idUser\" = :idUser";
                 $deleteStmt = $connexion->prepare($deleteRolesQuery);
                 $deleteStmt->bindParam(':idUser', $idUser);
                 $deleteStmt->execute();
 
                 foreach ($roles as $roleId) {
                 $isPrincipal = ($roleId == $principalRole) ? 1 : 0;
-                $insertRoleQuery = "INSERT INTO t_user_roles (idUser, idRole, isPrincipal) VALUES (:idUser, :idRole, :isPrincipal)";
+                $insertRoleQuery = "INSERT INTO t_user_roles (\"idUser\", \"idRole\", \"isPrincipal\") VALUES (:idUser, :idRole, :isPrincipal)";
                 $insertStmt = $connexion->prepare($insertRoleQuery);
                 $insertStmt->bindParam(':idUser', $idUser);
                 $insertStmt->bindParam(':idRole', $roleId);
@@ -195,11 +195,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Supprimer d'abord les références dans les tables liées si nécessaire
             // (user_structure, user_journal, user_banque, etc.)
             $deleteRelatedQueries = [
-                "DELETE FROM user_structure WHERE idUser = :idUser",
-                "DELETE FROM user_journal WHERE idUser = :idUser", 
-                "DELETE FROM user_banque WHERE idUser = :idUser",
-                "DELETE FROM user_depot WHERE idUser = :idUser",
-                "DELETE FROM user_budget WHERE idUser = :idUser"
+                "DELETE FROM user_structure WHERE \"idUser\" = :idUser",
+                "DELETE FROM user_journal WHERE \"idUser\" = :idUser", 
+                "DELETE FROM user_banque WHERE \"idUser\" = :idUser",
+                "DELETE FROM user_depot WHERE \"idUser\" = :idUser",
+                "DELETE FROM user_budget WHERE \"idUser\" = :idUser"
             ];
 
             $connexion->beginTransaction();
@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 
                 // Supprimer l'utilisateur
-                $deleteUserQuery = "DELETE FROM t_users WHERE idUser = :idUser";
+                $deleteUserQuery = "DELETE FROM t_users WHERE \"idUser\" = :idUser";
                 $deleteUserStmt = $connexion->prepare($deleteUserQuery);
                 $deleteUserStmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
                 

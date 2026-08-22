@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Insérer le nouveau document obligatoire
         $stmt = $conn->prepare("
             INSERT INTO documents_obligatoires 
-            (designation, description, cycle, est_obligatoire, delai_jours, idUser) 
+            (designation, description, cycle, est_obligatoire, delai_jours, \"idUser\") 
             VALUES (?, ?, ?, ?, ?, ?)
         ");
         

@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Récupérer le nom de l'agent si vide
         if (empty($nomUser)) {
-            $agentQuery = "SELECT noms FROM agent WHERE idAgent = :idAgent";
+            $agentQuery = 'SELECT noms FROM agent WHERE "idAgent" = :idAgent';
             $agentStmt = $connexion->prepare($agentQuery);
             $agentStmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
             $agentStmt->execute();
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Vérifier si les rôles existent
         foreach ($roles as $roleId) {
-            $roleQuery = "SELECT idRole FROM t_roles WHERE idRole = :idRole";
+            $roleQuery = 'SELECT "idRole" FROM t_roles WHERE "idRole" = :idRole';
         $roleStmt = $connexion->prepare($roleQuery);
             $roleStmt->bindParam(':idRole', $roleId, PDO::PARAM_INT);
         $roleStmt->execute();
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                    }
 
         // Vérifier si l'agent a déjà un utilisateur
-        $checkUserQuery = "SELECT idUser FROM t_users WHERE idAgent = :idAgent";
+        $checkUserQuery = 'SELECT "idUser" FROM t_users WHERE "idAgent" = :idAgent';
         $checkUserStmt = $connexion->prepare($checkUserQuery);
         $checkUserStmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $checkUserStmt->execute();
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Vérifier les doublons pour le login
-        $checkLoginQuery = "SELECT idUser FROM t_users WHERE loginUser = :loginUser";
+        $checkLoginQuery = 'SELECT "idUser" FROM t_users WHERE "loginUser" = :loginUser';
         $checkLoginStmt = $connexion->prepare($checkLoginQuery);
         $checkLoginStmt->bindParam(':loginUser', $loginUser, PDO::PARAM_STR);
         $checkLoginStmt->execute();
@@ -146,8 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Insérer le nouvel utilisateur - CORRECTION DES NOMS DE COLONNES
-        $insertQuery = "INSERT INTO t_users (nomUser, loginUser, pw, imageUser, etatUser, dernier_connexion, idAgent)
-        VALUES (:nomUser, :loginUser, :pw, :imageUser, :etatUser, :dernier_connexion, :idAgent)";
+        $insertQuery = 'INSERT INTO t_users ("nomUser", "loginUser", pw, "imageUser", "etatUser", dernier_connexion, "idAgent")
+        VALUES (:nomUser, :loginUser, :pw, :imageUser, :etatUser, :dernier_connexion, :idAgent)';
         
         $insertStmt = $connexion->prepare($insertQuery);
 
@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Insérer les rôles
         foreach ($roles as $roleId) {
         $isPrincipal = ($roleId == $principalRole) ? 1 : 0;
-        $insertRoleQuery = "INSERT INTO t_user_roles (idUser, idRole, isPrincipal) VALUES (:idUser, :idRole, :isPrincipal)";
+        $insertRoleQuery = 'INSERT INTO t_user_roles ("idUser", "idRole", "isPrincipal") VALUES (:idUser, :idRole, :isPrincipal)';
         $insertRoleStmt = $connexion->prepare($insertRoleQuery);
         $insertRoleStmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
         $insertRoleStmt->bindParam(':idRole', $roleId, PDO::PARAM_INT);

@@ -45,7 +45,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_travaux') {
     }
     
     try {
-        $stmt = $db->prepare("SELECT * FROM devoirs WHERE idECUE = :id ORDER BY dateCreation DESC");
+        $stmt = $db->prepare("SELECT * FROM devoirs WHERE \"idECUE\" = :id ORDER BY \"dateCreation\" DESC");
         $stmt->bindParam(':id', $idECUE, PDO::PARAM_INT);
         $stmt->execute();
         $travaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 }
                 
                 // Vérifier si un devoir avec le même titre existe déjà pour ce cours
-                $checkStmt = $db->prepare("SELECT iddevoir FROM devoirs WHERE idECUE = :idECUE AND titre = :titre LIMIT 1");
+                $checkStmt = $db->prepare("SELECT iddevoir FROM devoirs WHERE \"idECUE\" = :idECUE AND titre = :titre LIMIT 1");
                 $checkStmt->bindParam(':idECUE', $idECUE, PDO::PARAM_INT);
                 $checkStmt->bindParam(':titre', $titre, PDO::PARAM_STR);
                 $checkStmt->execute();
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 
                 // Insertion dans la base de données
                 $query = "INSERT INTO devoirs (
-                    idECUE, titre, description, fichier, date_limite, 
+                    \"idECUE\", titre, description, fichier, date_limite, 
                     est_payant, type_travail, max_etudiants_groupe, nombre_groupes,
                     fichier_par_groupe, prix_par_etudiant, prix_forfaitaire, type_prix_groupe, devise
                 ) VALUES (

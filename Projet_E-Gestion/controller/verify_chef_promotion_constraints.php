@@ -146,7 +146,7 @@ try {
     echo "<h3>6. Test de la contrainte</h3>";
     echo "<p>Pour tester la contrainte, essayez d'insérer un doublon :</p>";
     echo "<code>
-    INSERT INTO chef_promotion (promotion_idpromotion, idetudiant, annee_acad_idannee_acad, date_nomination, est_actif, idUser) 
+    INSERT INTO chef_promotion (promotion_idpromotion, idetudiant, annee_acad_idannee_acad, date_nomination, est_actif, \"idUser\") 
     VALUES (1, 1, 1, CURDATE(), 1, 1);
     </code>";
     

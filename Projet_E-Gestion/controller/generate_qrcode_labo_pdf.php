@@ -31,7 +31,7 @@ try {
         SELECT sl.*, l.nom as nom_labo, l.localisation, a.noms as responsable_nom
         FROM seance_labo sl
         JOIN laboratoire l ON sl.idlabo = l.idlabo
-        LEFT JOIN agent a ON sl.idresponsable = a.idAgent
+        LEFT JOIN agent a ON sl.idresponsable = a.\"idAgent\"
         WHERE sl.idseance_labo = :idSeance
     ");
     $stmt->bindParam(':idSeance', $idSeance, PDO::PARAM_INT);

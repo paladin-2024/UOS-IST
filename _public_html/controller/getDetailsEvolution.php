@@ -15,18 +15,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     try {
         $db = Connexion::getInstance()->getPDO();
         
-        $query = "SELECT se.*, e.designationECUE, ue.designationUE, 
-                         p.designationPromotion, o.designationOrientation,
+        $query = "SELECT se.*, e.\"designationECUE\", ue.\"designationUE\",
+                         p.\"designationPromotion\", o.\"designationOrientation\",
                          et.noms as chef_promotion_nom, et.matricule as chef_promotion_matricule,
                          ag.noms as appariteur_nom, aa.designation as annee_acad
                   FROM suivi_enseignement_ecue se
-                  JOIN ecue e ON se.idECUE = e.idECUE
-                  JOIN ue ON e.UE_idUE = ue.idUE
+                  JOIN ecue e ON se.\"idECUE\" = e.\"idECUE\"
+                  JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
                   JOIN promotion p ON se.promotion_idpromotion = p.idpromotion
                   JOIN orientation o ON p.orientation_idorientation = o.idorientation
                   JOIN etudiant et ON se.chef_promotion_id = et.idetudiant
                   JOIN annee_acad aa ON se.annee_acad_idannee_acad = aa.idannee_acad
-                  LEFT JOIN agent ag ON se.appariteur_id = ag.idAgent
+                  LEFT JOIN agent ag ON se.appariteur_id = ag.\"idAgent\"
                   WHERE se.id_suivi = :idSuivi";
         
         $stmt = $db->prepare($query);

@@ -11,7 +11,7 @@ class Banque
     // Add a new bank
     public function addBanque($designation, $numeroCompte, $solde, $compteId)
     {
-        $query = "INSERT INTO banque (designation, numeroCompte, solde, dateEnregistrement, Compte_idCompte) 
+        $query = "INSERT INTO banque (designation, numeroCompte, solde, \"dateEnregistrement\", Compte_idCompte) 
                   VALUES (:designation, :numeroCompte, :solde, NOW(), :compteId)";
         $stmt = $this->db->prepare($query);
 
@@ -26,7 +26,7 @@ class Banque
     // Add a user to a bank
     public function addUserToBanque($userId, $banqueId)
     {
-        $query = "INSERT INTO user_banque (idUser, Banque_idBanque) VALUES (:userId, :banqueId)";
+        $query = "INSERT INTO user_banque (\"idUser\", Banque_idBanque) VALUES (:userId, :banqueId)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmt->bindParam(':banqueId', $banqueId, PDO::PARAM_INT);
@@ -45,7 +45,7 @@ class Banque
     // Get users by bank
     public function getUsersByBanque($banqueId)
     {
-        $query = "SELECT u.*, ub.* FROM user_banque ub INNER JOIN t_users u ON ub.idUser = u.idUser WHERE ub.Banque_idBanque = :banqueId";
+        $query = "SELECT u.*, ub.* FROM user_banque ub INNER JOIN t_users u ON ub.\"idUser\" = u.\"idUser\" WHERE ub.Banque_idBanque = :banqueId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':banqueId', $banqueId, PDO::PARAM_INT);
         $stmt->execute();
@@ -60,7 +60,7 @@ class Banque
             SELECT b.* 
             FROM banque b
             INNER JOIN compte c ON b.Compte_idCompte = c.idCompte
-            WHERE c.Structure_idStructure = :structureId
+            WHERE c.\"Structure_idStructure\" = :structureId
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
@@ -123,7 +123,7 @@ class Banque
         SELECT b.* 
         FROM banque b
         INNER JOIN user_banque ub ON b.idBanque = ub.Banque_idBanque
-        WHERE ub.idUser = :userId
+        WHERE ub.\"idUser\" = :userId
     ";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);

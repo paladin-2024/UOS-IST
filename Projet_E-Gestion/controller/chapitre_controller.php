@@ -18,13 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $redirect = $_POST['redirect'] ?? 'recherche/projet.taches';
                 
                 // Vérifier que l'utilisateur est bien directeur ou encadreur du sujet
-                $queryVerif = "SELECT s.idDirecteur, s.idEncadreur, s.idsujets, a.idAgent
+                $queryVerif = "SELECT s.\"idDirecteur\", s.\"idEncadreur\", s.idsujets, a.\"idAgent\"
                                FROM chapitre_plan cp 
                                JOIN plan_travail pt ON cp.idplan_travail = pt.idplan_travail
                                JOIN sujets s ON pt.idsujets = s.idsujets 
-                               JOIN agent a ON (s.idDirecteur = a.idAgent OR s.idEncadreur = a.idAgent)
-                               JOIN t_users u ON a.idAgent = u.idAgent 
-                               WHERE cp.idchapitre_plan = ? AND u.idUser = ?";
+                               JOIN agent a ON (s.\"idDirecteur\" = a.\"idAgent\" OR s.\"idEncadreur\" = a.\"idAgent\")
+                               JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                               WHERE cp.idchapitre_plan = ? AND u.\"idUser\" = ?";
                 $stmtVerif = $pdo->prepare($queryVerif);
                 $stmtVerif->execute([$chapitreId, $userId]);
                 $verification = $stmtVerif->fetch(PDO::FETCH_ASSOC);
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!empty($commentaire)) {
                     $typeAuteur = ($verification['idDirecteur'] == $verification['idAgent']) ? 'Directeur' : 'Encadreur';
                     $queryEchange = "INSERT INTO echange_chapitre 
-                                     (idchapitre_plan, type_auteur, idAuteur, commentaire, date_echange, statut_lecture) 
+                                     (idchapitre_plan, type_auteur, \"idAuteur\", commentaire, date_echange, statut_lecture) 
                                      VALUES (?, ?, ?, ?, NOW(), 'Non lu')";
                     $stmtEchange = $pdo->prepare($queryEchange);
                     $stmtEchange->execute([$chapitreId, $typeAuteur, $verification['idAgent'], $commentaire]);
@@ -87,11 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $redirect = $_POST['redirect'] ?? 'recherche/projet.taches';
                 
                 // Vérifier que l'utilisateur est bien autorisé
-                $queryVerif = "SELECT s.idDirecteur, s.idEncadreur, s.idsujets
+                $queryVerif = "SELECT s.\"idDirecteur\", s.\"idEncadreur\", s.idsujets
                                FROM chapitre_plan cp 
                                JOIN plan_travail pt ON cp.idplan_travail = pt.idplan_travail
                                JOIN sujets s ON pt.idsujets = s.idsujets 
-                               WHERE cp.idchapitre_plan = ? AND (s.idDirecteur = ? OR s.idEncadreur = ?)";
+                               WHERE cp.idchapitre_plan = ? AND (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)";
                 $stmtVerif = $pdo->prepare($queryVerif);
                 $stmtVerif->execute([$chapitreId, $idAuteur, $idAuteur]);
                 $verification = $stmtVerif->fetch(PDO::FETCH_ASSOC);
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Insérer l'échange
                 $queryEchange = "INSERT INTO echange_chapitre 
-                                 (idchapitre_plan, type_auteur, idAuteur, commentaire, fichier_joint, date_echange, statut_lecture) 
+                                 (idchapitre_plan, type_auteur, \"idAuteur\", commentaire, fichier_joint, date_echange, statut_lecture) 
                                  VALUES (?, ?, ?, ?, ?, NOW(), 'Non lu')";
                 $stmtEchange = $pdo->prepare($queryEchange);
                 $stmtEchange->execute([$chapitreId, $typeAuteur, $idAuteur, $commentaire, $fichierJoint]);

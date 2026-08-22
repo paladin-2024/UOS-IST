@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmtCheck = $db->prepare("
             SELECT COUNT(*) as conflicts 
             FROM rendez_vous 
-            WHERE Agent_idAgent = ? 
+            WHERE \"Agent_idAgent\" = ? 
             AND date_rendez_vous = ? 
             AND statut_rendez_vous NOT IN ('annule', 'termine')
             AND (
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Insertion du rendez-vous
         $stmt = $db->prepare("
             INSERT INTO rendez_vous (
-                Agent_idAgent, Service_idService, contact_externe, 
+                \"Agent_idAgent\", \"Service_idService\", contact_externe, 
                 email_externe, telephone_externe, date_rendez_vous, 
                 heure_debut, heure_fin, objet, description, lieu, 
                 statut_rendez_vous, type_rendez_vous, priorite, 
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $heureFormatted = date('H:i', strtotime($heureDebut));
                 
                 // Récupérer le nom de l'agent
-                $stmtAgent = $db->prepare("SELECT noms FROM agent WHERE idAgent = ?");
+                $stmtAgent = $db->prepare("SELECT noms FROM agent WHERE \"idAgent\" = ?");
                 $stmtAgent->execute([$agentId]);
                 $agent = $stmtAgent->fetch(PDO::FETCH_ASSOC);
                 

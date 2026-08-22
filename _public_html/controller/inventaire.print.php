@@ -17,12 +17,12 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
 
     try {
         // Récupérer les informations de l'inventaire
-        $queryInventaire = "SELECT i.*, d.libelle_depot, u.nomUser as user_creation,
-                        v.nomUser as user_validation
+        $queryInventaire = "SELECT i.*, d.libelle_depot, u.\"nomUser\" as user_creation,
+                        v.\"nomUser\" as user_validation
                         FROM inventaire i
                         LEFT JOIN depot d ON i.id_depot = d.id_depot
-                        LEFT JOIN t_users u ON i.id_user_creation = u.idUser
-                        LEFT JOIN t_users v ON i.id_user_validation = v.idUser
+                        LEFT JOIN t_users u ON i.id_user_creation = u.\"idUser\"
+                        LEFT JOIN t_users v ON i.id_user_validation = v.\"idUser\"
                         WHERE i.id_inventaire = :id_inventaire";
         $stmtInventaire = $db->prepare($queryInventaire);
         $stmtInventaire->bindParam(':id_inventaire', $idInventaire, PDO::PARAM_INT);

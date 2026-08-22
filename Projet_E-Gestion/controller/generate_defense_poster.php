@@ -27,7 +27,7 @@ try {
                 e.noms,
                 e.matricule,
                 e.photo,
-                p.designationPromotion,
+                p.\"designationPromotion\",
                 p.idpromotion,
                 p.orientation_idorientation,
                 sp.designation as specialisation,
@@ -42,8 +42,8 @@ try {
               JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
               JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
               JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-              JOIN specialisation sp ON sj.idSpecialisation = sp.idspecialisation
-              LEFT JOIN agent ag ON sj.idDirecteur = ag.idagent
+              JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.idspecialisation
+              LEFT JOIN agent ag ON sj.\"idDirecteur\" = ag.idagent
               LEFT JOIN grade gag ON ag.grade_id = gag.idgrade
               LEFT JOIN jury j ON s.jury_id = j.idjury
               LEFT JOIN agent apres ON j.id_president = apres.idagent

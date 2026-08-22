@@ -34,14 +34,14 @@ try {
         f.montant AS montant_frais,
         f.lieu_paiement,
         a.designation AS annee_academique,
-        p.designationPromotion AS promotion_nom,
-        CONCAT(s.designationSection, ' - ', o.designationOrientation) AS faculte_nom,
+        p.\"designationPromotion\" AS promotion_nom,
+        CONCAT(s.\"designationSection\", ' - ', o.\"designationOrientation\") AS faculte_nom,
         s.telephone AS section_telephone,
         s.email AS section_email,
         s.adresse AS section_adresse,
         t.reference AS transaction_reference,
         t.date_transaction,
-        u.nomUser AS agent_nom,
+        u.\"nomUser\" AS agent_nom,
         (SELECT COALESCE(SUM(pf2.montant), 0) 
         FROM paiements_frais pf2
         JOIN transactions t2 ON pf2.transaction_id = t2.id
@@ -56,7 +56,7 @@ try {
     LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
     LEFT JOIN section s ON o.section_idsection = s.idsection
     LEFT JOIN transactions t ON pf.transaction_id = t.id
-    LEFT JOIN t_users u ON t.idUser = u.idUser
+    LEFT JOIN t_users u ON t.\"idUser\" = u.\"idUser\"
     LEFT JOIN annee_acad a ON f.annee_acad_id = a.idannee_acad
     WHERE pf.id = :id
     ");

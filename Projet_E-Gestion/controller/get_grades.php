@@ -24,9 +24,9 @@ try {
     $creditHeure = $creditHeure ?: 25;
     
     // Récupérer les informations sur l'évaluation
-    $sql = "SELECT e.*, t.designationT, t.categorie, s.designSession, s.description as session_description 
+    $sql = "SELECT e.*, t.\"designationT\", t.categorie, s.\"designSession\", s.description as session_description
             FROM evaluations e
-            JOIN typeevaluation t ON e.idType = t.idType
+            JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
             JOIN session s ON e.session_idsession = s.idsession
             WHERE e.idevaluation = ?";
             
@@ -44,10 +44,10 @@ try {
                           stripos($evaluation['session_description'], 'deuxieme') !== false);
     
     // Récupérer la configuration des pondérations
-    $sqlConfig = "SELECT ponderation_cc, ponderation_ex 
-                 FROM configuration_moyenne 
-                 WHERE idECUE = ? AND session_idsession = ? 
-                 ORDER BY dateCreation DESC LIMIT 1";
+    $sqlConfig = "SELECT ponderation_cc, ponderation_ex
+                 FROM configuration_moyenne
+                 WHERE \"idECUE\" = ? AND session_idsession = ?
+                 ORDER BY \"dateCreation\" DESC LIMIT 1";
                  
     $stmtConfig = $pdo->prepare($sqlConfig);
     $stmtConfig->execute([$ecueId, $evaluation['session_idsession']]);
@@ -67,7 +67,7 @@ $ponderationEX = $config ? floatval($config['ponderation_ex']) : $ponderationsDe
     // Requête pour récupérer les étudiants et leurs notes éventuelles
     if ($isDeuxiemeSession && $evaluation['categorie'] === 'EX') {
         // 1. Get the UE associated with this ECUE
-        $sqlUE = "SELECT UE_idUE FROM ecue WHERE idECUE = ?";
+        $sqlUE = 'SELECT "UE_idUE" FROM ecue WHERE "idECUE" = ?';
         $stmtUE = $pdo->prepare($sqlUE);
         $stmtUE->execute([$ecueId]);
         $idUE = $stmtUE->fetchColumn();
@@ -78,9 +78,9 @@ $ponderationEX = $config ? floatval($config['ponderation_ex']) : $ponderationsDe
         }
         
         // 2. Get the first session ID
-        $sqlSession = "SELECT idsession FROM session 
-                     WHERE LOWER(designSession) LIKE 'premi%re session' 
-                     OR LOWER(designSession) = 'premiere session' LIMIT 1";
+        $sqlSession = "SELECT idsession FROM session
+                     WHERE LOWER(\"designSession\") LIKE 'premi%re session'
+                     OR LOWER(\"designSession\") = 'premiere session' LIMIT 1";
         $stmtSession = $pdo->prepare($sqlSession);
         $stmtSession->execute();
         $session1Id = $stmtSession->fetchColumn();
@@ -91,22 +91,22 @@ $ponderationEX = $config ? floatval($config['ponderation_ex']) : $ponderationsDe
         }
         
         // 3. First get all students who failed this specific ECUE
-        $sqlFailed = "SELECT e.idetudiant, e.matricule, e.noms, p.coteObtenu as note
+        $sqlFailed = "SELECT e.idetudiant, e.matricule, e.noms, p.\"coteObtenu\" as note
                     FROM etudiant e
-                    LEFT JOIN points p ON e.matricule = p.matricule 
-                                AND p.ECUE_idECUE = ? 
-                                AND p.typeEvaluation = ? 
+                    LEFT JOIN points p ON e.matricule = p.matricule
+                                AND p.\"ECUE_idECUE\" = ?
+                                AND p.typeEvaluation = ?
                                 AND p.session_idsession = ?
-                    LEFT JOIN cotes_grille cg ON e.matricule = cg.matricule 
-                                AND cg.ECUE_idECUE = ? 
+                    LEFT JOIN cotes_grille cg ON e.matricule = cg.matricule
+                                AND cg.\"ECUE_idECUE\" = ?
                                 AND cg.session_idsession = ?
                     WHERE e.promotion_idpromotion IN (
-                        SELECT promotion_idpromotion 
-                        FROM semestre s 
+                        SELECT promotion_idpromotion
+                        FROM semestre s
                         JOIN ue u ON s.idsemestre = u.semestre_idsemestre
-                        WHERE u.idUE IN (SELECT UE_idUE FROM ecue WHERE idECUE = ?)
+                        WHERE u.\"idUE\" IN (SELECT \"UE_idUE\" FROM ecue WHERE \"idECUE\" = ?)
                     )
-                    AND (cg.MF IS NULL OR cg.MF < 10)
+                    AND (cg.\"MF\" IS NULL OR cg.\"MF\" < 10)
                     ORDER BY e.noms";
                       
         $stmtFailed = $pdo->prepare($sqlFailed);
@@ -128,17 +128,17 @@ $ponderationEX = $config ? floatval($config['ponderation_ex']) : $ponderationsDe
             
             // Check if the UE was validated in first session
             // Using configurable credit_heure instead of hardcoded 15
-            $sqlUEValidation = "SELECT 
-                              SUM(cg.MF * ROUND((ec.CMI + ec.TD + ec.TP)/{$creditHeure}, 2)) / 
-                              SUM(ROUND((ec.CMI + ec.TD + ec.TP)/{$creditHeure}, 2)) AS moyenne_ponderee, 
-                              COUNT(cg.MF) AS notes_count, 
-                              (SELECT COUNT(*) FROM ecue WHERE UE_idUE = ?) AS total_ecues 
-                            FROM cotes_grille cg 
-                            JOIN ecue ec ON cg.ECUE_idECUE = ec.idECUE 
-                            WHERE ec.UE_idUE = ? 
-                            AND cg.matricule = ? 
-                            AND cg.session_idsession = ? 
-                            AND cg.MF IS NOT NULL";
+            $sqlUEValidation = "SELECT
+                              SUM(cg.\"MF\" * ROUND((ec.\"CMI\" + ec.\"TD\" + ec.\"TP\")/{$creditHeure}, 2)) /
+                              SUM(ROUND((ec.\"CMI\" + ec.\"TD\" + ec.\"TP\")/{$creditHeure}, 2)) AS moyenne_ponderee,
+                              COUNT(cg.\"MF\") AS notes_count,
+                              (SELECT COUNT(*) FROM ecue WHERE \"UE_idUE\" = ?) AS total_ecues
+                            FROM cotes_grille cg
+                            JOIN ecue ec ON cg.\"ECUE_idECUE\" = ec.\"idECUE\"
+                            WHERE ec.\"UE_idUE\" = ?
+                            AND cg.matricule = ?
+                            AND cg.session_idsession = ?
+                            AND cg.\"MF\" IS NOT NULL";
             $stmtUEValidation = $pdo->prepare($sqlUEValidation);
             $stmtUEValidation->execute([$idUE, $idUE, $matricule, $session1Id]);
             $ueResult = $stmtUEValidation->fetch(PDO::FETCH_ASSOC);
@@ -165,15 +165,15 @@ $ponderationEX = $config ? floatval($config['ponderation_ex']) : $ponderationsDe
         }
     } else {
         // Première session ou contrôle continu - tous les étudiants
-        $sqlStudents = "SELECT e.idetudiant, e.matricule, e.noms, p.coteObtenu as note
+        $sqlStudents = "SELECT e.idetudiant, e.matricule, e.noms, p.\"coteObtenu\" as note
                       FROM etudiant e
-                      LEFT JOIN points p ON e.matricule = p.matricule AND p.ECUE_idECUE = ? 
+                      LEFT JOIN points p ON e.matricule = p.matricule AND p.\"ECUE_idECUE\" = ?
                                        AND p.typeEvaluation = ? AND p.session_idsession = ?
                       WHERE e.promotion_idpromotion IN (
-                          SELECT promotion_idpromotion 
-                          FROM semestre s 
+                          SELECT promotion_idpromotion
+                          FROM semestre s
                           JOIN ue u ON s.idsemestre = u.semestre_idsemestre
-                          WHERE u.idUE IN (SELECT UE_idUE FROM ecue WHERE idECUE = ?)
+                          WHERE u.\"idUE\" IN (SELECT \"UE_idUE\" FROM ecue WHERE \"idECUE\" = ?)
                       )
                       ORDER BY e.noms";
                       

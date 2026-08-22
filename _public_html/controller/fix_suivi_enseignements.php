@@ -52,7 +52,7 @@ if ($anneeActive) {
 
 // 3. Vérifier les données de l'étudiant
 echo "<h3>3. Données de l'étudiant</h3>";
-$queryEtudiant = "SELECT e.*, p.designationPromotion 
+$queryEtudiant = "SELECT e.*, p.\"designationPromotion\" 
                   FROM etudiant e 
                   LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion 
                   WHERE e.idetudiant = :student_id";
@@ -78,7 +78,7 @@ if ($etudiant) {
 
 // 4. Vérifier si l'étudiant est chef de promotion
 echo "<h3>4. Vérification chef de promotion</h3>";
-$queryChef = "SELECT cp.*, e.noms as nom_etudiant, p.designationPromotion, aa.designation as annee_acad
+$queryChef = "SELECT cp.*, e.noms as nom_etudiant, p.\"designationPromotion\", aa.designation as annee_acad
               FROM chef_promotion cp 
               INNER JOIN etudiant e ON cp.idetudiant = e.idetudiant 
               INNER JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion
@@ -113,7 +113,7 @@ if ($_POST['action'] ?? '' === 'create_chef') {
     echo "<h3>5. Création du chef de promotion</h3>";
     
     try {
-        $insertChef = "INSERT INTO chef_promotion (idetudiant, promotion_idpromotion, annee_acad_idannee_acad, date_nomination, est_actif, date_creation, idUser) 
+        $insertChef = "INSERT INTO chef_promotion (idetudiant, promotion_idpromotion, annee_acad_idannee_acad, date_nomination, est_actif, date_creation, \"idUser\") 
                        VALUES (:idetudiant, :promotion_id, :annee_acad, CURDATE(), 1, NOW(), 1)";
         
         $stmtInsert = $connexion->prepare($insertChef);

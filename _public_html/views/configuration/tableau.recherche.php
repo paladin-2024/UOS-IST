@@ -14,22 +14,22 @@ $recherche = isset($_GET['recherche']) ? $_GET['recherche'] : '';
 
 try {
     // Requête pour récupérer les enseignants par unité de recherche avec spécialisations
-   $sqlEnseignantsUR = "
-        SELECT 
+   $sqlEnseignantsUR = '
+        SELECT
             ur.idunite_recherche,
-            ur.designation_UR,
+            ur."designation_UR",
             ur.description as description_ur,
-            COUNT(DISTINCT es.idAgent) as nombre_enseignants,
-            COUNT(DISTINCT sp.idSpecialisation) as nombre_specialisations,
-            GROUP_CONCAT(DISTINCT sp.designation SEPARATOR ', ') as liste_specialisations,
-            GROUP_CONCAT(DISTINCT sec.designationSection SEPARATOR ', ') as sections_associees
+            COUNT(DISTINCT es."idAgent") as nombre_enseignants,
+            COUNT(DISTINCT sp."idSpecialisation") as nombre_specialisations,
+            string_agg(DISTINCT sp.designation, \', \') as liste_specialisations,
+            string_agg(DISTINCT sec."designationSection", \', \') as sections_associees
         FROM unite_recherche ur
-        LEFT JOIN specialisation sp ON ur.idunite_recherche = sp.idUnite_recherche
+        LEFT JOIN specialisation sp ON ur.idunite_recherche = sp."idUnite_recherche"
         LEFT JOIN orientation ori ON sp.idorientation = ori.idorientation
         LEFT JOIN section sec ON ori.section_idsection = sec.idsection
-        LEFT JOIN enseignant_specialisation es ON sp.idSpecialisation = es.idSpecialisation
+        LEFT JOIN enseignant_specialisation es ON sp."idSpecialisation" = es."idSpecialisation"
         WHERE 1=1
-    ";
+    ';
     
     $params = [];
     
@@ -39,52 +39,52 @@ try {
     }
     
     if (!empty($filtreSpecialisation)) {
-        $sqlEnseignantsUR .= " AND sp.idSpecialisation = :specialisation";
+        $sqlEnseignantsUR .= ' AND sp."idSpecialisation" = :specialisation';
         $params[':specialisation'] = $filtreSpecialisation;
     }
-    
+
     if (!empty($recherche)) {
-        $sqlEnseignantsUR .= " AND (ur.designation_UR LIKE :recherche OR ur.description LIKE :recherche2 OR sp.designation LIKE :recherche3)";
+        $sqlEnseignantsUR .= ' AND (ur."designation_UR" LIKE :recherche OR ur.description LIKE :recherche2 OR sp.designation LIKE :recherche3)';
         $params[':recherche'] = '%' . $recherche . '%';
         $params[':recherche2'] = '%' . $recherche . '%';
         $params[':recherche3'] = '%' . $recherche . '%';
     }
-    
-    $sqlEnseignantsUR .= " GROUP BY ur.idunite_recherche, ur.designation_UR, ur.description
-                          ORDER BY ur.designation_UR";
+
+    $sqlEnseignantsUR .= ' GROUP BY ur.idunite_recherche, ur."designation_UR", ur.description
+                          ORDER BY ur."designation_UR"';
     
     $stmtEnseignantsUR = $pdo->prepare($sqlEnseignantsUR);
     $stmtEnseignantsUR->execute($params);
     $enseignantsByUR = $stmtEnseignantsUR->fetchAll(PDO::FETCH_ASSOC);
 
     // Requête pour récupérer les étudiants par directeur et spécialisation
-    $sqlEtudiantsProf = "
-        SELECT 
-            a.idAgent,
+    $sqlEtudiantsProf = '
+        SELECT
+            a."idAgent",
             a.noms as nomDirecteur,
             a.email,
             g.designation as grade,
             sp.designation as specialisation,
-            ur.designation_UR,
-            sec.designationSection,
+            ur."designation_UR",
+            sec."designationSection",
             aa.designation as annee_acad,
-            COUNT(DISTINCT CASE WHEN suj.statut_validation = 'Validé' THEN suj.idsujets END) as sujets_valides,
-            COUNT(DISTINCT CASE WHEN suj.statut_validation = 'En attente' THEN suj.idsujets END) as sujets_en_attente,
-            COUNT(DISTINCT CASE WHEN suj.statut_validation = 'A reformulé' THEN suj.idsujets END) as sujets_a_reformuler,
+            COUNT(DISTINCT CASE WHEN suj.statut_validation = \'Validé\' THEN suj.idsujets END) as sujets_valides,
+            COUNT(DISTINCT CASE WHEN suj.statut_validation = \'En attente\' THEN suj.idsujets END) as sujets_en_attente,
+            COUNT(DISTINCT CASE WHEN suj.statut_validation = \'A reformulé\' THEN suj.idsujets END) as sujets_a_reformuler,
             COUNT(DISTINCT suj.idsujets) as total_sujets,
             COUNT(DISTINCT e.idetudiant) as total_etudiants
         FROM agent a
         LEFT JOIN grade g ON a.grade_id = g.idgrade
-        LEFT JOIN enseignant_specialisation es ON a.idAgent = es.idAgent
-        LEFT JOIN specialisation sp ON es.idSpecialisation = sp.idSpecialisation
-        LEFT JOIN unite_recherche ur ON sp.idUnite_recherche = ur.idunite_recherche
+        LEFT JOIN enseignant_specialisation es ON a."idAgent" = es."idAgent"
+        LEFT JOIN specialisation sp ON es."idSpecialisation" = sp."idSpecialisation"
+        LEFT JOIN unite_recherche ur ON sp."idUnite_recherche" = ur.idunite_recherche
         LEFT JOIN orientation ori ON sp.idorientation = ori.idorientation
         LEFT JOIN section sec ON ori.section_idsection = sec.idsection
-        LEFT JOIN sujets suj ON a.idAgent = suj.idDirecteur
+        LEFT JOIN sujets suj ON a."idAgent" = suj."idDirecteur"
         LEFT JOIN etudiant e ON suj.etudiant_idetudiant = e.idetudiant
         LEFT JOIN annee_acad aa ON suj.annee_acad_idannee_acad = aa.idannee_acad
-        WHERE a.type_agent = 'Enseignant'
-    ";
+        WHERE a.type_agent = \'Enseignant\'
+    ';
     
     $paramsProf = [];
     
@@ -94,50 +94,50 @@ try {
     }
     
     if (!empty($filtreSpecialisation)) {
-        $sqlEtudiantsProf .= " AND sp.idSpecialisation = :specialisation";
+        $sqlEtudiantsProf .= ' AND sp."idSpecialisation" = :specialisation';
         $paramsProf[':specialisation'] = $filtreSpecialisation;
     }
-    
+
     if (!empty($filtreAnnee)) {
-        $sqlEtudiantsProf .= " AND aa.idannee_acad = :annee";
+        $sqlEtudiantsProf .= ' AND aa.idannee_acad = :annee';
         $paramsProf[':annee'] = $filtreAnnee;
     }
-    
+
     if (!empty($recherche)) {
-        $sqlEtudiantsProf .= " AND (a.noms LIKE :recherche OR sp.designation LIKE :recherche2 OR ur.designation_UR LIKE :recherche3)";
+        $sqlEtudiantsProf .= ' AND (a.noms LIKE :recherche OR sp.designation LIKE :recherche2 OR ur."designation_UR" LIKE :recherche3)';
         $paramsProf[':recherche'] = '%' . $recherche . '%';
         $paramsProf[':recherche2'] = '%' . $recherche . '%';
         $paramsProf[':recherche3'] = '%' . $recherche . '%';
     }
-    
-    $sqlEtudiantsProf .= " GROUP BY a.idAgent, a.noms, a.email, g.designation, sp.designation, ur.designation_UR, sec.designationSection, aa.designation
-                          HAVING total_sujets > 0
-                          ORDER BY ur.designation_UR, a.noms";
+
+    $sqlEtudiantsProf .= ' GROUP BY a."idAgent", a.noms, a.email, g.designation, sp.designation, ur."designation_UR", sec."designationSection", aa.designation
+                          HAVING COUNT(DISTINCT suj.idsujets) > 0
+                          ORDER BY ur."designation_UR", a.noms';
     
     $stmtEtudiantsProf = $pdo->prepare($sqlEtudiantsProf);
     $stmtEtudiantsProf->execute($paramsProf);
     $etudiantsByProf = $stmtEtudiantsProf->fetchAll(PDO::FETCH_ASSOC);
 
     // Requête pour récupérer les sections
-    $sqlSections = "SELECT idsection, designationSection FROM section ORDER BY designationSection";
+    $sqlSections = 'SELECT idsection, "designationSection" FROM section ORDER BY "designationSection"';
     $stmtSections = $pdo->prepare($sqlSections);
     $stmtSections->execute();
     $sections = $stmtSections->fetchAll(PDO::FETCH_ASSOC);
 
     // Requête pour récupérer les orientations
-    $sqlOrientations = "SELECT idorientation, designationOrientation FROM orientation ORDER BY designationOrientation";
+    $sqlOrientations = 'SELECT idorientation, "designationOrientation" FROM orientation ORDER BY "designationOrientation"';
     $stmtOrientations = $pdo->prepare($sqlOrientations);
     $stmtOrientations->execute();
     $orientations = $stmtOrientations->fetchAll(PDO::FETCH_ASSOC);
 
     // Requête pour récupérer les spécialisations
-    $sqlSpecialisations = "
-        SELECT DISTINCT sp.idSpecialisation, sp.designation, ur.designation_UR, s.designationSection
+    $sqlSpecialisations = '
+        SELECT DISTINCT sp."idSpecialisation", sp.designation, ur."designation_UR", s."designationSection"
         FROM specialisation sp
-        LEFT JOIN unite_recherche ur ON sp.idUnite_recherche = ur.idunite_recherche
+        LEFT JOIN unite_recherche ur ON sp."idUnite_recherche" = ur.idunite_recherche
         LEFT JOIN section s ON sp.idorientation = s.idsection
-        ORDER BY ur.designation_UR, sp.designation
-    ";
+        ORDER BY ur."designation_UR", sp.designation
+    ';
     $stmtSpecialisations = $pdo->prepare($sqlSpecialisations);
     $stmtSpecialisations->execute();
     $specialisations = $stmtSpecialisations->fetchAll(PDO::FETCH_ASSOC);
@@ -156,12 +156,12 @@ try {
 
     // Statistiques générales
     // Nombre total d'enseignants chercheurs
-    $sqlTeacherCount = "
-        SELECT COUNT(DISTINCT a.idAgent) as count 
-        FROM agent a 
-        INNER JOIN enseignant_specialisation es ON a.idAgent = es.idAgent
-        WHERE a.type_agent = 'Enseignant'
-    ";
+    $sqlTeacherCount = '
+        SELECT COUNT(DISTINCT a."idAgent") as count
+        FROM agent a
+        INNER JOIN enseignant_specialisation es ON a."idAgent" = es."idAgent"
+        WHERE a.type_agent = \'Enseignant\'
+    ';
     $stmtTeacherCount = $pdo->prepare($sqlTeacherCount);
     $stmtTeacherCount->execute();
     $teacherCount = $stmtTeacherCount->fetch(PDO::FETCH_ASSOC)['count'];
@@ -179,27 +179,27 @@ try {
     $specCount = $stmtSpecCount->fetch(PDO::FETCH_ASSOC)['count'];
 
     // Nombre total de sujets par statut avec application des filtres
-    $sqlSubjectsStats = "
-        SELECT 
+    $sqlSubjectsStats = '
+        SELECT
             suj.statut_validation,
             COUNT(*) as count
         FROM sujets suj
-        LEFT JOIN specialisation sp ON suj.idSpecialisation = sp.idSpecialisation
+        LEFT JOIN specialisation sp ON suj."idSpecialisation" = sp."idSpecialisation"
         LEFT JOIN orientation ori ON sp.idorientation = ori.idorientation
         LEFT JOIN section sec ON ori.section_idsection = sec.idsection
         LEFT JOIN annee_acad aa ON suj.annee_acad_idannee_acad = aa.idannee_acad
         WHERE 1=1
-    ";
-    
+    ';
+
     $paramsStats = [];
-    
+
     if (!empty($filtreSection)) {
-        $sqlSubjectsStats .= " AND sec.idsection = :section";
+        $sqlSubjectsStats .= ' AND sec.idsection = :section';
         $paramsStats[':section'] = $filtreSection;
     }
-    
+
     if (!empty($filtreSpecialisation)) {
-        $sqlSubjectsStats .= " AND sp.idSpecialisation = :specialisation";
+        $sqlSubjectsStats .= ' AND sp."idSpecialisation" = :specialisation';
         $paramsStats[':specialisation'] = $filtreSpecialisation;
     }
     
@@ -235,53 +235,53 @@ try {
     }
 
     // Nombre total d'étudiants avec sujets
-    $sqlStudentCount = "
-        SELECT COUNT(DISTINCT e.idetudiant) as count 
-        FROM etudiant e 
+    $sqlStudentCount = '
+        SELECT COUNT(DISTINCT e.idetudiant) as count
+        FROM etudiant e
         INNER JOIN sujets s ON e.idetudiant = s.etudiant_idetudiant
-    ";
+    ';
     $stmtStudentCount = $pdo->prepare($sqlStudentCount);
     $stmtStudentCount->execute();
     $studentCount = $stmtStudentCount->fetch(PDO::FETCH_ASSOC)['count'];
 
     // Statistiques des sujets par section avec application des filtres
-    $sqlSubjectsBySection = "
-        SELECT 
+    $sqlSubjectsBySection = '
+        SELECT
             sec.idsection,
-            sec.designationSection,
-            COUNT(CASE WHEN suj.statut_validation = 'Validé' THEN 1 END) as sujets_valides,
-            COUNT(CASE WHEN suj.statut_validation = 'En attente' THEN 1 END) as sujets_en_attente,
-            COUNT(CASE WHEN suj.statut_validation = 'A reformulé' THEN 1 END) as sujets_a_reformuler,
-            COUNT(CASE WHEN suj.statut_validation = 'Modifié' THEN 1 END) as sujets_modifies,
+            sec."designationSection",
+            COUNT(CASE WHEN suj.statut_validation = \'Validé\' THEN 1 END) as sujets_valides,
+            COUNT(CASE WHEN suj.statut_validation = \'En attente\' THEN 1 END) as sujets_en_attente,
+            COUNT(CASE WHEN suj.statut_validation = \'A reformulé\' THEN 1 END) as sujets_a_reformuler,
+            COUNT(CASE WHEN suj.statut_validation = \'Modifié\' THEN 1 END) as sujets_modifies,
             COUNT(suj.idsujets) as total_sujets
         FROM section sec
         LEFT JOIN orientation ori ON sec.idsection = ori.section_idsection
         LEFT JOIN specialisation sp ON ori.idorientation = sp.idorientation
-        LEFT JOIN sujets suj ON sp.idSpecialisation = suj.idSpecialisation
+        LEFT JOIN sujets suj ON sp."idSpecialisation" = suj."idSpecialisation"
         LEFT JOIN annee_acad aa ON suj.annee_acad_idannee_acad = aa.idannee_acad
         WHERE 1=1
-    ";
-    
+    ';
+
     $paramsBySection = [];
-    
+
     if (!empty($filtreSection)) {
-        $sqlSubjectsBySection .= " AND sec.idsection = :section";
+        $sqlSubjectsBySection .= ' AND sec.idsection = :section';
         $paramsBySection[':section'] = $filtreSection;
     }
-    
+
     if (!empty($filtreSpecialisation)) {
-        $sqlSubjectsBySection .= " AND sp.idSpecialisation = :specialisation";
+        $sqlSubjectsBySection .= ' AND sp."idSpecialisation" = :specialisation';
         $paramsBySection[':specialisation'] = $filtreSpecialisation;
     }
-    
+
     if (!empty($filtreAnnee)) {
-        $sqlSubjectsBySection .= " AND aa.idannee_acad = :annee";
+        $sqlSubjectsBySection .= ' AND aa.idannee_acad = :annee';
         $paramsBySection[':annee'] = $filtreAnnee;
     }
-    
-    $sqlSubjectsBySection .= " GROUP BY sec.idsection, sec.designationSection
-                               HAVING total_sujets > 0
-                               ORDER BY sec.designationSection";
+
+    $sqlSubjectsBySection .= ' GROUP BY sec.idsection, sec."designationSection"
+                               HAVING COUNT(suj.idsujets) > 0
+                               ORDER BY sec."designationSection"';
     
     $stmtSubjectsBySection = $pdo->prepare($sqlSubjectsBySection);
     $stmtSubjectsBySection->execute($paramsBySection);

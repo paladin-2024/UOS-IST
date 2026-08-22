@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-istm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in deploy/.env}
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-istm}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  gestion:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        APP_DIR: Projet_E-Gestion
+    restart: unless-stopped
+    env_file: ../Projet_E-Gestion/.env
+    volumes:
+      - ../Projet_E-Gestion/uploads:/var/www/html/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  portail:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        APP_DIR: projet_website
+    restart: unless-stopped
+    env_file: ../projet_website/.env
+    volumes:
+      - ../projet_website/uploads:/var/www/html/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ../Projet_E-Gestion:/var/www/gestion:ro
+      - ../projet_website:/var/www/portail:ro
+    depends_on:
+      - gestion
+      - portail
+
+volumes:
+  pgdata:

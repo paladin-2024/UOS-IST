@@ -29,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 e.matricule, 
                 e.noms, 
                 e.photo,
-                p.designationPromotion, 
-                s.designationSection,
+                p.\"designationPromotion\", 
+                s.\"designationSection\",
                 a.designation as annee_academique,
                 p.idpromotion as promotion_id,
                 COALESCE(sf.total_du, 0) as total_du,
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params[':promotion'] = $promotion;
         
         // Récupérer le nom de la promotion pour l'affichage
-        $stmtPromo = $connexion->prepare("SELECT designationPromotion FROM promotion WHERE idpromotion = :id");
+        $stmtPromo = $connexion->prepare("SELECT \"designationPromotion\" FROM promotion WHERE idpromotion = :id");
         $stmtPromo->bindParam(':id', $promotion);
         $stmtPromo->execute();
         $promoName = $stmtPromo->fetchColumn();
@@ -95,11 +95,11 @@ $connexion = Connexion::getInstance()->getPDO();
 $stmt = $connexion->prepare("
     SELECT 
         p.idpromotion, 
-        p.designationPromotion, 
+        p.\"designationPromotion\", 
         a.designation as annee_academique 
     FROM promotion p 
     JOIN annee_acad a ON p.annee_acad_idannee_acad = a.idannee_acad 
-    ORDER BY a.designation DESC, p.designationPromotion ASC");
+    ORDER BY a.designation DESC, p.\"designationPromotion\" ASC");
 $stmt->execute();
 $promotions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>

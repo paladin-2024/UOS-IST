@@ -26,9 +26,9 @@ try {
         SELECT 
             f.id, f.designation, f.montant, f.devise, f.est_obligatoire,
             cf.designation as categorie_frais,
-            p.designationPromotion as promotion,
+            p.\"designationPromotion\" as promotion,
             p.idpromotion,
-            s.designationSection as section,
+            s.\"designationSection\" as section,
             a.designation as annee_academique,
             COUNT(DISTINCT e.idetudiant) as nb_etudiants,
             COUNT(DISTINCT pf.id) as nb_paiements,
@@ -61,7 +61,7 @@ try {
     }
 
     // Grouper par frais et promotion
-    $sql .= " GROUP BY f.id, p.idpromotion ORDER BY s.designationSection, p.designationPromotion, cf.designation, f.designation";
+    $sql .= ' GROUP BY f.id, p.idpromotion ORDER BY s."designationSection", p."designationPromotion", cf.designation, f.designation';
 
     // Exécution de la requête
     $stmt = $connexion->prepare($sql);
@@ -85,7 +85,7 @@ try {
 
     if (!empty($promotion)) {
         $stmtPromo = $connexion->prepare("
-            SELECT p.designationPromotion, s.designationSection 
+            SELECT p.\"designationPromotion\", s.\"designationSection\"
             FROM promotion p
             JOIN orientation o ON p.orientation_idorientation = o.idorientation
             JOIN section s ON o.section_idsection = s.idsection

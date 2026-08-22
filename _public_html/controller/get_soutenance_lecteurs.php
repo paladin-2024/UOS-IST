@@ -30,9 +30,9 @@ try {
 
     // Récupérer les lecteurs assignés
     $query = "SELECT ls.id, ls.idsoutenance, ls.idenseignant, ls.est_premier_lecteur, 
-                     a.noms, a.idAgent, a.grade_id, g.designation as grade
+                     a.noms, a.\"idAgent\", a.grade_id, g.designation as grade
               FROM lecteurs_soutenance ls
-              INNER JOIN agent a ON ls.idenseignant = a.idAgent
+              INNER JOIN agent a ON ls.idenseignant = a.\"idAgent\"
               LEFT JOIN grade g ON a.grade_id = g.idgrade
               WHERE ls.idsoutenance = :id
               ORDER BY ls.est_premier_lecteur DESC";

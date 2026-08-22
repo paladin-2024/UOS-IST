@@ -63,9 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Vérifier si l'ECUE et la promotion correspondent
         $queryVerif = "SELECT COUNT(*) FROM ecue e
-                       JOIN ue ON e.UE_idUE = ue.idUE
+                       JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
                        JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre
-                       WHERE e.idECUE = :idECUE AND s.promotion_idpromotion = :promotionId";
+                       WHERE e.\"idECUE\" = :idECUE AND s.promotion_idpromotion = :promotionId";
         $stmtVerif = $db->prepare($queryVerif);
         $stmtVerif->bindParam(':idECUE', $idECUE, PDO::PARAM_INT);
         $stmtVerif->bindParam(':promotionId', $promotionId, PDO::PARAM_INT);
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Vérifier les doublons (même ECUE, même date, même promotion)
         $queryDoublon = "SELECT COUNT(*) FROM suivi_enseignement_ecue 
-                         WHERE idECUE = :idECUE AND date_seance = :dateSeance 
+                         WHERE \"idECUE\" = :idECUE AND date_seance = :dateSeance 
                          AND promotion_idpromotion = :promotionId 
                          AND heure_debut = :heureDebut AND heure_fin = :heureFin";
         $stmtDoublon = $db->prepare($queryDoublon);
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Insérer l'évolution de cours
         $queryInsert = "INSERT INTO suivi_enseignement_ecue 
-                        (idECUE, date_seance, heure_debut, heure_fin, matiere_vue, 
+                        (\"idECUE\", date_seance, heure_debut, heure_fin, matiere_vue, 
                          nombre_heures_reelles, promotion_idpromotion, annee_acad_idannee_acad, 
                          chef_promotion_id, statut_validation, idUser_creation) 
                         VALUES (:idECUE, :dateSeance, :heureDebut, :heureFin, :matiereVue, 

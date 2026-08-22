@@ -89,8 +89,8 @@ try {
     $stmt = $pdo->prepare("
         UPDATE etudiant
         SET noms = :noms,
-            lieuNaissance = :lieuNaissance,
-            dateNaissance = :dateNaissance,
+            \"lieuNaissance\" = :\"lieuNaissance\",
+            \"dateNaissance\" = :\"dateNaissance\",
             sexe = :sexe,
             nationalite = :nationalite,
             adressemail = :adressemail,

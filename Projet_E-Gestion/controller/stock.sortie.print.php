@@ -17,13 +17,13 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
 
     try {
         // Récupérer les informations de la sortie de stock
-        $querySortie = "SELECT s.*, d.libelle_depot, u.nomUser as user_creation,
-                        v.nomUser as user_validation
+        $querySortie = 'SELECT s.*, d.libelle_depot, u."nomUser" as user_creation,
+                        v."nomUser" as user_validation
                         FROM sortie_stock s
                         LEFT JOIN depot d ON s.id_depot = d.id_depot
-                        LEFT JOIN t_users u ON s.id_user_creation = u.idUser
-                        LEFT JOIN t_users v ON s.id_user_validation = v.idUser
-                        WHERE s.id_sortie = :id_sortie";
+                        LEFT JOIN t_users u ON s.id_user_creation = u."idUser"
+                        LEFT JOIN t_users v ON s.id_user_validation = v."idUser"
+                        WHERE s.id_sortie = :id_sortie';
         $stmtSortie = $db->prepare($querySortie);
         $stmtSortie->bindParam(':id_sortie', $idSortie, PDO::PARAM_INT);
         $stmtSortie->execute();

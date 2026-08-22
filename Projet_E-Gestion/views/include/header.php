@@ -25,7 +25,7 @@ $idUser = $_SESSION['id'];
 
 // Récupérer tous les rôles de l'utilisateur et le rôle principal
 $connexion = Connexion::getInstance()->getPDO();
-$query = "SELECT ur.idRole, r.nomRole, ur.isPrincipal FROM t_user_roles ur INNER JOIN t_roles r ON ur.idRole = r.idRole WHERE ur.idUser = :idUser";
+$query = 'SELECT ur."idRole", r."nomRole", ur."isPrincipal" FROM t_user_roles ur INNER JOIN t_roles r ON ur."idRole" = r."idRole" WHERE ur."idUser" = :idUser';
 $stmt = $connexion->prepare($query);
 $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
 $stmt->execute();

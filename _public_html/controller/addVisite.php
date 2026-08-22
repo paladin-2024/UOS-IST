@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmtCheck = $db->prepare("
             SELECT COUNT(*) as conflicts 
             FROM visites 
-            WHERE Agent_idAgent = ? 
+            WHERE \"Agent_idAgent\" = ? 
             AND date_visite = ? 
             AND statut_visite NOT IN ('annulee', 'terminee')
             AND (
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             INSERT INTO visites (
                 nom_visiteur, prenom_visiteur, entreprise_visiteur, 
                 telephone_visiteur, email_visiteur, carte_identite,
-                Agent_idAgent, Service_idService, date_visite, 
+                \"Agent_idAgent\", \"Service_idService\", date_visite, 
                 heure_debut, heure_fin, objet_visite, description, 
                 lieu_rencontre, statut_visite, type_visite, 
                 nombre_accompagnants, observations, validation_securite,
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Enregistrer dans l'historique
             $stmtHistorique = $db->prepare("
-                INSERT INTO historique_visites (idVisite, action, nouveau_statut, commentaire, idUser)
+                INSERT INTO historique_visites (idVisite, action, nouveau_statut, commentaire, \"idUser\")
                 VALUES (?, 'Création', ?, 'Visite programmée', ?)
             ");
             $stmtHistorique->execute([$visiteId, $statutVisite, $userId]);
@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $heureFormatted = date('H:i', strtotime($heureDebut));
                 
                 // Récupérer le nom de l'agent
-                $stmtAgent = $db->prepare("SELECT noms FROM agent WHERE idAgent = ?");
+                $stmtAgent = $db->prepare("SELECT noms FROM agent WHERE \"idAgent\" = ?");
                 $stmtAgent->execute([$agentId]);
                 $agent = $stmtAgent->fetch(PDO::FETCH_ASSOC);
                 

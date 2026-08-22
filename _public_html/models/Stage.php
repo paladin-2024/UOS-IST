@@ -8,11 +8,11 @@ class Stage {
 
     // Get user's responsibilities (promotions they manage)
     public function getUserResponsibilities($userId) {
-        $sql = "SELECT rs.*, s.designationSection, p.designationPromotion as promotionDesignation
+        $sql = "SELECT rs.*, s.\"designationSection\", p.\"designationPromotion\" as promotionDesignation
                 FROM responsable_section rs
                 JOIN section s ON rs.idsection = s.idsection
                 JOIN promotion p ON rs.idpromotion = p.idpromotion
-                WHERE rs.idUser = :userId";
+                WHERE rs.\"idUser\" = :userId";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['userId' => $userId]);
         return $stmt->fetchAll();
@@ -23,7 +23,7 @@ class Stage {
         $sql = "SELECT DISTINCT p.*
                 FROM promotion p
                 JOIN responsable_section rs ON p.idpromotion = rs.idpromotion
-                WHERE rs.idUser = :userId AND rs.annee_acad_idannee_acad = :yearId";
+                WHERE rs.\"idUser\" = :userId AND rs.annee_acad_idannee_acad = :yearId";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['userId' => $userId, 'yearId' => $yearId]);
         return $stmt->fetchAll();
@@ -55,7 +55,7 @@ class Stage {
         $sql = "SELECT s.*, e.noms, e.matricule,
                        enc.nom as encadreur_nom, lec.nom as lecteur_nom,
                        s.cote_lecteur, s.cote_entreprise, s.lieu_stage, s.nom_stage,
-                       p.designationPromotion as promotion
+                       p.\"designationPromotion\" as promotion
                 FROM stage_assignments s
                 JOIN etudiant e ON s.idetudiant = e.idetudiant
                 LEFT JOIN enseignant enc ON s.idencadreur = enc.idenseignant
@@ -197,7 +197,7 @@ class Stage {
     // Get available supervisors (agents of type 'Enseignant')
     public function getAvailableSupervisors() {
     try {
-        $sql = "SELECT a.idAgent, a.noms as nom_complet
+        $sql = "SELECT a.\"idAgent\", a.noms as nom_complet
         FROM agent a
         WHERE a.type_agent = 'Enseignant'
         ORDER BY a.noms ASC";
@@ -230,7 +230,7 @@ class Stage {
 
     // Get submitted reports
     public function getSubmittedReports() {
-        $sql = "SELECT s.*, e.noms, p.designationPromotion as promotion
+        $sql = "SELECT s.*, e.noms, p.\"designationPromotion\" as promotion
                 FROM stage_assignments s
                 JOIN etudiant e ON s.idetudiant = e.idetudiant
                 JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -247,7 +247,7 @@ class Stage {
 
     // Get reports assigned to reader
     public function getReportsForReader($readerId) {
-        $sql = "SELECT s.*, e.noms, p.designationPromotion as promotion
+        $sql = "SELECT s.*, e.noms, p.\"designationPromotion\" as promotion
                 FROM stage_assignments s
                 JOIN etudiant e ON s.idetudiant = e.idetudiant
                 JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -273,7 +273,7 @@ class Stage {
 
     // Get student's stages
     public function getStudentStages($studentId, $yearId) {
-        $sql = "SELECT s.*, p.designationPromotion as promotion, p.est_terminale,
+        $sql = "SELECT s.*, p.\"designationPromotion\" as promotion, p.est_terminale,
         enc.nom as encadreur_nom, lec.nom as lecteur_nom
         FROM stage_assignments s
         JOIN etudiant e ON s.idetudiant = e.idetudiant
@@ -318,7 +318,7 @@ class Stage {
 
     // Get teacher by user ID
     public function getTeacherByUserId($userId) {
-        $sql = "SELECT e.* FROM enseignant e JOIN users u ON e.idUser = u.idUser WHERE u.idUser = :userId";
+        $sql = "SELECT e.* FROM enseignant e JOIN users u ON e.\"idUser\" = u.\"idUser\" WHERE u.\"idUser\" = :userId";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['userId' => $userId]);
         return $stmt->fetch();
@@ -326,13 +326,13 @@ class Stage {
 
     // Get stages for supervisor
     public function getStagesForSupervisor($teacherId) {
-    $sql = "SELECT s.*, e.noms, p.designationPromotion as promotion, p.est_terminale,
+    $sql = "SELECT s.*, e.noms, p.\"designationPromotion\" as promotion, p.est_terminale,
     ag.noms as lecteur_nom
     FROM stage_assignments s
     JOIN etudiant e ON s.idetudiant = e.idetudiant
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
     LEFT JOIN enseignant lec ON s.idlecteur = lec.idenseignant
-    LEFT JOIN agent ag ON lec.idAgent = ag.idAgent
+    LEFT JOIN agent ag ON lec.\"idAgent\" = ag.\"idAgent\"
     WHERE s.idencadreur = :teacherId";
     $stmt = $this->db->prepare($sql);
     $stmt->execute(['teacherId' => $teacherId]);

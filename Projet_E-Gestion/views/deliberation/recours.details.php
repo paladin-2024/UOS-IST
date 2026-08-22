@@ -21,16 +21,16 @@ $conn = Connexion::getInstance()->getPDO();
 // Récupérer les détails du recours
 $query = "SELECT r.*, 
             e.noms as nom_etudiant,
-            ec.designationECUE,
-            u.designationUE,
-            s.designSession,
+            ec.\"designationECUE\",
+            u.\"designationUE\",
+            s.\"designSession\",
             a.designation as annee_acad,
-            p.designationPromotion,
+            p.\"designationPromotion\",
             u_creator.nomUser as nom_createur
           FROM recours r
           LEFT JOIN etudiant e ON r.matricule = e.matricule
-          LEFT JOIN ecue ec ON r.id_ecue = ec.idECUE
-          LEFT JOIN ue u ON ec.UE_idUE = u.idUE
+          LEFT JOIN ecue ec ON r.id_ecue = ec.\"idECUE\"
+          LEFT JOIN ue u ON ec.\"UE_idUE\" = u.\"idUE\"
           LEFT JOIN session s ON r.id_session = s.idsession
           LEFT JOIN annee_acad a ON r.id_annee_acad = a.idannee_acad
           LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
@@ -60,7 +60,7 @@ $query_reponse = "SELECT rr.*,
                     a.noms as nom_enseignant,
                     u_validateur.nomUser as nom_validateur
                   FROM recours_reponse rr
-                  LEFT JOIN agent a ON rr.id_enseignant = a.idAgent
+                  LEFT JOIN agent a ON rr.id_enseignant = a.\"idAgent\"
                   LEFT JOIN t_users u_validateur ON rr.id_validateur = u_validateur.idUser
                   WHERE rr.id_recours = :id_recours
                   ORDER BY rr.date_reponse DESC
@@ -71,11 +71,11 @@ $stmt_reponse->execute();
 $reponse = $stmt_reponse->fetch(PDO::FETCH_ASSOC);
 
 // Récupérer la liste des enseignants pour le formulaire de réponse
-$query_enseignants = "SELECT a.idAgent, a.noms 
+$query_enseignants = "SELECT a.\"idAgent\", a.noms 
                      FROM agent a 
-                     LEFT JOIN agent_section ags ON a.idAgent = ags.idAgent
-                     JOIN enseignant_ecue ee ON a.idAgent = ee.idAgent
-                     WHERE ee.idECUE = :id_ecue
+                     LEFT JOIN agent_section ags ON a.\"idAgent\" = ags.\"idAgent\"
+                     JOIN enseignant_ecue ee ON a.\"idAgent\" = ee.\"idAgent\"
+                     WHERE ee.\"idECUE\" = :id_ecue
                      AND a.type_agent = 'Enseignant'
                      ORDER BY a.noms";
 $stmt_enseignants = $conn->prepare($query_enseignants);
@@ -86,7 +86,7 @@ $enseignants = $stmt_enseignants->fetchAll(PDO::FETCH_ASSOC);
 // Récupérer la note actuelle de l'étudiant pour cet ECUE et cette session
 $query_note = "SELECT cg.CC, cg.EX, cg.MF
                FROM cotes_grille cg
-               WHERE cg.ECUE_idECUE = :id_ecue
+               WHERE cg.\"ECUE_idECUE\" = :id_ecue
                AND cg.session_idsession = :id_session
                AND cg.matricule = :matricule
                AND cg.annee_acad_id = :id_annee";

@@ -31,7 +31,7 @@ if (!$labo) {
 // Récupérer les utilisateurs actuels du laboratoire
 $queryUsers = "SELECT al.*, a.noms, a.matricule
                FROM autorisation_labo al
-               JOIN agent a ON al.idAgent = a.idAgent
+               JOIN agent a ON al.\"idAgent\" = a.\"idAgent\"
                WHERE al.idlabo = :idLabo
                ORDER BY al.date_creation DESC";
 $stmtUsers = $db->prepare($queryUsers);
@@ -40,10 +40,10 @@ $stmtUsers->execute();
 $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer la liste des agents pour l'ajout
-$queryAgents = "SELECT a.idAgent, a.noms, a.matricule 
+$queryAgents = "SELECT a.\"idAgent\", a.noms, a.matricule 
                 FROM agent a 
-                WHERE a.idAgent NOT IN (
-                    SELECT al.idAgent FROM autorisation_labo al WHERE al.idlabo = :idLabo
+                WHERE a.\"idAgent\" NOT IN (
+                    SELECT al.\"idAgent\" FROM autorisation_labo al WHERE al.idlabo = :idLabo
                 )
                 ORDER BY a.noms";
 $stmtAgents = $db->prepare($queryAgents);

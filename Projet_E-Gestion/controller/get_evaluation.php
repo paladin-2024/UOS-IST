@@ -16,9 +16,9 @@ $pdo = $connexion->getPDO();
 
 try {
     // Requête pour récupérer les détails de l'évaluation
-    $sql = "SELECT e.*, t.designationT, t.categorie
+    $sql = "SELECT e.*, t.\"designationT\", t.categorie
             FROM evaluations e
-            LEFT JOIN typeevaluation t ON e.idType = t.idType
+            LEFT JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
             WHERE e.idevaluation = ?";
             
     $stmt = $pdo->prepare($sql);

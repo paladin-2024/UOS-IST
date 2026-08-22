@@ -18,7 +18,7 @@ if (!isset($_SESSION['id']) || $_SESSION['role'] != 'Enseignant' && $_SESSION['r
 $conn = Connexion::getInstance()->getPDO();
 
 // Récupérer l'idAgent de l'enseignant connecté
-$query_agent = "SELECT idAgent FROM t_users WHERE idUser = :id_user";
+$query_agent = "SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :id_user";
 $stmt_agent = $conn->prepare($query_agent);
 $stmt_agent->bindParam(':id_user', $_SESSION['id']);
 $stmt_agent->execute();
@@ -45,7 +45,7 @@ $id_session = isset($_GET['session']) ? intval($_GET['session']) : 0;
 $statut = isset($_GET['statut']) ? $_GET['statut'] : '';
 
 // Récupérer les années académiques pour le filtre
-$query_annees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC";
+$query_annees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY \"dateCreation\" DESC";
 $stmt_annees = $conn->prepare($query_annees);
 $stmt_annees->execute();
 $annees = $stmt_annees->fetchAll(PDO::FETCH_ASSOC);
@@ -56,7 +56,7 @@ if ($id_annee == 0 && !empty($annees)) {
 }
 
 // Récupérer les sessions pour le filtre
-$query_sessions = "SELECT idsession, designSession FROM session ORDER BY idsession";
+$query_sessions = "SELECT idsession, \"designSession\" FROM session ORDER BY idsession";
 $stmt_sessions = $conn->prepare($query_sessions);
 $stmt_sessions->execute();
 $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
@@ -64,19 +64,19 @@ $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
 // Construire la requête pour récupérer les recours
 $query_recours = "
     SELECT r.id_recours, r.matricule, e.noms as nom_etudiant,
-           ec.designationECUE, r.motif, r.date_creation, r.statut,
-           s.designSession, a.designation as annee_acad,
+           ec.\"designationECUE\", r.motif, r.date_creation, r.statut,
+           s.\"designSession\", a.designation as annee_acad,
            CASE WHEN rr.id_reponse IS NOT NULL THEN 1 ELSE 0 END as a_reponse
     FROM recours r
     LEFT JOIN etudiant e ON r.matricule = e.matricule
-    LEFT JOIN ecue ec ON r.id_ecue = ec.idECUE
+    LEFT JOIN ecue ec ON r.id_ecue = ec.\"idECUE\"
     LEFT JOIN session s ON r.id_session = s.idsession
     LEFT JOIN annee_acad a ON r.id_annee_acad = a.idannee_acad
     LEFT JOIN recours_reponse rr ON r.id_recours = rr.id_recours
-    WHERE ec.idECUE IN (
-        SELECT ee.idECUE 
+    WHERE ec.\"idECUE\" IN (
+        SELECT ee.\"idECUE\" 
         FROM enseignant_ecue ee 
-        WHERE ee.idAgent = :id_agent
+        WHERE ee.\"idAgent\" = :id_agent
     )
     AND r.id_annee_acad = :id_annee";
 

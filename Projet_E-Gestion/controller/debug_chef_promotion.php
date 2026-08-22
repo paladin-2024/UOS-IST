@@ -37,7 +37,7 @@ require_once '../config/Connexion.php';
             echo '<div class="card-body">';
             
             try {
-                $queryEtudiant = "SELECT e.*, p.designationPromotion 
+                $queryEtudiant = "SELECT e.*, p.\"designationPromotion\" 
                                   FROM etudiant e 
                                   LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion 
                                   WHERE e.idetudiant = :student_id";
@@ -63,7 +63,7 @@ require_once '../config/Connexion.php';
             echo '<div class="card-body">';
             
             try {
-                $queryChef = "SELECT cp.*, e.noms as nom_etudiant, p.designationPromotion, aa.designation as annee_acad
+                $queryChef = "SELECT cp.*, e.noms as nom_etudiant, p.\"designationPromotion\", aa.designation as annee_acad
                               FROM chef_promotion cp 
                               INNER JOIN etudiant e ON cp.idetudiant = e.idetudiant 
                               INNER JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion

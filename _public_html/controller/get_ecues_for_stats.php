@@ -27,11 +27,11 @@ try {
     $role = intval($_SESSION['idRole']);
 
     // Requête de base pour récupérer les ECUEs avec leurs informations
-    $sql = "SELECT DISTINCT e.idECUE, e.designationECUE, 
-                   p.designationPromotion, s.numeroSemestre, 
-                   sec.designationSection
+    $sql = "SELECT DISTINCT e.\"idECUE\", e.\"designationECUE\",
+                   p.\"designationPromotion\", s.\"numeroSemestre\",
+                   sec.\"designationSection\"
             FROM ecue e
-            INNER JOIN ue u ON e.UE_idUE = u.idUE
+            INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
             INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
             INNER JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
             INNER JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -42,10 +42,10 @@ try {
 
     // Si l'utilisateur n'est pas admin, filtrer par ses sections responsables
     if ($role != 1) {
-        $querySections = "SELECT section_idsection 
-                          FROM responsable_section 
-                          WHERE idUser = :userId 
-                          AND annee_acad_idannee_acad = :anneeId";
+        $querySections = 'SELECT section_idsection
+                          FROM responsable_section
+                          WHERE "idUser" = :userId
+                          AND annee_acad_idannee_acad = :anneeId';
         $stmtSections = $pdo->prepare($querySections);
         $stmtSections->bindParam(':userId', $userId, PDO::PARAM_INT);
         $stmtSections->bindParam(':anneeId', $anneeId, PDO::PARAM_INT);
@@ -67,7 +67,7 @@ try {
         $sql .= " AND sec.idsection IN (" . implode(', ', $placeholders) . ")";
     }
 
-    $sql .= " ORDER BY sec.designationSection, p.designationPromotion, s.numeroSemestre, e.designationECUE";
+    $sql .= ' ORDER BY sec."designationSection", p."designationPromotion", s."numeroSemestre", e."designationECUE"';
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);

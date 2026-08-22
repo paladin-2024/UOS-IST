@@ -35,8 +35,8 @@ $frais_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer la liste des promotions
 $sql_promotions = "
-    SELECT p.idpromotion, p.designationPromotion, o.designationOrientation, 
-           s.designationSection, a.designation AS annee_academique, 
+    SELECT p.idpromotion, p.\"designationPromotion\", o.\"designationOrientation\", 
+           s.\"designationSection\", a.designation AS annee_academique, 
            a.idannee_acad AS annee_acad_id
     FROM promotion p
     JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -48,7 +48,7 @@ if ($annee_affectation_filter > 0) {
     $sql_promotions .= " WHERE p.annee_acad_idannee_acad = :annee_affectation_filter";
 }
 
-$sql_promotions .= " ORDER BY a.designation DESC, s.designationSection, o.designationOrientation, p.designationPromotion";
+$sql_promotions .= " ORDER BY a.designation DESC, s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"";
 
 $stmt = $connexion->prepare($sql_promotions);
 if ($annee_affectation_filter > 0) {
@@ -83,9 +83,9 @@ $sql = "
            f.devise AS frais_devise, f.est_echelonnable,
            cf.designation AS categorie_nom,
            aa.designation AS annee_academique,
-           p.designationPromotion,
-           o.designationOrientation,
-           s.designationSection,
+           p.\"designationPromotion\",
+           o.\"designationOrientation\",
+           s.\"designationSection\",
            e.noms AS nom_etudiant
     FROM affectation_frais af
     INNER JOIN frais f ON af.frais_id = f.id

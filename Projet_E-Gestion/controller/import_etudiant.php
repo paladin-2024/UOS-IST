@@ -252,10 +252,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
                          // 3. Create new active enrollment for new promotion/year
                          $stmtInsertEtudiant = $connexion->prepare("
                              INSERT INTO etudiant (
-                                 matricule, noms, lieuNaissance, dateNaissance, adressemail, 
+                                 matricule, noms, \"lieuNaissance\", \"dateNaissance\", adressemail, 
                                  telephone, adresse, personne_contact, telephone_contact, photo, 
-                                 pwd, sexe, nationalite, dateEnregistrement, 
-                                 annee_acad_idannee_acad, promotion_idpromotion, idUser, est_actif
+                                 pwd, sexe, nationalite, \"dateEnregistrement\", 
+                                 annee_acad_idannee_acad, promotion_idpromotion, \"idUser\", est_actif
                              ) VALUES (
                                  :matricule, :noms, :lieuNaissance, :dateNaissance, :adressemail, 
                                  :telephone, :adresse, :personne_contact, :telephone_contact, :photo, 
@@ -310,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
                          
                          // Get new promotion designation
                          $stmtNewPromo = $connexion->prepare("
-                             SELECT p.designationPromotion, aa.designation as anneeAcad
+                             SELECT p.\"designationPromotion\", aa.designation as anneeAcad
                              FROM promotion p
                              JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
                              WHERE p.idpromotion = ?

@@ -12,7 +12,7 @@ class Soutenance
     public function addFraisSoutenance($designation, $montant, $devise, $description, $idAnneeAcad, $idUser)
     {
         $query = "INSERT INTO frais_soutenance (designation, montant, devise, description, 
-                 annee_acad_idannee_acad, idUser) 
+                 annee_acad_idannee_acad, \"idUser\") 
                  VALUES (:designation, :montant, :devise, :description, :idAnneeAcad, :idUser)";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
@@ -41,9 +41,9 @@ class Soutenance
 
         // Récupérer tous les frais obligatoires pour cette section et année académique
         $query = "SELECT fs.*, 
-                  ps.estComplet, 
-                  ps.datePaiement,
-                  ps.montantPaye,
+                  ps.\"estComplet\", 
+                  ps.\"datePaiement\",
+                  ps.\"montantPaye\",
                   ps.idpaiement_soutenance
                   FROM frais_soutenance fs
                   LEFT JOIN paiement_soutenance ps ON fs.idfrais_soutenance = ps.frais_soutenance_id 
@@ -51,7 +51,7 @@ class Soutenance
                       AND ps.annee_acad_id = :idAnneeAcad
                   WHERE fs.annee_acad_id = :idAnneeAcad
                   AND (fs.section_id = :sectionId OR fs.section_id IS NULL)
-                  AND fs.estObligatoire = 1";
+                  AND fs.\"estObligatoire\" = 1";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -109,7 +109,7 @@ class Soutenance
         }
 
         // Programmer la soutenance
-        $query = "INSERT INTO soutenance (date_soutenance, lieu, sujets_idsujets, statut, idUser) 
+        $query = "INSERT INTO soutenance (date_soutenance, lieu, sujets_idsujets, statut, \"idUser\") 
                  VALUES (:dateSoutenance, :lieu, :idSujet, 'Programmée', :idUser)";
         $stmt = $this->db->prepare($query);
         $success = $stmt->execute([
@@ -150,9 +150,9 @@ class Soutenance
                  FROM soutenance j
                  JOIN sujets s ON j.sujets_idsujets = s.idsujets
                  JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                 LEFT JOIN agent d ON s.idDirecteur = d.idAgent
-                 LEFT JOIN agent en ON s.idEncadreur = en.idAgent
-                 LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                 LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
+                 LEFT JOIN agent en ON s.\"idEncadreur\" = en.\"idAgent\"
+                 LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                  WHERE 1=1";
 
         $params = [];
@@ -174,7 +174,7 @@ class Soutenance
         }
 
         if (!empty($filters['specialisation'])) {
-            $query .= " AND s.idSpecialisation = :specialisation";
+            $query .= " AND s.\"idSpecialisation\" = :specialisation";
             $params['specialisation'] = $filters['specialisation'];
         }
 
@@ -193,7 +193,7 @@ class Soutenance
     {
         $query = "SELECT j.*, a.noms, a.grade_id, g.designation as grade
                  FROM jury_soutenance j
-                 JOIN agent a ON j.idenseignant = a.idAgent
+                 JOIN agent a ON j.idenseignant = a.\"idAgent\"
                  LEFT JOIN grade g ON a.grade_id = g.idgrade
                  WHERE j.idsoutenance = :idSoutenance
                  ORDER BY FIELD(j.role, 'Président', 'Secrétaire', 'Membre')";
@@ -271,10 +271,10 @@ class Soutenance
              p.noms as president_nom,
              s.noms as secretaire_nom,
              sec.idsection as section_id,
-             sec.designationSection as section_nom
+             sec.\"designationSection\" as section_nom
              FROM jury j
-             JOIN agent p ON j.id_president = p.idAgent
-             JOIN agent s ON j.id_secretaire = s.idAgent
+             JOIN agent p ON j.id_president = p.\"idAgent\"
+             JOIN agent s ON j.id_secretaire = s.\"idAgent\"
              LEFT JOIN section sec ON j.section_id = sec.idsection
              WHERE j.annee_acad_id = :anneeAcad";
 
@@ -449,13 +449,13 @@ class Soutenance
         $query = "SELECT s.*, 
              j.lieu, j.date_soutenance, j.statut as statut_soutenance, j.note_finale,
              e.noms as etudiant_nom, e.matricule, 
-             d.noms as directeur_nom, d.idAgent as directeur_id,
+             d.noms as directeur_nom, d.\"idAgent\" as directeur_id,
              sp.designation as specialisation
              FROM soutenance j
              JOIN sujets s ON j.sujets_idsujets = s.idsujets
              JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-             LEFT JOIN agent d ON s.idDirecteur = d.idAgent
-             LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+             LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
+             LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
              WHERE j.idsoutenance = :idSoutenance";
 
         $stmt = $this->db->prepare($query);
@@ -469,7 +469,7 @@ class Soutenance
         // Récupérer les lecteurs
         $query = "SELECT ls.*, a.noms, a.grade_id, g.designation as grade
              FROM lecteurs_soutenance ls
-             JOIN agent a ON ls.idenseignant = a.idAgent
+             JOIN agent a ON ls.idenseignant = a.\"idAgent\"
              LEFT JOIN grade g ON a.grade_id = g.idgrade
              WHERE ls.idsoutenance = :idSoutenance
              ORDER BY ls.est_premier_lecteur DESC";
@@ -480,7 +480,7 @@ class Soutenance
         // Récupérer les notes
         $query = "SELECT ns.*, a.noms
              FROM notes_soutenance ns
-             JOIN agent a ON ns.idenseignant = a.idAgent
+             JOIN agent a ON ns.idenseignant = a.\"idAgent\"
              WHERE ns.idsoutenance = :idSoutenance";
 
         $stmt = $this->db->prepare($query);
@@ -490,7 +490,7 @@ class Soutenance
         // Récupérer le statut de validation
         $query = "SELECT v.*, a.noms as validateur_nom
              FROM validation_notes_soutenance v
-             LEFT JOIN agent a ON v.id_validateur = a.idAgent
+             LEFT JOIN agent a ON v.id_validateur = a.\"idAgent\"
              WHERE v.idsoutenance = :idSoutenance";
 
         $stmt = $this->db->prepare($query);
@@ -564,7 +564,7 @@ class Soutenance
                          FROM soutenance s
                          JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
                          JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-                         LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
+                         LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
                          LEFT JOIN validation_notes_soutenance v ON s.idsoutenance = v.idsoutenance
                          WHERE s.jury_id = :idJury
                          AND sj.annee_acad_idannee_acad = :anneeAcad
@@ -610,7 +610,7 @@ class Soutenance
                          FROM soutenance s
                          JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
                          JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-                         LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
+                         LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
                          JOIN lecteurs_soutenance ls ON s.idsoutenance = ls.idsoutenance
                          WHERE ls.idenseignant = :idEnseignant
                          AND sj.annee_acad_idannee_acad = :anneeAcad
@@ -636,7 +636,7 @@ class Soutenance
                          FROM soutenance s
                          JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
                          JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-                         WHERE sj.idDirecteur = :idEnseignant
+                         WHERE sj.\"idDirecteur\" = :idEnseignant
                          AND sj.annee_acad_idannee_acad = :anneeAcad
                          ORDER BY s.date_soutenance";
 
@@ -696,7 +696,7 @@ class Soutenance
      */
     public function isDirecteurForSoutenance($idSoutenance, $idEnseignant)
     {
-        $query = "SELECT s.idDirecteur 
+        $query = "SELECT s.\"idDirecteur\" 
              FROM soutenance so
              JOIN sujets s ON so.sujets_idsujets = s.idsujets
              WHERE so.idsoutenance = :idSoutenance";
@@ -783,12 +783,12 @@ class Soutenance
     public function getSoutenanceById($idSoutenance)
     {
         $query = "SELECT s.*, j.designation as jury_designation, j.idjury as id_jury,
-              jp.idAgent as id_president, jp.noms as president_nom,
-              js.idAgent as id_secretaire, js.noms as secretaire_nom
+              jp.\"idAgent\" as id_president, jp.noms as president_nom,
+              js.\"idAgent\" as id_secretaire, js.noms as secretaire_nom
               FROM soutenance s
               LEFT JOIN jury j ON s.jury_id = j.idjury
-              LEFT JOIN agent jp ON j.id_president = jp.idAgent
-              LEFT JOIN agent js ON j.id_secretaire = js.idAgent
+              LEFT JOIN agent jp ON j.id_president = jp.\"idAgent\"
+              LEFT JOIN agent js ON j.id_secretaire = js.\"idAgent\"
               WHERE s.idsoutenance = :idSoutenance";
 
         $stmt = $this->db->prepare($query);
@@ -804,7 +804,7 @@ class Soutenance
     {
         $query = "SELECT ls.idenseignant, ls.est_premier_lecteur, a.noms
               FROM lecteurs_soutenance ls
-              JOIN agent a ON ls.idenseignant = a.idAgent
+              JOIN agent a ON ls.idenseignant = a.\"idAgent\"
               WHERE ls.idsoutenance = :idSoutenance
               ORDER BY ls.est_premier_lecteur DESC";
 

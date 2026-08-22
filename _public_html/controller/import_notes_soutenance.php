@@ -56,7 +56,7 @@ try {
     
     if (!$anneeActive) {
         // Si pas d'année active, prendre la plus récente
-        $stmtAnnee = $pdo->query("SELECT idannee_acad FROM annee_acad ORDER BY dateCreation DESC LIMIT 1");
+        $stmtAnnee = $pdo->query("SELECT idannee_acad FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1");
         $anneeActive = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
     }
     

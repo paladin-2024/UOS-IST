@@ -21,21 +21,21 @@ function getCurrentAcademicYear($db) {
 
 function getUserSections($db, $userId, $anneeAcadId) {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     $stmt = $db->prepare($query);
     $stmt->execute(['userId' => $userId, 'anneeId' => $anneeAcadId]);
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
 function getAllSections($db) {
-    $query = "SELECT idsection, designationSection FROM section ORDER BY designationSection";
+    $query = "SELECT idsection, \"designationSection\" FROM section ORDER BY \"designationSection\"";
     $stmt = $db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function getSectionById($db, $sectionId) {
-    $query = "SELECT idsection, designationSection FROM section WHERE idsection = :id";
+    $query = "SELECT idsection, \"designationSection\" FROM section WHERE idsection = :id";
     $stmt = $db->prepare($query);
     $stmt->execute(['id' => $sectionId]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -45,17 +45,17 @@ function getSectionById($db, $sectionId) {
 function getStatistiquesMemoires($db, $idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
-                s.designationSection,
+                s.\"designationSection\",
                 COUNT(dm.iddepot_memoire) as nb_total,
-                COUNT(CASE WHEN MONTH(dm.dateDepot) BETWEEN 1 AND 3 THEN 1 END) as t1,
-                COUNT(CASE WHEN MONTH(dm.dateDepot) BETWEEN 4 AND 6 THEN 1 END) as t2,
-                COUNT(CASE WHEN MONTH(dm.dateDepot) BETWEEN 7 AND 9 THEN 1 END) as t3,
-                COUNT(CASE WHEN MONTH(dm.dateDepot) BETWEEN 10 AND 12 THEN 1 END) as t4
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
             FROM 
                 section s
             LEFT JOIN orientation o ON o.section_idsection = s.idsection
             LEFT JOIN specialisation sp ON sp.idorientation = o.idorientation
-            LEFT JOIN sujets sj ON sj.idSpecialisation = sp.idSpecialisation AND sj.annee_acad_idannee_acad = :anneeAcad
+            LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad
             LEFT JOIN depot_memoire dm ON dm.sujets_idsujets = sj.idsujets";
     
     $params = [':anneeAcad' => $idAnneeAcad];
@@ -65,8 +65,8 @@ function getStatistiquesMemoires($db, $idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY s.idsection, s.designationSection
-              ORDER BY s.designationSection";
+    $sql .= ' GROUP BY s.idsection, s."designationSection"
+              ORDER BY s."designationSection"';
     
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
@@ -76,12 +76,12 @@ function getStatistiquesMemoires($db, $idAnneeAcad, $idSection = null) {
 function getStatistiquesRapports($db, $idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
-                s.designationSection,
+                s.\"designationSection\",
                 COUNT(dr.iddepot_rapport) as nb_total,
-                COUNT(CASE WHEN MONTH(dr.dateDepot) BETWEEN 1 AND 3 THEN 1 END) as t1,
-                COUNT(CASE WHEN MONTH(dr.dateDepot) BETWEEN 4 AND 6 THEN 1 END) as t2,
-                COUNT(CASE WHEN MONTH(dr.dateDepot) BETWEEN 7 AND 9 THEN 1 END) as t3,
-                COUNT(CASE WHEN MONTH(dr.dateDepot) BETWEEN 10 AND 12 THEN 1 END) as t4
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dr.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dr.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dr.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dr.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
             FROM 
                 section s
             LEFT JOIN orientation o ON o.section_idsection = s.idsection
@@ -96,8 +96,8 @@ function getStatistiquesRapports($db, $idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY s.idsection, s.designationSection
-              ORDER BY s.designationSection";
+    $sql .= ' GROUP BY s.idsection, s."designationSection"
+              ORDER BY s."designationSection"';
     
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
@@ -107,7 +107,7 @@ function getStatistiquesRapports($db, $idAnneeAcad, $idSection = null) {
 function getStatistiquesSoutenances($db, $idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
-                s.designationSection,
+                s.\"designationSection\",
                 COUNT(st.idsoutenance) as nb_total,
                 COUNT(CASE WHEN st.statut = 'Programmée' THEN 1 END) as programmees,
                 COUNT(CASE WHEN st.statut = 'Terminée' THEN 1 END) as terminees,
@@ -117,7 +117,7 @@ function getStatistiquesSoutenances($db, $idAnneeAcad, $idSection = null) {
                 section s
             LEFT JOIN orientation o ON o.section_idsection = s.idsection
             LEFT JOIN specialisation sp ON sp.idorientation = o.idorientation
-            LEFT JOIN sujets sj ON sj.idSpecialisation = sp.idSpecialisation AND sj.annee_acad_idannee_acad = :anneeAcad
+            LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad
             LEFT JOIN soutenance st ON st.sujets_idsujets = sj.idsujets";
     
     $params = [':anneeAcad' => $idAnneeAcad];
@@ -127,8 +127,8 @@ function getStatistiquesSoutenances($db, $idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY s.idsection, s.designationSection
-              ORDER BY s.designationSection";
+    $sql .= ' GROUP BY s.idsection, s."designationSection"
+              ORDER BY s."designationSection"';
     
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
@@ -138,7 +138,7 @@ function getStatistiquesSoutenances($db, $idAnneeAcad, $idSection = null) {
 function getStatistiquesSujets($db, $idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
-                s.designationSection,
+                s.\"designationSection\",
                 COUNT(sj.idsujets) as nb_total,
                 COUNT(CASE WHEN sj.statut_validation = 'En attente' THEN 1 END) as en_attente,
                 COUNT(CASE WHEN sj.statut_validation = 'Validé' THEN 1 END) as valides,
@@ -148,7 +148,7 @@ function getStatistiquesSujets($db, $idAnneeAcad, $idSection = null) {
                 section s
             LEFT JOIN orientation o ON o.section_idsection = s.idsection
             LEFT JOIN specialisation sp ON sp.idorientation = o.idorientation
-            LEFT JOIN sujets sj ON sj.idSpecialisation = sp.idSpecialisation AND sj.annee_acad_idannee_acad = :anneeAcad";
+            LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad";
     
     $params = [':anneeAcad' => $idAnneeAcad];
     
@@ -157,8 +157,8 @@ function getStatistiquesSujets($db, $idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY s.idsection, s.designationSection
-              ORDER BY s.designationSection";
+    $sql .= ' GROUP BY s.idsection, s."designationSection"
+              ORDER BY s."designationSection"';
     
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
@@ -167,19 +167,19 @@ function getStatistiquesSujets($db, $idAnneeAcad, $idSection = null) {
 
 function getStatistiquesEncadrement($db, $idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
-                a.idAgent,
+                a.\"idAgent\",
                 a.noms,
-                COUNT(CASE WHEN sj.idDirecteur = a.idAgent THEN 1 END) as nb_sujets_diriges,
-                COUNT(CASE WHEN sj.idEncadreur = a.idAgent THEN 1 END) as nb_sujets_encadres,
-                COUNT(CASE WHEN j.idenseignant = a.idAgent THEN 1 END) as nb_jury
+                COUNT(CASE WHEN sj.\"idDirecteur\" = a.\"idAgent\" THEN 1 END) as nb_sujets_diriges,
+                COUNT(CASE WHEN sj.\"idEncadreur\" = a.\"idAgent\" THEN 1 END) as nb_sujets_encadres,
+                COUNT(CASE WHEN j.idenseignant = a.\"idAgent\" THEN 1 END) as nb_jury
             FROM 
                 agent a
-            LEFT JOIN agent_section ag_s ON ag_s.idAgent = a.idAgent
-            LEFT JOIN sujets sj ON (sj.idDirecteur = a.idAgent OR sj.idEncadreur = a.idAgent) 
+            LEFT JOIN agent_section ag_s ON ag_s.\"idAgent\" = a.\"idAgent\"
+            LEFT JOIN sujets sj ON (sj.\"idDirecteur\" = a.\"idAgent\" OR sj.\"idEncadreur\" = a.\"idAgent\") 
                                AND sj.annee_acad_idannee_acad = :anneeAcad
-            LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+            LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
             LEFT JOIN orientation o ON sp.idorientation = o.idorientation
-            LEFT JOIN jury_soutenance j ON j.idenseignant = a.idAgent
+            LEFT JOIN jury_soutenance j ON j.idenseignant = a.\"idAgent\"
             LEFT JOIN soutenance st ON st.idsoutenance = j.idsoutenance
             WHERE a.type_agent = 'Enseignant'";
     
@@ -190,9 +190,9 @@ function getStatistiquesEncadrement($db, $idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY a.idAgent, a.noms
+    $sql .= ' GROUP BY a."idAgent", a.noms
               HAVING (nb_sujets_diriges > 0 OR nb_sujets_encadres > 0 OR nb_jury > 0)
-              ORDER BY a.noms";
+              ORDER BY a.noms';
     
     $stmt = $db->prepare($sql);
     $stmt->execute($params);

@@ -1,4 +1,7 @@
 <?php
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+
 header('Content-Type: application/json');
 
 try {
@@ -14,10 +17,7 @@ try {
     }
     
     require_once '../vendor/autoload.php';
-    
-    use PhpOffice\PhpSpreadsheet\IOFactory;
-    use PhpOffice\PhpSpreadsheet\Shared\Date;
-    
+
     // Lire le fichier Excel
     $reader = IOFactory::createReaderForFile($fichier['tmp_name']);
     $reader->setReadDataOnly(true);

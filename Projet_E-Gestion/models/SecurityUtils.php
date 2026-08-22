@@ -209,7 +209,7 @@ class SecurityUtils
             }
             
             // 5. Récupérer les données actuelles de l'étudiant
-            $studentQuery = "SELECT e.matricule, e.noms, p.designationPromotion, a.designation as annee
+            $studentQuery = "SELECT e.matricule, e.noms, p.\"designationPromotion\", a.designation as annee
                            FROM etudiants e
                            JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
                            JOIN annee_acad a ON e.annee_acad_idannee_acad = a.idannee_acad
@@ -320,7 +320,7 @@ class SecurityUtils
         try {
             // Récupérer les données de base de la carte
             $sql = "SELECT ec.*, e.idetudiant, e.matricule, e.noms, 
-                         p.designationPromotion, a.designation as annee_academique
+                         p.\"designationPromotion\", a.designation as annee_academique
                   FROM etudiants_cards ec
                   JOIN etudiant e ON ec.student_id = e.idetudiant
                   JOIN promotion p ON e.promotion_idpromotion = p.idpromotion

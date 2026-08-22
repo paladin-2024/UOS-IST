@@ -29,8 +29,8 @@ try {
                a_validateur.noms as validateur_nom, a_validateur.matricule as validateur_matricule
         FROM sessions_caisse s
         JOIN caisses c ON s.caisse_id = c.id
-        LEFT JOIN agent a_agent ON s.idAgent = a_agent.idAgent
-        LEFT JOIN agent a_validateur ON s.idValidateur = a_validateur.idAgent
+        LEFT JOIN agent a_agent ON s.\"idAgent\" = a_agent.\"idAgent\"
+        LEFT JOIN agent a_validateur ON s.\"idValidateur\" = a_validateur.\"idAgent\"
         WHERE s.id = :session_id
     ");
     $stmt->bindParam(':session_id', $session_id);
@@ -48,7 +48,7 @@ try {
     $stmt = $connexion->prepare("
         SELECT COUNT(*) as count
         FROM droits_acces_finances 
-        WHERE idUser = :idUser AND type = 'Caisse' 
+        WHERE \"idUser\" = :idUser AND type = 'Caisse' 
         AND (entite_id = :caisse_id OR entite_id IS NULL)
         AND est_actif = 1 
         AND (date_debut IS NULL OR date_debut <= CURRENT_DATE) 

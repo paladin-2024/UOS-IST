@@ -48,17 +48,17 @@ try {
                 f.devise,
                 e.noms as nom_etudiant,
                 e.matricule,
-                pr.designationPromotion,
-                o.designationOrientation,
-                s.designationSection,
-                u.nomUser as utilisateur_nom
+                pr.\"designationPromotion\",
+                o.\"designationOrientation\",
+                s.\"designationSection\",
+                u.\"nomUser\" as utilisateur_nom
             FROM paiement AS p
             INNER JOIN frais AS f ON p.frais_idfrais = f.idfrais
             INNER JOIN etudiant AS e ON p.etudiant_idetudiant = e.idetudiant
             INNER JOIN promotion AS pr ON e.promotion_idpromotion = pr.idpromotion
             INNER JOIN orientation AS o ON pr.orientation_idorientation = o.idorientation
             INNER JOIN section AS s ON o.section_idsection = s.idsection
-            INNER JOIN t_users AS u ON p.idUser = u.idUser
+            INNER JOIN t_users AS u ON p.\"idUser\" = u.\"idUser\"
             WHERE p.idpaiement = :idPaiement";
         
         $stmt = $db->prepare($query);
@@ -74,17 +74,17 @@ try {
                 fs.devise,
                 e.noms as nom_etudiant,
                 e.matricule,
-                pr.designationPromotion,
-                o.designationOrientation,
-                s.designationSection,
-                u.nomUser as utilisateur_nom
+                pr.\"designationPromotion\",
+                o.\"designationOrientation\",
+                s.\"designationSection\",
+                u.\"nomUser\" as utilisateur_nom
             FROM paiement_soutenance AS ps
             INNER JOIN frais_soutenance AS fs ON ps.idfrais_soutenance = fs.idfrais_soutenance
             INNER JOIN etudiant AS e ON ps.idetudiant = e.idetudiant
             INNER JOIN promotion AS pr ON e.promotion_idpromotion = pr.idpromotion
             INNER JOIN orientation AS o ON pr.orientation_idorientation = o.idorientation
             INNER JOIN section AS s ON o.section_idsection = s.idsection
-            INNER JOIN t_users AS u ON ps.idUser = u.idUser
+            INNER JOIN t_users AS u ON ps.\"idUser\" = u.\"idUser\"
             WHERE ps.idpaiement_soutenance = :idPaiement";
         
         $stmt = $db->prepare($query);
@@ -110,7 +110,7 @@ try {
         $fraisId = $paiement['frais_idfrais'];
         
         // Requête pour obtenir tous les paiements de cet étudiant pour ce frais
-        $query = "SELECT SUM(p.montantPaye) as total_paye
+        $query = "SELECT SUM(p.\"montantPaye\") as total_paye
                 FROM paiement p
                 WHERE p.etudiant_idetudiant = :etudiantId 
                 AND p.frais_idfrais = :fraisId";

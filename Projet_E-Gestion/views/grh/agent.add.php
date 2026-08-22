@@ -79,8 +79,8 @@ $services = $serviceModel->getService();
                                     <input type="text" class="form-control" id="matricule" name="matricule" required>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="codeAgent" class="form-label">Code agent</label>
-                                    <input type="text" class="form-control" id="codeAgent" name="codeAgent" readonly>
+                                    <label for=codeAgent class="form-label">Code agent</label>
+                                    <input type="text" class="form-control" id=codeAgent name=codeAgent readonly>
                                     <small class="text-muted">Code unique généré automatiquement</small>
                                 </div>
 
@@ -124,18 +124,18 @@ $services = $serviceModel->getService();
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="dateNaissance" class="form-label">Date de naissance <span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control" id="dateNaissance" name="dateNaissance" required>
+                                    <label for=dateNaissance class="form-label">Date de naissance <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id=dateNaissance name=dateNaissance required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="lieuNaissance" class="form-label">Lieu de naissance <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="lieuNaissance" name="lieuNaissance" required>
+                                    <label for=lieuNaissance class="form-label">Lieu de naissance <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id=lieuNaissance name=lieuNaissance required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="etatCivil" class="form-label">État civil <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="etatCivil" name="etatCivil" required>
+                                    <label for=etatCivil class="form-label">État civil <span class="text-danger">*</span></label>
+                                    <select class="form-select" id=etatCivil name=etatCivil required>
                                         <option value="" selected disabled>Sélectionner...</option>
                                         <option value="Célibataire">Célibataire</option>
                                         <option value="Marié(e)">Marié(e)</option>
@@ -212,8 +212,8 @@ $services = $serviceModel->getService();
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="niveauEtude" class="form-label">Niveau d'étude le plus élevé <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="niveauEtude" name="niveauEtude" required>
+                                    <label for=niveauEtude class="form-label">Niveau d'étude le plus élevé <span class="text-danger">*</span></label>
+                                    <select class="form-select" id=niveauEtude name=niveauEtude required>
                                         <option value="" selected disabled>Sélectionner...</option>
                                         <option value="Certificat primaire">Certificat primaire</option>
                                         <option value="Diplôme d'état">Diplôme d'état</option>
@@ -354,8 +354,8 @@ $services = $serviceModel->getService();
                             
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="idStructure" class="form-label">Structure <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="idStructure" name="idStructure" required>
+                                    <label for=idStructure class="form-label">Structure <span class="text-danger">*</span></label>
+                                    <select class="form-select" id=idStructure name=idStructure required>
                                         <option value="" selected disabled>Sélectionner...</option>
                                         <?php
                                         $structureModel = new Structure();
@@ -367,8 +367,8 @@ $services = $serviceModel->getService();
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="idService" class="form-label">Service <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="idService" name="idService" required>
+                                    <label for=idService class="form-label">Service <span class="text-danger">*</span></label>
+                                    <select class="form-select" id=idService name=idService required>
                                         <option value="" selected disabled>Sélectionner un service</option>
                                         <?php foreach ($services as $service): ?>
                                             <option value="<?= $service['idService'] ?>"><?= $service['designationService'] ?></option>

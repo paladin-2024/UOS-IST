@@ -39,8 +39,8 @@ try {
               FROM soutenance s
               JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
               JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-              LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+              LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+              LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
               WHERE s.idsoutenance = :id";
 
     $stmt = $db->prepare($query);
@@ -54,9 +54,9 @@ try {
 
     // Récupérer les lecteurs assignés
     $lecteurs_query = "SELECT ls.id, ls.idsoutenance, ls.idenseignant, ls.est_premier_lecteur, 
-                             a.noms, a.idAgent, a.grade_id, g.designation as grade
+                             a.noms, a.\"idAgent\", a.grade_id, g.designation as grade
                       FROM lecteurs_soutenance ls
-                      INNER JOIN agent a ON ls.idenseignant = a.idAgent
+                      INNER JOIN agent a ON ls.idenseignant = a.\"idAgent\"
                       LEFT JOIN grade g ON a.grade_id = g.idgrade
                       WHERE ls.idsoutenance = :id
                       ORDER BY ls.est_premier_lecteur DESC";

@@ -58,7 +58,7 @@ try {
     // Enregistrer la note CC
     $sql = "INSERT INTO dette_evaluation (
                 id_dette, type_evaluation, note, date_evaluation,
-                session_idsession, annee_acad_idannee_acad, idUser
+                session_idsession, annee_acad_idannee_acad, \"idUser\"
             ) VALUES (
                 :dette, 'CC', :note, CURDATE(),
                 :session, :annee, :user
@@ -76,7 +76,7 @@ try {
     // Enregistrer la note EX
     $sql = "INSERT INTO dette_evaluation (
                 id_dette, type_evaluation, note, date_evaluation,
-                session_idsession, annee_acad_idannee_acad, idUser
+                session_idsession, annee_acad_idannee_acad, \"idUser\"
             ) VALUES (
                 :dette, 'EX', :note, CURDATE(),
                 :session, :annee, :user
@@ -121,7 +121,7 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
     ]);
     
     // Ajouter à l'historique
-    $sql = "INSERT INTO dette_historique (id_dette, action, details, idUser)
+    $sql = "INSERT INTO dette_historique (id_dette, action, details, \"idUser\")
             VALUES (:dette, :action, :details, :user)";
     
     $details = sprintf(

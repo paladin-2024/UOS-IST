@@ -27,14 +27,14 @@ try {
     $db = Connexion::getInstance()->getPDO();
     
     // Récupération des informations de base de l'enseignant
-    $queryTeacher = "SELECT a.*, g.designation as grade, s.designationSection 
-                    FROM agent a 
+    $queryTeacher = "SELECT a.*, g.designation as grade, s.\"designationSection\"
+                    FROM agent a
                     LEFT JOIN grade g ON a.grade_id = g.idgrade
-                    LEFT JOIN agent_section ags ON a.idAgent = ags.idAgent
+                    LEFT JOIN agent_section ags ON a.\"idAgent\" = ags.\"idAgent\"
                     LEFT JOIN section s ON ags.idsection = s.idsection
-                    WHERE a.idAgent = :id 
+                    WHERE a.\"idAgent\" = :id
                     AND a.type_agent = 'Enseignant'
-                    AND (ags.estPrincipal = 1 OR ags.estPrincipal IS NULL)
+                    AND (ags.\"estPrincipal\" = 1 OR ags.\"estPrincipal\" IS NULL)
                     LIMIT 1";
     
     $stmtTeacher = $db->prepare($queryTeacher);
@@ -50,16 +50,16 @@ try {
     }
     
     // Récupération des étudiants encadrés (comme directeur ou encadreur)
-    $queryStudents = "SELECT e.idetudiant, e.noms, e.matricule, e.photo, 
-                      s.idsujets, s.intitule, s.statut_validation, s.etatSujet,
+    $queryStudents = "SELECT e.idetudiant, e.noms, e.matricule, e.photo,
+                      s.idsujets, s.intitule, s.statut_validation, s.\"etatSujet\",
                       s.annee_acad_idannee_acad, aa.designation as annee_academique,
-                      sec.designationSection, sp.designation as specialisation
+                      sec.\"designationSection\", sp.designation as specialisation
                       FROM sujets s
                       INNER JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
                       LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
-                      LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                      LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                       LEFT JOIN section sec ON sp.idsection = sec.idsection
-                      WHERE (s.idDirecteur = :id OR s.idEncadreur = :id)
+                      WHERE (s.\"idDirecteur\" = :id OR s.\"idEncadreur\" = :id)
                       ORDER BY aa.designation DESC, e.noms ASC";
     
     $stmtStudents = $db->prepare($queryStudents);
@@ -69,14 +69,14 @@ try {
     $students = $stmtStudents->fetchAll(PDO::FETCH_ASSOC);
     
     // Récupération des spécialisations de l'enseignant
-    $querySpecialisations = "SELECT s.idSpecialisation, s.designation, 
-                            ur.designation_UR, sec.designationSection
+    $querySpecialisations = "SELECT s.\"idSpecialisation\", s.designation,
+                            ur.\"designation_UR\", sec.\"designationSection\"
                             FROM enseignant_specialisation es
-                            INNER JOIN specialisation s ON es.idSpecialisation = s.idSpecialisation
-                            INNER JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+                            INNER JOIN specialisation s ON es.\"idSpecialisation\" = s.\"idSpecialisation\"
+                            INNER JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.\"idUnite_recherche\"
                             INNER JOIN section sec ON s.idsection = sec.idsection
-                            WHERE es.idAgent = :id
-                            ORDER BY sec.designationSection, s.designation";
+                            WHERE es.\"idAgent\" = :id
+                            ORDER BY sec.\"designationSection\", s.designation";
     
     $stmtSpecialisations = $db->prepare($querySpecialisations);
     $stmtSpecialisations->bindParam(':id', $teacherId, PDO::PARAM_INT);

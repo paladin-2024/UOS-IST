@@ -1862,6 +1862,12 @@
                             <?php endif; ?>
                         </li>
                         <?php endforeach; ?>
+                        <li class="nav-item">
+                            <a href="<?php echo htmlspecialchars(getenv('STUDENT_PORTAL_URL') ?: '#'); ?>" class="nav-link" target="_blank" rel="noopener">
+                                <i class="fas fa-user-graduate me-1"></i>
+                                Espace Étudiant
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <div class="search-box">

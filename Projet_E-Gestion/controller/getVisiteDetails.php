@@ -11,11 +11,11 @@ if (isset($_GET['id'])) {
         
         $stmt = $db->prepare("
             SELECT v.*, a.noms as nom_agent, s.designation as nom_service,
-                   u.nomUser as cree_par_nom
+                   u.\"nomUser\" as cree_par_nom
             FROM visites v
-            LEFT JOIN agent a ON v.Agent_idAgent = a.idAgent
-            LEFT JOIN service s ON v.Service_idService = s.idService
-            LEFT JOIN t_users u ON v.cree_par = u.idUser
+            LEFT JOIN agent a ON v.\"Agent_idAgent\" = a.\"idAgent\"
+            LEFT JOIN service s ON v.\"Service_idService\" = s.\"idService\"
+            LEFT JOIN t_users u ON v.cree_par = u.\"idUser\"
             WHERE v.idVisite = ?
         ");
         $stmt->execute([$visiteId]);

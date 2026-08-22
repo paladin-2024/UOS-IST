@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editSpecialisationBtn'
     
     try {
         // Récupérer d'abord la section de cette spécialisation
-        $stmtSection = $db->prepare("SELECT idsection FROM specialisation WHERE idSpecialisation = ?");
+        $stmtSection = $db->prepare("SELECT idsection FROM specialisation WHERE \"idSpecialisation\" = ?");
         $stmtSection->execute([$idSpecialisation]);
         $idSection = $stmtSection->fetchColumn();
         
@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editSpecialisationBtn'
         
         // Vérifier si la spécialisation avec ce nouveau nom existe déjà pour cette unité de recherche et cette section
         $stmtCheck = $db->prepare("SELECT COUNT(*) FROM specialisation 
-                                   WHERE idUnite_recherche = ? AND idsection = ? AND designation = ? 
-                                   AND idSpecialisation != ?");
+                                   WHERE \"idUnite_recherche\" = ? AND idsection = ? AND designation = ? 
+                                   AND \"idSpecialisation\" != ?");
         $stmtCheck->execute([$idUniteRecherche, $idSection, $designation, $idSpecialisation]);
         $count = $stmtCheck->fetchColumn();
         
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editSpecialisationBtn'
         }
         
         // Mettre à jour la spécialisation
-        $stmtUpdate = $db->prepare("UPDATE specialisation SET designation = ? WHERE idSpecialisation = ?");
+        $stmtUpdate = $db->prepare("UPDATE specialisation SET designation = ? WHERE \"idSpecialisation\" = ?");
         $stmtUpdate->execute([$designation, $idSpecialisation]);
         
         // Redirection avec succès

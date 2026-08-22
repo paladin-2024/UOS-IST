@@ -1,13 +1,12 @@
 # Claude Code project state (not part of the codebase)
 .claude/
 .claude.json
+/CLAUDE.md
 
 # Database dumps (production data, too large for GitHub anyway)
 *.sql
 
-# Hardcoded/plaintext DB credentials (per-app connection files)
-**/config/Connexion.php
-**/api_controller/connexion.php
+# Remaining hardcoded/plaintext secrets not yet migrated to .env
 **/config/flexpay.php
 **/config/Config.php
 

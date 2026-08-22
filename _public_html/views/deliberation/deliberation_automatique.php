@@ -48,8 +48,8 @@ if (!$canAccess) {
 $deliberationInfo = null;
 if ($deliberationId) {
     try {
-        $query = "SELECT d.*, p.designationPromotion, p.idPromotion, b.designation as bureau_nom,
-                         s.designSession, a.designation as annee_designation,
+        $query = "SELECT d.*, p.\"designationPromotion\", p.idPromotion, b.designation as bureau_nom,
+                         s.\"designSession\", a.designation as annee_designation,
                          d.idbureau as bureau_id, d.session_idsession as session_id, 
                          d.annee_acad_id as annee_id
                   FROM deliberation d
@@ -265,21 +265,21 @@ if (!$configDeliberation) {
                                     <?php 
                                     // Récupérer les semestres de la promotion
                                     try {
-                                        $query = "SELECT DISTINCT s.idsemestre, s.numeroSemestre 
+                                        $query = "SELECT DISTINCT s.idsemestre, s.\"numeroSemestre\" 
                                                   FROM semestre s
                                                   INNER JOIN ue u ON s.idsemestre = u.semestre_idsemestre
                                                   WHERE s.promotion_idpromotion = :promotion_id
-                                                  ORDER BY s.numeroSemestre";
+                                                  ORDER BY s.\"numeroSemestre\"";
                                         $stmt = $conn->prepare($query);
                                         $stmt->execute(['promotion_id' => $deliberationInfo['idPromotion']]);
                                         $semestres = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         
                                         if (empty($semestres)) {
                                             // Si pas de résultats avec UE, essayer sans jointure
-                                            $query = "SELECT s.idsemestre, s.numeroSemestre 
+                                            $query = "SELECT s.idsemestre, s.\"numeroSemestre\" 
                                                       FROM semestre s
                                                       WHERE s.promotion_idpromotion = :promotion_id
-                                                      ORDER BY s.numeroSemestre";
+                                                      ORDER BY s.\"numeroSemestre\"";
                                             $stmt = $conn->prepare($query);
                                             $stmt->execute(['promotion_id' => $deliberationInfo['idPromotion']]);
                                             $semestres = $stmt->fetchAll(PDO::FETCH_ASSOC);

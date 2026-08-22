@@ -44,7 +44,7 @@ $resultatsValidation = [];
 if ($deliberationPubliee && $studentMatricule && $currentYear) {
     try {
         $stmt_sem = $connexion->prepare("
-            SELECT ms.*, s.numeroSemestre, aa.designation AS annee_academique
+            SELECT ms.*, s.\"numeroSemestre\", aa.designation AS annee_academique
             FROM moyenne_semestre ms
             INNER JOIN semestre s ON ms.idsemestre = s.idsemestre
             INNER JOIN annee_acad aa ON ms.annee_acad_idannee_acad = aa.idannee_acad

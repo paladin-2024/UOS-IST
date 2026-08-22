@@ -16,8 +16,8 @@ if (!$etudiantId) {
 // Récupérer les informations de base de l'étudiant
 $sqlEtudiant = "SELECT 
                     e.*, 
-                    p.designationPromotion, 
-                    s.designationSection,
+                    p.\"designationPromotion\", 
+                    s.\"designationSection\",
                     a.designation as annee_academique,
                     p.idpromotion as promotion_id
                 FROM etudiant e
@@ -70,7 +70,7 @@ $stmt_individuels = $connexion->prepare("
         f.devise AS devise_frais,
         cf.designation AS categorie_nom,
         aa.designation AS annee_academique,
-        p.designationPromotion AS promotion_nom,
+        p.\"designationPromotion\" AS promotion_nom,
         (SELECT COALESCE(SUM(pf.montant), 0) 
          FROM paiements_frais pf 
          WHERE pf.affectation_id = af.id 
@@ -106,7 +106,7 @@ $stmt_promotion = $connexion->prepare("
         f.devise AS devise_frais,
         cf.designation AS categorie_nom,
         aa.designation AS annee_academique,
-        p.designationPromotion AS promotion_nom,
+        p.\"designationPromotion\" AS promotion_nom,
         (SELECT COALESCE(SUM(pf.montant), 0) 
          FROM paiements_frais pf 
          WHERE pf.affectation_id = af.id 
@@ -209,7 +209,7 @@ $sqlPaiements = "
            t.date_transaction,
            t.source,
            t.source_id,
-           u.nomUser AS agent_nom,
+           u.\"nomUser\" AS agent_nom,
            CASE 
                WHEN t.source = 'Caisse' THEN (SELECT designation FROM caisses WHERE id = t.source_id)
                WHEN t.source = 'Banque' THEN (SELECT CONCAT(nom_banque, ' - ', intitule_compte) FROM comptes_bancaires WHERE id = t.source_id)
@@ -219,7 +219,7 @@ $sqlPaiements = "
     INNER JOIN affectation_frais af ON pf.affectation_id = af.id
     INNER JOIN frais f ON af.frais_id = f.id
     LEFT JOIN transactions t ON pf.transaction_id = t.id
-    LEFT JOIN t_users u ON t.idUser = u.idUser
+    LEFT JOIN t_users u ON t.\"idUser\" = u.\"idUser\"
     WHERE pf.matricule_etudiant = :matricule
     ORDER BY t.date_transaction DESC
 ";

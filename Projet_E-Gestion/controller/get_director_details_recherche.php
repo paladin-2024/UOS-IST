@@ -19,8 +19,8 @@ try {
     $query = "SELECT a.*, g.designation as grade, s.designation as service
               FROM agent a
               LEFT JOIN grade g ON a.grade_id = g.idgrade
-              LEFT JOIN service s ON a.idService = s.idService
-              WHERE a.idAgent = :directorId";
+              LEFT JOIN service s ON a.\"idService\" = s.\"idService\"
+              WHERE a.\"idAgent\" = :directorId";
     
     $stmt = $db->prepare($query);
     $stmt->bindParam(':directorId', $directorId, PDO::PARAM_INT);
@@ -34,11 +34,11 @@ try {
     }
     
     // Récupérer les spécialisations du directeur
-    $querySpec = "SELECT s.designation, ur.designation_UR
+    $querySpec = "SELECT s.designation, ur.\"designation_UR\"
                   FROM enseignant_specialisation es
-                  INNER JOIN specialisation s ON es.idSpecialisation = s.idSpecialisation
-                  INNER JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
-                  WHERE es.idAgent = :directorId
+                  INNER JOIN specialisation s ON es.\"idSpecialisation\" = s.\"idSpecialisation\"
+                  INNER JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
+                  WHERE es.\"idAgent\" = :directorId
                   ORDER BY s.designation";
     
     $stmtSpec = $db->prepare($querySpec);
@@ -53,8 +53,8 @@ try {
                     FROM sujet sj
                     INNER JOIN etudiant e ON sj.idEtudiant = e.idetudiant
                     LEFT JOIN annee_acad aa ON sj.idAnneeAcad = aa.idannee_acad
-                    WHERE sj.idDirecteur = :directorId
-                    ORDER BY sj.dateCreation DESC";
+                    WHERE sj.\"idDirecteur\" = :directorId
+                    ORDER BY sj.\"dateCreation\" DESC";
     
     $stmtSujets = $db->prepare($querySujets);
     $stmtSujets->bindParam(':directorId', $directorId, PDO::PARAM_INT);

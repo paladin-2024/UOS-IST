@@ -24,7 +24,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -32,7 +32,7 @@ $stmtAnnee->execute();
 $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -41,7 +41,7 @@ if (!$currentYear) {
 // Récupérer les sections dont l'utilisateur est responsable
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -62,10 +62,10 @@ function getDataForExport($pdo, $sections = [], $anneeId = null, $cycleFilter = 
     $params = [];
     
     $query = "SELECT 
-                p.designationPromotion as 'Promotion',
+                p.\"designationPromotion\" as 'Promotion',
                 p.cycle as 'Cycle',
-                o.designationOrientation as 'Orientation',
-                s.designationSection as 'Section',
+                o.\"designationOrientation\" as 'Orientation',
+                s.\"designationSection\" as 'Section',
                 aa.designation as 'Année académique',
                 COUNT(e.idetudiant) as 'Total inscrits',
                 COUNT(CASE WHEN e.est_actif = 1 THEN 1 END) as 'Inscrits actifs',
@@ -115,9 +115,9 @@ function getDataForExport($pdo, $sections = [], $anneeId = null, $cycleFilter = 
         $params[':cycle'] = $cycleFilter;
     }
     
-    $query .= " GROUP BY p.idpromotion, p.designationPromotion, p.cycle, o.designationOrientation, s.designationSection, aa.designation
+    $query .= " GROUP BY p.idpromotion, p.\"designationPromotion\", p.cycle, o.\"designationOrientation\", s.\"designationSection\", aa.designation
                 HAVING COUNT(e.idetudiant) > 0
-                ORDER BY s.designationSection, p.cycle, p.designationPromotion";
+                ORDER BY s.\"designationSection\", p.cycle, p.\"designationPromotion\"";
     
     try {
         $stmt = $pdo->prepare($query);

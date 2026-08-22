@@ -33,7 +33,7 @@ try {
     if ($columnExists) {
         $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
     } else {
-        $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+        $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     }
 
     $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -45,7 +45,7 @@ try {
         // Récupérer les sections dont l'utilisateur est responsable
         $querySection = "SELECT section_idsection 
                         FROM responsable_section 
-                        WHERE idUser = :userId 
+                        WHERE \"idUser\" = :userId 
                         AND annee_acad_idannee_acad = :anneeId";
         
         $stmtSection = $pdo->prepare($querySection);
@@ -80,10 +80,10 @@ try {
     }
     
     // Récupérer les semestres de la promotion
-    $query = "SELECT idsemestre, numeroSemestre 
+    $query = "SELECT idsemestre, \"numeroSemestre\" 
               FROM semestre 
               WHERE promotion_idpromotion = :promotionId 
-              ORDER BY numeroSemestre";
+              ORDER BY \"numeroSemestre\"";
     
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':promotionId', $promotionId);

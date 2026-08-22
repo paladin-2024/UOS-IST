@@ -8,7 +8,7 @@ class Cours {
 
     // Ajouter un cours
     public function addCours($titre, $description, $idECUE, $idEnseignant, $idAnneeAcad) {
-        $query = "INSERT INTO cours (titre, description, idECUE, idenseignant, annee_acad_idannee_acad) 
+        $query = "INSERT INTO cours (titre, description, \"idECUE\", idenseignant, annee_acad_idannee_acad) 
                   VALUES (:titre, :description, :idECUE, :idEnseignant, :idAnneeAcad)";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
@@ -34,11 +34,11 @@ class Cours {
 
     // Récupérer un cours par son ID
     public function getCoursById($idCours) {
-        $query = "SELECT c.*, e.designationECUE, a.noms as enseignant_nom, 
+        $query = "SELECT c.*, e.\"designationECUE\", a.noms as enseignant_nom, 
                  g.designation as grade_enseignant
                  FROM cours c
-                 JOIN ecue e ON c.idECUE = e.idECUE
-                 JOIN agent a ON c.idenseignant = a.idAgent
+                 JOIN ecue e ON c.\"idECUE\" = e.\"idECUE\"
+                 JOIN agent a ON c.idenseignant = a.\"idAgent\"
                  LEFT JOIN grade g ON a.grade_id = g.idgrade
                  WHERE c.idcours = :idCours";
         $stmt = $this->db->prepare($query);
@@ -48,18 +48,18 @@ class Cours {
 
     // Récupérer les cours par enseignant
     public function getCoursByEnseignant($idEnseignant, $idAnneeAcad) {
-        $query = "SELECT c.*, e.designationECUE, u.designationUE, 
-                 s.numeroSemestre, p.designationPromotion, o.designationOrientation,
+        $query = "SELECT c.*, e.\"designationECUE\", u.\"designationUE\", 
+                 s.\"numeroSemestre\", p.\"designationPromotion\", o.\"designationOrientation\",
                  (SELECT COUNT(*) FROM parties_cours WHERE idcours = c.idcours) as nb_parties,
                  (SELECT COUNT(*) FROM devoirs WHERE idcours = c.idcours) as nb_devoirs
                  FROM cours c
-                 JOIN ecue e ON c.idECUE = e.idECUE
-                 JOIN ue u ON e.UE_idUE = u.idUE
+                 JOIN ecue e ON c.\"idECUE\" = e.\"idECUE\"
+                 JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                  JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                  JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                  JOIN orientation o ON p.orientation_idorientation = o.idorientation
                  WHERE c.idenseignant = :idEnseignant AND c.annee_acad_idannee_acad = :idAnneeAcad
-                 ORDER BY p.designationPromotion, s.numeroSemestre, u.designationUE, e.designationECUE";
+                 ORDER BY p.\"designationPromotion\", s.\"numeroSemestre\", u.\"designationUE\", e.designationECUE";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
             'idEnseignant' => $idEnseignant,
@@ -121,12 +121,12 @@ class Cours {
         try {
             $query = "SELECT e.*,u.*,s.* 
                       FROM ecue e
-                      JOIN ue u ON e.UE_idUE = u.idUE
+                      JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                       JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                       JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                       WHERE p.idpromotion = :idPromotion 
                       AND p.annee_acad_idannee_acad = :idAnneeAcad
-                      ORDER BY s.numeroSemestre ASC, u.designationUE ASC, e.designationECUE ASC";
+                      ORDER BY s.\"numeroSemestre\" ASC, u.\"designationUE\" ASC, e.\"designationECUE\" ASC";
             
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':idPromotion', $idPromotion, PDO::PARAM_INT);
@@ -158,7 +158,7 @@ public function getChaptersByCourse($idCours) {
     foreach ($chapters as &$chapter) {
         $query = "SELECT * FROM ressources_cours 
                  WHERE idpartie = :idPartie
-                 ORDER BY dateCreation ASC";
+                 ORDER BY \"dateCreation\" ASC";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['idPartie' => $chapter['idpartie']]);
         $chapter['ressources'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -240,7 +240,7 @@ public function getStudentResponse($etudiantId, $idDevoir) {
 public function getChaptersByEcue($idECUE, $idAnneeAcad) {
     // D'abord récupérer tous les cours pour cet ECUE
     $query = "SELECT idcours FROM cours 
-             WHERE idECUE = :idECUE AND annee_acad_idannee_acad = :idAnneeAcad";
+             WHERE \"idECUE\" = :idECUE AND annee_acad_idannee_acad = :idAnneeAcad";
     $stmt = $this->db->prepare($query);
     $stmt->execute([
         'idECUE' => $idECUE,
@@ -267,7 +267,7 @@ public function getChaptersByEcue($idECUE, $idAnneeAcad) {
 public function getAssignmentsByEcue($idECUE, $idAnneeAcad) {
     // D'abord récupérer tous les cours pour cet ECUE
     $query = "SELECT idcours FROM cours 
-             WHERE idECUE = :idECUE AND annee_acad_idannee_acad = :idAnneeAcad";
+             WHERE \"idECUE\" = :idECUE AND annee_acad_idannee_acad = :idAnneeAcad";
     $stmt = $this->db->prepare($query);
     $stmt->execute([
         'idECUE' => $idECUE,
@@ -282,7 +282,7 @@ public function getAssignmentsByEcue($idECUE, $idAnneeAcad) {
         $query = "SELECT d.*, c.titre as cours_titre
                  FROM devoirs d
                  LEFT JOIN cours c ON d.idcours = c.idcours
-                 WHERE (d.idcours IN ($placeholders) OR (d.idECUE = :idECUE2 AND (d.idcours IS NULL OR d.idcours = 0)))
+                 WHERE (d.idcours IN ($placeholders) OR (d.\"idECUE\" = :idECUE2 AND (d.idcours IS NULL OR d.idcours = 0)))
                  ORDER BY d.date_limite ASC";
         
         $stmt = $this->db->prepare($query);
@@ -293,7 +293,7 @@ public function getAssignmentsByEcue($idECUE, $idAnneeAcad) {
         $query = "SELECT d.*, c.titre as cours_titre
                  FROM devoirs d
                  LEFT JOIN cours c ON d.idcours = c.idcours
-                 WHERE d.idECUE = :idECUE3 AND (d.idcours IS NULL OR d.idcours = 0)
+                 WHERE d.\"idECUE\" = :idECUE3 AND (d.idcours IS NULL OR d.idcours = 0)
                  ORDER BY d.date_limite ASC";
         
         $stmt = $this->db->prepare($query);
@@ -314,9 +314,9 @@ public function getAssignmentsByEcue($idECUE, $idAnneeAcad) {
 public function getEnseignantsByEcue($idECUE, $idAnneeAcad) {
     $query = "SELECT e.*, a.noms, a.email, a.telephone, g.designation as grade, ee.poste
              FROM enseignant_ecue ee
-             JOIN agent a ON ee.idAgent = a.idAgent
+             JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
              LEFT JOIN grade g ON a.grade_id = g.idgrade
-             WHERE ee.idECUE = :idECUE AND ee.anneeAcad = :idAnneeAcad";
+             WHERE ee.\"idECUE\" = :idECUE AND ee.\"anneeAcad\" = :idAnneeAcad";
     $stmt = $this->db->prepare($query);
     $stmt->execute([
         'idECUE' => $idECUE,
@@ -334,10 +334,10 @@ public function getEnseignantsByEcue($idECUE, $idAnneeAcad) {
 public function getCoursByEcue($idECUE, $idAnneeAcad) {
     $query = "SELECT c.*, a.noms as enseignant_nom, g.designation as grade_enseignant
              FROM cours c
-             JOIN agent a ON c.idenseignant = a.idAgent
+             JOIN agent a ON c.idenseignant = a.\"idAgent\"
              LEFT JOIN grade g ON a.grade_id = g.idgrade
-             WHERE c.idECUE = :idECUE AND c.annee_acad_idannee_acad = :idAnneeAcad
-             ORDER BY c.dateCreation ASC";
+             WHERE c.\"idECUE\" = :idECUE AND c.annee_acad_idannee_acad = :idAnneeAcad
+             ORDER BY c.\"dateCreation\" ASC";
     $stmt = $this->db->prepare($query);
     $stmt->execute([
         'idECUE' => $idECUE,
@@ -355,9 +355,9 @@ public function getCoursByEcue($idECUE, $idAnneeAcad) {
  */
 public function getDevoirById($idDevoir) {
     try {
-        $query = "SELECT d.*, c.designationECUE, c.idECUE 
+        $query = "SELECT d.*, c.\"designationECUE\", c.\"idECUE\" 
                  FROM devoirs d
-                 INNER JOIN ecue c ON d.idECUE = c.idECUE
+                 INNER JOIN ecue c ON d.\"idECUE\" = c.\"idECUE\"
                  WHERE d.iddevoir = ?";
         
         $stmt = $this->db->prepare($query);

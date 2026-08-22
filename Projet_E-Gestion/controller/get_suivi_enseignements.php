@@ -38,7 +38,7 @@ $connexion = Connexion::getInstance()->getPDO();
 try {
     // Récupérer l'ID du chef de promotion pour cet étudiant avec plus d'informations
     $queryChef = "SELECT cp.id_chef, cp.promotion_idpromotion, cp.annee_acad_idannee_acad,
-                         e.noms as nom_etudiant, p.designationPromotion, aa.designation as annee_acad
+                         e.noms as nom_etudiant, p.\"designationPromotion\", aa.designation as annee_acad
                   FROM chef_promotion cp 
                   INNER JOIN etudiant e ON cp.idetudiant = e.idetudiant 
                   INNER JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion
@@ -56,7 +56,7 @@ try {
 
     if (!$chefPromotion) {
         // Vérifier si l'étudiant existe
-        $queryEtudiant = "SELECT e.*, p.designationPromotion 
+        $queryEtudiant = "SELECT e.*, p.\"designationPromotion\" 
                           FROM etudiant e 
                           LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion 
                           WHERE e.idetudiant = :student_id";
@@ -122,16 +122,16 @@ try {
                     se.commentaire,
                     se.date_encodage,
                     se.chef_promotion_id,
-                    e.designationECUE,
-                    ue.designationUE,
+                    e.\"designationECUE\",
+                    ue.\"designationUE\",
                     CONCAT(a.noms) as nom_enseignant,
                     g.designation as grade_enseignant,
                     et_chef.noms as nom_chef_promotion,
                     cp.date_nomination as date_nomination_chef
                   FROM suivi_enseignements se
-                  INNER JOIN ecue e ON se.idECUE = e.idECUE
-                  INNER JOIN ue ue ON e.UE_idUE = ue.idUE
-                  LEFT JOIN agent a ON se.enseignant_id = a.idAgent
+                  INNER JOIN ecue e ON se.\"idECUE\" = e.\"idECUE\"
+                  INNER JOIN ue ue ON e.\"UE_idUE\" = ue.\"idUE\"
+                  LEFT JOIN agent a ON se.enseignant_id = a.\"idAgent\"
                   LEFT JOIN grade g ON a.grade_id = g.idgrade
                   INNER JOIN chef_promotion cp ON se.chef_promotion_id = cp.id_chef
                   INNER JOIN etudiant et_chef ON cp.idetudiant = et_chef.idetudiant
@@ -149,19 +149,19 @@ try {
                     se.salle,
                     se.commentaire,
                     se.date_encodage,
-                    se.idUser as chef_promotion_id,
-                    e.designationECUE,
-                    ue.designationUE,
+                    se.\"idUser\" as chef_promotion_id,
+                    e.\"designationECUE\",
+                    ue.\"designationUE\",
                     CONCAT(a.noms) as nom_enseignant,
                     g.designation as grade_enseignant,
                     et_chef.noms as nom_chef_promotion,
                     cp.date_nomination as date_nomination_chef
                   FROM suivi_enseignements se
-                  INNER JOIN ecue e ON se.idECUE = e.idECUE
-                  INNER JOIN ue ue ON e.UE_idUE = ue.idUE
-                  LEFT JOIN agent a ON se.enseignant_id = a.idAgent
+                  INNER JOIN ecue e ON se.\"idECUE\" = e.\"idECUE\"
+                  INNER JOIN ue ue ON e.\"UE_idUE\" = ue.\"idUE\"
+                  LEFT JOIN agent a ON se.enseignant_id = a.\"idAgent\"
                   LEFT JOIN grade g ON a.grade_id = g.idgrade
-                  INNER JOIN chef_promotion cp ON se.idUser = cp.idetudiant
+                  INNER JOIN chef_promotion cp ON se.\"idUser\" = cp.idetudiant
                   INNER JOIN etudiant et_chef ON cp.idetudiant = et_chef.idetudiant
                   WHERE cp.promotion_idpromotion = :promotion_id
                   AND se.annee_acad_idannee_acad = :annee_acad
@@ -179,7 +179,7 @@ try {
     if ($hasChefPromotionId) {
         $queryStats = "SELECT 
                          COUNT(*) as total_seances,
-                         COUNT(DISTINCT se.idECUE) as matieres_enseignees,
+                         COUNT(DISTINCT se.\"idECUE\") as matieres_enseignees,
                          COUNT(DISTINCT DATE(se.date_cours)) as jours_cours,
                          SUM(TIME_TO_SEC(TIMEDIFF(se.heure_fin, se.heure_debut))/3600) as total_heures
                        FROM suivi_enseignements se
@@ -199,11 +199,11 @@ try {
     } else {
         $queryStats = "SELECT 
                          COUNT(*) as total_seances,
-                         COUNT(DISTINCT se.idECUE) as matieres_enseignees,
+                         COUNT(DISTINCT se.\"idECUE\") as matieres_enseignees,
                          COUNT(DISTINCT DATE(se.date_cours)) as jours_cours,
                          SUM(TIME_TO_SEC(TIMEDIFF(se.heure_fin, se.heure_debut))/3600) as total_heures
                        FROM suivi_enseignements se
-                       INNER JOIN chef_promotion cp ON se.idUser = cp.idetudiant
+                       INNER JOIN chef_promotion cp ON se.\"idUser\" = cp.idetudiant
                        WHERE cp.promotion_idpromotion = :promotion_id
                        AND se.annee_acad_idannee_acad = :annee_acad";
                        
@@ -212,7 +212,7 @@ try {
                              COUNT(*) as nombre_seances,
                              SUM(TIME_TO_SEC(TIMEDIFF(se.heure_fin, se.heure_debut))/3600) as total_heures
                            FROM suivi_enseignements se
-                           INNER JOIN chef_promotion cp ON se.idUser = cp.idetudiant
+                           INNER JOIN chef_promotion cp ON se.\"idUser\" = cp.idetudiant
                            WHERE cp.promotion_idpromotion = :promotion_id
                            AND se.annee_acad_idannee_acad = :annee_acad
                            GROUP BY se.type_cours";

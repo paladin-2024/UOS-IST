@@ -22,13 +22,13 @@ if ($receptionId <= 0) {
 $queryReception = "SELECT rf.*, f.nom_fournisseur, f.code_fournisseur, f.adresse as adresse_fournisseur, 
                   f.telephone as telephone_fournisseur, f.email as email_fournisseur,
                   cf.numero_commande, cf.date_commande,
-                  d.libelle_depot, u.nomUser as user_creation
+                  d.libelle_depot, u.\"nomUser\" as user_creation
                   FROM reception_fournisseur rf 
                   JOIN fournisseur f ON rf.id_fournisseur = f.id_fournisseur 
                   JOIN commande_fournisseur cf ON rf.id_commande = cf.id_commande
                   JOIN entree_stock es ON rf.id_entree_stock = es.id_entree
                   JOIN depot d ON es.id_depot = d.id_depot
-                  JOIN t_users u ON rf.id_user_creation = u.idUser
+                  JOIN t_users u ON rf.id_user_creation = u.\"idUser\"
                   WHERE rf.id_reception = :id";
 $stmtReception = $db->prepare($queryReception);
 $stmtReception->bindParam(':id', $receptionId, PDO::PARAM_INT);

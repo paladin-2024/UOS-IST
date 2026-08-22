@@ -20,13 +20,13 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
         $queryReception = "SELECT rf.*, f.nom_fournisseur, f.code_fournisseur, f.adresse, f.telephone, f.email, f.nif, f.rccm,
                         d.libelle_depot, d.code_depot,
                         CASE WHEN rf.id_commande IS NULL THEN 'Sans commande' ELSE cf.numero_commande END as numero_commande,
-                        u.nomUser as user_creation, v.nomUser as user_validation
+                        u.\"nomUser\" as user_creation, v.\"nomUser\" as user_validation
                         FROM reception_fournisseur rf
                         LEFT JOIN fournisseur f ON rf.id_fournisseur = f.id_fournisseur
                         LEFT JOIN depot d ON rf.id_depot = d.id_depot
                         LEFT JOIN commande_fournisseur cf ON rf.id_commande = cf.id_commande
-                        LEFT JOIN t_users u ON rf.id_user_creation = u.idUser
-                        LEFT JOIN t_users v ON rf.id_user_validation = v.idUser
+                        LEFT JOIN t_users u ON rf.id_user_creation = u.\"idUser\"
+                        LEFT JOIN t_users v ON rf.id_user_validation = v.\"idUser\"
                         WHERE rf.id_reception = :id_reception";
         $stmtReception = $db->prepare($queryReception);
         $stmtReception->bindParam(':id_reception', $idReception, PDO::PARAM_INT);

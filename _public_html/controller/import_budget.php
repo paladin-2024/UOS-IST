@@ -101,7 +101,7 @@ try {
     // Préparer les requêtes
     $insertSql = "INSERT INTO budget (
                     exercice_id, categorie_id, montant_prevu, montant_revise,
-                    disponible, commentaire, idUser
+                    disponible, commentaire, \"idUser\"
                 ) VALUES (
                     :exercice_id, :categorie_id, :montant_prevu, :montant_revise,
                     :disponible, :commentaire, :idUser

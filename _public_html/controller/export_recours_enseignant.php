@@ -24,10 +24,10 @@ if (!$idECUE || !$idSession || !$idAnneeAcad) {
 $conn = Connexion::getInstance()->getPDO();
 
 // Récupérer les informations de l'ECUE
-$query_ecue = "SELECT e.designationECUE, u.designationUE
+$query_ecue = "SELECT e.\"designationECUE\", u.\"designationUE\"
                FROM ecue e
-               JOIN ue u ON e.UE_idUE = u.idUE
-               WHERE e.idECUE = :idECUE";
+               JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
+               WHERE e.\"idECUE\" = :idECUE";
 $stmt_ecue = $conn->prepare($query_ecue);
 $stmt_ecue->bindParam(':idECUE', $idECUE);
 $stmt_ecue->execute();
@@ -38,7 +38,7 @@ if (!$ecue_info) {
 }
 
 // Récupérer la session
-$query_session = "SELECT designSession, description as descSession FROM session WHERE idsession = :idSession";
+$query_session = "SELECT \"designSession\", description as descSession FROM session WHERE idsession = :idSession";
 $stmt_session = $conn->prepare($query_session);
 $stmt_session->bindParam(':idSession', $idSession);
 $stmt_session->execute();
@@ -61,14 +61,14 @@ if (!$annee) {
 
 // Récupérer les recours
 $query_recours = "
-    SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p.designationPromotion,
-           ec.designationECUE, u.designationUE, r.motif, r.date_creation, r.statut,
-           s.designSession, r.description, s.description as descSession
+    SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p.\"designationPromotion\",
+           ec.\"designationECUE\", u.\"designationUE\", r.motif, r.date_creation, r.statut,
+           s.\"designSession\", r.description, s.description as descSession
     FROM recours r
     JOIN etudiant e ON r.matricule = e.matricule
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-    JOIN ecue ec ON r.id_ecue = ec.idECUE
-    JOIN ue u ON ec.UE_idUE = u.idUE
+    JOIN ecue ec ON r.id_ecue = ec.\"idECUE\"
+    JOIN ue u ON ec.\"UE_idUE\" = u.\"idUE\"
     JOIN session s ON r.id_session = s.idsession
     WHERE r.id_ecue = :idECUE
     AND r.id_session = :idSession

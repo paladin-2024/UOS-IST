@@ -16,7 +16,7 @@ function verifierDroitsCaisse($connexion, $idUser, $caisse_id) {
     $stmt = $connexion->prepare("
         SELECT niveau 
         FROM droits_acces_finances 
-        WHERE idUser = :idUser AND type = 'Caisse' 
+        WHERE \"idUser\" = :idUser AND type = 'Caisse' 
         AND (entite_id = :caisse_id OR entite_id IS NULL)
         AND est_actif = 1
         ORDER BY entite_id DESC, niveau DESC
@@ -31,7 +31,7 @@ function verifierDroitsCaisse($connexion, $idUser, $caisse_id) {
 
 // Récupérer l'idAgent de l'utilisateur connecté
 function getIdAgent($connexion, $idUser) {
-    $stmt = $connexion->prepare("SELECT idAgent FROM t_users WHERE idUser = :idUser");
+    $stmt = $connexion->prepare("SELECT \"idAgent\" FROM t_users WHERE \"idUser\" = :idUser");
     $stmt->bindParam(':idUser', $idUser);
     $stmt->execute();
     $user_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -156,7 +156,7 @@ function updateCategoryBudget($connexion, $categorie_id, $montant, $type_operati
             $stmt = $connexion->prepare("
                 INSERT INTO budget (
                     exercice_id, categorie_id, montant_prevu, montant_revise, 
-                    montant_engage, montant_realise, disponible, date_creation, idUser
+                    montant_engage, montant_realise, disponible, date_creation, \"idUser\"
                 ) VALUES (
                     :exercice_id, :categorie_id, :montant_prevu, NULL, 
                     :montant_engage, :montant_realise, :disponible, NOW(), :idUser
@@ -278,7 +278,7 @@ try {
         
         // Vérifier que l'agent est bien celui qui a ouvert la session (sauf pour les administrateurs)
         if ($droits['niveau'] !== 'Administration') {
-            $stmt = $connexion->prepare("SELECT idAgent FROM sessions_caisse WHERE id = :id");
+            $stmt = $connexion->prepare("SELECT \"idAgent\" FROM sessions_caisse WHERE id = :id");
             $stmt->bindParam(':id', $session_caisse_id);
             $stmt->execute();
             $session_agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -353,7 +353,7 @@ try {
         $sql = "INSERT INTO transactions (
             reference, type, montant, devise, taux_change, date_transaction, 
             source, source_id, destination_id, categorie_id, description, 
-            pieces_jointes, statut, idAgent, session_caisse_id, idUser, 
+            pieces_jointes, statut, \"idAgent\", session_caisse_id, \"idUser\", 
             beneficiaire, depositaire
         ) VALUES (
             :reference, :type, :montant, :devise, :taux_change, :date_transaction,
@@ -398,7 +398,7 @@ try {
             if ($exercice_id && $categorie_id) {
                 $sql_depense = "INSERT INTO depenses (
                     transaction_id, categorie_budget_id, exercice_id, montant, devise, 
-                    beneficiaire, motif, date_depense, statut, idUser
+                    beneficiaire, motif, date_depense, statut, \"idUser\"
                 ) VALUES (
                     :transaction_id, :categorie_budget_id, :exercice_id, :montant, :devise,
                     :beneficiaire, :motif, :date_depense, :statut, :idUser
@@ -472,7 +472,7 @@ try {
                 $sql = "INSERT INTO transactions (
                             reference, type, montant, devise, taux_change, date_transaction, 
                             source, source_id, destination_id, categorie_id, description, 
-                            pieces_jointes, statut, idAgent, idUser
+                            pieces_jointes, statut, \"idAgent\", \"idUser\"
                         ) VALUES (
                             :reference, 'Recette', :montant, :devise, :taux_change, :date_transaction,
                             :source, :source_id, :destination_id, :categorie_id, :description,
@@ -587,7 +587,7 @@ try {
         // Mettre à jour le statut de la transaction
         $stmt = $connexion->prepare("
             UPDATE transactions 
-            SET statut = 'Confirmée', date_validation = NOW(), idValidateur = :idUser 
+            SET statut = 'Confirmée', date_validation = NOW(), \"idValidateur\" = :idUser 
             WHERE id = :id
         ");
         $stmt->bindParam(':id', $transaction_id);
@@ -663,7 +663,7 @@ try {
             $sql = "INSERT INTO transactions (
                         reference, type, montant, devise, taux_change, date_transaction, 
                         source, source_id, destination_id, categorie_id, description, 
-                        pieces_jointes, statut, idAgent, idUser
+                        pieces_jointes, statut, \"idAgent\", \"idUser\"
                     ) VALUES (
                         :reference, 'Recette', :montant, :devise, :taux_change, :date_transaction,
                         :source, :source_id, :destination_id, :categorie_id, :description,

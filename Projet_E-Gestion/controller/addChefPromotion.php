@@ -69,7 +69,7 @@ try {
     */
     
     // Vérifier que l'étudiant n'est pas déjà chef d'une autre promotion
-    $checkAutreChefQuery = "SELECT cp.id_chef, p.designationPromotion 
+    $checkAutreChefQuery = "SELECT cp.id_chef, p.\"designationPromotion\" 
                            FROM chef_promotion cp
                            JOIN promotion p ON cp.promotion_idpromotion = p.idpromotion
                            WHERE cp.idetudiant = :etudiant_id 
@@ -88,7 +88,7 @@ try {
     
     // Insérer le nouveau chef de promotion
     $insertQuery = "INSERT INTO chef_promotion 
-                    (idetudiant, promotion_idpromotion, annee_acad_idannee_acad, date_nomination, est_actif, idUser) 
+                    (idetudiant, promotion_idpromotion, annee_acad_idannee_acad, date_nomination, est_actif, \"idUser\") 
                     VALUES (:etudiant_id, :promotion_id, :annee_acad_id, :date_nomination, 1, :user_id)";
     $insertStmt = $db->prepare($insertQuery);
     $insertStmt->bindParam(':etudiant_id', $etudiantId, PDO::PARAM_INT);

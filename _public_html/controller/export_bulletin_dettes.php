@@ -25,7 +25,7 @@ $configUniversite = $universite->getConfigurationUniversite();
 
 // Étudiant
 $stmt = $db->prepare("
-    SELECT e.*, p.designationPromotion, p.cycle, p.est_terminale 
+    SELECT e.*, p.\"designationPromotion\", p.cycle, p.est_terminale 
     FROM etudiant e
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
     WHERE e.matricule = :matricule
@@ -41,16 +41,16 @@ $annee = $anneeId ? $universite->getAnneeAcademiqueById($anneeId) : null;
 
 // Dettes groupées par UE
 $sql = "SELECT 
-            d.*, ec.designationECUE, ue.designationUE, ue.codeUE, ue.idUE,
-            s.numeroSemestre, p.designationPromotion, aa.designation as annee_academique
+            d.*, ec.\"designationECUE\", ue.\"designationUE\", ue.\"codeUE\", ue.\"idUE\",
+            s.\"numeroSemestre\", p.\"designationPromotion\", aa.designation as annee_academique
         FROM dette_etudiant d
-        JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
-        JOIN ue ON d.UE_idUE = ue.idUE
+        JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
+        JOIN ue ON d.\"UE_idUE\" = ue.\"idUE\"
         JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
         JOIN promotion p ON d.promotion_idpromotion = p.idpromotion
         JOIN annee_acad aa ON d.annee_acad_idannee_acad = aa.idannee_acad
         WHERE d.matricule = :matricule
-        ORDER BY aa.designation DESC, s.numeroSemestre, ue.codeUE, ec.designationECUE";
+        ORDER BY aa.designation DESC, s.\"numeroSemestre\", ue.\"codeUE\", ec.\"designationECUE\"";
 
 $stmt = $db->prepare($sql);
 $stmt->execute(['matricule' => $matricule]);

@@ -141,7 +141,7 @@ class DependanceServiceFrais
     public function getDependancesByService($serviceId)
     {
         $query = "SELECT d.*, f.designation as frais_designation, f.montant, f.devise,
-                         p.designationPromotion, o.designationOrientation, s.designationSection,
+                         p.\"designationPromotion\", o.\"designationOrientation\", s.\"designationSection\",
                          aa.designation as annee_academique
                   FROM dependances_services_frais d
                   LEFT JOIN frais f ON d.frais_id = f.id

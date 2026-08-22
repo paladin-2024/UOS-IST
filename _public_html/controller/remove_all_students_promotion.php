@@ -27,7 +27,7 @@ try {
     $connexion->beginTransaction();
     
     // Récupérer le nom de la promotion pour la journalisation
-    $stmt = $connexion->prepare("SELECT designationPromotion FROM promotion WHERE idpromotion = ?");
+    $stmt = $connexion->prepare("SELECT \"designationPromotion\" FROM promotion WHERE idpromotion = ?");
     $stmt->execute([$idpromotion]);
     $promotion = $stmt->fetch(PDO::FETCH_ASSOC);
     

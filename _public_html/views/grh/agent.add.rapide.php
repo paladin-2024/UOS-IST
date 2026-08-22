@@ -5,15 +5,15 @@ include "./views/include/header.php";
 $connexion = Connexion::getInstance()->getPDO();
 
 // Récupérer les rôles directement
-$rolesQuery = "SELECT * FROM t_roles ORDER BY nomRole ASC";
+$rolesQuery = "SELECT * FROM t_roles ORDER BY \"nomRole\" ASC";
 $rolesStmt = $connexion->prepare($rolesQuery);
 $rolesStmt->execute();
 $roles = $rolesStmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les structures avec permissions
 $structuresQuery = "SELECT s.* FROM structure s 
-                   INNER JOIN user_structure us ON s.idStructure = us.idStructure 
-                   WHERE us.idUser = :userId";
+                   INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\" 
+                   WHERE us.\"idUser\" = :userId";
 $structuresStmt = $connexion->prepare($structuresQuery);
 $structuresStmt->bindParam(':userId', $_SESSION['id']);
 $structuresStmt->execute();
@@ -33,29 +33,29 @@ $sql = "SELECT a.*,
 s.designation as designationStructure,
 srv.designation as designationService,
 g.designation as gradeDesignation,
-u.idUser,
-u.loginUser,
-u.etatUser,
-GROUP_CONCAT(DISTINCT r.nomRole ORDER BY r.nomRole SEPARATOR ', ') AS allRoles,
+u.\"idUser\",
+u.\"loginUser\",
+u.\"etatUser\",
+GROUP_CONCAT(DISTINCT r.\"nomRole\" ORDER BY r.\"nomRole\" SEPARATOR ', ') AS allRoles,
 CASE
-WHEN u.idUser IS NOT NULL THEN 'Oui'
+WHEN u.\"idUser\" IS NOT NULL THEN 'Oui'
 ELSE 'Non'
 END as hasAccess,
 CASE
-WHEN u.etatUser = 1 THEN 'Actif'
-WHEN u.etatUser = 0 THEN 'Inactif'
+WHEN u.\"etatUser\" = 1 THEN 'Actif'
+WHEN u.\"etatUser\" = 0 THEN 'Inactif'
 ELSE 'Aucun'
 END as statutUser
 FROM agent a
-LEFT JOIN structure s ON a.idStructure = s.idStructure
-LEFT JOIN service srv ON a.idService = srv.idService
+LEFT JOIN structure s ON a.\"idStructure\" = s.\"idStructure\"
+LEFT JOIN service srv ON a.\"idService\" = srv.\"idService\"
 LEFT JOIN grade g ON a.grade_id = g.idgrade
-LEFT JOIN t_users u ON a.idAgent = u.idAgent
-LEFT JOIN t_user_roles ur ON u.idUser = ur.idUser
-LEFT JOIN t_roles r ON ur.idRole = r.idRole
-INNER JOIN user_structure us ON a.idStructure = us.idStructure
-WHERE us.idUser = :userId
-         GROUP BY a.idAgent";
+LEFT JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\"
+LEFT JOIN t_user_roles ur ON u.\"idUser\" = ur.\"idUser\"
+LEFT JOIN t_roles r ON ur.\"idRole\" = r.\"idRole\"
+INNER JOIN user_structure us ON a.\"idStructure\" = us.\"idStructure\"
+WHERE us.\"idUser\" = :userId
+         GROUP BY a.\"idAgent\"";
 
 $params = [':userId' => $_SESSION['id']];
 
@@ -67,9 +67,9 @@ if (!empty($search)) {
 
 // Ajouter le filtre d'accès
 if ($filterAccess === 'avec_acces') {
-    $sql .= " AND u.idUser IS NOT NULL";
+    $sql .= " AND u.\"idUser\" IS NOT NULL";
 } elseif ($filterAccess === 'sans_acces') {
-    $sql .= " AND u.idUser IS NULL";
+    $sql .= " AND u.\"idUser\" IS NULL";
 }
 
 $sql .= " ORDER BY a.noms ASC";
@@ -357,7 +357,7 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
                     </div>
 
                     <!-- Champ caché pour dateNaissance (auto-rempli en mode rapide) -->
-                    <input type="hidden" name="dateNaissance" id="dateNaissance" value="">
+                    <input type="hidden" name=dateNaissance id=dateNaissance value="">
                     <input type="hidden" name="isRapideMode" id="isRapideMode" value="1">
 
                     <div class="row g-3">
@@ -387,7 +387,7 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
 
                         <div class="col-md-6">
                             <label class="form-label">Campus <span class="text-danger">*</span></label>
-                            <select name="idStructure" id="idStructure" class="form-select" required onchange="updateServiceOptions()">
+                            <select name=idStructure id=idStructure class="form-select" required onchange="updateServiceOptions()">
                                 <option value="">Sélectionner</option>
                                 <?php foreach ($structures as $s): ?>
                                     <option value="<?= $s['idStructure'] ?>"><?= $s['designation'] ?></option>
@@ -420,7 +420,7 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
 
                         <div class="col-md-6" id="serviceField">
                             <label class="form-label">Service</label>
-                            <select name="idService" id="idService" class="form-select">
+                            <select name=idService id=idService class="form-select">
                                 <option value="">Sélectionner</option>
                             </select>
                         </div>
@@ -454,7 +454,7 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="controller/edit_agent.php" class="needs-validation" novalidate>
-                <input type="hidden" name="idAgent" id="editAgentId">
+                <input type="hidden" name=idAgent id="editAgentId">
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -491,7 +491,7 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Campus</label>
-                            <select name="idStructure" id="editAgentStructure" class="form-select" onchange="updateEditServiceOptions()">
+                            <select name=idStructure id="editAgentStructure" class="form-select" onchange="updateEditServiceOptions()">
                                 <?php foreach ($structures as $s): ?>
                                     <option value="<?= $s['idStructure'] ?>"><?= $s['designation'] ?></option>
                                 <?php endforeach; ?>
@@ -499,7 +499,7 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Service</label>
-                            <select name="idService" id="editAgentService" class="form-select">
+                            <select name=idService id="editAgentService" class="form-select">
                                 <option value="">Sélectionner</option>
                             </select>
                         </div>
@@ -527,15 +527,15 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="controller/manage_user_access.php">
-                <input type="hidden" name="idAgent" id="manageUserIdAgent">
-                <input type="hidden" name="idUser" id="manageUserIdUser">
+                <input type="hidden" name=idAgent id="manageUserIdAgent">
+                <input type="hidden" name=idUser id="manageUserIdUser">
                 <div class="modal-body">
                     <div class="alert alert-info">
                         <strong id="manageUserAgentName"></strong> possède déjà un accès.
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Identifiant</label>
-                        <input type="text" name="loginUser" id="manageLoginUser" class="form-control" required>
+                        <input type="text" name=loginUser id="manageLoginUser" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Rôles</label>
@@ -556,7 +556,7 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Statut</label>
-                        <select name="etatUser" id="manageUserStatus" class="form-select">
+                        <select name=etatUser id="manageUserStatus" class="form-select">
                             <option value="1">Actif</option>
                             <option value="0">Inactif</option>
                         </select>
@@ -586,14 +586,14 @@ $agentsSansAcces = $totalAgents - $agentsAvecAcces;
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="controller/assign_user_access.php">
-                <input type="hidden" name="idAgent" id="assignUserIdAgent">
+                <input type="hidden" name=idAgent id="assignUserIdAgent">
                 <div class="modal-body">
                     <div class="alert alert-success">
                         Créer un accès pour: <strong id="assignUserDisplayName"></strong>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Identifiant <span class="text-danger">*</span></label>
-                        <input type="text" name="loginUser" id="loginUser" class="form-control" required>
+                        <input type="text" name=loginUser id=loginUser class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Rôles <span class="text-danger">*</span></label>

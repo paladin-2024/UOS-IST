@@ -93,10 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Configuration du serveur
             $mail->SMTPDebug = SMTP::DEBUG_OFF; // Mettre à DEBUG_SERVER pour le débogage
             $mail->isSMTP();
-            $mail->Host       = 'mail.bdomsoft.com'; // Remplacer par votre serveur SMTP
+            $mail->Host       = getenv('MAIL_HOST') ?: 'mail.bdomsoft.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'info@bdomsoft.com'; // Remplacer par votre email
-            $mail->Password   = 'GRACEsoliste1234@'; // Remplacer par votre mot de passe d'application
+            $mail->Username   = getenv('MAIL_USERNAME') ?: '';
+            $mail->Password   = getenv('MAIL_PASSWORD') ?: '';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 465;
             $mail->CharSet    = 'UTF-8';

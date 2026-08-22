@@ -24,7 +24,7 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
             FROM seance_labo sl
             JOIN laboratoire l ON sl.idlabo = l.idlabo
             LEFT JOIN autorisation_labo al ON l.idlabo = al.idlabo AND al.niveau_autorisation = 'Admin'
-            LEFT JOIN agent a ON al.idAgent = a.idAgent
+            LEFT JOIN agent a ON al.\"idAgent\" = a.\"idAgent\"
             WHERE sl.idseance_labo = :idSeance
         ");
         $stmt->bindParam(':idSeance', $idSeance, PDO::PARAM_INT);

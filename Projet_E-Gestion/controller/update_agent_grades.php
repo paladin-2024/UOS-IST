@@ -31,7 +31,7 @@ try {
     $pdo = Connexion::getInstance()->getPDO();
     
     // Récupérer le code de l'agent pour la redirection
-    $queryAgent = "SELECT codeAgent FROM agent WHERE idAgent = :idAgent";
+    $queryAgent = "SELECT \"codeAgent\" FROM agent WHERE \"idAgent\" = :idAgent";
     $stmtAgent = $pdo->prepare($queryAgent);
     $stmtAgent->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
     $stmtAgent->execute();

@@ -25,12 +25,12 @@ if ($inventaireId <= 0) {
 
 // Récupération des données de l'inventaire
 $queryInventaire = "SELECT i.*, d.libelle_depot, 
-                    CONCAT(u.nomUser) as nom_createur,
-                    CONCAT(uv.nomUser) as nom_validateur
+                    CONCAT(u.\"nomUser\") as nom_createur,
+                    CONCAT(uv.\"nomUser\") as nom_validateur
                     FROM inventaire i
                     INNER JOIN depot d ON i.id_depot = d.id_depot
-                    INNER JOIN t_users u ON i.id_user_creation = u.idUser
-                    LEFT JOIN t_users uv ON i.id_user_validation = uv.idUser
+                    INNER JOIN t_users u ON i.id_user_creation = u.\"idUser\"
+                    LEFT JOIN t_users uv ON i.id_user_validation = uv.\"idUser\"
                     WHERE i.id_inventaire = :id";
 $stmtInventaire = $db->prepare($queryInventaire);
 $stmtInventaire->bindParam(':id', $inventaireId, PDO::PARAM_INT);

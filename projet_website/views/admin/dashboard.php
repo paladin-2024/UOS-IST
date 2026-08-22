@@ -43,10 +43,10 @@ $visitData = [];
 $visitLabels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
 
 // Requête pour compter le nombre d'articles publiés par mois pour l'année en cours
-$stmt = $db->prepare("SELECT MONTH(created_at) as month, COUNT(*) as count 
-                      FROM news 
-                      WHERE YEAR(created_at) = ? 
-                      GROUP BY MONTH(created_at)
+$stmt = $db->prepare("SELECT EXTRACT(MONTH FROM created_at) as month, COUNT(*) as count
+                      FROM news
+                      WHERE EXTRACT(YEAR FROM created_at) = ?
+                      GROUP BY EXTRACT(MONTH FROM created_at)
                       ORDER BY month");
 $stmt->execute([$currentYear]);
 $monthlyNews = $stmt->fetchAll(PDO::FETCH_ASSOC);

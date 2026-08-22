@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Insertion de la séance
         $stmt = $db->prepare("INSERT INTO seance_cours 
             (titre, date_seance, heure_debut, heure_fin, salle, qrcode, description, 
-             idECUE, annee_acad_id, idUser) 
+             \"idECUE\", annee_acad_id, \"idUser\") 
             VALUES 
             (:titre, :date_seance, :heure_debut, :heure_fin, :salle, :qrcode, 
              :description, :idECUE, :annee_acad_id, :idUser)");
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $idSeance = $db->lastInsertId();
         
         // Récupérer les informations sur l'ECUE pour le journal
-        $stmtEcue = $db->prepare("SELECT designationECUE FROM ecue WHERE idECUE = :idECUE");
+        $stmtEcue = $db->prepare("SELECT \"designationECUE\" FROM ecue WHERE \"idECUE\" = :idECUE");
         $stmtEcue->bindParam(':idECUE', $idECUE, PDO::PARAM_INT);
         $stmtEcue->execute();
         $ecue = $stmtEcue->fetch(PDO::FETCH_ASSOC);

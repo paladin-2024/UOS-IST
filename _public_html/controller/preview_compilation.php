@@ -13,12 +13,12 @@ $pdo = $connexion->getPDO();
 
 try {
     // Récupérer les détails de l'ECUE
-    $sqlEcue = "SELECT e.*, u.designationUE, s.numeroSemestre, p.designationPromotion
+    $sqlEcue = "SELECT e.*, u.\"designationUE\", s.\"numeroSemestre\", p.\"designationPromotion\"
                 FROM ecue e
-                JOIN ue u ON e.UE_idUE = u.idUE
+                JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                 JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
                 JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
-                WHERE e.idECUE = ?";
+                WHERE e.\"idECUE\" = ?";
                 
     $stmtEcue = $pdo->prepare($sqlEcue);
     $stmtEcue->execute([$idECUE]);
@@ -30,19 +30,19 @@ try {
     }
     
     // Récupérer les sessions
-    $sqlSessionsPremiere = "SELECT idsession FROM session WHERE designSession LIKE '%Première%' LIMIT 1";
+    $sqlSessionsPremiere = "SELECT idsession FROM session WHERE \"designSession\" LIKE '%Première%' LIMIT 1";
     $stmtSessionsPremiere = $pdo->query($sqlSessionsPremiere);
     $sessionPremiere = $stmtSessionsPremiere->fetchColumn();
     
-    $sqlSessionsDeuxieme = "SELECT idsession FROM session WHERE designSession LIKE '%Deuxième%' LIMIT 1";
+    $sqlSessionsDeuxieme = "SELECT idsession FROM session WHERE \"designSession\" LIKE '%Deuxième%' LIMIT 1";
     $stmtSessionsDeuxieme = $pdo->query($sqlSessionsDeuxieme);
     $sessionDeuxieme = $stmtSessionsDeuxieme->fetchColumn();
     
     // Récupérer la configuration des pondérations
     $sqlConfig = "SELECT ponderation_cc, ponderation_ex 
                  FROM configuration_moyenne 
-                 WHERE idECUE = ? AND session_idsession = ? AND annee_acad_id = ?
-                 ORDER BY dateCreation DESC LIMIT 1";
+                 WHERE \"idECUE\" = ? AND session_idsession = ? AND annee_acad_id = ?
+                 ORDER BY \"dateCreation\" DESC LIMIT 1";
                  
     $stmtConfig = $pdo->prepare($sqlConfig);
     $stmtConfig->execute([$idECUE, $sessionPremiere, $anneeId]);
@@ -59,7 +59,7 @@ try {
                         SELECT promotion_idpromotion 
                         FROM semestre s 
                         JOIN ue u ON s.idsemestre = u.semestre_idsemestre
-                        WHERE u.idUE IN (SELECT UE_idUE FROM ecue WHERE idECUE = ?)
+                        WHERE u.\"idUE\" IN (SELECT \"UE_idUE\" FROM ecue WHERE \"idECUE\" = ?)
                     )
                     ORDER BY e.noms";
                     
@@ -69,11 +69,11 @@ try {
     
     // Récupérer toutes les évaluations définies pour cet ECUE
     $sqlAllEvals = "SELECT e.idevaluation, e.titre, e.note_max, e.ponderation, 
-                   t.idType, t.designationT, t.categorie, s.idsession, s.description
+                   t.\"idType\", t.\"designationT\", t.categorie, s.idsession, s.description
                    FROM evaluations e
-                   JOIN typeevaluation t ON e.idType = t.idType
+                   JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
                    JOIN session s ON e.session_idsession = s.idsession
-                   WHERE e.idECUE = ? AND e.annee_acad_id = ?
+                   WHERE e.\"idECUE\" = ? AND e.annee_acad_id = ?
                    ORDER BY s.idsession, e.date_evaluation";
     
     $stmtAllEvals = $pdo->prepare($sqlAllEvals);
@@ -106,9 +106,9 @@ try {
         $matricule = $etudiant['matricule'];
         
         // Récupérer toutes les notes de l'étudiant pour cet ECUE
-        $sqlNotes = "SELECT p.coteObtenu, p.typeEvaluation, p.session_idsession
+        $sqlNotes = "SELECT p.\"coteObtenu\", p.typeEvaluation, p.session_idsession
                     FROM points p
-                    WHERE p.matricule = ? AND p.ECUE_idECUE = ? AND p.annee_acad_id = ?";
+                    WHERE p.matricule = ? AND p.\"ECUE_idECUE\" = ? AND p.annee_acad_id = ?";
         
         $stmtNotes = $pdo->prepare($sqlNotes);
         $stmtNotes->execute([$matricule, $idECUE, $anneeId]);

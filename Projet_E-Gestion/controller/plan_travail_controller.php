@@ -38,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                   LEFT JOIN sujets s ON (SELECT idsujets FROM plan_travail WHERE idplan_travail = 
                                                          (SELECT idplan_travail FROM chapitre_plan WHERE idchapitre_plan = ec.idchapitre_plan)) = s.idsujets
                                   LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant AND ec.type_auteur = 'Etudiant'
-                                  LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent AND ec.type_auteur = 'Directeur'
-                                  LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent AND ec.type_auteur = 'Encadreur'
+                                  LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\" AND ec.type_auteur = 'Directeur'
+                                  LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\" AND ec.type_auteur = 'Encadreur'
                                   WHERE ec.idchapitre_plan = ?
                                   ORDER BY ec.date_echange DESC";
                 
@@ -141,12 +141,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $redirect = $_POST['redirect'] ?? 'recherche/projet.taches';
                 
                 // Vérifier que l'utilisateur est bien directeur du sujet
-                $queryVerif = "SELECT s.idDirecteur, s.idsujets 
+                $queryVerif = "SELECT s.\"idDirecteur\", s.idsujets 
                                FROM plan_travail pt 
                                JOIN sujets s ON pt.idsujets = s.idsujets 
-                               JOIN agent a ON s.idDirecteur = a.idAgent 
-                               JOIN t_users u ON a.idAgent = u.idAgent 
-                               WHERE pt.idplan_travail = ? AND u.idUser = ?";
+                               JOIN agent a ON s.\"idDirecteur\" = a.\"idAgent\" 
+                               JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                               WHERE pt.idplan_travail = ? AND u.\"idUser\" = ?";
                 $stmtVerif = $pdo->prepare($queryVerif);
                 $stmtVerif->execute([$planId, $userId]);
                 $verification = $stmtVerif->fetch(PDO::FETCH_ASSOC);
@@ -162,14 +162,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 SET statut_validation = ?, 
                                     commentaire_directeur = ?, 
                                     date_validation = NOW(), 
-                                    idValidateur = ? 
+                                    \"idValidateur\" = ? 
                                 WHERE idplan_travail = ?";
                 $stmtUpdate = $pdo->prepare($queryUpdate);
                 $stmtUpdate->execute([$statut, $commentaire, $verification['idDirecteur'], $planId]);
                 
                 // Enregistrer dans l'historique
                 $queryHistory = "INSERT INTO plan_validation_history 
-                                 (idplan_travail, statut, commentaire, date_action, idUser, version_plan) 
+                                 (idplan_travail, statut, commentaire, date_action, \"idUser\", version_plan) 
                                  SELECT idplan_travail, ?, ?, NOW(), ?, version 
                                  FROM plan_travail 
                                  WHERE idplan_travail = ?";

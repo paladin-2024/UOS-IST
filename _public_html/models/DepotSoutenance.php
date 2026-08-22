@@ -31,7 +31,7 @@ class DepotSoutenance
             ];
         }
 
-        $query = "INSERT INTO depot_memoire (dateDepot, fichier, observation, sujets_idsujets) 
+        $query = "INSERT INTO depot_memoire (\"dateDepot\", fichier, observation, sujets_idsujets) 
                   VALUES (:dateDepot, :fichier, :observation, :idSujet)";
         $stmt = $this->db->prepare($query);
         $success = $stmt->execute([
@@ -50,7 +50,7 @@ class DepotSoutenance
     // Enregistrer un dépôt de rapport de stage
     public function enregistrerDepotRapport($etudiantId, $dateDepot, $titre, $lieuStage, $dateDebut, $dateFin, $observation, $encadreurId, $fichier = '')
     {
-        $query = "INSERT INTO depot_rapport (dateDepot, titre, lieu_stage, date_debut, date_fin, observation, encadreur, etudiant_idetudiant, fichier) 
+        $query = "INSERT INTO depot_rapport (\"dateDepot\", titre, lieu_stage, date_debut, date_fin, observation, encadreur, etudiant_idetudiant, fichier) 
                 VALUES (:dateDepot, :titre, :lieuStage, :dateDebut, :dateFin, :observation, :encadreur, :etudiantId, :fichier)";
         $stmt = $this->db->prepare($query);
         $success = $stmt->execute([
@@ -79,7 +79,7 @@ class DepotSoutenance
         $queryFrais = "SELECT fs.* FROM frais_soutenance fs 
                       WHERE fs.section_id = :sectionId 
                       AND fs.annee_acad_id = :anneeAcadId
-                      AND fs.estObligatoire = 1";
+                      AND fs.\"estObligatoire\" = 1";
         $stmtFrais = $this->db->prepare($queryFrais);
         $stmtFrais->execute([
             'sectionId' => $sectionId,
@@ -93,7 +93,7 @@ class DepotSoutenance
                             WHERE etudiant_id = :etudiantId 
                             AND frais_soutenance_id = :fraisId 
                             AND annee_acad_id = :anneeAcadId
-                            AND estComplet = 1";
+                            AND \"estComplet\" = 1";
             $stmtPaiement = $this->db->prepare($queryPaiement);
             $stmtPaiement->execute([
                 'etudiantId' => $etudiantId,
@@ -157,7 +157,7 @@ class DepotSoutenance
         }
         
         // Programmer la soutenance
-        $query = "INSERT INTO soutenance (date_soutenance, lieu, sujets_idsujets, statut, idUser, dateCreation) 
+        $query = "INSERT INTO soutenance (date_soutenance, lieu, sujets_idsujets, statut, \"idUser\", \"dateCreation\") 
                  VALUES (:dateSoutenance, :lieu, :idSujet, 'Programmée', :userId, NOW())";
         $stmt = $this->db->prepare($query);
         $success = $stmt->execute([
@@ -232,10 +232,10 @@ public function getMemoiresParSection($idSection, $idAnneeAcad, $filtreEtudiant 
             FROM depot_memoire dm
             JOIN sujets s ON dm.sujets_idsujets = s.idsujets
             JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-            LEFT JOIN agent d ON s.idDirecteur = d.idAgent
-            LEFT JOIN agent en ON s.idEncadreur = en.idAgent
-            WHERE s.idSpecialisation IN (
-                SELECT sp.idSpecialisation 
+            LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
+            LEFT JOIN agent en ON s.\"idEncadreur\" = en.\"idAgent\"
+            WHERE s.\"idSpecialisation\" IN (
+                SELECT sp.\"idSpecialisation\" 
                 FROM specialisation sp 
                 WHERE sp.idsection = :idSection
             ) 
@@ -258,11 +258,11 @@ public function getMemoiresParSection($idSection, $idAnneeAcad, $filtreEtudiant 
     }
     
     if (!empty($filtreDate)) {
-        $sql .= " AND DATE(dm.dateDepot) = :filtreDate";
+        $sql .= " AND DATE(dm.\"dateDepot\") = :filtreDate";
         $params[':filtreDate'] = $filtreDate;
     }
     
-    $sql .= " ORDER BY dm.dateDepot DESC";
+    $sql .= " ORDER BY dm.\"dateDepot\" DESC";
     
     $stmt = $this->db->prepare($sql);
     $stmt->execute($params);
@@ -274,7 +274,7 @@ public function getRapportsStageParSection($idSection, $idAnneeAcad, $filtreEtud
     $sql = "SELECT dr.*, e.noms as nom_etudiant, a.noms as nom_encadreur
             FROM depot_rapport dr
             JOIN etudiant e ON dr.etudiant_idetudiant = e.idetudiant
-            LEFT JOIN agent a ON dr.encadreur = a.idAgent
+            LEFT JOIN agent a ON dr.encadreur = a.\"idAgent\"
             JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
             JOIN orientation o ON p.orientation_idorientation = o.idorientation
             WHERE o.section_idsection = :idSection 
@@ -301,7 +301,7 @@ public function getRapportsStageParSection($idSection, $idAnneeAcad, $filtreEtud
         $params[':filtreLieuStage'] = "%$filtreLieuStage%";
     }
     
-    $sql .= " ORDER BY dr.dateDepot DESC";
+    $sql .= " ORDER BY dr.\"dateDepot\" DESC";
     
     $stmt = $this->db->prepare($sql);
     $stmt->execute($params);
@@ -320,16 +320,16 @@ public function getSoutenancesParSection($idSection, $idAnneeAcad, $filtreEtudia
              js.noms as secretaire_nom,
              (SELECT GROUP_CONCAT(a.noms ORDER BY ls.est_premier_lecteur DESC SEPARATOR '|') 
               FROM lecteurs_soutenance ls 
-              JOIN agent a ON ls.idenseignant = a.idAgent 
+              JOIN agent a ON ls.idenseignant = a.\"idAgent\" 
               WHERE ls.idsoutenance = s.idsoutenance) as lecteurs
              FROM soutenance s
              JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
              JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-             LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-             LEFT JOIN agent enc ON sj.idEncadreur = enc.idAgent
+             LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+             LEFT JOIN agent enc ON sj.\"idEncadreur\" = enc.\"idAgent\"
              LEFT JOIN jury j ON s.jury_id = j.idjury
-             LEFT JOIN agent jp ON j.id_president = jp.idAgent
-             LEFT JOIN agent js ON j.id_secretaire = js.idAgent
+             LEFT JOIN agent jp ON j.id_president = jp.\"idAgent\"
+             LEFT JOIN agent js ON j.id_secretaire = js.\"idAgent\"
              WHERE sj.annee_acad_idannee_acad = :idAnneeAcad";
     
     // Ajouter la condition pour la section via la chaîne étudiant → promotion → orientation → section
@@ -377,16 +377,16 @@ public function getSoutenancesParSection($idSection, $idAnneeAcad, $filtreEtudia
 public function getStatistiquesMemoires($idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
-                s.designationSection,
+                s.\"designationSection\",
                 COUNT(dm.iddepot_memoire) as nb_total,
-                COUNT(CASE WHEN MONTH(dm.dateDepot) BETWEEN 1 AND 3 THEN 1 END) as t1,
-                COUNT(CASE WHEN MONTH(dm.dateDepot) BETWEEN 4 AND 6 THEN 1 END) as t2,
-                COUNT(CASE WHEN MONTH(dm.dateDepot) BETWEEN 7 AND 9 THEN 1 END) as t3,
-                COUNT(CASE WHEN MONTH(dm.dateDepot) BETWEEN 10 AND 12 THEN 1 END) as t4
+                COUNT(CASE WHEN MONTH(dm.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
+                COUNT(CASE WHEN MONTH(dm.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
+                COUNT(CASE WHEN MONTH(dm.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
+                COUNT(CASE WHEN MONTH(dm.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
             FROM 
                 section s
             LEFT JOIN specialisation sp ON sp.idsection = s.idsection
-            LEFT JOIN sujets sj ON sj.idSpecialisation = sp.idSpecialisation AND sj.annee_acad_idannee_acad = :anneeAcad
+            LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad
             LEFT JOIN depot_memoire dm ON dm.sujets_idsujets = sj.idsujets";
     
     $params = [':anneeAcad' => $idAnneeAcad];
@@ -396,7 +396,7 @@ public function getStatistiquesMemoires($idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY s.idsection, s.designationSection
+    $sql .= " GROUP BY s.idsection, s.\"designationSection\"
               ORDER BY s.designationSection";
     
     $stmt = $this->db->prepare($sql);
@@ -410,12 +410,12 @@ public function getStatistiquesMemoires($idAnneeAcad, $idSection = null) {
 public function getStatistiquesRapports($idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
-                s.designationSection,
+                s.\"designationSection\",
                 COUNT(dr.iddepot_rapport) as nb_total,
-                COUNT(CASE WHEN MONTH(dr.dateDepot) BETWEEN 1 AND 3 THEN 1 END) as t1,
-                COUNT(CASE WHEN MONTH(dr.dateDepot) BETWEEN 4 AND 6 THEN 1 END) as t2,
-                COUNT(CASE WHEN MONTH(dr.dateDepot) BETWEEN 7 AND 9 THEN 1 END) as t3,
-                COUNT(CASE WHEN MONTH(dr.dateDepot) BETWEEN 10 AND 12 THEN 1 END) as t4
+                COUNT(CASE WHEN MONTH(dr.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
+                COUNT(CASE WHEN MONTH(dr.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
+                COUNT(CASE WHEN MONTH(dr.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
+                COUNT(CASE WHEN MONTH(dr.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
             FROM 
                 section s
             LEFT JOIN orientation o ON o.section_idsection = s.idsection
@@ -430,7 +430,7 @@ public function getStatistiquesRapports($idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY s.idsection, s.designationSection
+    $sql .= " GROUP BY s.idsection, s.\"designationSection\"
               ORDER BY s.designationSection";
     
     $stmt = $this->db->prepare($sql);
@@ -444,7 +444,7 @@ public function getStatistiquesRapports($idAnneeAcad, $idSection = null) {
 public function getStatistiquesSoutenances($idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
-                s.designationSection,
+                s.\"designationSection\",
                 COUNT(st.idsoutenance) as nb_total,
                 COUNT(CASE WHEN st.statut = 'Programmée' THEN 1 END) as programmees,
                 COUNT(CASE WHEN st.statut = 'Terminée' THEN 1 END) as terminees,
@@ -453,7 +453,7 @@ public function getStatistiquesSoutenances($idAnneeAcad, $idSection = null) {
             FROM 
                 section s
             LEFT JOIN specialisation sp ON sp.idsection = s.idsection
-            LEFT JOIN sujets sj ON sj.idSpecialisation = sp.idSpecialisation AND sj.annee_acad_idannee_acad = :anneeAcad
+            LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad
             LEFT JOIN soutenance st ON st.sujets_idsujets = sj.idsujets";
     
     $params = [':anneeAcad' => $idAnneeAcad];
@@ -463,7 +463,7 @@ public function getStatistiquesSoutenances($idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY s.idsection, s.designationSection
+    $sql .= " GROUP BY s.idsection, s.\"designationSection\"
               ORDER BY s.designationSection";
     
     $stmt = $this->db->prepare($sql);
@@ -480,7 +480,7 @@ public function getStatistiquesSoutenances($idAnneeAcad, $idSection = null) {
 public function getStatistiquesSujets($idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
-                s.designationSection,
+                s.\"designationSection\",
                 COUNT(sj.idsujets) as nb_total,
                 COUNT(CASE WHEN sj.statut_validation = 'En attente' THEN 1 END) as en_attente,
                 COUNT(CASE WHEN sj.statut_validation = 'Validé' THEN 1 END) as valides,
@@ -489,7 +489,7 @@ public function getStatistiquesSujets($idAnneeAcad, $idSection = null) {
             FROM 
                 section s
             LEFT JOIN specialisation sp ON sp.idsection = s.idsection
-            LEFT JOIN sujets sj ON sj.idSpecialisation = sp.idSpecialisation AND sj.annee_acad_idannee_acad = :anneeAcad";
+            LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad";
     
     $params = [':anneeAcad' => $idAnneeAcad];
     
@@ -498,7 +498,7 @@ public function getStatistiquesSujets($idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY s.idsection, s.designationSection
+    $sql .= " GROUP BY s.idsection, s.\"designationSection\"
               ORDER BY s.designationSection";
     
     $stmt = $this->db->prepare($sql);
@@ -512,18 +512,18 @@ public function getStatistiquesSujets($idAnneeAcad, $idSection = null) {
  */
 public function getStatistiquesEncadrement($idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
-                a.idAgent,
+                a.\"idAgent\",
                 a.noms,
-                COUNT(CASE WHEN sj.idDirecteur = a.idAgent THEN 1 END) as nb_sujets_diriges,
-                COUNT(CASE WHEN sj.idEncadreur = a.idAgent THEN 1 END) as nb_sujets_encadres,
-                COUNT(CASE WHEN j.idenseignant = a.idAgent THEN 1 END) as nb_jury
+                COUNT(CASE WHEN sj.\"idDirecteur\" = a.\"idAgent\" THEN 1 END) as nb_sujets_diriges,
+                COUNT(CASE WHEN sj.\"idEncadreur\" = a.\"idAgent\" THEN 1 END) as nb_sujets_encadres,
+                COUNT(CASE WHEN j.idenseignant = a.\"idAgent\" THEN 1 END) as nb_jury
             FROM 
                 agent a
-            LEFT JOIN agent_section ag_s ON ag_s.idAgent = a.idAgent
-            LEFT JOIN sujets sj ON (sj.idDirecteur = a.idAgent OR sj.idEncadreur = a.idAgent) 
+            LEFT JOIN agent_section ag_s ON ag_s.\"idAgent\" = a.\"idAgent\"
+            LEFT JOIN sujets sj ON (sj.\"idDirecteur\" = a.\"idAgent\" OR sj.\"idEncadreur\" = a.\"idAgent\") 
                                AND sj.annee_acad_idannee_acad = :anneeAcad
-            LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
-            LEFT JOIN jury_soutenance j ON j.idenseignant = a.idAgent
+            LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
+            LEFT JOIN jury_soutenance j ON j.idenseignant = a.\"idAgent\"
             LEFT JOIN soutenance st ON st.idsoutenance = j.idsoutenance
             WHERE a.type_agent = 'Enseignant'";
     
@@ -534,7 +534,7 @@ public function getStatistiquesEncadrement($idAnneeAcad, $idSection = null) {
         $params[':idSection'] = $idSection;
     }
     
-    $sql .= " GROUP BY a.idAgent, a.noms
+    $sql .= " GROUP BY a.\"idAgent\", a.noms
               HAVING (nb_sujets_diriges > 0 OR nb_sujets_encadres > 0 OR nb_jury > 0)
               ORDER BY a.noms";
     
@@ -558,16 +558,16 @@ public function getSoutenancesProgrammeesParSection($idSection, $idAnneeAcad, $f
              js.noms as secretaire_nom,
              (SELECT GROUP_CONCAT(a.noms ORDER BY ls.est_premier_lecteur DESC SEPARATOR '|') 
               FROM lecteurs_soutenance ls 
-              JOIN agent a ON ls.idenseignant = a.idAgent 
+              JOIN agent a ON ls.idenseignant = a.\"idAgent\" 
               WHERE ls.idsoutenance = s.idsoutenance) as lecteurs
              FROM soutenance s
              JOIN sujets sj ON s.sujets_idsujets = sj.idsujets
              JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-             LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-             LEFT JOIN agent enc ON sj.idEncadreur = enc.idAgent
+             LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+             LEFT JOIN agent enc ON sj.\"idEncadreur\" = enc.\"idAgent\"
              LEFT JOIN jury j ON s.jury_id = j.idjury
-             LEFT JOIN agent jp ON j.id_president = jp.idAgent
-             LEFT JOIN agent js ON j.id_secretaire = js.idAgent
+             LEFT JOIN agent jp ON j.id_president = jp.\"idAgent\"
+             LEFT JOIN agent js ON j.id_secretaire = js.\"idAgent\"
              WHERE sj.annee_acad_idannee_acad = :idAnneeAcad
              AND s.statut = 'Programmée'";
     

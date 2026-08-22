@@ -22,19 +22,19 @@ try {
     
     // Construction de la requête SQL pour obtenir les enseignants avec le plus d'étudiants
     $query = "SELECT 
-                a.idAgent,
-                a.noms as nomEnseignant,
+                a.\"idAgent\",
+                a.noms as \"nomEnseignant\",
                 g.designation as grade,
-                s.designationSection,
+                s.\"designationSection\",
                 s.idsection,
                 COUNT(DISTINCT sj.etudiant_idetudiant) as total_etudiants,
                 SUM(CASE WHEN sj.statut_validation = 'Validé' THEN 1 ELSE 0 END) as sujets_valides,
                 SUM(CASE WHEN sj.statut_validation = 'En attente' THEN 1 ELSE 0 END) as sujets_en_attente
               FROM agent a
-              LEFT JOIN agent_section ags ON a.idAgent = ags.idAgent AND ags.estPrincipal = 1
+              LEFT JOIN agent_section ags ON a.\"idAgent\" = ags.\"idAgent\" AND ags.\"estPrincipal\" = 1
               LEFT JOIN section s ON ags.idsection = s.idsection
               LEFT JOIN grade g ON a.grade_id = g.idgrade
-              LEFT JOIN sujets sj ON (a.idAgent = sj.idDirecteur OR a.idAgent = sj.idEncadreur)";
+              LEFT JOIN sujets sj ON (a.\"idAgent\" = sj.\"idDirecteur\" OR a.\"idAgent\" = sj.\"idEncadreur\")";
     
     // Ajouter le filtre par année académique si spécifié
     if ($anneeId) {
@@ -42,7 +42,7 @@ try {
     }
     
     $query .= " WHERE a.type_agent = 'Enseignant'
-                GROUP BY a.idAgent, a.noms, g.designation, s.designationSection, s.idsection
+                GROUP BY a.\"idAgent\", a.noms, g.designation, s.\"designationSection\", s.idsection
                 HAVING COUNT(DISTINCT sj.etudiant_idetudiant) > 0
                 ORDER BY total_etudiants DESC
                 LIMIT :limit";

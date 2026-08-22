@@ -17,11 +17,11 @@ try {
     $db = Connexion::getInstance()->getPDO();
     
     // Récupérer les détails de l'unité de recherche
-    $query = "SELECT ur.*, COUNT(DISTINCT es.idAgent) as nombre_enseignants,
-                     COUNT(DISTINCT s.idSpecialisation) as nombre_specialisations
+    $query = "SELECT ur.*, COUNT(DISTINCT es.\"idAgent\") as nombre_enseignants,
+                     COUNT(DISTINCT s.\"idSpecialisation\") as nombre_specialisations
               FROM unite_recherche ur
-              LEFT JOIN specialisation s ON ur.idunite_recherche = s.idUnite_recherche
-              LEFT JOIN enseignant_specialisation es ON s.idSpecialisation = es.idSpecialisation
+              LEFT JOIN specialisation s ON ur.idunite_recherche = s.\"idUnite_recherche\"
+              LEFT JOIN enseignant_specialisation es ON s.\"idSpecialisation\" = es.\"idSpecialisation\"
               WHERE ur.idunite_recherche = :urId
               GROUP BY ur.idunite_recherche";
     
@@ -37,11 +37,11 @@ try {
     }
     
     // Récupérer les spécialisations
-    $querySpec = "SELECT s.*, COUNT(es.idAgent) as nombre_enseignants
+    $querySpec = "SELECT s.*, COUNT(es.\"idAgent\") as nombre_enseignants
                   FROM specialisation s
-                  LEFT JOIN enseignant_specialisation es ON s.idSpecialisation = es.idSpecialisation
-                  WHERE s.idUnite_recherche = :urId
-                  GROUP BY s.idSpecialisation
+                  LEFT JOIN enseignant_specialisation es ON s.\"idSpecialisation\" = es.\"idSpecialisation\"
+                  WHERE s.\"idUnite_recherche\" = :urId
+                  GROUP BY s.\"idSpecialisation\"
                   ORDER BY s.designation";
     
     $stmtSpec = $db->prepare($querySpec);
@@ -54,10 +54,10 @@ try {
     $queryEns = "SELECT DISTINCT a.noms, a.matricule, g.designation as grade, 
                         s.designation as specialisation
                  FROM agent a
-                 INNER JOIN enseignant_specialisation es ON a.idAgent = es.idAgent
-                 INNER JOIN specialisation s ON es.idSpecialisation = s.idSpecialisation
+                 INNER JOIN enseignant_specialisation es ON a.\"idAgent\" = es.\"idAgent\"
+                 INNER JOIN specialisation s ON es.\"idSpecialisation\" = s.\"idSpecialisation\"
                  LEFT JOIN grade g ON a.grade_id = g.idgrade
-                 WHERE s.idUnite_recherche = :urId
+                 WHERE s.\"idUnite_recherche\" = :urId
                  ORDER BY a.noms";
     
     $stmtEns = $db->prepare($queryEns);

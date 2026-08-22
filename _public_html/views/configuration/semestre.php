@@ -83,7 +83,7 @@ $promotionss = $universite->getPromotions();
                                     <tbody>
                                         <?php
                                         // Construire la requête pour récupérer les semestres filtrés
-                                        $query = "SELECT DISTINCT s.numeroSemestre
+                                        $query = "SELECT DISTINCT s.\"numeroSemestre\"
                                                   FROM semestre s
                                                   JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                                                   LEFT JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
@@ -92,7 +92,7 @@ $promotionss = $universite->getPromotions();
                                         $params = [];
 
                                         if (!empty($search)) {
-                                            $query .= " AND s.numeroSemestre LIKE ?";
+                                            $query .= " AND s.\"numeroSemestre\" LIKE ?";
                                             $params[] = '%' . $search . '%';
                                         }
 
@@ -101,7 +101,7 @@ $promotionss = $universite->getPromotions();
                                             $params[] = $filterAnnee;
                                         }
 
-                                        $query .= " ORDER BY s.numeroSemestre";
+                                        $query .= " ORDER BY s.\"numeroSemestre\"";
 
                                         $connexion = Connexion::getInstance()->getPDO();
                                         $stmt = $connexion->prepare($query);
@@ -112,16 +112,16 @@ $promotionss = $universite->getPromotions();
 
                                         foreach ($listeSemestresGroupes as $semestre) {
                                             // Récupérer toutes les instances de ce semestre filtrées
-                                            $queryInstances = "SELECT s.*, p.designationPromotion, aa.designation as annee
+                                            $queryInstances = "SELECT s.*, p.\"designationPromotion\", aa.designation as annee
                                                                FROM semestre s
                                                                JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
                                                                LEFT JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
-                                                               WHERE s.numeroSemestre = ?";
+                                                               WHERE s.\"numeroSemestre\" = ?";
 
                                             $paramsInstances = [$semestre['numeroSemestre']];
 
                                             if (!empty($search)) {
-                                                $queryInstances .= " AND s.numeroSemestre LIKE ?";
+                                                $queryInstances .= " AND s.\"numeroSemestre\" LIKE ?";
                                                 $paramsInstances[] = '%' . $search . '%';
                                             }
 
@@ -130,7 +130,7 @@ $promotionss = $universite->getPromotions();
                                                 $paramsInstances[] = $filterAnnee;
                                             }
 
-                                            $queryInstances .= " ORDER BY p.designationPromotion";
+                                            $queryInstances .= " ORDER BY p.\"designationPromotion\"";
 
                                             $stmtInstances = $connexion->prepare($queryInstances);
                                             $stmtInstances->execute($paramsInstances);

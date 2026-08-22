@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         // Vérifier si l'agent existe
-        $stmt = $db->prepare("SELECT * FROM agent WHERE idAgent = :idAgent");
+        $stmt = $db->prepare("SELECT * FROM agent WHERE \"idAgent\" = :idAgent");
         $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
         $stmt->execute();
         $agent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Vérifier si l'agent a déjà une demande en cours pour cette période
         $stmt = $db->prepare("SELECT * FROM demande_conge 
-                              WHERE idAgent = :idAgent 
+                              WHERE \"idAgent\" = :idAgent 
                               AND statut = 'En attente'
                               AND ((date_debut BETWEEN :dateDebut AND :dateFin) 
                                   OR (date_fin BETWEEN :dateDebut AND :dateFin)
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Vérifier le solde
             $stmt = $db->prepare("SELECT * FROM solde_conge 
-                                  WHERE idAgent = :idAgent 
+                                  WHERE \"idAgent\" = :idAgent 
                                   AND idtype_conge = :idTypeConge 
                                   AND annee = :annee");
             $stmt->bindParam(':idAgent', $idAgent, PDO::PARAM_INT);
@@ -149,8 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Créer la demande de congé
         $stmt = $db->prepare("INSERT INTO demande_conge 
-                             (idAgent, idtype_conge, date_debut, date_fin, motif, 
-                              document_justificatif, statut, date_demande, idUser) 
+                             (\"idAgent\", idtype_conge, date_debut, date_fin, motif, 
+                              document_justificatif, statut, date_demande, \"idUser\") 
                              VALUES 
                              (:idAgent, :idTypeConge, :dateDebut, :dateFin, :motif, 
                               :documentJustificatif, 'En attente', NOW(), :idUser)");
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt = $db->prepare("UPDATE solde_conge 
                                      SET jours_pris = jours_pris + :joursOuvrables,
                                          date_mise_a_jour = NOW()
-                                     WHERE idAgent = :idAgent 
+                                     WHERE \"idAgent\" = :idAgent 
                                      AND idtype_conge = :idTypeConge 
                                      AND annee = :annee");
                 $stmt->bindParam(':joursOuvrables', $joursOuvrables, PDO::PARAM_INT);

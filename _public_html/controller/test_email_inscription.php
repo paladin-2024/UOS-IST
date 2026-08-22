@@ -87,15 +87,15 @@ switch ($action) {
 function envoyerEmailValidation($inscription, $matricule, $idEtudiant) {
     try {
         $to = $inscription['email'];
-        $subject = 'Inscription validée - Bienvenue à l\'INBTP Kinshasa';
+        $subject = 'Inscription validée - Bienvenue à l\'ISTM-BENI';
         
         // Construire le contenu HTML de l'email
         $htmlMessage = genererCorpsEmailValidation($inscription, $matricule, $idEtudiant);
         
         // Configuration de l'entreprise
         $entreprise = [
-            'nom' => 'INBTP Kinshasa',
-            'email' => 'info@inbtpkinshasa.info'
+            'nom' => 'ISTM-BENI',
+            'email' => 'scolarite@istmbeni.ac.cd'
         ];
         
         // Email headers
@@ -116,15 +116,15 @@ function envoyerEmailValidation($inscription, $matricule, $idEtudiant) {
 function envoyerEmailRejet($inscription, $motifRejet) {
     try {
         $to = $inscription['email'];
-        $subject = 'Inscription rejetée - INBTP Kinshasa';
+        $subject = 'Inscription rejetée - ISTM-BENI';
         
         // Construire le contenu HTML de l'email
         $htmlMessage = genererCorpsEmailRejet($inscription, $motifRejet);
         
         // Configuration de l'entreprise
         $entreprise = [
-            'nom' => 'INBTP Kinshasa',
-            'email' => 'info@inbtpkinshasa.info'
+            'nom' => 'ISTM-BENI',
+            'email' => 'scolarite@istmbeni.ac.cd'
         ];
         
         // Email headers
@@ -143,7 +143,7 @@ function envoyerEmailRejet($inscription, $motifRejet) {
 
 // Fonction pour générer le corps de l'email de validation en HTML
 function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
-    $urlPortail = "https://inbtpkinshasa.info/portail/login";
+    $urlPortail = "https://std-ucg-butembo.wscsarl.info/login";
     
     $htmlMessage = '<!DOCTYPE html>
     <html>
@@ -272,7 +272,7 @@ function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
                     
                     <div class="success-box">
                         <h3>✅ Inscription Validée avec Succès</h3>
-                        <p>Nous avons le plaisir de vous informer que votre demande d\'inscription à l\'<strong>INBTP Kinshasa</strong> a été validée avec succès !</p>
+                        <p>Nous avons le plaisir de vous informer que votre demande d\'inscription à l\'<strong>ISTM-BENI</strong> a été validée avec succès !</p>
                     </div>
                     
                     <div class="matricule-box">
@@ -312,19 +312,19 @@ function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
                         <p style="margin-bottom: 0;">Si vous avez des questions ou besoin d\'assistance, n\'hésitez pas à contacter notre service des admissions ou à vous rendre directement sur le campus.</p>
                     </div>
                     
-                    <p>Nous vous souhaitons la bienvenue dans la famille INBTP Kinshasa et vous souhaitons une excellente année académique !</p>
+                    <p>Nous vous souhaitons la bienvenue dans la famille ISTM-BENI et vous souhaitons une excellente année académique !</p>
                     
                     <p>Cordialement,<br>
                     Le Service des Admissions<br>
-                    <strong>INBTP Kinshasa</strong></p>
+                    <strong>ISTM-BENI</strong></p>
                 </div>
                 
                 <div class="footer">
                     <p><strong>Institut National du Bâtiment et des Travaux Publics</strong></p>
-                    <p>INBTP Kinshasa</p>
-                    <p>Email: <a href="mailto:info@inbtpkinshasa.info" style="color: #4299e1; text-decoration: none;">info@inbtpkinshasa.info</a></p>
-                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">inbtpkinshasa.info/portail</a></p>
-                    <p>&copy; ' . date('Y') . ' INBTP Kinshasa. Tous droits réservés.</p>
+                    <p>ISTM-BENI</p>
+                    <p>Email: <a href="mailto:scolarite@istmbeni.ac.cd" style="color: #4299e1; text-decoration: none;">scolarite@istmbeni.ac.cd</a></p>
+                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">std-ucg-butembo.wscsarl.info</a></p>
+                    <p>&copy; ' . date('Y') . ' ISTM-BENI. Tous droits réservés.</p>
                 </div>
             </div>
         </div>
@@ -336,7 +336,7 @@ function genererCorpsEmailValidation($inscription, $matricule, $idEtudiant) {
 
 // Fonction pour générer le corps de l'email de rejet en HTML
 function genererCorpsEmailRejet($inscription, $motifRejet) {
-    $urlPortail = "https://inbtpkinshasa.info/portail/login";
+    $urlPortail = "https://std-ucg-butembo.wscsarl.info/login";
     
     $htmlMessage = '<!DOCTYPE html>
     <html>
@@ -430,13 +430,13 @@ function genererCorpsEmailRejet($inscription, $motifRejet) {
             <div class="container">
                 <div class="header">
                     <h1>❌ Inscription Rejetée</h1>
-                    <p>INBTP Kinshasa</p>
+                    <p>ISTM-BENI</p>
                 </div>
                 
                 <div class="content">
                     <p>Cher(e) <strong>' . htmlspecialchars($inscription['prenom'] . ' ' . $inscription['nom']) . '</strong>,</p>
                     
-                    <p>Nous vous remercions pour votre demande d\'inscription à l\'INBTP Kinshasa.</p>
+                    <p>Nous vous remercions pour votre demande d\'inscription à l\'ISTM-BENI.</p>
                     
                     <div class="rejection-box">
                         <h3>🚫 Statut de votre inscription</h3>
@@ -471,15 +471,15 @@ function genererCorpsEmailRejet($inscription, $motifRejet) {
                     
                     <p>Cordialement,<br>
                     Le Service des Admissions<br>
-                    <strong>INBTP Kinshasa</strong></p>
+                    <strong>ISTM-BENI</strong></p>
                 </div>
                 
                 <div class="footer">
                     <p><strong>Institut National du Bâtiment et des Travaux Publics</strong></p>
-                    <p>INBTP Kinshasa</p>
-                    <p>Email: <a href="mailto:info@inbtpkinshasa.info" style="color: #4299e1; text-decoration: none;">info@inbtpkinshasa.info</a></p>
-                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">inbtpkinshasa.info/portail</a></p>
-                    <p>&copy; ' . date('Y') . ' INBTP Kinshasa. Tous droits réservés.</p>
+                    <p>ISTM-BENI</p>
+                    <p>Email: <a href="mailto:scolarite@istmbeni.ac.cd" style="color: #4299e1; text-decoration: none;">scolarite@istmbeni.ac.cd</a></p>
+                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">std-ucg-butembo.wscsarl.info</a></p>
+                    <p>&copy; ' . date('Y') . ' ISTM-BENI. Tous droits réservés.</p>
                 </div>
             </div>
         </div>

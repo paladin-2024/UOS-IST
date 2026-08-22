@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("
             INSERT INTO etudiant_documents 
             (idetudiant, matricule, type_document, document_obligatoire_id, titre, description, 
-             chemin_fichier, date_ajout, annee_acad_id, idUser, statut)
+             chemin_fichier, date_ajout, annee_acad_id, \"idUser\", statut)
             VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, 'En attente de validation')
         ");
         

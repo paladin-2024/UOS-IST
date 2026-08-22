@@ -153,7 +153,7 @@ $validationsAnnuelles = [];
 
 // 1. Récupérer les moyennes UE sauvegardées
 $stmtMoyenneUE = $db->prepare("
-    SELECT matricule, idUE, moyenne_deliberee, est_validee, credits_obtenus
+    SELECT matricule, \"idUE\", moyenne_deliberee, est_validee, credits_obtenus
     FROM moyenne_ue
     WHERE session_idsession = :sessionId
     AND annee_acad_idannee_acad = :anneeId

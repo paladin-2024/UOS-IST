@@ -7,7 +7,7 @@ $connexion = Connexion::getInstance()->getPDO();
 // Fonctions utilitaires pour le contrôle d'accès
 function getUserSections($db, $userId, $anneeAcadId) {
     $query = "SELECT section_idsection FROM responsable_section 
-              WHERE idUser = :userId AND annee_acad_idannee_acad = :anneeId";
+              WHERE \"idUser\" = :userId AND annee_acad_idannee_acad = :anneeId";
     $stmt = $db->prepare($query);
     $stmt->execute(['userId' => $userId, 'anneeId' => $anneeAcadId]);
     return array_values(array_unique(array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN))));
@@ -61,7 +61,7 @@ function isSubjectAccessible($db, $sujetId, $userSections, $hasFullAccess) {
     $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
     $query = "SELECT COUNT(*) as count
               FROM sujets s
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
               WHERE s.idsujets = ? AND sec.idsection IN ($sectionsParams)";
@@ -91,9 +91,9 @@ $academicYears = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Récupérer les spécialisations (filtrées selon les sections autorisées)
 if ($hasFullAccess) {
     // Admin - toutes les spécialisations
-    $query = "SELECT s.*, ur.designation_UR as unite_recherche 
+    $query = "SELECT s.*, ur.\"designation_UR\" as unite_recherche 
               FROM specialisation s
-              LEFT JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+              LEFT JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
               ORDER BY s.designation";
     $stmt = $connexion->prepare($query);
     $stmt->execute();
@@ -101,10 +101,10 @@ if ($hasFullAccess) {
 } else {
     // Responsable de section - seulement les spécialisations de ses sections
     $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
-    $query = "SELECT DISTINCT s.idSpecialisation, s.designation, s.idorientation, s.idUnite_recherche,
-                     ur.designation_UR as unite_recherche
+    $query = "SELECT DISTINCT s.\"idSpecialisation\", s.designation, s.idorientation, s.\"idUnite_recherche\",
+                     ur.\"designation_UR\" as unite_recherche
               FROM specialisation s
-              LEFT JOIN unite_recherche ur ON s.idUnite_recherche = ur.idunite_recherche
+              LEFT JOIN unite_recherche ur ON s.\"idUnite_recherche\" = ur.idunite_recherche
               LEFT JOIN orientation o ON s.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
               WHERE sec.idsection IN ($sectionsParams)
@@ -193,7 +193,7 @@ if ($hasFullAccess) {
     $query = "SELECT DISTINCT a.*, g.designation as gradeDesignation
               FROM agent a
               LEFT JOIN grade g ON a.grade_id = g.idgrade
-              LEFT JOIN agent_section ag_s ON ag_s.idAgent = a.idAgent
+              LEFT JOIN agent_section ag_s ON ag_s.\"idAgent\" = a.\"idAgent\"
               WHERE a.type_agent = 'Enseignant' AND ag_s.idsection IN ($sectionsParams)
               ORDER BY a.noms";
     $stmt = $connexion->prepare($query);
@@ -225,7 +225,7 @@ if ($hasFullAccess) {
                 // Récupérer les noms des sections
                 $sectionNames = [];
                 $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
-                $queryNames = "SELECT designationSection FROM section WHERE idsection IN ($sectionsParams)";
+                $queryNames = "SELECT \"designationSection\" FROM section WHERE idsection IN ($sectionsParams)";
                 $stmtNames = $connexion->prepare($queryNames);
                 $stmtNames->execute($userSections);
                 $sectionsData = $stmtNames->fetchAll(PDO::FETCH_COLUMN);

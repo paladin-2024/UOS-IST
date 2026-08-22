@@ -13,12 +13,12 @@ $idSpecialisation = intval($_GET['idSpecialisation']);
 $db = Connexion::getInstance()->getPDO();
 
 try {
-    $query = "SELECT es.id as idAffectation, a.noms, g.designation as gradeDesignation, 
-                     es.dateAffectation
+    $query = "SELECT es.id as \"idAffectation\", a.noms, g.designation as gradeDesignation, 
+                     es.\"dateAffectation\"
               FROM enseignant_specialisation es
-              JOIN agent a ON es.idAgent = a.idAgent
+              JOIN agent a ON es.\"idAgent\" = a.\"idAgent\"
               LEFT JOIN grade g ON a.grade_id = g.idgrade
-              WHERE es.idSpecialisation = ?
+              WHERE es.\"idSpecialisation\" = ?
               ORDER BY a.noms";
     
     $stmt = $db->prepare($query);

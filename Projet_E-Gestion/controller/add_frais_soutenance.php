@@ -25,7 +25,7 @@ try {
     $db = Connexion::getInstance()->getPDO();
 
     $query = "INSERT INTO frais_soutenance 
-              (designation, montant, devise, estObligatoire, description, annee_acad_idannee_acad, idUser, date_creation)
+              (designation, montant, devise, \"estObligatoire\", description, annee_acad_idannee_acad, \"idUser\", date_creation)
               VALUES (:designation, :montant, :devise, :estObligatoire, :description, :anneeId, :idUser, NOW())";
 
     $stmt = $db->prepare($query);

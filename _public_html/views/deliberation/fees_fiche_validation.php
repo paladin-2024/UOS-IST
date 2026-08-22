@@ -12,8 +12,8 @@ $userResponsibilities = [];
 if (!$hasFullAccess) {
     try {
         $connexion = Connexion::getInstance()->getPDO();
-        $query = "SELECT DISTINCT section_idsection FROM responsable_section 
-                  WHERE idUser = :userId";
+        $query = 'SELECT DISTINCT section_idsection FROM responsable_section
+                  WHERE "idUser" = :userId';
         $stmt = $connexion->prepare($query);
         $stmt->execute(['userId' => $userId]);
         $userResponsibilities = $stmt->fetchAll(PDO::FETCH_COLUMN);

@@ -34,10 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['assignMultipleBtn'])) 
         $db->beginTransaction();
         
         // Préparer la requête pour vérifier l'existence
-        $stmtCheck = $db->prepare("SELECT COUNT(*) FROM enseignant_specialisation WHERE idAgent = ? AND idSpecialisation = ?");
+        $stmtCheck = $db->prepare("SELECT COUNT(*) FROM enseignant_specialisation WHERE \"idAgent\" = ? AND \"idSpecialisation\" = ?");
         
         // Préparer la requête d'insertion
-        $stmtInsert = $db->prepare("INSERT INTO enseignant_specialisation (idAgent, idSpecialisation, dateAffectation, idUser) VALUES (?, ?, NOW(), ?)");
+        $stmtInsert = $db->prepare("INSERT INTO enseignant_specialisation (\"idAgent\", \"idSpecialisation\", \"dateAffectation\", \"idUser\") VALUES (?, ?, NOW(), ?)");
         
         foreach ($enseignantsIds as $idAgent) {
             // Vérifier si l'enseignant est déjà affecté à cette spécialisation

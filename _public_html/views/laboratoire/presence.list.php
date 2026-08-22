@@ -15,7 +15,7 @@ if (!$idSeance) {
 $querySeance = "SELECT sl.*, l.nom as nom_labo, l.localisation, a.noms as responsable_nom
                 FROM seance_labo sl
                 JOIN laboratoire l ON sl.idlabo = l.idlabo
-                LEFT JOIN agent a ON l.responsable_id = a.idAgent
+                LEFT JOIN agent a ON l.responsable_id = a.\"idAgent\"
                 WHERE sl.idseance_labo = :idSeance";
 
 

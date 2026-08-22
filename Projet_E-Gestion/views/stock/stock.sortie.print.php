@@ -17,11 +17,11 @@ $db = Connexion::getInstance()->getPDO();
 
 // Récupérer les informations de la sortie
 $query = "SELECT s.*, d.libelle_depot, d.adresse as depot_adresse, 
-          u1.nomUser as user_creation, u2.nomUser as user_validation
+          u1.\"nomUser\" as user_creation, u2.\"nomUser\" as user_validation
           FROM sortie_stock s
           LEFT JOIN depot d ON s.id_depot = d.id_depot
-          LEFT JOIN t_users u1 ON s.id_user_creation = u1.idUser
-          LEFT JOIN t_users u2 ON s.id_user_validation = u2.idUser
+          LEFT JOIN t_users u1 ON s.id_user_creation = u1.\"idUser\"
+          LEFT JOIN t_users u2 ON s.id_user_validation = u2.\"idUser\"
           WHERE s.id_sortie = :id_sortie";
 $stmt = $db->prepare($query);
 $stmt->bindParam(':id_sortie', $id_sortie, PDO::PARAM_INT);

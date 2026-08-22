@@ -20,9 +20,9 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 // Récupérer les promotions
 $promotions = [];
 try {
-    $sql = "SELECT DISTINCT p.idpromotion, p.designationPromotion 
+    $sql = "SELECT DISTINCT p.idpromotion, p.\"designationPromotion\" 
             FROM promotion p 
-            ORDER BY p.designationPromotion";
+            ORDER BY p.\"designationPromotion\"";
     $stmt = $db->query($sql);
     $promotions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -49,15 +49,15 @@ if ($promotionId && $anneeId) {
                     d.id_dette,
                     d.matricule,
                     CONCAT(e.noms) as nom_etudiant,
-                    s.numeroSemestre as semestre,
-                    ec.designationECUE as ue_designation,
+                    s.\"numeroSemestre\" as semestre,
+                    ec.\"designationECUE\" as ue_designation,
                     ec.CMI + ec.TD + ec.TP as credits,
                     d.statut,
                     d.note_obtenue,
                     d.note_rachat
                 FROM dette_etudiant d
                 INNER JOIN etudiant e ON d.matricule = e.matricule
-                INNER JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
+                INNER JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
                 INNER JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
                 WHERE d.promotion_idpromotion = :promotion
                 AND d.annee_acad_idannee_acad = :annee";
@@ -80,7 +80,7 @@ if ($promotionId && $anneeId) {
             $params[':search2'] = '%' . $search . '%';
         }
         
-        $sql .= " ORDER BY e.noms, s.numeroSemestre";
+        $sql .= " ORDER BY e.noms, s.\"numeroSemestre\"";
         
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
@@ -101,7 +101,7 @@ if ($promotionId && $anneeId) {
                     SUM(CASE WHEN d.statut = 'En cours' THEN 1 ELSE 0 END) as dettes_en_cours,
                     SUM(CASE WHEN d.statut = 'Validée' THEN 1 ELSE 0 END) as dettes_validees
                 FROM dette_etudiant d
-                INNER JOIN ecue ec ON d.ECUE_idECUE = ec.idECUE
+                INNER JOIN ecue ec ON d.\"ECUE_idECUE\" = ec.\"idECUE\"
                 WHERE d.promotion_idpromotion = :promotion
                 AND d.annee_acad_idannee_acad = :annee";
         

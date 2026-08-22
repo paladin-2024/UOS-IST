@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                               SET statut = 'Approuvé', 
                                   commentaire_decision = :commentaire, 
                                   date_decision = NOW(), 
-                                  idDecideur = :idDecideur 
+                                  \"idDecideur\" = :idDecideur 
                               WHERE iddemande_conge = :idDemande");
         $stmt->bindParam(':commentaire', $commentaire);
         $stmt->bindParam(':idDecideur', $idDecideur, PDO::PARAM_INT);
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Vérifier si un solde existe pour cet agent et ce type de congé
             $stmt = $db->prepare("SELECT * FROM solde_conge 
-                                  WHERE idAgent = :idAgent 
+                                  WHERE \"idAgent\" = :idAgent 
                                   AND idtype_conge = :idTypeConge 
                                   AND annee = :annee");
             $stmt->bindParam(':idAgent', $demande['idAgent'], PDO::PARAM_INT);
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
 
                 $stmt = $db->prepare("INSERT INTO solde_conge 
-                                     (idAgent, idtype_conge, annee, jours_acquis, jours_pris, jours_reportes, date_mise_a_jour, idUser) 
+                                     (\"idAgent\", idtype_conge, annee, jours_acquis, jours_pris, jours_reportes, date_mise_a_jour, \"idUser\") 
                                      VALUES 
                                      (:idAgent, :idTypeConge, :annee, :joursAcquis, :joursPris, 0, NOW(), :idUser)");
                 $stmt->bindParam(':idAgent', $demande['idAgent'], PDO::PARAM_INT);

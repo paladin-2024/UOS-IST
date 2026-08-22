@@ -21,7 +21,7 @@ $userId = $_SESSION['id'] ?? 0;
 // Récupérer l'ID de l'agent associé à l'utilisateur
 $agentId = 0;
 if ($userId) {
-    $query = "SELECT idAgent FROM t_users WHERE idUser = :userId";
+    $query = "SELECT idAgent FROM t_users WHERE \"idUser\" = :userId";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':userId', $userId);
     $stmt->execute();
@@ -36,7 +36,7 @@ if ($isAdmin) {
     // Administrateur voit tous les laboratoires
     $query = "SELECT l.*, a.noms as responsable, COUNT(al.idautorisation) as nb_utilisateurs
               FROM laboratoire l
-              LEFT JOIN agent a ON l.responsable_id = a.idAgent
+              LEFT JOIN agent a ON l.responsable_id = a.\"idAgent\"
               LEFT JOIN autorisation_labo al ON l.idlabo = al.idlabo
               GROUP BY l.idlabo
               ORDER BY l.date_creation DESC";
@@ -45,8 +45,8 @@ if ($isAdmin) {
     // Utilisateur normal voit uniquement les laboratoires où il est autorisé
     $query = "SELECT l.*, a.noms as responsable, COUNT(al2.idautorisation) as nb_utilisateurs
               FROM laboratoire l
-              LEFT JOIN agent a ON l.responsable_id = a.idAgent
-              LEFT JOIN autorisation_labo al ON l.idlabo = al.idlabo AND al.idAgent = :agentId
+              LEFT JOIN agent a ON l.responsable_id = a.\"idAgent\"
+              LEFT JOIN autorisation_labo al ON l.idlabo = al.idlabo AND al.\"idAgent\" = :agentId
               LEFT JOIN autorisation_labo al2 ON l.idlabo = al2.idlabo
               WHERE al.idautorisation IS NOT NULL
               GROUP BY l.idlabo

@@ -90,8 +90,8 @@ if ($isSecondSession) {
     $db = Connexion::getInstance()->getPDO();
     $sessionQuery = $db->prepare("
         SELECT idsession FROM session 
-        WHERE LOWER(designSession) LIKE CONCAT('%', ?, '%')
-        OR LOWER(designSession) = ?
+        WHERE LOWER(\"designSession\") LIKE CONCAT('%', ?, '%')
+        OR LOWER(\"designSession\") = ?
         LIMIT 1
     ");
     $sessionQuery->execute(['premi', 'premiere session']);
@@ -108,7 +108,7 @@ $db = Connexion::getInstance()->getPDO();
 $configQuery = $db->prepare("
     SELECT ponderation_cc, ponderation_ex 
     FROM configuration_moyenne 
-    WHERE idECUE = :ecueId 
+    WHERE \"idECUE\" = :ecueId 
     AND session_idsession = :sessionId 
     AND annee_acad_id = :anneeId
     LIMIT 1

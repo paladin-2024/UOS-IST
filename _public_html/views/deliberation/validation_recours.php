@@ -37,7 +37,7 @@ $conn = Connexion::getInstance()->getPDO();
 // Récupérer l'année académique en cours ou celle sélectionnée
 $id_annee = isset($_GET['annee']) ? intval($_GET['annee']) : 0;
 if ($id_annee == 0) {
-    $query_annee = "SELECT idannee_acad FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $query_annee = 'SELECT idannee_acad FROM annee_acad ORDER BY "dateCreation" DESC LIMIT 1';
     $stmt_annee = $conn->prepare($query_annee);
     $stmt_annee->execute();
     $annee = $stmt_annee->fetch(PDO::FETCH_ASSOC);
@@ -51,25 +51,25 @@ $statut = isset($_GET['statut']) ? $_GET['statut'] : 'En traitement';
 $validated_only = isset($_GET['validated_only']) ? (bool)$_GET['validated_only'] : false;
 
 // Récupérer les années académiques pour le filtre
-$query_annees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC";
+$query_annees = 'SELECT idannee_acad, designation FROM annee_acad ORDER BY "dateCreation" DESC';
 $stmt_annees = $conn->prepare($query_annees);
 $stmt_annees->execute();
 $annees = $stmt_annees->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les sessions pour le filtre
-$query_sessions = "SELECT idsession, designSession FROM session ORDER BY idsession";
+$query_sessions = 'SELECT idsession, "designSession" FROM session ORDER BY idsession';
 $stmt_sessions = $conn->prepare($query_sessions);
 $stmt_sessions->execute();
 $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les promotions gérées par le jury (ou toutes pour les admins)
 if ($isAdmin) {
-    $query_promotions = "SELECT idpromotion, designationPromotion, o.designationOrientation, s.designationSection
+    $query_promotions = 'SELECT idpromotion, "designationPromotion", o."designationOrientation", s."designationSection"
                         FROM promotion p
                         JOIN orientation o ON p.orientation_idorientation = o.idorientation
                         JOIN section s ON o.section_idsection = s.idsection
                         WHERE p.annee_acad_idannee_acad = :id_annee
-                        ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion";
+                        ORDER BY s."designationSection", o."designationOrientation", p."designationPromotion"';
     $stmt_promotions = $conn->prepare($query_promotions);
     $stmt_promotions->bindParam(':id_annee', $id_annee);
 } else {
@@ -81,16 +81,16 @@ if ($isAdmin) {
     
     // Construire la liste d'IDs directement (pas de placeholders)
     $bureauIdsList = implode(',', array_map('intval', $bureauIds));
-    $query_promotions = "SELECT DISTINCT p.idpromotion, p.designationPromotion, o.designationOrientation, s.designationSection
+    $query_promotions = 'SELECT DISTINCT p.idpromotion, p."designationPromotion", o."designationOrientation", s."designationSection"
                         FROM promotion p
                         JOIN orientation o ON p.orientation_idorientation = o.idorientation
                         JOIN section s ON o.section_idsection = s.idsection
                         JOIN bureau_jury_promotion bjp ON p.idpromotion = bjp.idpromotion
                         JOIN bureau_jury_deliberation bjd ON bjp.idbureau = bjd.idbureau
                         WHERE p.annee_acad_idannee_acad = :id_annee
-                        AND bjd.idbureau IN ($bureauIdsList)
+                        AND bjd.idbureau IN (' . $bureauIdsList . ')
                         AND bjd.est_actif = 1
-                        ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion";
+                        ORDER BY s."designationSection", o."designationOrientation", p."designationPromotion"';
     
     $stmt_promotions = $conn->prepare($query_promotions);
     $stmt_promotions->bindParam(':id_annee', $id_annee);
@@ -99,23 +99,23 @@ $stmt_promotions->execute();
 $promotions = $stmt_promotions->fetchAll(PDO::FETCH_ASSOC);
 
 // Construire la requête pour récupérer les recours
-$query_recours = "
-    SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p.designationPromotion,
-           ec.designationECUE, u.designationUE, r.motif, r.date_creation, r.statut,
-           s.designSession, a.designation as annee_acad,
+$query_recours = '
+    SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p."designationPromotion",
+           ec."designationECUE", u."designationUE", r.motif, r.date_creation, r.statut,
+           s."designSession", a.designation as annee_acad,
            rr.id_reponse, rr.nouvelle_note_cc, rr.nouvelle_note_ex, rr.commentaire,
            rr.date_reponse, rr.valide_jury, ag.noms as nom_enseignant
     FROM recours r
     JOIN etudiant e ON r.matricule = e.matricule
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
-    JOIN ecue ec ON r.id_ecue = ec.idECUE
-    JOIN ue u ON ec.UE_idUE = u.idUE
+    JOIN ecue ec ON r.id_ecue = ec."idECUE"
+    JOIN ue u ON ec."UE_idUE" = u."idUE"
     JOIN session s ON r.id_session = s.idsession
     JOIN annee_acad a ON r.id_annee_acad = a.idannee_acad
     LEFT JOIN recours_reponse rr ON r.id_recours = rr.id_recours
-    LEFT JOIN agent ag ON rr.id_enseignant = ag.idAgent
+    LEFT JOIN agent ag ON rr.id_enseignant = ag."idAgent"
     WHERE r.id_annee_acad = :id_annee
-    AND r.statut = :statut";
+    AND r.statut = :statut';
 
 // Ajouter les filtres optionnels
 $params = [':id_annee' => $id_annee, ':statut' => $statut];
@@ -169,15 +169,15 @@ $bureau = null;
 if (!$isAdmin && !empty($juryBureaux)) {
     // Prendre le premier bureau disponible
     $firstBureau = $juryBureaux[0];
-    $query_bureau = "SELECT bjd.idbureau, bjd.designation, bjd.numero_decision, 
+    $query_bureau = 'SELECT bjd.idbureau, bjd.designation, bjd.numero_decision,
                    p.noms as president, s.noms as secretaire
             FROM bureau_jury_deliberation bjd
-            JOIN agent p ON bjd.president_id = p.idAgent
-            JOIN agent s ON bjd.secretaire_id = s.idAgent
+            JOIN agent p ON bjd.president_id = p."idAgent"
+            JOIN agent s ON bjd.secretaire_id = s."idAgent"
             WHERE bjd.idbureau = :bureau_id
             AND bjd.annee_acad_idannee_acad = :id_annee
             AND bjd.est_actif = 1
-            LIMIT 1";
+            LIMIT 1';
     
     $stmt_bureau = $conn->prepare($query_bureau);
     $stmt_bureau->bindParam(':bureau_id', $firstBureau['idbureau']);

@@ -21,12 +21,12 @@ if ($id_entree <= 0) {
 
 // Récupération des informations de l'entrée
 $query = "SELECT e.*, d.libelle_depot, 
-                 u1.nomUser as user_creation, 
-                 u2.nomUser as user_validation
+                 u1.\"nomUser\" as user_creation, 
+                 u2.\"nomUser\" as user_validation
           FROM entree_stock e 
           LEFT JOIN depot d ON e.id_depot = d.id_depot
-          LEFT JOIN t_users u1 ON e.id_user_creation = u1.idUser
-          LEFT JOIN t_users u2 ON e.id_user_validation = u2.idUser
+          LEFT JOIN t_users u1 ON e.id_user_creation = u1.\"idUser\"
+          LEFT JOIN t_users u2 ON e.id_user_validation = u2.\"idUser\"
           WHERE e.id_entree = :id_entree";
 $stmt = $db->prepare($query);
 $stmt->bindParam(':id_entree', $id_entree, PDO::PARAM_INT);

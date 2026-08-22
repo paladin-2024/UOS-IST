@@ -30,7 +30,7 @@ try {
     if (!$hasFullAccess && $anneeId > 0) {
         $queryAccess = "SELECT COUNT(*) 
                         FROM responsable_section
-                        WHERE idUser = :user_id
+                        WHERE \"idUser\" = :user_id
                           AND section_idsection = :section_id
                           AND annee_acad_idannee_acad = :annee_id";
         $stmtAccess = $pdo->prepare($queryAccess);
@@ -49,11 +49,11 @@ try {
     // Requête pour récupérer les spécialisations de la section
     $sql = "
         SELECT DISTINCT 
-            sp.idSpecialisation, 
+            sp.\"idSpecialisation\", 
             sp.designation,
-            ur.designation_UR
+            ur.\"designation_UR\"
         FROM specialisation sp
-        LEFT JOIN unite_recherche ur ON sp.idUnite_recherche = ur.idunite_recherche
+        LEFT JOIN unite_recherche ur ON sp.\"idUnite_recherche\" = ur.idunite_recherche
         LEFT JOIN orientation ori ON sp.idorientation = ori.idorientation
         LEFT JOIN section sec ON ori.section_idsection = sec.idsection
     ";
@@ -62,7 +62,7 @@ try {
     $whereConditions = ["sec.idsection = :section_id"];
 
     if ($anneeId > 0) {
-        $sql .= " INNER JOIN sujets sj ON sj.idSpecialisation = sp.idSpecialisation ";
+        $sql .= " INNER JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" ";
         $whereConditions[] = "sj.annee_acad_idannee_acad = :annee_id";
         $params[':annee_id'] = $anneeId;
     }

@@ -57,7 +57,7 @@ try {
         // Récupérer les sections dont l'utilisateur est responsable
         $queryUserSections = "SELECT section_idsection 
                              FROM responsable_section 
-                             WHERE idUser = ? AND annee_acad_idannee_acad = ?";
+                             WHERE \"idUser\" = ? AND annee_acad_idannee_acad = ?";
         $stmtUserSections = $pdo->prepare($queryUserSections);
         $stmtUserSections->execute([$userId, $anneeId]);
         $userSections = $stmtUserSections->fetchAll(PDO::FETCH_COLUMN);

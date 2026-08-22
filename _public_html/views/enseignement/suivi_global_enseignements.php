@@ -18,7 +18,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -26,7 +26,7 @@ $stmtAnnee->execute();
 $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -35,7 +35,7 @@ if (!$currentYear) {
 // Récupérer les sections dont l'utilisateur est responsable
 $query = "SELECT section_idsection 
           FROM responsable_section 
-          WHERE idUser = :userId 
+          WHERE \"idUser\" = :userId 
           AND annee_acad_idannee_acad = :anneeId";
 
 $stmt = $pdo->prepare($query);
@@ -86,7 +86,7 @@ function getPromotionsAccessibles($pdo, $userSections, $anneeId) {
         $query .= " AND o.section_idsection IN (" . implode(',', $placeholders) . ")";
     }
     
-    $query .= " ORDER BY p.designationPromotion";
+    $query .= " ORDER BY p.\"designationPromotion\"";
     
     $stmt = $pdo->prepare($query);
     foreach ($params as $key => $value) {
@@ -99,7 +99,7 @@ function getPromotionsAccessibles($pdo, $userSections, $anneeId) {
 
 // Fonction pour récupérer les semestres d'une promotion
 function getSemestresByPromotion($pdo, $promotionId) {
-    $query = "SELECT * FROM semestre WHERE promotion_idpromotion = :promotionId ORDER BY numeroSemestre";
+    $query = "SELECT * FROM semestre WHERE promotion_idpromotion = :promotionId ORDER BY \"numeroSemestre\"";
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':promotionId', $promotionId);
     $stmt->execute();
@@ -151,26 +151,26 @@ function getStatistiquesAvancement($pdo, $promotionId, $semestreId = null, $anne
     
     // Récupérer tous les ECUE de la promotion/semestre avec leurs volumes horaires prévus
     $query = "SELECT DISTINCT 
-              e.idECUE,
-              e.designationECUE,
-              e.CMI as volumeHoraireCM,
-              e.TD as volumeHoraireTD,
-              e.TP as volumeHoraireTP,
-              u.designationUE,
-              s.numeroSemestre,
+              e.\"idECUE\",
+              e.\"designationECUE\",
+              e.\"CMI\" as volumeHoraireCM,
+              e.\"TD\" as volumeHoraireTD,
+              e.\"TP\" as volumeHoraireTP,
+              u.\"designationUE\",
+              s.\"numeroSemestre\",
               s.idsemestre
               FROM ecue e
-              JOIN ue u ON e.UE_idUE = u.idUE
+              JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
               JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
               WHERE s.promotion_idpromotion = :promotionId
-              AND e.estVisible = 1";
+              AND e.\"estVisible\" = 1";
     
     if ($semestreId) {
         $query .= " AND s.idsemestre = :semestreId";
         $params[':semestreId'] = $semestreId;
     }
     
-    $query .= " ORDER BY s.numeroSemestre, u.designationUE, e.designationECUE";
+    $query .= " ORDER BY s.\"numeroSemestre\", u.\"designationUE\", e.\"designationECUE\"";
     
     $stmt = $pdo->prepare($query);
     foreach ($params as $key => $value) {
@@ -193,7 +193,7 @@ function getStatistiquesAvancement($pdo, $promotionId, $semestreId = null, $anne
                         type_cours,
                         SUM(TIMESTAMPDIFF(HOUR, heure_debut, heure_fin)) as heures_realisees
                         FROM suivi_enseignements
-                        WHERE idECUE = :ecueId
+                        WHERE \"idECUE\" = :ecueId
                         AND annee_acad_idannee_acad = :anneeAcadId
                         GROUP BY type_cours";
         

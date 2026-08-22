@@ -294,7 +294,7 @@ class GrilleAncienne
      */
     public function getAllImports()
     {
-        $sql = "SELECT gai.*, s.designationSection 
+        $sql = "SELECT gai.*, s.\"designationSection\" 
                 FROM grilles_anciennes_imports gai
                 LEFT JOIN section s ON gai.section_id = s.idsection
                 ORDER BY gai.date_import DESC";
@@ -307,11 +307,11 @@ class GrilleAncienne
      */
     public function getImportsByUserSections($userId)
     {
-        $sql = "SELECT DISTINCT gai.*, s.designationSection 
+        $sql = "SELECT DISTINCT gai.*, s.\"designationSection\" 
                 FROM grilles_anciennes_imports gai
                 LEFT JOIN section s ON gai.section_id = s.idsection
                 INNER JOIN responsable_section rs ON s.idsection = rs.section_idsection
-                WHERE rs.idUser = ?
+                WHERE rs.\"idUser\" = ?
                 ORDER BY gai.date_import DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);
@@ -345,7 +345,7 @@ class GrilleAncienne
     public function getImportWithSection($importId)
     {
         $sql = "SELECT gi.*, 
-                       s.designationSection, s.telephone as section_telephone, 
+                       s.\"designationSection\", s.telephone as section_telephone, 
                        s.email as section_email, s.adresse as section_adresse,
                        s.boite_postale as section_boite_postale, s.site_web as section_site_web,
                        rs.noms as chef_section_nom, rs.fonction as chef_section_fonction,
@@ -367,9 +367,9 @@ class GrilleAncienne
      */
     public function getSectionsAnneeEnCours()
     {
-        $sql = "SELECT s.idsection, s.designationSection 
+        $sql = "SELECT s.idsection, s.\"designationSection\" 
                 FROM section s
-                JOIN annee_acad a ON s.idAnnee = a.idannee_acad
+                JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
                 WHERE a.est_active = 1
                 ORDER BY s.designationSection";
         $stmt = $this->db->query($sql);

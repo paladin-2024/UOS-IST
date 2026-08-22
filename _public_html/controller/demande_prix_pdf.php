@@ -19,11 +19,11 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
     try {
         // Récupérer les informations de la demande de prix
         $queryDemande = "SELECT dp.*, f.nom_fournisseur, f.code_fournisseur, f.adresse, f.telephone, f.email, f.nif, f.rccm,
-                        u.nomUser as user_creation, v.nomUser as user_validation
+                        u.\"nomUser\" as user_creation, v.\"nomUser\" as user_validation
                         FROM demande_prix dp
                         LEFT JOIN fournisseur f ON dp.id_fournisseur = f.id_fournisseur
-                        LEFT JOIN t_users u ON dp.id_user_creation = u.idUser
-                        LEFT JOIN t_users v ON dp.id_user_validation = v.idUser
+                        LEFT JOIN t_users u ON dp.id_user_creation = u.\"idUser\"
+                        LEFT JOIN t_users v ON dp.id_user_validation = v.\"idUser\"
                         WHERE dp.id_demande_prix = :id_demande";
         $stmtDemande = $db->prepare($queryDemande);
         $stmtDemande->bindParam(':id_demande', $idDemande, PDO::PARAM_INT);

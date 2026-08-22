@@ -9,13 +9,13 @@ $stmt->execute();
 $annees = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // RÃ©cupÃ©rer les sessions
-$query = "SELECT * FROM session ORDER BY designSession";
+$query = "SELECT * FROM session ORDER BY \"designSession\"";
 $stmt = $pdo->prepare($query);
 $stmt->execute();
 $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // RÃ©cupÃ©rer les sections
-$query = "SELECT * FROM section ORDER BY designationSection";
+$query = "SELECT * FROM section ORDER BY \"designationSection\"";
 $stmt = $pdo->prepare($query);
 $stmt->execute();
 $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);

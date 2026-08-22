@@ -12,7 +12,7 @@ $idUser = $_SESSION['id'];
 $stmt_sections = $connexion->prepare("
     SELECT DISTINCT section_idsection 
     FROM responsable_section 
-    WHERE idUser = :idUser
+    WHERE \"idUser\" = :idUser
 ");
 $stmt_sections->bindParam(':idUser', $idUser);
 $stmt_sections->execute();
@@ -22,7 +22,7 @@ $has_section_responsibility = !empty($user_sections);
 // Récupérer les noms des sections
 $sections_names = [];
 if ($has_section_responsibility) {
-    $sections_names_sql = "SELECT idsection, designationSection FROM section WHERE idsection IN (" . implode(',', array_map('intval', $user_sections)) . ")";
+    $sections_names_sql = "SELECT idsection, \"designationSection\" FROM section WHERE idsection IN (" . implode(',', array_map('intval', $user_sections)) . ")";
     $stmt_names = $connexion->prepare($sections_names_sql);
     $stmt_names->execute();
     $sections_data = $stmt_names->fetchAll(PDO::FETCH_ASSOC);
@@ -48,7 +48,7 @@ $annees = $stmt_years->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les promotions filtrées par sections de l'utilisateur
 $sql_promotions = "
-    SELECT DISTINCT p.idpromotion, p.designationPromotion, s.idsection, s.designationSection
+    SELECT DISTINCT p.idpromotion, p.\"designationPromotion\", s.idsection, s.\"designationSection\"
     FROM promotion p
     INNER JOIN orientation o ON p.orientation_idorientation = o.idorientation
     INNER JOIN section s ON o.section_idsection = s.idsection
@@ -62,7 +62,7 @@ if (!empty($section_filtre)) {
     $sql_promotions .= " AND s.idsection = :section_filtre";
 }
 
-$sql_promotions .= " ORDER BY s.designationSection, p.designationPromotion";
+$sql_promotions .= " ORDER BY s.\"designationSection\", p.\"designationPromotion\"";
 
 $stmt_promotions = $connexion->prepare($sql_promotions);
 if (!empty($section_filtre)) {
@@ -137,8 +137,8 @@ foreach ($stats_global_all as $stat) {
 $sql_montants_attendus = "
     SELECT 
         p.idpromotion,
-        p.designationPromotion,
-        s.designationSection,
+        p.\"designationPromotion\",
+        s.\"designationSection\",
         frais_devise as devise,
         COUNT(DISTINCT e.idetudiant) as nombre_etudiants,
         SUM(montant_frais) as montant_attendu
@@ -170,9 +170,9 @@ if (!empty($promotion_filtre)) {
     $sql_montants_attendus .= " AND p.idpromotion = :promotion_filtre";
 }
 
-$sql_montants_attendus .= " GROUP BY p.idpromotion, p.designationPromotion, s.designationSection, frais_devise
+$sql_montants_attendus .= " GROUP BY p.idpromotion, p.\"designationPromotion\", s.\"designationSection\", frais_devise
     HAVING nombre_etudiants > 0
-    ORDER BY s.designationSection, p.designationPromotion, frais_devise";
+    ORDER BY s.\"designationSection\", p.\"designationPromotion\", frais_devise";
 
 $stmt_montants_attendus = $connexion->prepare($sql_montants_attendus);
 $stmt_montants_attendus->bindParam(':annee_acad', $annee_filtre);
@@ -235,8 +235,8 @@ $sql_stats_frais = "
         f.designation as frais_designation,
         f.devise,
         p.idpromotion,
-        p.designationPromotion,
-        s.designationSection,
+        p.\"designationPromotion\",
+        s.\"designationSection\",
         (
             -- Nombre d'affectations individuelles
             COUNT(DISTINCT CASE WHEN af.matricule_etudiant IS NOT NULL THEN af.id END) +
@@ -297,9 +297,9 @@ if (!empty($promotion_filtre)) {
     $sql_stats_frais .= " AND p.idpromotion = :promotion_filtre";
 }
 
-$sql_stats_frais .= " GROUP BY f.id, f.designation, f.devise, p.idpromotion, p.designationPromotion, s.designationSection
+$sql_stats_frais .= " GROUP BY f.id, f.designation, f.devise, p.idpromotion, p.\"designationPromotion\", s.\"designationSection\"
     HAVING nombre_affectations > 0 OR nombre_etudiants_concernes > 0
-    ORDER BY f.designation, s.designationSection, p.designationPromotion";
+    ORDER BY f.designation, s.\"designationSection\", p.\"designationPromotion\"";
 
 $stmt_stats_frais = $connexion->prepare($sql_stats_frais);
 $stmt_stats_frais->bindParam(':annee_acad', $annee_filtre);

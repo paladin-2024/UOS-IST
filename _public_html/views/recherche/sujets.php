@@ -13,7 +13,7 @@ $columnExists = $stmtCheck->fetch();
 if ($columnExists) {
     $queryAnnee = "SELECT * FROM annee_acad WHERE est_active = 1 LIMIT 1";
 } else {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
 }
 
 $stmtAnnee = $pdo->prepare($queryAnnee);
@@ -21,7 +21,7 @@ $stmtAnnee->execute();
 $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
 
 if (!$currentYear) {
-    $queryAnnee = "SELECT * FROM annee_acad ORDER BY dateCreation DESC LIMIT 1";
+    $queryAnnee = "SELECT * FROM annee_acad ORDER BY \"dateCreation\" DESC LIMIT 1";
     $stmtAnnee = $pdo->prepare($queryAnnee);
     $stmtAnnee->execute();
     $currentYear = $stmtAnnee->fetch(PDO::FETCH_ASSOC);
@@ -49,7 +49,7 @@ $idEnseignant = 0;
 if ($userRole != 1) { // Si pas admin
     $query = "SELECT section_idsection 
               FROM responsable_section 
-              WHERE idUser = :userId 
+              WHERE \"idUser\" = :userId 
               AND annee_acad_idannee_acad = :anneeId";
     
     $stmt = $pdo->prepare($query);
@@ -61,9 +61,9 @@ if ($userRole != 1) { // Si pas admin
     $isResponsableSection = !empty($userSections);
     
     // Vérifier si l'utilisateur est un enseignant
-    $queryEnseignant = "SELECT a.idAgent FROM agent a 
-                        INNER JOIN t_users u ON a.idAgent = u.idAgent 
-                        WHERE u.idUser = :userId AND a.type_agent = 'Enseignant'";
+    $queryEnseignant = "SELECT a.\"idAgent\" FROM agent a 
+                        INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+                        WHERE u.\"idUser\" = :userId AND a.type_agent = 'Enseignant'";
     $stmtEnseignant = $pdo->prepare($queryEnseignant);
     $stmtEnseignant->bindParam(':userId', $userId, PDO::PARAM_INT);
     $stmtEnseignant->execute();
@@ -83,13 +83,13 @@ $stmtAnnees->execute();
 $academicYears = $stmtAnnees->fetchAll(PDO::FETCH_ASSOC);
 
 // Sections (selon les droits)
-$querySections = "SELECT DISTINCT s.idsection, s.designationSection 
+$querySections = "SELECT DISTINCT s.idsection, s.\"designationSection\" 
                   FROM section s";
 if ($isResponsableSection && !empty($userSections)) {
     $placeholders = str_repeat('?,', count($userSections) - 1) . '?';
     $querySections .= " WHERE s.idsection IN ($placeholders)";
 }
-$querySections .= " ORDER BY s.designationSection";
+$querySections .= ' ORDER BY s."designationSection"';
 
 $stmtSections = $pdo->prepare($querySections);
 if ($isResponsableSection && !empty($userSections)) {
@@ -108,12 +108,12 @@ $specialisations = $stmtSpec->fetchAll(PDO::FETCH_ASSOC);
 // Promotions (selon la section sélectionnée)
 $promotions = [];
 if ($filterSection) {
-    $queryPromotions = "SELECT DISTINCT p.idpromotion, p.designationPromotion, p.cycle
+    $queryPromotions = "SELECT DISTINCT p.idpromotion, p.\"designationPromotion\", p.cycle
                         FROM promotion p
                         JOIN orientation o ON p.orientation_idorientation = o.idorientation
                         WHERE o.section_idsection = :section
                         AND p.annee_acad_idannee_acad = :annee
-                        ORDER BY p.cycle, p.designationPromotion";
+                        ORDER BY p.cycle, p.\"designationPromotion\"";
     $stmtPromotions = $pdo->prepare($queryPromotions);
     $stmtPromotions->bindParam(':section', $filterSection);
     $stmtPromotions->bindParam(':annee', $filterAnnee);
@@ -127,19 +127,19 @@ $params = [':anneeId' => $filterAnnee];
 $querySujets = "SELECT DISTINCT
                     s.idsujets,
                     s.intitule,
-                    s.statut_validation as etatSujet,
+                    s.statut_validation as \"etatSujet\",
                     s.cycle,
-                    s.idSpecialisation,
+                    s.\"idSpecialisation\",
                     s.annee_acad_idannee_acad,
-                    s.idDirecteur,
-                    s.idEncadreur,
+                    s.\"idDirecteur\",
+                    s.\"idEncadreur\",
                     s.etudiant_idetudiant,
                     sp.designation as specialisation,
                     e.noms as etudiant_nom,
                     e.matricule as etudiant_matricule,
-                    p.designationPromotion,
-                    o.designationOrientation,
-                    sec.designationSection,
+                    p.\"designationPromotion\",
+                    o.\"designationOrientation\",
+                    sec.\"designationSection\",
                     aa.designation as annee_designation,
                     dir.noms as directeur_nom,
                     enc.noms as encadreur_nom,
@@ -151,21 +151,21 @@ $querySujets = "SELECT DISTINCT
                         ELSE 'secondary'
                     END as badge_class
                 FROM sujets s
-                LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                 LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
                 LEFT JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
                 LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
                 LEFT JOIN section sec ON o.section_idsection = sec.idsection
                 LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
-                LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-                LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
+                LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+                LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
                 WHERE s.annee_acad_idannee_acad = :anneeId";
 
 // Appliquer les filtres selon les droits
 if ($userRole != 1) { // Si pas admin
     if ($isEnseignant) {
         // Enseignant : voir ses sujets + ceux de ses sections s'il est responsable
-        $conditions = ["(s.idDirecteur = :idEnseignant OR s.idEncadreur = :idEnseignant)"];
+        $conditions = ['(s."idDirecteur" = :idEnseignant OR s."idEncadreur" = :idEnseignant)'];
         $params[':idEnseignant'] = $idEnseignant;
         
         if ($isResponsableSection && !empty($userSections)) {
@@ -224,7 +224,7 @@ if (!empty($filterEtat)) {
 }
 
 if (!empty($filterSpecialisation)) {
-    $querySujets .= " AND s.idSpecialisation = :filterSpecialisation";
+    $querySujets .= ' AND s."idSpecialisation" = :filterSpecialisation';
     $params[':filterSpecialisation'] = $filterSpecialisation;
 }
 

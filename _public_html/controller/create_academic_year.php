@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Insertion de la nouvelle année académique
         $estActive = $setAsActive ? 1 : 0;
-        $insertQuery = "INSERT INTO annee_acad (designation, dateCreation, est_active) VALUES (:designation, NOW(), :est_active)";
+        $insertQuery = "INSERT INTO annee_acad (designation, \"dateCreation\", est_active) VALUES (:designation, NOW(), :est_active)";
         $insertStmt = $connexion->prepare($insertQuery);
         $insertStmt->bindParam(':designation', $designation);
         $insertStmt->bindParam(':est_active', $estActive, PDO::PARAM_INT);
@@ -100,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 isset($_POST['copier_sections']) && $_POST['copier_sections'] == 1) {
                 
                 $connexion->exec("
-                    INSERT INTO orientation (designationOrientation, dateCreation, section_idsection)
-                    SELECT o.designationOrientation, NOW(), sm.new_id
+                    INSERT INTO orientation (\"designationOrientation\", \"dateCreation\", section_idsection)
+                    SELECT o.\"designationOrientation\", NOW(), sm.new_id
                     FROM orientation o
                     JOIN section_mapping sm ON o.section_idsection = sm.old_id
                 ");
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     SELECT o_old.idorientation, o_new.idorientation
                     FROM orientation o_old
                     JOIN section_mapping sm ON o_old.section_idsection = sm.old_id
-                    JOIN orientation o_new ON o_new.designationOrientation = o_old.designationOrientation 
+                    JOIN orientation o_new ON o_new.\"designationOrientation\" = o_old.\"designationOrientation\" 
                                            AND o_new.section_idsection = sm.new_id
                 ");
             }
@@ -160,8 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($_POST['copier_semestres']) && $_POST['copier_semestres'] == 1 && 
                 isset($_POST['copier_promotions']) && $_POST['copier_promotions'] == 1) {
                     $connexion->exec("
-                    INSERT INTO semestre (numeroSemestre, dateEnregistrement, promotion_idpromotion)
-                    SELECT s.numeroSemestre, NOW(), pm.new_id
+                    INSERT INTO semestre (\"numeroSemestre\", \"dateEnregistrement\", promotion_idpromotion)
+                    SELECT s.\"numeroSemestre\", NOW(), pm.new_id
                     FROM semestre s
                     JOIN promotion_mapping pm ON s.promotion_idpromotion = pm.old_id
                 ");
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     SELECT s_old.idsemestre, s_new.idsemestre
                     FROM semestre s_old
                     JOIN promotion_mapping pm ON s_old.promotion_idpromotion = pm.old_id
-                    JOIN semestre s_new ON s_new.numeroSemestre = s_old.numeroSemestre 
+                    JOIN semestre s_new ON s_new.\"numeroSemestre\" = s_old.\"numeroSemestre\" 
                                         AND s_new.promotion_idpromotion = pm.new_id
                 ");
             }
@@ -189,8 +189,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 isset($_POST['copier_semestres']) && $_POST['copier_semestres'] == 1) {
                 
                 $connexion->exec("
-                    INSERT INTO ue (codeUE, designationUE, description, semestre_idsemestre)
-                    SELECT ue.codeUE, ue.designationUE, ue.description, sm.new_id
+                    INSERT INTO ue (\"codeUE\", \"designationUE\", description, semestre_idsemestre)
+                    SELECT ue.\"codeUE\", ue.\"designationUE\", ue.description, sm.new_id
                     FROM ue
                     JOIN semestre_mapping sm ON ue.semestre_idsemestre = sm.old_id
                 ");
@@ -205,10 +205,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 $connexion->exec("
                     INSERT INTO ue_mapping (old_id, new_id)
-                    SELECT ue_old.idUE, ue_new.idUE
+                    SELECT ue_old.\"idUE\", ue_new.\"idUE\"
                     FROM ue ue_old
                     JOIN semestre_mapping sm ON ue_old.semestre_idsemestre = sm.old_id
-                    JOIN ue ue_new ON ue_new.codeUE = ue_old.codeUE 
+                    JOIN ue ue_new ON ue_new.\"codeUE\" = ue_old.\"codeUE\" 
                                    AND ue_new.semestre_idsemestre = sm.new_id
                 ");
             }
@@ -218,10 +218,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 isset($_POST['copier_ue']) && $_POST['copier_ue'] == 1) {
                 
                 $connexion->exec("
-                    INSERT INTO ecue (designationECUE, CMI, TD, TP, UE_idUE, idCreateur, estVisible)
-                    SELECT e.designationECUE, e.CMI, e.TD, e.TP, um.new_id, e.idCreateur, e.estVisible
+                    INSERT INTO ecue (\"designationECUE\", CMI, TD, TP, \"UE_idUE\", \"idCreateur\", \"estVisible\")
+                    SELECT e.\"designationECUE\", e.CMI, e.TD, e.TP, um.new_id, e.\"idCreateur\", e.\"estVisible\"
                     FROM ecue e
-                    JOIN ue_mapping um ON e.UE_idUE = um.old_id
+                    JOIN ue_mapping um ON e.\"UE_idUE\" = um.old_id
                 ");
             }
             

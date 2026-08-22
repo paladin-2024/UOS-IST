@@ -49,7 +49,7 @@ if ($promotionId) {
     try {
         $db = Connexion::getInstance()->getPDO();
         
-        $sql = "SELECT 
+        $sql = 'SELECT
                     s.idstage,
                     s.idetudiant,
                     s.lieu_stage,
@@ -60,12 +60,12 @@ if ($promotionId) {
                     lect.noms as lecteur_nom
                 FROM stage_assignments s
                 JOIN etudiant e ON s.idetudiant = e.idetudiant
-                LEFT JOIN agent lect ON s.idlecteur = lect.idAgent
+                LEFT JOIN agent lect ON s.idlecteur = lect."idAgent"
                 WHERE e.promotion_idpromotion = :promotion_id
                 AND e.annee_acad_idannee_acad = :annee_acad
                 AND s.rapport_path IS NOT NULL
-                AND s.rapport_path != ''
-                ORDER BY e.noms";
+                AND s.rapport_path != \'\'
+                ORDER BY e.noms';
         
         $stmt = $db->prepare($sql);
         $stmt->execute([

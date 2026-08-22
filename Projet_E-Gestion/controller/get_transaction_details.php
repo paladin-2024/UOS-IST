@@ -43,7 +43,7 @@ try {
                END AS destination_nom
         FROM transactions t
         LEFT JOIN categories_budget c ON t.categorie_id = c.id
-        LEFT JOIN agent a ON t.idAgent = a.idAgent
+        LEFT JOIN agent a ON t.\"idAgent\" = a.\"idAgent\"
         WHERE t.id = :id
     ";
     

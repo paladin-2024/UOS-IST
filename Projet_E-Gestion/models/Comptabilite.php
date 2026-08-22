@@ -21,11 +21,11 @@ class Comptabilite
             $queryRecettes = "SELECT COALESCE(SUM(r.montantR), 0) as total
                             FROM recette_structure r 
                             INNER JOIN ligne_recette_structure lr ON r.ligne_recette_structure_idligne_recette_structure = lr.idligne_recette_structure
-                            INNER JOIN groupe_recette_structure gr ON lr.Groupe_recette_structure_idGroupe_recette_structure = gr.idGroupe_recette_structure
-                            INNER JOIN budget_recette_structure br ON gr.Budget_recette_structure_idBudget_recette_structure = br.idBudget_recette_structure
-                            INNER JOIN user_budget_recette ubr ON br.idBudget_recette_structure = ubr.Budget_recette_structure_idBudget_recette_structure
-                            WHERE br.Structure_idStructure = :structureId
-                            AND ubr.idUser = :userId 
+                            INNER JOIN groupe_recette_structure gr ON lr.Groupe_recette_structure_idGroupe_recette_structure = gr.\"idGroupe_recette_structure\"
+                            INNER JOIN budget_recette_structure br ON gr.\"Budget_recette_structure_idBudget_recette_structure\" = br.idBudget_recette_structure
+                            INNER JOIN user_budget_recette ubr ON br.idBudget_recette_structure = ubr.\"Budget_recette_structure_idBudget_recette_structure\"
+                            WHERE br.\"Structure_idStructure\" = :structureId
+                            AND ubr.\"idUser\" = :userId 
                             AND r.dateOperation < :dateDebut";
 
             // Paiements Clients
@@ -33,18 +33,18 @@ class Comptabilite
                                      FROM paiement_client pc
                                      INNER JOIN facture_client fc ON pc.Facture_client_idFacture_client = fc.idFacture_client
                                      INNER JOIN client c ON fc.Client_idClient = c.idClient
-                                     WHERE c.Structure_idStructure = :structureId 
-                                     AND pc.datePaiement < :dateDebut";
+                                     WHERE c.\"Structure_idStructure\" = :structureId 
+                                     AND pc.\"datePaiement\" < :dateDebut";
 
             // Dépenses
             $queryDepenses = "SELECT COALESCE(SUM(d.montantD), 0) as total
                             FROM depense_structure d
                             INNER JOIN ligne_depense_structure ld ON d.ligne_depense_structure_idligne_depense_structure = ld.idligne_depense_structure
-                            INNER JOIN groupe_depense_structure gd ON ld.Groupe_depense_structure_idGroupe_depense_structure = gd.idGroupe_depense_structure
-                            INNER JOIN budget_depense_structure bd ON gd.Budget_depense_structure_idBudget_depense_structure = bd.idBudget_depense_structure
-                            INNER JOIN user_budget_depense ubd ON bd.idBudget_depense_structure = ubd.Budget_depense_structure_idBudget_depense_structure
-                            WHERE bd.Structure_idStructure = :structureId 
-                            AND ubd.idUser = :userId
+                            INNER JOIN groupe_depense_structure gd ON ld.Groupe_depense_structure_idGroupe_depense_structure = gd.\"idGroupe_depense_structure\"
+                            INNER JOIN budget_depense_structure bd ON gd.\"Budget_depense_structure_idBudget_depense_structure\" = bd.idBudget_depense_structure
+                            INNER JOIN user_budget_depense ubd ON bd.idBudget_depense_structure = ubd.\"Budget_depense_structure_idBudget_depense_structure\"
+                            WHERE bd.\"Structure_idStructure\" = :structureId 
+                            AND ubd.\"idUser\" = :userId
                             AND d.dateoperation < :dateDebut";
 
             // Paiements Fournisseurs
@@ -52,8 +52,8 @@ class Comptabilite
                                           FROM paiement_fournisseur pf
                                           INNER JOIN facture_fournisseur ff ON pf.Facture_fournisseur_idFacture_fournisseur = ff.idFacture_fournisseur
                                           INNER JOIN fournisseur f ON ff.Fournisseur_idFournisseur = f.idFournisseur
-                                          WHERE f.Structure_idStructure = :structureId 
-                                          AND pf.datePaiement < :dateDebut";
+                                          WHERE f.\"Structure_idStructure\" = :structureId 
+                                          AND pf.\"datePaiement\" < :dateDebut";
 
             $stmt = $this->db->prepare($queryRecettes);
             $stmt->execute(['structureId' => $structureId, 'userId' => $userId, 'dateDebut' => $dateDebut]);
@@ -87,11 +87,11 @@ class Comptabilite
             $query = "SELECT COALESCE(SUM(r.montantR), 0) as total
                      FROM recette_structure r
                      INNER JOIN ligne_recette_structure lr ON r.ligne_recette_structure_idligne_recette_structure = lr.idligne_recette_structure
-                     INNER JOIN groupe_recette_structure gr ON lr.Groupe_recette_structure_idGroupe_recette_structure = gr.idGroupe_recette_structure
-                     INNER JOIN budget_recette_structure br ON gr.Budget_recette_structure_idBudget_recette_structure = br.idBudget_recette_structure
-                     INNER JOIN user_budget_recette ubr ON br.idBudget_recette_structure = ubr.Budget_recette_structure_idBudget_recette_structure
-                     WHERE br.Structure_idStructure = :structureId 
-                     AND ubr.idUser = :userId
+                     INNER JOIN groupe_recette_structure gr ON lr.Groupe_recette_structure_idGroupe_recette_structure = gr.\"idGroupe_recette_structure\"
+                     INNER JOIN budget_recette_structure br ON gr.\"Budget_recette_structure_idBudget_recette_structure\" = br.idBudget_recette_structure
+                     INNER JOIN user_budget_recette ubr ON br.idBudget_recette_structure = ubr.\"Budget_recette_structure_idBudget_recette_structure\"
+                     WHERE br.\"Structure_idStructure\" = :structureId 
+                     AND ubr.\"idUser\" = :userId
                      AND r.dateOperation BETWEEN :dateDebut AND :dateFin";
 
             $stmt = $this->db->prepare($query);
@@ -119,8 +119,8 @@ class Comptabilite
                      FROM paiement_client pc
                      INNER JOIN facture_client fc ON pc.Facture_client_idFacture_client = fc.idFacture_client
                      INNER JOIN client c ON fc.Client_idClient = c.idClient
-                     WHERE c.Structure_idStructure = :structureId 
-                     AND pc.datePaiement BETWEEN :dateDebut AND :dateFin";
+                     WHERE c.\"Structure_idStructure\" = :structureId 
+                     AND pc.\"datePaiement\" BETWEEN :dateDebut AND :dateFin";
 
             $stmt = $this->db->prepare($query);
             $stmt->execute([
@@ -145,11 +145,11 @@ class Comptabilite
             $query = "SELECT COALESCE(SUM(d.montantD), 0) as total
                      FROM depense_structure d
                      INNER JOIN ligne_depense_structure ld ON d.ligne_depense_structure_idligne_depense_structure = ld.idligne_depense_structure
-                     INNER JOIN groupe_depense_structure gd ON ld.Groupe_depense_structure_idGroupe_depense_structure = gd.idGroupe_depense_structure
-                     INNER JOIN budget_depense_structure bd ON gd.Budget_depense_structure_idBudget_depense_structure = bd.idBudget_depense_structure
-                     INNER JOIN user_budget_depense ubd ON bd.idBudget_depense_structure = ubd.Budget_depense_structure_idBudget_depense_structure
-                     WHERE bd.Structure_idStructure = :structureId 
-                     AND ubd.idUser = :userId
+                     INNER JOIN groupe_depense_structure gd ON ld.Groupe_depense_structure_idGroupe_depense_structure = gd.\"idGroupe_depense_structure\"
+                     INNER JOIN budget_depense_structure bd ON gd.\"Budget_depense_structure_idBudget_depense_structure\" = bd.idBudget_depense_structure
+                     INNER JOIN user_budget_depense ubd ON bd.idBudget_depense_structure = ubd.\"Budget_depense_structure_idBudget_depense_structure\"
+                     WHERE bd.\"Structure_idStructure\" = :structureId 
+                     AND ubd.\"idUser\" = :userId
                      AND d.dateoperation BETWEEN :dateDebut AND :dateFin";
 
             $stmt = $this->db->prepare($query);
@@ -177,8 +177,8 @@ class Comptabilite
                      FROM paiement_fournisseur pf
                      INNER JOIN facture_fournisseur ff ON pf.Facture_fournisseur_idFacture_fournisseur = ff.idFacture_fournisseur
                      INNER JOIN fournisseur f ON ff.Fournisseur_idFournisseur = f.idFournisseur
-                     WHERE f.Structure_idStructure = :structureId 
-                     AND pf.datePaiement BETWEEN :dateDebut AND :dateFin";
+                     WHERE f.\"Structure_idStructure\" = :structureId 
+                     AND pf.\"datePaiement\" BETWEEN :dateDebut AND :dateFin";
 
             $stmt = $this->db->prepare($query);
             $stmt->execute([
@@ -205,22 +205,22 @@ class Comptabilite
      try {
          // 1. Récupérer tous les groupes de recettes avec contrôle d'accès utilisateur
          $queryGroupes = "SELECT 
-             gr.idGroupe_recette_structure,
-             gr.designationGR as nom_groupe,
+             gr.\"idGroupe_recette_structure\",
+             gr.\"designationGR\" as nom_groupe,
              COALESCE(SUM(r.montantR), 0) as total_groupe
          FROM groupe_recette_structure gr
          INNER JOIN budget_recette_structure br 
-             ON gr.Budget_recette_structure_idBudget_recette_structure = br.idBudget_recette_structure
+             ON gr.\"Budget_recette_structure_idBudget_recette_structure\" = br.idBudget_recette_structure
          INNER JOIN user_budget_recette ubr 
-             ON br.idBudget_recette_structure = ubr.Budget_recette_structure_idBudget_recette_structure
+             ON br.idBudget_recette_structure = ubr.\"Budget_recette_structure_idBudget_recette_structure\"
          LEFT JOIN ligne_recette_structure lr 
-             ON gr.idGroupe_recette_structure = lr.Groupe_recette_structure_idGroupe_recette_structure
+             ON gr.\"idGroupe_recette_structure\" = lr.Groupe_recette_structure_idGroupe_recette_structure
          LEFT JOIN recette_structure r 
              ON lr.idligne_recette_structure = r.ligne_recette_structure_idligne_recette_structure
              AND r.dateOperation BETWEEN :dateDebut AND :dateFin
-         WHERE br.Structure_idStructure = :structureId
-         AND ubr.idUser = :userId
-         GROUP BY gr.idGroupe_recette_structure, gr.designationGR
+         WHERE br.\"Structure_idStructure\" = :structureId
+         AND ubr.\"idUser\" = :userId
+         GROUP BY gr.\"idGroupe_recette_structure\", gr.\"designationGR\"
          ORDER BY gr.designationGR";
  
          $stmt = $this->db->prepare($queryGroupes);
@@ -290,22 +290,22 @@ class Comptabilite
      try {
          // 1. Récupérer tous les groupes de dépenses avec contrôle d'accès utilisateur
          $queryGroupes = "SELECT 
-             gd.idGroupe_depense_structure,
-             gd.designationGD as nom_groupe,
+             gd.\"idGroupe_depense_structure\",
+             gd.\"designationGD\" as nom_groupe,
              COALESCE(SUM(d.montantD), 0) as total_groupe
          FROM groupe_depense_structure gd
          INNER JOIN budget_depense_structure bd 
-             ON gd.Budget_depense_structure_idBudget_depense_structure = bd.idBudget_depense_structure
+             ON gd.\"Budget_depense_structure_idBudget_depense_structure\" = bd.idBudget_depense_structure
          INNER JOIN user_budget_depense ubd 
-             ON bd.idBudget_depense_structure = ubd.Budget_depense_structure_idBudget_depense_structure
+             ON bd.idBudget_depense_structure = ubd.\"Budget_depense_structure_idBudget_depense_structure\"
          LEFT JOIN ligne_depense_structure ld 
-             ON gd.idGroupe_depense_structure = ld.Groupe_depense_structure_idGroupe_depense_structure
+             ON gd.\"idGroupe_depense_structure\" = ld.Groupe_depense_structure_idGroupe_depense_structure
          LEFT JOIN depense_structure d 
              ON ld.idligne_depense_structure = d.ligne_depense_structure_idligne_depense_structure
              AND d.dateoperation BETWEEN :dateDebut AND :dateFin
-         WHERE bd.Structure_idStructure = :structureId
-         AND ubd.idUser = :userId
-         GROUP BY gd.idGroupe_depense_structure, gd.designationGD
+         WHERE bd.\"Structure_idStructure\" = :structureId
+         AND ubd.\"idUser\" = :userId
+         GROUP BY gd.\"idGroupe_depense_structure\", gd.\"designationGD\"
          ORDER BY gd.designationGD";
  
          $stmt = $this->db->prepare($queryGroupes);
@@ -371,8 +371,8 @@ class Comptabilite
 
  public function getJournauxByUserAccess($userId)
     {
-        $query = "SELECT * FROM journaux j INNER JOIN structure s ON j.Structure_idStructure=s.idStructure
-        INNER JOIN user_structure u ON u.idStructure=s.idStructure WHERE u.idUser='$userId'";
+        $query = "SELECT * FROM journaux j INNER JOIN structure s ON j.\"Structure_idStructure\"=s.\"idStructure\"
+        INNER JOIN user_structure u ON u.\"idStructure\"=s.\"idStructure\" WHERE u.\"idUser\"='$userId'";
         return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -382,18 +382,18 @@ class Comptabilite
         try {
             $query = "
                 SELECT 
-                    e.idEcriture,
-                    e.dateEcriture, 
-                    e.numeroPiece, 
+                    e.\"idEcriture\",
+                    e.\"dateEcriture\", 
+                    e.\"numeroPiece\", 
                     e.description AS libelle,
                     COALESCE(SUM(CASE WHEN ed.typeCompte = 'debit' THEN ed.montant ELSE 0 END), 0) AS total_debit,
                     COALESCE(SUM(CASE WHEN ed.typeCompte = 'credit' THEN ed.montant ELSE 0 END), 0) AS total_credit
                 FROM ecriture e
-                LEFT JOIN ecriture_detail ed ON e.idEcriture = ed.idEcriture
-                WHERE e.Journaux_idJournaux = :journalId
-                AND e.dateEcriture BETWEEN :startDate AND :endDate
-                GROUP BY e.idEcriture, e.dateEcriture, e.numeroPiece, e.description
-                ORDER BY e.dateEcriture ASC, e.numeroPiece ASC";
+                LEFT JOIN ecriture_detail ed ON e.\"idEcriture\" = ed.\"idEcriture\"
+                WHERE e.\"Journaux_idJournaux\" = :journalId
+                AND e.\"dateEcriture\" BETWEEN :startDate AND :endDate
+                GROUP BY e.\"idEcriture\", e.\"dateEcriture\", e.\"numeroPiece\", e.description
+                ORDER BY e.\"dateEcriture\" ASC, e.\"numeroPiece\" ASC";
     
             $stmt = $this->db->prepare($query);
             $stmt->execute([
@@ -423,7 +423,7 @@ class Comptabilite
                 CASE WHEN ed.typeCompte = 'credit' THEN ed.montant ELSE 0 END AS credit
             FROM ecriture_detail ed
             JOIN compte c ON ed.compteId = c.numeroCompte
-            WHERE ed.idEcriture = :ecritureId";
+            WHERE ed.\"idEcriture\" = :ecritureId";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute(['ecritureId' => $ecritureId]);
@@ -443,9 +443,9 @@ public function getReportPeriodBalances($journalId, $startDate)
                 COALESCE(SUM(CASE WHEN ed.typeCompte = 'debit' THEN ed.montant ELSE 0 END), 0) AS report_debit,
                 COALESCE(SUM(CASE WHEN ed.typeCompte = 'credit' THEN ed.montant ELSE 0 END), 0) AS report_credit
             FROM ecriture e
-            LEFT JOIN ecriture_detail ed ON e.idEcriture = ed.idEcriture
-            WHERE e.Journaux_idJournaux = :journalId
-            AND e.dateEcriture < :startDate";
+            LEFT JOIN ecriture_detail ed ON e.\"idEcriture\" = ed.\"idEcriture\"
+            WHERE e.\"Journaux_idJournaux\" = :journalId
+            AND e.\"dateEcriture\" < :startDate";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -465,9 +465,9 @@ public function getComptesByUserAccess($userId)
         $query = "
             SELECT c.*
             FROM compte c
-            INNER JOIN structure s ON c.Structure_idStructure = s.idStructure
-            INNER JOIN user_structure us ON s.idStructure = us.idStructure
-            WHERE us.idUser = :userId
+            INNER JOIN structure s ON c.\"Structure_idStructure\" = s.\"idStructure\"
+            INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+            WHERE us.\"idUser\" = :userId
             ORDER BY c.intituleCompte ASC
         ";
         $stmt = $this->db->prepare($query);
@@ -485,9 +485,9 @@ public function getReportPeriodBalancesByCompte($compteId, $startDate)
                 COALESCE(SUM(CASE WHEN ed.typeCompte = 'debit' THEN ed.montant ELSE 0 END), 0) AS report_debit,
                 COALESCE(SUM(CASE WHEN ed.typeCompte = 'credit' THEN ed.montant ELSE 0 END), 0) AS report_credit
             FROM ecriture_detail ed
-            JOIN ecriture e ON ed.idEcriture = e.idEcriture
+            JOIN ecriture e ON ed.\"idEcriture\" = e.\"idEcriture\"
             WHERE ed.compteId = (SELECT numeroCompte FROM compte WHERE idCompte = :compteId)
-            AND e.dateEcriture < :startDate
+            AND e.\"dateEcriture\" < :startDate
             UNION ALL
             SELECT 
                 COALESCE(SUM(ja.montant_debit), 0) AS report_debit,
@@ -495,7 +495,7 @@ public function getReportPeriodBalancesByCompte($compteId, $startDate)
             FROM journal_automatique ja
             WHERE ja.compte = (SELECT numeroCompte FROM compte WHERE idCompte = :compteId)
             AND ja.dateOperation < :startDate
-            AND ja.Structure_idStructure = (SELECT Structure_idStructure FROM compte WHERE idCompte = :compteId)
+            AND ja.\"Structure_idStructure\" = (SELECT \"Structure_idStructure\" FROM compte WHERE idCompte = :compteId)
         ";
 
         $stmt = $this->db->prepare($query);
@@ -524,14 +524,14 @@ public function getTransactionsByCompteAndPeriod($compteId, $startDate, $endDate
     try {
         $query = "
             SELECT 
-                e.dateEcriture AS date,
+                e.\"dateEcriture\" AS date,
                 e.description AS libelle,
                 CASE WHEN ed.typeCompte = 'debit' THEN ed.montant ELSE 0 END AS debit,
                 CASE WHEN ed.typeCompte = 'credit' THEN ed.montant ELSE 0 END AS credit
             FROM ecriture_detail ed
-            JOIN ecriture e ON ed.idEcriture = e.idEcriture
+            JOIN ecriture e ON ed.\"idEcriture\" = e.\"idEcriture\"
             WHERE ed.compteId = (SELECT numeroCompte FROM compte WHERE idCompte = :compteId)
-            AND e.dateEcriture BETWEEN :startDate AND :endDate
+            AND e.\"dateEcriture\" BETWEEN :startDate AND :endDate
             UNION ALL
             SELECT 
                 ja.dateOperation AS date,
@@ -541,7 +541,7 @@ public function getTransactionsByCompteAndPeriod($compteId, $startDate, $endDate
             FROM journal_automatique ja
             WHERE ja.compte = (SELECT numeroCompte FROM compte WHERE idCompte = :compteId)
             AND ja.dateOperation BETWEEN :startDate AND :endDate
-            AND ja.Structure_idStructure = (SELECT Structure_idStructure FROM compte WHERE idCompte = :compteId)
+            AND ja.\"Structure_idStructure\" = (SELECT \"Structure_idStructure\" FROM compte WHERE idCompte = :compteId)
             ORDER BY date ASC
         ";
 
@@ -561,7 +561,7 @@ public function getTransactionsByCompteAndPeriod($compteId, $startDate, $endDate
 
 public function getComptesByStructure($structureId)
     {
-        $query = "SELECT * FROM compte WHERE Structure_idStructure = :structureId";
+        $query = "SELECT * FROM compte WHERE \"Structure_idStructure\" = :structureId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':structureId', $structureId, PDO::PARAM_INT);
         $stmt->execute();
@@ -574,8 +574,8 @@ public function getComptesByStructure($structureId)
     $query = "
         SELECT s.*
         FROM structure s
-        INNER JOIN user_structure us ON s.idStructure = us.idStructure
-        WHERE us.idUser = :userId
+        INNER JOIN user_structure us ON s.\"idStructure\" = us.\"idStructure\"
+        WHERE us.\"idUser\" = :userId
     ";
 
     if (!empty($search)) {
@@ -601,7 +601,7 @@ public function getComptesByStructure($structureId)
 public function getCompteDetails($id)
     {
         $query = "SELECT c.*,s.* FROM compte as c INNER JOIN structure as s
-        ON c.Structure_idStructure=s.idStructure WHERE c.idCompte = :id";
+        ON c.\"Structure_idStructure\"=s.\"idStructure\" WHERE c.idCompte = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

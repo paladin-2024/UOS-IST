@@ -11,7 +11,7 @@ $currentUserId = $_SESSION['id'];
 $hasFullAccess = $_SESSION['idRole'] == 1; // Supposons que le rôle 1 est administrateur
 
 // Récupération des années académiques
-$queryAnnees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY dateCreation DESC";
+$queryAnnees = "SELECT idannee_acad, designation FROM annee_acad ORDER BY \"dateCreation\" DESC";
 $stmtAnnees = $connexion->prepare($queryAnnees);
 $stmtAnnees->execute();
 $annees = $stmtAnnees->fetchAll(PDO::FETCH_ASSOC);
@@ -25,7 +25,7 @@ $selectedYear = isset($_GET['annee_acad']) && !empty($_GET['annee_acad'])
 if (!$hasFullAccess) {
     $query = "SELECT section_idsection 
               FROM responsable_section 
-              WHERE idUser = :userId 
+              WHERE \"idUser\" = :userId 
               AND annee_acad_idannee_acad = :anneeId";
     
     $stmt = $connexion->prepare($query);
@@ -40,7 +40,7 @@ if (!$hasFullAccess) {
 // Récupérer toutes les sections accessibles à l'utilisateur
 $sections = [];
 if ($hasFullAccess) { // Si administrateur
-    $querySections = "SELECT idsection, designationSection FROM section ORDER BY designationSection";
+    $querySections = "SELECT idsection, \"designationSection\" FROM section ORDER BY \"designationSection\"";
     $stmtSections = $connexion->prepare($querySections);
     $stmtSections->execute();
     $sections = $stmtSections->fetchAll(PDO::FETCH_ASSOC);
@@ -86,15 +86,15 @@ function getStatistiquesMemoires($connexion, $selectedYear, $selectedSection = 0
     
     $query = "SELECT 
                 sec.idsection,
-                sec.designationSection,
+                sec.\"designationSection\",
                 COUNT(*) as nb_total,
-                SUM(CASE WHEN QUARTER(dm.dateDepot) = 1 THEN 1 ELSE 0 END) as t1,
-                SUM(CASE WHEN QUARTER(dm.dateDepot) = 2 THEN 1 ELSE 0 END) as t2,
-                SUM(CASE WHEN QUARTER(dm.dateDepot) = 3 THEN 1 ELSE 0 END) as t3,
-                SUM(CASE WHEN QUARTER(dm.dateDepot) = 4 THEN 1 ELSE 0 END) as t4
+                SUM(CASE WHEN QUARTER(dm.\"dateDepot\") = 1 THEN 1 ELSE 0 END) as t1,
+                SUM(CASE WHEN QUARTER(dm.\"dateDepot\") = 2 THEN 1 ELSE 0 END) as t2,
+                SUM(CASE WHEN QUARTER(dm.\"dateDepot\") = 3 THEN 1 ELSE 0 END) as t3,
+                SUM(CASE WHEN QUARTER(dm.\"dateDepot\") = 4 THEN 1 ELSE 0 END) as t4
               FROM depot_memoire dm
               INNER JOIN sujets s ON dm.sujets_idsujets = s.idsujets
-              INNER JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              INNER JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               INNER JOIN orientation o ON spec.idorientation = o.idorientation
               INNER JOIN section sec ON o.section_idsection = sec.idsection
               WHERE s.annee_acad_idannee_acad = ?";
@@ -109,7 +109,7 @@ function getStatistiquesMemoires($connexion, $selectedYear, $selectedSection = 0
         $params = array_merge($params, $userSections);
     }
     
-    $query .= " GROUP BY sec.idsection, sec.designationSection ORDER BY sec.designationSection";
+    $query .= ' GROUP BY sec.idsection, sec."designationSection" ORDER BY sec."designationSection"';
     
     $stmt = $connexion->prepare($query);
     $stmt->execute($params);
@@ -122,7 +122,7 @@ function getStatistiquesRapports($connexion, $selectedYear, $selectedSection = 0
     
     $query = "SELECT 
                 sec.idsection,
-                sec.designationSection,
+                sec.\"designationSection\",
                 COUNT(*) as nb_total
               FROM depot_rapport dr
               INNER JOIN etudiant e ON dr.etudiant_idetudiant = e.idetudiant
@@ -141,7 +141,7 @@ function getStatistiquesRapports($connexion, $selectedYear, $selectedSection = 0
         $params = array_merge($params, $userSections);
     }
     
-    $query .= " GROUP BY sec.idsection, sec.designationSection ORDER BY sec.designationSection";
+    $query .= ' GROUP BY sec.idsection, sec."designationSection" ORDER BY sec."designationSection"';
     
     $stmt = $connexion->prepare($query);
     $stmt->execute($params);
@@ -154,7 +154,7 @@ function getStatistiquesSoutenances($connexion, $selectedYear, $selectedSection 
     
     $query = "SELECT 
                 sec.idsection,
-                sec.designationSection,
+                sec.\"designationSection\",
                 COUNT(*) as nb_total,
                 SUM(CASE WHEN sout.statut = 'Programmée' THEN 1 ELSE 0 END) as programmees,
                 SUM(CASE WHEN sout.statut = 'Terminée' THEN 1 ELSE 0 END) as terminees,
@@ -162,7 +162,7 @@ function getStatistiquesSoutenances($connexion, $selectedYear, $selectedSection 
                 SUM(CASE WHEN sout.statut = 'Annulée' THEN 1 ELSE 0 END) as annulees
               FROM soutenance sout
               INNER JOIN sujets s ON sout.sujets_idsujets = s.idsujets
-              INNER JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              INNER JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               INNER JOIN orientation o ON spec.idorientation = o.idorientation
               INNER JOIN section sec ON o.section_idsection = sec.idsection
               WHERE s.annee_acad_idannee_acad = ?";
@@ -177,7 +177,7 @@ function getStatistiquesSoutenances($connexion, $selectedYear, $selectedSection 
         $params = array_merge($params, $userSections);
     }
     
-    $query .= " GROUP BY sec.idsection, sec.designationSection ORDER BY sec.designationSection";
+    $query .= ' GROUP BY sec.idsection, sec."designationSection" ORDER BY sec."designationSection"';
     
     $stmt = $connexion->prepare($query);
     $stmt->execute($params);
@@ -190,14 +190,14 @@ function getStatistiquesSujets($connexion, $selectedYear, $selectedSection = 0, 
     
     $query = "SELECT 
                 sec.idsection,
-                sec.designationSection,
+                sec.\"designationSection\",
                 COUNT(*) as nb_total,
                 SUM(CASE WHEN s.statut_validation = 'En attente' THEN 1 ELSE 0 END) as en_attente,
                 SUM(CASE WHEN s.statut_validation = 'Validé' THEN 1 ELSE 0 END) as valides,
                 SUM(CASE WHEN s.statut_validation = 'Rejeté' THEN 1 ELSE 0 END) as rejetes,
                 SUM(CASE WHEN s.statut_validation = 'Modifié' THEN 1 ELSE 0 END) as sujets_modifies
               FROM sujets s
-              INNER JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              INNER JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               INNER JOIN orientation o ON spec.idorientation = o.idorientation
               INNER JOIN section sec ON o.section_idsection = sec.idsection
               WHERE s.annee_acad_idannee_acad = ?";
@@ -212,7 +212,7 @@ function getStatistiquesSujets($connexion, $selectedYear, $selectedSection = 0, 
         $params = array_merge($params, $userSections);
     }
     
-    $query .= " GROUP BY sec.idsection, sec.designationSection ORDER BY sec.designationSection";
+    $query .= ' GROUP BY sec.idsection, sec."designationSection" ORDER BY sec."designationSection"';
     
     $stmt = $connexion->prepare($query);
     $stmt->execute($params);
@@ -224,14 +224,14 @@ function getStatistiquesEncadrement($connexion, $selectedYear, $selectedSection 
     $params = [$selectedYear];
     
     $query = "SELECT 
-                a.idAgent,
+                a.\"idAgent\",
                 a.noms,
-                SUM(CASE WHEN s.idDirecteur = a.idAgent THEN 1 ELSE 0 END) as nb_sujets_diriges,
-                SUM(CASE WHEN s.idEncadreur = a.idAgent THEN 1 ELSE 0 END) as nb_sujets_encadres,
+                SUM(CASE WHEN s.\"idDirecteur\" = a.\"idAgent\" THEN 1 ELSE 0 END) as nb_sujets_diriges,
+                SUM(CASE WHEN s.\"idEncadreur\" = a.\"idAgent\" THEN 1 ELSE 0 END) as nb_sujets_encadres,
                 0 as nb_jury
               FROM agent a
-              LEFT JOIN sujets s ON (s.idDirecteur = a.idAgent OR s.idEncadreur = a.idAgent) AND s.annee_acad_idannee_acad = ?
-              LEFT JOIN specialisation spec ON s.idSpecialisation = spec.idSpecialisation
+              LEFT JOIN sujets s ON (s.\"idDirecteur\" = a.\"idAgent\" OR s.\"idEncadreur\" = a.\"idAgent\") AND s.annee_acad_idannee_acad = ?
+              LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN orientation o ON spec.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
               WHERE a.type_agent = 'Enseignant'";
@@ -246,9 +246,9 @@ function getStatistiquesEncadrement($connexion, $selectedYear, $selectedSection 
         $params = array_merge($params, $userSections);
     }
     
-    $query .= " GROUP BY a.idAgent, a.noms 
+    $query .= ' GROUP BY a."idAgent", a.noms
                 HAVING (nb_sujets_diriges > 0 OR nb_sujets_encadres > 0)
-                ORDER BY a.noms";
+                ORDER BY a.noms';
     
     $stmt = $connexion->prepare($query);
     $stmt->execute($params);

@@ -16,7 +16,7 @@ class Sujet {
     public function getAllSujets($search = '') {
         $query = "SELECT s.*, sp.designation as specialisation, aa.designation as annee 
                   FROM sujets s
-                  JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                  JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                   JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad";
         
         if (!empty($search)) {
@@ -46,14 +46,14 @@ class Sujet {
         $query = "SELECT s.*, sp.designation as specialisation, aa.designation as annee,
                   d.noms as directeur_nom, e.noms as encadreur_nom
                   FROM sujets s
-                  JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                  JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                   JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
-                  LEFT JOIN agent d ON s.idDirecteur = d.idAgent
-                  LEFT JOIN agent e ON s.idEncadreur = e.idAgent
-                  WHERE s.idSpecialisation = :idSpecialisation 
+                  LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
+                  LEFT JOIN agent e ON s.\"idEncadreur\" = e.\"idAgent\"
+                  WHERE s.\"idSpecialisation\" = :idSpecialisation 
                   AND s.cycle = :cycle
                   AND s.etudiant_idetudiant IS NULL
-                  AND s.etatSujet = 'En attente'
+                  AND s.\"etatSujet\" = 'En attente'
                   ORDER BY s.idsujets DESC";
         
         $stmt = $this->db->prepare($query);
@@ -66,8 +66,8 @@ class Sujet {
 
     public function createSujet($intitule, $cycle, $idSpecialisation, $anneeAcadId, $idUser, 
                                $etatSujet = 'En attente', $etudiantId = null, $directeurId = null, $encadreurId = null) {
-        $query = "INSERT INTO sujets (intitule, cycle, idSpecialisation, annee_acad_idannee_acad, 
-                                     idUser, etatSujet, etudiant_idetudiant, idDirecteur, idEncadreur) 
+        $query = "INSERT INTO sujets (intitule, cycle, \"idSpecialisation\", annee_acad_idannee_acad, 
+                                     \"idUser\", \"etatSujet\", etudiant_idetudiant, \"idDirecteur\", \"idEncadreur\") 
                   VALUES (:intitule, :cycle, :idSpecialisation, :anneeAcadId, 
                          :idUser, :etatSujet, :etudiantId, :directeurId, :encadreurId)";
         
@@ -90,7 +90,7 @@ class Sujet {
         $query = "UPDATE sujets SET 
                   intitule = :intitule, 
                   cycle = :cycle, 
-                  idSpecialisation = :idSpecialisation, 
+                  \"idSpecialisation\" = :idSpecialisation, 
                   annee_acad_idannee_acad = :anneeAcadId 
                   WHERE idsujets = :idSujet";
         
@@ -136,7 +136,7 @@ class Sujet {
      * @return array Liste des enseignants
      */
     public function getEnseignants() {
-        $query = "SELECT idAgent, noms FROM agent WHERE type_agent = 'Enseignant' ORDER BY noms ASC";
+        $query = "SELECT \"idAgent\", noms FROM agent WHERE type_agent = 'Enseignant' ORDER BY noms ASC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -164,13 +164,13 @@ class Sujet {
         $query = "SELECT s.*, sp.designation as specialisation, aa.designation as annee,
                   d.noms as directeur_nom,
                   e.noms as encadreur_nom,
-                  ur.designation_UR as unite_recherche
+                  ur.\"designation_UR\" as unite_recherche
                   FROM sujets s
-                  LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                  LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                   LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
-                  LEFT JOIN agent d ON s.idDirecteur = d.idAgent
-                  LEFT JOIN agent e ON s.idEncadreur = e.idAgent
-                  LEFT JOIN unite_recherche ur ON sp.idUnite_recherche = ur.idunite_recherche
+                  LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
+                  LEFT JOIN agent e ON s.\"idEncadreur\" = e.\"idAgent\"
+                  LEFT JOIN unite_recherche ur ON sp.\"idUnite_recherche\" = ur.idunite_recherche
                   WHERE s.etudiant_idetudiant = :idEtudiant
                   ORDER BY s.idsujets DESC
                   LIMIT 1";
@@ -194,7 +194,7 @@ class Sujet {
                   statut_validation = :statut, 
                   commentaire_commission = :commentaire, 
                   date_validation = NOW(), 
-                  idValidateur = :idValidateur 
+                  \"idValidateur\" = :idValidateur 
                   WHERE idsujets = :idSujet";
         
         $stmt = $this->db->prepare($query);
@@ -210,10 +210,10 @@ class Sujet {
         $query = "UPDATE sujets SET 
                   intitule = :intitule, 
                   cycle = :cycle, 
-                  idSpecialisation = :idSpecialisation, 
+                  \"idSpecialisation\" = :idSpecialisation, 
                   annee_acad_idannee_acad = :anneeAcadId,
-                  idDirecteur = :directeurId,
-                  idEncadreur = :encadreurId
+                  \"idDirecteur\" = :directeurId,
+                  \"idEncadreur\" = :encadreurId
                   WHERE idsujets = :idSujet";
         
         $stmt = $this->db->prepare($query);

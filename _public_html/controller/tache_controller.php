@@ -14,9 +14,9 @@ $pdo = Connexion::getInstance()->getPDO();
 
 // Récupérer l'ID de l'agent associé à l'utilisateur connecté
 $userId = $_SESSION['id'];
-$query = "SELECT a.idAgent FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ? AND a.type_agent = 'Enseignant'";
+$query = "SELECT a.\"idAgent\" FROM agent a 
+          INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\" 
+          WHERE u.\"idUser\" = ? AND a.type_agent = 'Enseignant'";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $idAgent = $stmt->fetchColumn();
@@ -70,7 +70,7 @@ function addTask($pdo, $idAgent) {
     }
 
     // Vérifier que l'utilisateur est bien directeur du sujet
-    $query = "SELECT * FROM sujets WHERE idsujets = ? AND idDirecteur = ?";
+    $query = "SELECT * FROM sujets WHERE idsujets = ? AND \"idDirecteur\" = ?";
     $stmt = $pdo->prepare($query);
     $stmt->execute([$sujetId, $idAgent]);
     $sujet = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -115,8 +115,8 @@ function addTask($pdo, $idAgent) {
 
     try {
         // Insérer la tâche dans la base de données
-        $query = "INSERT INTO taches (dateTache, description, fichierTache, validation, 
-                  pourcentage_avancement, sujets_idsujets, idUser) 
+        $query = "INSERT INTO taches (\"dateTache\", description, \"fichierTache\", validation, 
+                  pourcentage_avancement, sujets_idsujets, \"idUser\") 
                   VALUES (?, ?, ?, 'En attente', ?, ?, ?)";
         $stmt = $pdo->prepare($query);
         $result = $stmt->execute([$dateTache, $description, $fichierTache, $pourcentage, $sujetId, $_SESSION['id']]);
@@ -155,7 +155,7 @@ function validateTask($pdo, $idAgent) {
     // Vérifier que l'utilisateur a les droits sur cette tâche (directeur ou encadreur du sujet)
     $query = "SELECT s.idsujets FROM taches t
               INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
-              WHERE t.idtaches = ? AND (s.idDirecteur = ? OR s.idEncadreur = ?)";
+              WHERE t.idtaches = ? AND (s.\"idDirecteur\" = ? OR s.\"idEncadreur\" = ?)";
     $stmt = $pdo->prepare($query);
     $stmt->execute([$tacheId, $idAgent, $idAgent]);
     $sujetId = $stmt->fetchColumn();
@@ -179,7 +179,7 @@ function validateTask($pdo, $idAgent) {
         // Ajouter un échange pour la validation si un commentaire est fourni
         if (!empty($commentaire)) {
             $role = ''; // Déterminer si l'agent est directeur ou encadreur
-            $query = "SELECT idDirecteur, idEncadreur FROM sujets WHERE idsujets = ?";
+            $query = "SELECT \"idDirecteur\", \"idEncadreur\" FROM sujets WHERE idsujets = ?";
             $stmt = $pdo->prepare($query);
             $stmt->execute([$sujetId]);
             $sujetInfo = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -190,7 +190,7 @@ function validateTask($pdo, $idAgent) {
                 $role = 'Encadreur';
             }
 
-            $query = "INSERT INTO echanges_taches (dateEchange, commentaire, taches_idtaches, type_auteur, idAuteur) 
+            $query = "INSERT INTO echanges_taches (\"dateEchange\", commentaire, taches_idtaches, type_auteur, \"idAuteur\") 
                       VALUES (NOW(), ?, ?, ?, ?)";
             $stmt = $pdo->prepare($query);
             $stmt->execute([$commentaire, $tacheId, $role, $idAgent]);
@@ -226,7 +226,7 @@ function updateTask($pdo, $idAgent) {
     }
 
     // Vérifier que l'utilisateur a les droits sur cette tâche
-    $query = "SELECT s.idsujets, s.idDirecteur FROM taches t
+    $query = "SELECT s.idsujets, s.\"idDirecteur\" FROM taches t
               INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
               WHERE t.idtaches = ?";
     $stmt = $pdo->prepare($query);
@@ -263,7 +263,7 @@ function updateTask($pdo, $idAgent) {
                 $fichierTache = $newFilename;
                 
                 // Récupérer l'ancien fichier pour le supprimer
-                $query = "SELECT fichierTache FROM taches WHERE idtaches = ?";
+                $query = "SELECT \"fichierTache\" FROM taches WHERE idtaches = ?";
                 $stmt = $pdo->prepare($query);
                 $stmt->execute([$tacheId]);
                 $oldFile = $stmt->fetchColumn();
@@ -286,12 +286,12 @@ function updateTask($pdo, $idAgent) {
     try {
         // Préparer la requête SQL en fonction de si un nouveau fichier a été téléchargé
         if ($fichierTache !== null) {
-            $query = "UPDATE taches SET dateTache = ?, description = ?, fichierTache = ?, 
+            $query = "UPDATE taches SET \"dateTache\" = ?, description = ?, \"fichierTache\" = ?, 
                       pourcentage_avancement = ? WHERE idtaches = ?";
                         $stmt = $pdo->prepare($query);
             $result = $stmt->execute([$dateTache, $description, $fichierTache, $pourcentage, $tacheId]);
         } else {
-            $query = "UPDATE taches SET dateTache = ?, description = ?, 
+            $query = "UPDATE taches SET \"dateTache\" = ?, description = ?,
                       pourcentage_avancement = ? WHERE idtaches = ?";
             $stmt = $pdo->prepare($query);
             $result = $stmt->execute([$dateTache, $description, $pourcentage, $tacheId]);
@@ -326,7 +326,7 @@ function deleteTask($pdo, $idAgent) {
     }
 
     // Vérifier que l'utilisateur est directeur du sujet associé à cette tâche
-    $query = "SELECT s.idsujets, s.idDirecteur FROM taches t
+    $query = "SELECT s.idsujets, s.\"idDirecteur\" FROM taches t
               INNER JOIN sujets s ON t.sujets_idsujets = s.idsujets
               WHERE t.idtaches = ?";
     $stmt = $pdo->prepare($query);
@@ -345,7 +345,7 @@ function deleteTask($pdo, $idAgent) {
         $pdo->beginTransaction();
 
         // Récupérer le nom du fichier pour le supprimer
-        $query = "SELECT fichierTache FROM taches WHERE idtaches = ?";
+        $query = "SELECT \"fichierTache\" FROM taches WHERE idtaches = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$tacheId]);
         $fichierTache = $stmt->fetchColumn();

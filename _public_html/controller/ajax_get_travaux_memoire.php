@@ -32,7 +32,7 @@ try {
     // Récupérer les responsabilités de l'utilisateur si pas admin
     $userResponsibilities = [];
     if (!$hasFullAccess) {
-        $query = "SELECT DISTINCT section_idsection FROM responsable_section WHERE idUser = :userId";
+        $query = "SELECT DISTINCT section_idsection FROM responsable_section WHERE \"idUser\" = :userId";
         $stmt = $connexion->prepare($query);
         $stmt->execute(['userId' => $userId]);
         $userResponsibilities = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -50,20 +50,20 @@ try {
     }
 
     // Construction de la requête
-    $query = "SELECT DISTINCT sj.idsujets, sj.intitule as sujet_titre, sj.cycle, sj.idSpecialisation,
+    $query = "SELECT DISTINCT sj.idsujets, sj.intitule as sujet_titre, sj.cycle, sj.\"idSpecialisation\",
                      e.noms as etudiant_nom, e.matricule, e.idetudiant,
                      d.noms as directeur_nom,
                      sp.designation as specialisation,
-                     o.idorientation, o.designationOrientation as orientation_designation,
-                     sec.idsection as section_idsection, sec.designationSection as section_designation,
+                     o.idorientation, o.\"designationOrientation\" as orientation_designation,
+                     sec.idsection as section_idsection, sec.\"designationSection\" as section_designation,
                      s.idsoutenance, s.date_soutenance, s.lieu, s.statut,
-                     dm.idDepot, dm.fichier as memoire_fichier, dm.dateDepot,
+                     dm.\"idDepot\", dm.fichier as memoire_fichier, dm.\"dateDepot\",
                      j.idjury, j.designation as jury_designation,
                      (SELECT COUNT(*) FROM lecteurs_soutenance WHERE idsoutenance = s.idsoutenance) as nb_lecteurs
               FROM sujets sj
               JOIN etudiant e ON sj.etudiant_idetudiant = e.idetudiant
-              LEFT JOIN agent d ON sj.idDirecteur = d.idAgent
-              LEFT JOIN specialisation sp ON sj.idSpecialisation = sp.idSpecialisation
+              LEFT JOIN agent d ON sj.\"idDirecteur\" = d.\"idAgent\"
+              LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
               LEFT JOIN orientation o ON sp.idorientation = o.idorientation
               LEFT JOIN section sec ON o.section_idsection = sec.idsection
               LEFT JOIN soutenance s ON sj.idsujets = s.sujets_idsujets
@@ -81,7 +81,7 @@ try {
 
     // Filtre par spécialisation
     if ($specialisationId) {
-        $query .= " AND sp.idSpecialisation = :specialisationId";
+        $query .= " AND sp.\"idSpecialisation\" = :specialisationId";
         $executeParams['specialisationId'] = $specialisationId;
     }
 

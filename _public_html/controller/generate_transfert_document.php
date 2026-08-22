@@ -20,13 +20,13 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
         $queryTransfert = "SELECT t.*, 
                            d1.libelle_depot as depot_source_libelle, 
                            d2.libelle_depot as depot_destination_libelle,
-                           u.nomUser as user_creation,
-                           v.nomUser as user_validation
+                           u.\"nomUser\" as user_creation,
+                           v.\"nomUser\" as user_validation
                            FROM transfert_stock t
                            LEFT JOIN depot d1 ON t.id_depot_source = d1.id_depot
                            LEFT JOIN depot d2 ON t.id_depot_destination = d2.id_depot
-                           LEFT JOIN t_users u ON t.id_user_creation = u.idUser
-                           LEFT JOIN t_users v ON t.id_user_validation = v.idUser
+                           LEFT JOIN t_users u ON t.id_user_creation = u.\"idUser\"
+                           LEFT JOIN t_users v ON t.id_user_validation = v.\"idUser\"
                            WHERE t.id_transfert = :id_transfert";
         $stmtTransfert = $db->prepare($queryTransfert);
         $stmtTransfert->bindParam(':id_transfert', $idTransfert, PDO::PARAM_INT);

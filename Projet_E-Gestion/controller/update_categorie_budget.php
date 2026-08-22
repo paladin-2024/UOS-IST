@@ -61,10 +61,10 @@ try {
     if (!$id) {
         $sql = "INSERT INTO categories_budget (
                     code, designation, description, type, 
-                    parent_id, compte_comptable_id, niveau, est_actif, idUser
+                    parent_id, compte_comptable_id, niveau, est_actif, \"idUser\"
                 ) VALUES (
                     :code, :designation, :description, :type, 
-                    :parent_id, :compte_comptable_id, :niveau, :est_actif, :idUser
+                    :parent_id, :compte_comptable_id, :niveau, :est_actif, :\"idUser\"
                 )";
         
         $stmt = $connexion->prepare($sql);

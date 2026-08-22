@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         categorie_id, designation, montant, devise, annee_acad_id, 
                         cycle, niveau, est_obligatoire, est_echelonnable, nb_tranches_max, 
                         date_echeance_globale, est_requis_inscription, est_requis_examens, 
-                        est_requis_deliberation, description, lieu_paiement, idUser
+                        est_requis_deliberation, description, lieu_paiement, \"idUser\"
                     ) VALUES (
                         :categorie_id, :designation, :montant, :devise, :annee_acad_id, 
                         :cycle, :niveau, :est_obligatoire, :est_echelonnable, :nb_tranches_max, 

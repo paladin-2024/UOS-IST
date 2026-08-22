@@ -7,9 +7,9 @@ $connexion = Connexion::getInstance()->getPDO();
 // Récupérer les liens d'inscription externe
 $stmt = $connexion->query("
     SELECT lie.*, 
-           p.designationPromotion,
-           o.designationOrientation,
-           s.designationSection,
+           p.\"designationPromotion\",
+           o.\"designationOrientation\",
+           s.\"designationSection\",
            aa.designation as annee_academique,
            COUNT(ie.id) as nb_inscriptions
     FROM liens_inscription_externe lie
@@ -25,16 +25,16 @@ $liens = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les promotions pour le formulaire
 $stmt = $connexion->query("
-    SELECT p.idpromotion, p.designationPromotion, p.cycle,
-           o.designationOrientation,
-           s.designationSection,
+    SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
+           o.\"designationOrientation\",
+           s.\"designationSection\",
            aa.designation as annee_academique
     FROM promotion p
     LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
     LEFT JOIN section s ON o.section_idsection = s.idsection
     LEFT JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
     WHERE aa.est_active = 1
-    ORDER BY s.designationSection, o.designationOrientation, p.designationPromotion
+    ORDER BY s.\"designationSection\", o.\"designationOrientation\", p.\"designationPromotion\"
 ");
 $promotions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
