@@ -1,8 +1,23 @@
+<?php
+// This is require_once'd unconditionally as the first line of ~330
+// controllers, but its actual job is to reject disallowed HTTP methods with
+// a 405 page -- so it must never emit anything for the methods those
+// controllers actually use (GET/POST), or it breaks every one of them by
+// sending body output before the controller's own header()/redirect calls
+// run ("headers already sent"). This was silently "working" locally only
+// because the dev server's output buffering absorbed it before flushing;
+// production php-fpm doesn't buffer the same way.
+if (in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['GET', 'POST'], true)) {
+    return;
+}
+
+http_response_code(405);
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
 <!-- Head and importation des packages -->
-<?php include("include/head_2.php"); 
+<?php include("include/head_2.php");
 
 require_once dirname(__DIR__) . '/config/Connexion.php';
 require_once dirname(__DIR__) . '/models/Universite.php';
@@ -30,6 +45,7 @@ $configUniversite = $universite->getConfigurationUniversite();
     }
   ?>
 
-  
+
     <!-- Footer et importation JavaScript -->
     <?php include("include/footer_3.php"); ?>
+<?php exit; ?>
