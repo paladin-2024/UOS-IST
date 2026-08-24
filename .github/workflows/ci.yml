@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: pdo_pgsql, pgsql, gd, zip, mbstring, intl
+
+      - name: Lint Projet_E-Gestion
+        run: |
+          find Projet_E-Gestion -name "*.php" -print0 \
+            | xargs -0 -P "$(nproc)" -I{} php -l "{}" \
+            | grep -v "No syntax errors detected" && exit 1 || true
+
+      - name: Lint projet_website
+        run: |
+          find projet_website -name "*.php" -print0 \
+            | xargs -0 -P "$(nproc)" -I{} php -l "{}" \
+            | grep -v "No syntax errors detected" && exit 1 || true
+
+  deploy-config-sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        run: |
+          # .env files are gitignored (real secrets), so a fresh checkout has
+          # none -- use the committed .env.example as CI-only placeholders,
+          # same values a fresh clone would start from anyway.
+          cp Projet_E-Gestion/.env.example Projet_E-Gestion/.env
+          cp projet_website/.env.example projet_website/.env
+          cd deploy
+          POSTGRES_PASSWORD=ci-placeholder-only docker compose config -q
+
+      - name: Validate nginx-host configs (syntax only)
+        run: |
+          set -e
+          mkdir -p /tmp/fake_le/live/ucg-butembo.wscsarl.info
+          openssl req -x509 -newkey rsa:2048 \
+            -keyout /tmp/fake_le/live/ucg-butembo.wscsarl.info/privkey.pem \
+            -out /tmp/fake_le/live/ucg-butembo.wscsarl.info/fullchain.pem \
+            -days 1 -nodes -subj "/CN=ci-placeholder"
+          echo "ssl_protocols TLSv1.2 TLSv1.3;" > /tmp/fake_le/options-ssl-nginx.conf
+          openssl dhparam -out /tmp/fake_le/ssl-dhparams.pem 2048
+          docker run --rm \
+            -v "$PWD/deploy/nginx-host:/etc/nginx/conf.d:ro" \
+            -v /tmp/fake_le:/etc/letsencrypt:ro \
+            nginx:1.27-alpine nginx -t
