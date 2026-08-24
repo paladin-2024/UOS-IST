@@ -36,6 +36,11 @@ jobs:
 
       - name: Validate docker-compose.yml
         run: |
+          # .env files are gitignored (real secrets), so a fresh checkout has
+          # none -- use the committed .env.example as CI-only placeholders,
+          # same values a fresh clone would start from anyway.
+          cp Projet_E-Gestion/.env.example Projet_E-Gestion/.env
+          cp projet_website/.env.example projet_website/.env
           cd deploy
           POSTGRES_PASSWORD=ci-placeholder-only docker compose config -q
 
