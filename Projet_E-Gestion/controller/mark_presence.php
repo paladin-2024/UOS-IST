@@ -102,6 +102,6 @@ try {
 }
 
 // Rediriger vers la page de liste des présences
-header("Location: ../cours/presence.list&id=$idSeance");
+header("Location: ../cours/presence.list?id=$idSeance");
 exit;
 ?>

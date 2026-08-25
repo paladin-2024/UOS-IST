@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Générer le numéro de transfert (format: TR-YYYYMMDD-XXX)
         $date = date('Ymd');
-        $stmt = $db->prepare("SELECT MAX(CAST(SUBSTRING(numero_transfert, 13) AS UNSIGNED)) as last_num 
+        $stmt = $db->prepare("SELECT MAX(CAST(SUBSTRING(numero_transfert, 13) AS INTEGER)) as last_num 
                              FROM transfert_stock 
                              WHERE numero_transfert LIKE :prefix");
         $prefix = "TR-{$date}-%";

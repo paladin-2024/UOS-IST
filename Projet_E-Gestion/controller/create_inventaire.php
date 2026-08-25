@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Générer le numéro d'inventaire (format: INV-YYYYMMDD-XXX)
         $date = date('Ymd');
-        $stmt = $db->prepare("SELECT MAX(CAST(SUBSTRING(numero_inventaire, 14) AS UNSIGNED)) as last_num 
+        $stmt = $db->prepare("SELECT MAX(CAST(SUBSTRING(numero_inventaire, 14) AS INTEGER)) as last_num 
                              FROM inventaire 
                              WHERE numero_inventaire LIKE :prefix");
         $prefix = "INV-{$date}-%";

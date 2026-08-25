@@ -147,7 +147,7 @@ try {
     echo "<p>Pour tester la contrainte, essayez d'insérer un doublon :</p>";
     echo "<code>
     INSERT INTO chef_promotion (promotion_idpromotion, idetudiant, annee_acad_idannee_acad, date_nomination, est_actif, \"idUser\") 
-    VALUES (1, 1, 1, CURDATE(), 1, 1);
+    VALUES (1, 1, 1, CURRENT_DATE, 1, 1);
     </code>";
     
 } catch (Exception $e) {

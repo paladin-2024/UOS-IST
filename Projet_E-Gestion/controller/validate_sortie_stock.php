@@ -217,7 +217,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         }
         
         // Générer un numéro d'écriture unique
-        $stmt = $db->prepare("SELECT MAX(CAST(SUBSTRING(numero_ecriture, 5) AS UNSIGNED)) as max_num FROM ecriture_comptable");
+        $stmt = $db->prepare("SELECT MAX(CAST(SUBSTRING(numero_ecriture, 5) AS INTEGER)) as max_num FROM ecriture_comptable");
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         $nextNum = ($result['max_num'] ?? 0) + 1;
