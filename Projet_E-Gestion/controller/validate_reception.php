@@ -69,10 +69,10 @@ try {
         
         // Générer un numéro d'entrée automatique
         $year = date('y'); // Année courante en 2 chiffres
-        $query = "SELECT MAX(CAST(SUBSTRING(numero_entree, 6) AS UNSIGNED)) as max_num 
-                  FROM entree_stock 
-                  WHERE numero_entree LIKE 'ENT" . $year . "%' 
-                  AND YEAR(date_entree) = YEAR(CURRENT_DATE())";
+        $query = "SELECT MAX(CAST(SUBSTRING(numero_entree, 6) AS INTEGER)) as max_num
+                  FROM entree_stock
+                  WHERE numero_entree LIKE 'ENT" . $year . "%'
+                  AND EXTRACT(YEAR FROM date_entree) = EXTRACT(YEAR FROM CURRENT_DATE)";
         $stmt = $db->prepare($query);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);

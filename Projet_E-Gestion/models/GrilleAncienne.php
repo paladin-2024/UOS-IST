@@ -18,64 +18,58 @@ class GrilleAncienne
         $tables = [
             'grilles_anciennes_imports' => "
                 CREATE TABLE IF NOT EXISTS grilles_anciennes_imports (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id SERIAL PRIMARY KEY,
                     annee_academique VARCHAR(50) NOT NULL,
                     session VARCHAR(100) NOT NULL,
                     semestre VARCHAR(50) NOT NULL,
                     promotion VARCHAR(255) NOT NULL,
                     section_id INT NULL,
                     fichier_origine VARCHAR(255) NOT NULL,
-                    date_import DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    date_import TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     mapping_config JSON,
                     nombre_etudiants INT DEFAULT 0,
                     nombre_ues INT DEFAULT 0,
                     nombre_ecues INT DEFAULT 0,
-                    INDEX idx_annee_session (annee_academique, session),
-                    INDEX idx_promotion (promotion),
-                    INDEX idx_section_id (section_id),
                     FOREIGN KEY (section_id) REFERENCES section(idsection) ON DELETE SET NULL
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-            
+                )",
+
             'grilles_anciennes_ue' => "
                 CREATE TABLE IF NOT EXISTS grilles_anciennes_ue (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id SERIAL PRIMARY KEY,
                     import_id INT NOT NULL,
                     code_ue VARCHAR(50) NOT NULL,
                     designation_ue VARCHAR(255) NOT NULL,
                     credits DECIMAL(5,2) NOT NULL DEFAULT 0,
                     semestre VARCHAR(10) DEFAULT 'S1',
                     ordre_affichage INT DEFAULT 0,
-                    FOREIGN KEY (import_id) REFERENCES grilles_anciennes_imports(id) ON DELETE CASCADE,
-                    INDEX idx_import_ue (import_id, code_ue)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-            
+                    FOREIGN KEY (import_id) REFERENCES grilles_anciennes_imports(id) ON DELETE CASCADE
+                )",
+
             'grilles_anciennes_ecue' => "
                 CREATE TABLE IF NOT EXISTS grilles_anciennes_ecue (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id SERIAL PRIMARY KEY,
                     ue_id INT NOT NULL,
                     code_ecue VARCHAR(50),
                     designation_ecue VARCHAR(255) NOT NULL,
                     coefficient DECIMAL(5,2) NOT NULL DEFAULT 1,
                     ordre_affichage INT DEFAULT 0,
-                    FOREIGN KEY (ue_id) REFERENCES grilles_anciennes_ue(id) ON DELETE CASCADE,
-                    INDEX idx_ue_ecue (ue_id, code_ecue)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-            
+                    FOREIGN KEY (ue_id) REFERENCES grilles_anciennes_ue(id) ON DELETE CASCADE
+                )",
+
             'grilles_anciennes_etudiants' => "
                 CREATE TABLE IF NOT EXISTS grilles_anciennes_etudiants (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id SERIAL PRIMARY KEY,
                     import_id INT NOT NULL,
                     matricule VARCHAR(50) NOT NULL,
                     noms VARCHAR(255) NOT NULL,
                     ordre_affichage INT DEFAULT 0,
                     FOREIGN KEY (import_id) REFERENCES grilles_anciennes_imports(id) ON DELETE CASCADE,
-                    INDEX idx_import_matricule (import_id, matricule),
-                    UNIQUE KEY unique_import_matricule (import_id, matricule)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-            
+                    CONSTRAINT unique_import_matricule UNIQUE (import_id, matricule)
+                )",
+
             'grilles_anciennes_notes' => "
                 CREATE TABLE IF NOT EXISTS grilles_anciennes_notes (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id SERIAL PRIMARY KEY,
                     etudiant_id INT NOT NULL,
                     ecue_id INT NOT NULL,
                     note_cc DECIMAL(5,2) NULL,
@@ -83,14 +77,12 @@ class GrilleAncienne
                     note_finale DECIMAL(5,2) NULL,
                     FOREIGN KEY (etudiant_id) REFERENCES grilles_anciennes_etudiants(id) ON DELETE CASCADE,
                     FOREIGN KEY (ecue_id) REFERENCES grilles_anciennes_ecue(id) ON DELETE CASCADE,
-                    UNIQUE KEY unique_etudiant_ecue (etudiant_id, ecue_id),
-                    INDEX idx_etudiant_notes (etudiant_id),
-                    INDEX idx_ecue_notes (ecue_id)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
-            
+                    CONSTRAINT unique_etudiant_ecue UNIQUE (etudiant_id, ecue_id)
+                )",
+
             'grilles_anciennes_resultats' => "
                 CREATE TABLE IF NOT EXISTS grilles_anciennes_resultats (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id SERIAL PRIMARY KEY,
                     etudiant_id INT NOT NULL,
                     ue_id INT NULL,
                     import_id INT NOT NULL,
@@ -99,13 +91,25 @@ class GrilleAncienne
                     credits_total DECIMAL(5,2) DEFAULT 0,
                     est_valide BOOLEAN DEFAULT FALSE,
                     mention VARCHAR(50) NULL,
-                    type_resultat ENUM('ue', 'semestre', 'annuel') NOT NULL,
+                    type_resultat VARCHAR(20) NOT NULL CHECK (type_resultat IN ('ue', 'semestre', 'annuel')),
                     FOREIGN KEY (etudiant_id) REFERENCES grilles_anciennes_etudiants(id) ON DELETE CASCADE,
                     FOREIGN KEY (ue_id) REFERENCES grilles_anciennes_ue(id) ON DELETE CASCADE,
                     FOREIGN KEY (import_id) REFERENCES grilles_anciennes_imports(id) ON DELETE CASCADE,
-                    INDEX idx_etudiant_resultats (etudiant_id, type_resultat),
-                    INDEX idx_ue_resultats (ue_id)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+                    CONSTRAINT unique_etudiant_ue_resultat UNIQUE (etudiant_id, ue_id, import_id, type_resultat)
+                )"
+        ];
+
+        $indexes = [
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_imports_annee_session ON grilles_anciennes_imports (annee_academique, session)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_imports_promotion ON grilles_anciennes_imports (promotion)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_imports_section_id ON grilles_anciennes_imports (section_id)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_ue_import_ue ON grilles_anciennes_ue (import_id, code_ue)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_ecue_ue_ecue ON grilles_anciennes_ecue (ue_id, code_ecue)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_etudiants_import_matricule ON grilles_anciennes_etudiants (import_id, matricule)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_notes_etudiant ON grilles_anciennes_notes (etudiant_id)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_notes_ecue ON grilles_anciennes_notes (ecue_id)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_resultats_etudiant_type ON grilles_anciennes_resultats (etudiant_id, type_resultat)",
+            "CREATE INDEX IF NOT EXISTS idx_grilles_anciennes_resultats_ue ON grilles_anciennes_resultats (ue_id)",
         ];
 
         foreach ($tables as $tableName => $sql) {
@@ -116,7 +120,15 @@ class GrilleAncienne
                 throw new Exception("Erreur lors de la création de la table $tableName");
             }
         }
-        
+
+        foreach ($indexes as $sql) {
+            try {
+                $this->db->exec($sql);
+            } catch (PDOException $e) {
+                error_log("Erreur création index: " . $e->getMessage());
+            }
+        }
+
         // Mise à jour de la structure des tables existantes
         $this->updateTableStructure();
     }
@@ -128,10 +140,10 @@ class GrilleAncienne
     {
         try {
             // Vérifier si la colonne semestre existe dans grilles_anciennes_ue
-            $stmt = $this->db->query("SHOW COLUMNS FROM grilles_anciennes_ue LIKE 'semestre'");
+            $stmt = $this->db->query("SELECT column_name FROM information_schema.columns WHERE table_name = 'grilles_anciennes_ue' AND column_name = 'semestre'");
             if ($stmt->rowCount() == 0) {
                 // Ajouter la colonne semestre
-                $this->db->exec("ALTER TABLE grilles_anciennes_ue ADD COLUMN semestre VARCHAR(10) DEFAULT 'S1' AFTER credits");
+                $this->db->exec("ALTER TABLE grilles_anciennes_ue ADD COLUMN semestre VARCHAR(10) DEFAULT 'S1'");
             }
         } catch (PDOException $e) {
             // Ignorer les erreurs de structure (table peut ne pas exister encore)
@@ -210,11 +222,12 @@ class GrilleAncienne
      */
     public function insertEtudiant($importId, $etudiantData)
     {
-        $sql = "INSERT INTO grilles_anciennes_etudiants 
-                (import_id, matricule, noms, ordre_affichage) 
+        $sql = "INSERT INTO grilles_anciennes_etudiants
+                (import_id, matricule, noms, ordre_affichage)
                 VALUES (?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE noms = VALUES(noms)";
-        
+                ON CONFLICT (import_id, matricule) DO UPDATE SET noms = EXCLUDED.noms
+                RETURNING id";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             $importId,
@@ -222,15 +235,8 @@ class GrilleAncienne
             $etudiantData['noms'],
             $etudiantData['ordre_affichage'] ?? 0
         ]);
-        
-        // Récupérer l'ID (même en cas de mise à jour)
-        if ($this->db->lastInsertId()) {
-            return $this->db->lastInsertId();
-        } else {
-            $stmt = $this->db->prepare("SELECT id FROM grilles_anciennes_etudiants WHERE import_id = ? AND matricule = ?");
-            $stmt->execute([$importId, $etudiantData['matricule']]);
-            return $stmt->fetchColumn();
-        }
+
+        return $stmt->fetchColumn();
     }
 
     /**
@@ -238,14 +244,15 @@ class GrilleAncienne
      */
     public function insertNote($etudiantId, $ecueId, $noteData)
     {
-        $sql = "INSERT INTO grilles_anciennes_notes 
-                (etudiant_id, ecue_id, note_cc, note_examen, note_finale) 
+        $sql = "INSERT INTO grilles_anciennes_notes
+                (etudiant_id, ecue_id, note_cc, note_examen, note_finale)
                 VALUES (?, ?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE 
-                note_cc = VALUES(note_cc),
-                note_examen = VALUES(note_examen),
-                note_finale = VALUES(note_finale)";
-        
+                ON CONFLICT (etudiant_id, ecue_id) DO UPDATE SET
+                note_cc = EXCLUDED.note_cc,
+                note_examen = EXCLUDED.note_examen,
+                note_finale = EXCLUDED.note_finale
+                RETURNING id";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             $etudiantId,
@@ -254,8 +261,8 @@ class GrilleAncienne
             $noteData['note_examen'],
             $noteData['note_finale']
         ]);
-        
-        return $this->db->lastInsertId() ?: true;
+
+        return $stmt->fetchColumn() ?: true;
     }
 
     /**
@@ -263,16 +270,17 @@ class GrilleAncienne
      */
     public function insertResultat($etudiantId, $importId, $resultatData)
     {
-        $sql = "INSERT INTO grilles_anciennes_resultats 
-                (etudiant_id, ue_id, import_id, moyenne, credits_valides, credits_total, est_valide, mention, type_resultat) 
+        $sql = "INSERT INTO grilles_anciennes_resultats
+                (etudiant_id, ue_id, import_id, moyenne, credits_valides, credits_total, est_valide, mention, type_resultat)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ON DUPLICATE KEY UPDATE 
-                moyenne = VALUES(moyenne),
-                credits_valides = VALUES(credits_valides),
-                credits_total = VALUES(credits_total),
-                est_valide = VALUES(est_valide),
-                mention = VALUES(mention)";
-        
+                ON CONFLICT (etudiant_id, ue_id, import_id, type_resultat) DO UPDATE SET
+                moyenne = EXCLUDED.moyenne,
+                credits_valides = EXCLUDED.credits_valides,
+                credits_total = EXCLUDED.credits_total,
+                est_valide = EXCLUDED.est_valide,
+                mention = EXCLUDED.mention
+                RETURNING id";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             $etudiantId,
@@ -285,8 +293,8 @@ class GrilleAncienne
             $resultatData['mention'] ?? null,
             $resultatData['type_resultat']
         ]);
-        
-        return $this->db->lastInsertId() ?: true;
+
+        return $stmt->fetchColumn() ?: true;
     }
 
     /**

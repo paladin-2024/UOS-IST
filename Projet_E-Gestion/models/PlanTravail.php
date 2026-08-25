@@ -315,7 +315,7 @@ class PlanTravail {
                        s.intitule as sujet_intitule,
                        e.noms as etudiant_nom,
                        e.matricule,
-                       DATEDIFF(da.deadline, CURDATE()) as jours_restants
+                       (da.deadline::date - CURRENT_DATE) as jours_restants
                 FROM deadline_assignment da
                 JOIN chapitre_plan cp ON da.idchapitre_plan = cp.idchapitre_plan
                 JOIN plan_travail pt ON cp.idplan_travail = pt.idplan_travail

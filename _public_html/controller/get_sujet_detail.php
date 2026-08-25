@@ -100,7 +100,7 @@ try {
                 -- Formatage de la date de validation
                 CASE 
                     WHEN s.date_validation IS NOT NULL 
-                    THEN DATE_FORMAT(s.date_validation, '%d/%m/%Y à %H:%i')
+                    THEN TO_CHAR(s.date_validation, 'DD/MM/YYYY \"à\" HH24:MI')
                     ELSE NULL 
                 END as date_validation_formatee
                 
@@ -152,7 +152,7 @@ try {
                         sh.date_action,
                         u.\"idUser\",
                         u.\"nomUser\" as nom_utilisateur,
-                        DATE_FORMAT(sh.date_action, '%d/%m/%Y à %H:%i') as date_formatee
+                        TO_CHAR(sh.date_action, 'DD/MM/YYYY \"à\" HH24:MI') as date_formatee
                      FROM sujet_validation_history sh
                      LEFT JOIN t_users u ON sh.\"idUser\" = u.\"idUser\"
                      WHERE sh.idsujets = ?
@@ -175,7 +175,7 @@ try {
                       t.pourcentage_avancement,
                       t.date_validation,
                       t.commentaire_validation,
-                      DATE_FORMAT(t.\"dateTache\", '%d/%m/%Y') as date_tache_formatee
+                      TO_CHAR(t.\"dateTache\", 'DD/MM/YYYY') as date_tache_formatee
                    FROM taches t
                    WHERE t.sujets_idsujets = ?
                    ORDER BY t.\"dateTache\" DESC";
@@ -193,7 +193,7 @@ try {
                         dm.\"dateDepot\",
                         dm.fichier,
                         dm.observation,
-                        DATE_FORMAT(dm.\"dateDepot\", '%d/%m/%Y') as date_depot_formatee
+                        TO_CHAR(dm.\"dateDepot\", 'DD/MM/YYYY') as date_depot_formatee
                      FROM depot_memoire dm
                      WHERE dm.sujets_idsujets = ?
                      ORDER BY dm.\"dateDepot\" DESC
@@ -214,7 +214,7 @@ try {
                            s.statut,
                            s.note_finale,
                            s.commentaire,
-                           DATE_FORMAT(s.date_soutenance, '%d/%m/%Y à %H:%i') as date_soutenance_formatee
+                           TO_CHAR(s.date_soutenance, 'DD/MM/YYYY \"à\" HH24:MI') as date_soutenance_formatee
                         FROM soutenance s
                         WHERE s.sujets_idsujets = ?
                         ORDER BY s.date_soutenance DESC

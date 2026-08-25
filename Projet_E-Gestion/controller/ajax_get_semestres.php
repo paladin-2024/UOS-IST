@@ -25,7 +25,7 @@ try {
     $hasFullAccess = $_SESSION['idRole'] == 1;
     
     // Récupérer l'année académique en cours
-    $checkColumn = "SHOW COLUMNS FROM annee_acad LIKE 'est_active'";
+    $checkColumn = "SELECT column_name FROM information_schema.columns WHERE table_name = 'annee_acad' AND column_name = 'est_active'";
     $stmtCheck = $pdo->prepare($checkColumn);
     $stmtCheck->execute();
     $columnExists = $stmtCheck->fetch();

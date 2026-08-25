@@ -27,12 +27,12 @@ try {
     $query = "SELECT l.id_lot, l.numero_lot, l.quantite_disponible,                     l.prix_unitaire_vente, l.date_peremption,
                      CASE 
                         WHEN l.date_peremption IS NULL THEN NULL
-                        ELSE DATEDIFF(l.date_peremption, CURDATE())
+                        ELSE (l.date_peremption::date - CURRENT_DATE)
                      END AS jours_avant_expiration,
                      CASE
                         WHEN l.date_peremption IS NULL THEN 'normal'
-                        WHEN DATEDIFF(l.date_peremption, CURDATE()) <= 15 THEN 'critique'
-                        WHEN DATEDIFF(l.date_peremption, CURDATE()) <= 30 THEN 'attention'
+                        WHEN (l.date_peremption::date - CURRENT_DATE) <= 15 THEN 'critique'
+                        WHEN (l.date_peremption::date - CURRENT_DATE) <= 30 THEN 'attention'
                         ELSE 'normal'
                      END AS statut_expiration
               FROM lot_produit l

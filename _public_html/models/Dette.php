@@ -332,14 +332,14 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
                     s.idsemestre,
                     COUNT(d.id_dette) as nombre_dettes,
                     SUM(d.credits_ecue) as total_credits,
-                    GROUP_CONCAT(d.\"designationECUE\" SEPARATOR ', ') as ecues
+                    STRING_AGG(d.\"designationECUE\", ', ') as ecues
                 FROM v_dettes_etudiants d
                 JOIN semestre s ON d.semestre_idsemestre = s.idsemestre
                 WHERE d.matricule = :matricule
                 AND d.annee_acad_idannee_acad = :annee
                 AND d.statut = 'En cours'
                 GROUP BY s.idsemestre, s.\"numeroSemestre\"
-                ORDER BY s.numeroSemestre";
+                ORDER BY s.\"numeroSemestre\"";
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute([

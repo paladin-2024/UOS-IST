@@ -26,7 +26,7 @@ if ($promotionId <= 0) {
 $pdo = Connexion::getInstance()->getPDO();
 
 // Récupérer l'année académique en cours
-$checkColumn = "SHOW COLUMNS FROM annee_acad LIKE 'est_active'";
+$checkColumn = "SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'annee_acad' AND column_name = 'est_active'";
 $stmtCheck = $pdo->prepare($checkColumn);
 $stmtCheck->execute();
 $columnExists = $stmtCheck->fetch();
@@ -146,7 +146,7 @@ function getStatistiquesAvancement($pdo, $promotionId, $semestreId, $anneeAcadId
     foreach ($ecues as $ecue) {
         $queryRealise = "SELECT 
                         type_cours,
-                        SUM(TIMESTAMPDIFF(HOUR, heure_debut, heure_fin)) as heures_realisees
+                        SUM(EXTRACT(EPOCH FROM (heure_fin - heure_debut))/3600.0) as heures_realisees
                         FROM suivi_enseignements
                         WHERE \"idECUE\" = :ecueId
                         AND annee_acad_idannee_acad = :anneeAcadId

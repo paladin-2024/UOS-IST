@@ -56,9 +56,9 @@ if (!$chefPromotion) {
 // Fonction pour récupérer les ECUE de la promotion qui ne sont pas encore terminés
 function getECUEsDisponibles($connexion, $studentId, $anneeAcad) {
     $query = "SELECT DISTINCT e.\"idECUE\", e.\"designationECUE\", e.CMI, e.TD, e.TP, u.\"designationUE\",
-                     COALESCE(SUM(CASE WHEN se.type_cours = 'CM' THEN TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60 ELSE 0 END), 0) as heures_cm_utilisees,
-                     COALESCE(SUM(CASE WHEN se.type_cours = 'TD' THEN TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60 ELSE 0 END), 0) as heures_td_utilisees,
-                     COALESCE(SUM(CASE WHEN se.type_cours = 'TP' THEN TIMESTAMPDIFF(MINUTE, se.heure_debut, se.heure_fin) / 60 ELSE 0 END), 0) as heures_tp_utilisees
+                     COALESCE(SUM(CASE WHEN se.type_cours = 'CM' THEN EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut)) / 3600.0 ELSE 0 END), 0) as heures_cm_utilisees,
+                     COALESCE(SUM(CASE WHEN se.type_cours = 'TD' THEN EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut)) / 3600.0 ELSE 0 END), 0) as heures_td_utilisees,
+                     COALESCE(SUM(CASE WHEN se.type_cours = 'TP' THEN EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut)) / 3600.0 ELSE 0 END), 0) as heures_tp_utilisees
               FROM ecue e
               INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
               INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
@@ -153,11 +153,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Vérifier les heures déjà enregistrées pour ce type de cours
         $queryHeuresExistantes = "SELECT COALESCE(SUM(
-                                    TIMESTAMPDIFF(MINUTE, heure_debut, heure_fin) / 60
+                                    EXTRACT(EPOCH FROM (heure_fin - heure_debut)) / 3600.0
                                   ), 0) as heures_utilisees
-                                  FROM suivi_enseignements 
-                                  WHERE chef_promotion_id = :chef_id 
-                                  AND \"idECUE\" = :\"idECUE\" 
+                                  FROM suivi_enseignements
+                                  WHERE chef_promotion_id = :chef_id
+                                  AND \"idECUE\" = :idECUE
                                   AND type_cours = :type_cours
                                   AND annee_acad_idannee_acad = :annee_acad";
 

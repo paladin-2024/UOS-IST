@@ -201,12 +201,19 @@ public function addHoraireWithDate($date_cours, $heureDebut, $heureFin, $salle, 
         return false;
     }
     
-    $query = "INSERT INTO horaires_cours (date_cours, jour, heure_debut, heure_fin, salle, \"idECUE\", 
-             annee_acad_idannee_acad, \"idUser\", type_cours) 
-             VALUES (:date_cours, DAYNAME(:date_cours), :heureDebut, :heureFin, :salle, :idECUE, :idAnneeAcad, :idUser, :typeCours)";
+    $joursFr = [
+        'Sunday' => 'Dimanche', 'Monday' => 'Lundi', 'Tuesday' => 'Mardi',
+        'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi'
+    ];
+    $jourNom = $joursFr[date('l', strtotime($date_cours))];
+
+    $query = "INSERT INTO horaires_cours (date_cours, jour, heure_debut, heure_fin, salle, \"idECUE\",
+             annee_acad_idannee_acad, \"idUser\", type_cours)
+             VALUES (:date_cours, :jour, :heureDebut, :heureFin, :salle, :idECUE, :idAnneeAcad, :idUser, :typeCours)";
     $stmt = $this->db->prepare($query);
     return $stmt->execute([
         'date_cours' => $date_cours,
+        'jour' => $jourNom,
         'heureDebut' => $heureDebut,
         'heureFin' => $heureFin,
         'salle' => $salle,
@@ -577,7 +584,7 @@ public function verifierTempsTransition($jour, $heureDebut, $heureFin, $idECUE, 
                    WHERE p.idpromotion = :idPromotion 
                    AND h.date_cours = :jour 
                    AND h.annee_acad_idannee_acad = :idAnneeAcad
-                   AND ABS(TIMESTAMPDIFF(MINUTE, h.heure_fin, :heureDebut)) < :tempsTransition
+                   AND ABS((EXTRACT(EPOCH FROM (:heureDebut::time - h.heure_fin))/60)) < :tempsTransition
                    AND h.heure_fin <= :heureDebut";
     
     if ($idHoraire) {
@@ -618,7 +625,7 @@ public function verifierTempsTransition($jour, $heureDebut, $heureFin, $idECUE, 
                   WHERE p.idpromotion = :idPromotion 
                   AND h.date_cours = :jour 
                   AND h.annee_acad_idannee_acad = :idAnneeAcad
-                  AND ABS(TIMESTAMPDIFF(MINUTE, :heureFin, h.heure_debut)) < :tempsTransition
+                  AND ABS((EXTRACT(EPOCH FROM (h.heure_debut - :heureFin::time))/60)) < :tempsTransition
                   AND h.heure_debut >= :heureFin";
     
     if ($idHoraire) {
@@ -664,8 +671,8 @@ public function getHorairesByPromotionAndDates($idPromotion, $idAnneeAcad, $date
     // ou prendre le premier enseignant si aucun titulaire n'est spécifié
     $query = "SELECT h.*, e.\"designationECUE\", u.\"designationUE\", 
              s.\"numeroSemestre\", p.\"designationPromotion\", a.noms as enseignant_nom,
-             DATE_FORMAT(h.date_cours, '%Y-%m-%d') as date_cours,
-             DAYNAME(h.date_cours) as jour_semaine
+             TO_CHAR(h.date_cours, 'YYYY-MM-DD') as date_cours,
+             h.jour as jour_semaine
              FROM horaires_cours h
              JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
              JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
@@ -823,8 +830,8 @@ private function detecterConflits($horaires) {
 public function getOccupationSalles($idAnneeAcad, $dateDebut, $dateFin) {
     $query = "SELECT h.*, e.\"designationECUE\", u.\"designationUE\", 
              s.\"numeroSemestre\", p.\"designationPromotion\", a.noms as enseignant_nom,
-             DATE_FORMAT(h.date_cours, '%Y-%m-%d') as date_cours,
-             DAYNAME(h.date_cours) as jour_semaine
+             TO_CHAR(h.date_cours, 'YYYY-MM-DD') as date_cours,
+             h.jour as jour_semaine
              FROM horaires_cours h
              JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
              JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
@@ -866,7 +873,7 @@ public function getOccupationSalles($idAnneeAcad, $dateDebut, $dateFin) {
 public function getSallesOccupationRate($idAnneeAcad, $dateDebut, $dateFin) {
     $query = "SELECT h.salle, 
              COUNT(DISTINCT h.date_cours) as jours_occupes,
-             SUM(TIMESTAMPDIFF(MINUTE, h.heure_debut, h.heure_fin)) as minutes_totales,
+             SUM(EXTRACT(EPOCH FROM (h.heure_fin - h.heure_debut))/60) as minutes_totales,
              COUNT(*) as nombre_cours
              FROM horaires_cours h
              WHERE h.annee_acad_idannee_acad = :idAnneeAcad";
@@ -899,8 +906,8 @@ public function getOccupationPromotions($idAnneeAcad, $dateDebut, $dateFin) {
     $query = "SELECT h.*, e.\"designationECUE\", u.\"designationUE\", 
              s.\"numeroSemestre\", p.\"designationPromotion\", p.idpromotion, p.cycle,
              a.noms as enseignant_nom,
-             DATE_FORMAT(h.date_cours, '%Y-%m-%d') as date_cours,
-             DAYNAME(h.date_cours) as jour_semaine
+             TO_CHAR(h.date_cours, 'YYYY-MM-DD') as date_cours,
+             h.jour as jour_semaine
              FROM horaires_cours h
              JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"
              JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
@@ -942,7 +949,7 @@ public function getOccupationPromotions($idAnneeAcad, $dateDebut, $dateFin) {
 public function getPromotionsOccupationRate($idAnneeAcad, $dateDebut, $dateFin) {
     $query = "SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
              COUNT(DISTINCT h.date_cours) as jours_occupes,
-             SUM(TIMESTAMPDIFF(MINUTE, h.heure_debut, h.heure_fin)) as minutes_totales,
+             SUM(EXTRACT(EPOCH FROM (h.heure_fin - h.heure_debut))/60) as minutes_totales,
              COUNT(*) as nombre_cours
              FROM horaires_cours h
              JOIN ecue e ON h.\"idECUE\" = e.\"idECUE\"

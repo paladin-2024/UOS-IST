@@ -203,11 +203,11 @@ for ($i = 0; $i < 12; $i++) {
 
 // Récupère les recettes des 12 derniers mois
 $stmt = $connexion->prepare("
-    SELECT DATE_FORMAT(date_transaction, '%Y-%m') as mois, SUM(montant) as total
+    SELECT TO_CHAR(date_transaction, 'YYYY-MM') as mois, SUM(montant) as total
     FROM transactions
     WHERE type = 'Recette' 
-    AND date_transaction >= DATE_SUB(CURRENT_DATE(), INTERVAL 12 MONTH)
-    GROUP BY DATE_FORMAT(date_transaction, '%Y-%m')
+    AND date_transaction >= (CURRENT_DATE - INTERVAL '12 months')
+    GROUP BY TO_CHAR(date_transaction, 'YYYY-MM')
 ");
 $stmt->execute();
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -218,11 +218,11 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
 // Récupère les dépenses des 12 derniers mois
 $stmt = $connexion->prepare("
-    SELECT DATE_FORMAT(date_transaction, '%Y-%m') as mois, SUM(montant) as total
+    SELECT TO_CHAR(date_transaction, 'YYYY-MM') as mois, SUM(montant) as total
     FROM transactions
     WHERE type = 'Dépense'
-    AND date_transaction >= DATE_SUB(CURRENT_DATE(), INTERVAL 12 MONTH)
-    GROUP BY DATE_FORMAT(date_transaction, '%Y-%m')
+    AND date_transaction >= (CURRENT_DATE - INTERVAL '12 months')
+    GROUP BY TO_CHAR(date_transaction, 'YYYY-MM')
 ");
 $stmt->execute();
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

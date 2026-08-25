@@ -318,7 +318,7 @@ public function getSoutenancesParSection($idSection, $idAnneeAcad, $filtreEtudia
              j.designation as jury_designation,
              jp.noms as president_nom,
              js.noms as secretaire_nom,
-             (SELECT GROUP_CONCAT(a.noms ORDER BY ls.est_premier_lecteur DESC SEPARATOR '|') 
+             (SELECT STRING_AGG(a.noms, '|' ORDER BY ls.est_premier_lecteur DESC) 
               FROM lecteurs_soutenance ls 
               JOIN agent a ON ls.idenseignant = a.\"idAgent\" 
               WHERE ls.idsoutenance = s.idsoutenance) as lecteurs
@@ -379,10 +379,10 @@ public function getStatistiquesMemoires($idAnneeAcad, $idSection = null) {
                 s.idsection,
                 s.\"designationSection\",
                 COUNT(dm.iddepot_memoire) as nb_total,
-                COUNT(CASE WHEN MONTH(dm.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
-                COUNT(CASE WHEN MONTH(dm.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
-                COUNT(CASE WHEN MONTH(dm.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
-                COUNT(CASE WHEN MONTH(dm.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
             FROM 
                 section s
             LEFT JOIN specialisation sp ON sp.idsection = s.idsection
@@ -397,7 +397,7 @@ public function getStatistiquesMemoires($idAnneeAcad, $idSection = null) {
     }
     
     $sql .= " GROUP BY s.idsection, s.\"designationSection\"
-              ORDER BY s.designationSection";
+              ORDER BY s.\"designationSection\"";
     
     $stmt = $this->db->prepare($sql);
     $stmt->execute($params);
@@ -412,10 +412,10 @@ public function getStatistiquesRapports($idAnneeAcad, $idSection = null) {
                 s.idsection,
                 s.\"designationSection\",
                 COUNT(dr.iddepot_rapport) as nb_total,
-                COUNT(CASE WHEN MONTH(dr.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
-                COUNT(CASE WHEN MONTH(dr.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
-                COUNT(CASE WHEN MONTH(dr.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
-                COUNT(CASE WHEN MONTH(dr.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dr.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dr.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dr.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
+                COUNT(CASE WHEN EXTRACT(MONTH FROM dr.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
             FROM 
                 section s
             LEFT JOIN orientation o ON o.section_idsection = s.idsection
@@ -431,7 +431,7 @@ public function getStatistiquesRapports($idAnneeAcad, $idSection = null) {
     }
     
     $sql .= " GROUP BY s.idsection, s.\"designationSection\"
-              ORDER BY s.designationSection";
+              ORDER BY s.\"designationSection\"";
     
     $stmt = $this->db->prepare($sql);
     $stmt->execute($params);
@@ -464,7 +464,7 @@ public function getStatistiquesSoutenances($idAnneeAcad, $idSection = null) {
     }
     
     $sql .= " GROUP BY s.idsection, s.\"designationSection\"
-              ORDER BY s.designationSection";
+              ORDER BY s.\"designationSection\"";
     
     $stmt = $this->db->prepare($sql);
     $stmt->execute($params);
@@ -499,7 +499,7 @@ public function getStatistiquesSujets($idAnneeAcad, $idSection = null) {
     }
     
     $sql .= " GROUP BY s.idsection, s.\"designationSection\"
-              ORDER BY s.designationSection";
+              ORDER BY s.\"designationSection\"";
     
     $stmt = $this->db->prepare($sql);
     $stmt->execute($params);
@@ -556,7 +556,7 @@ public function getSoutenancesProgrammeesParSection($idSection, $idAnneeAcad, $f
              j.designation as jury_designation,
              jp.noms as president_nom,
              js.noms as secretaire_nom,
-             (SELECT GROUP_CONCAT(a.noms ORDER BY ls.est_premier_lecteur DESC SEPARATOR '|') 
+             (SELECT STRING_AGG(a.noms, '|' ORDER BY ls.est_premier_lecteur DESC) 
               FROM lecteurs_soutenance ls 
               JOIN agent a ON ls.idenseignant = a.\"idAgent\" 
               WHERE ls.idsoutenance = s.idsoutenance) as lecteurs

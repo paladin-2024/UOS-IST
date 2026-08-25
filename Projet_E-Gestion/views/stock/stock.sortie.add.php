@@ -61,10 +61,10 @@ if ($selectedDepotId) {
 function generateExitNumber($db) {
     $year = date('y'); // Année courante en 2 chiffres
     
-    $query = "SELECT MAX(CAST(SUBSTRING(numero_sortie, 6) AS UNSIGNED)) as max_num 
+    $query = "SELECT MAX(CAST(SUBSTRING(numero_sortie, 6) AS INTEGER)) as max_num 
               FROM sortie_stock 
               WHERE numero_sortie LIKE 'SOR" . $year . "%' 
-              AND YEAR(date_sortie) = YEAR(CURRENT_DATE())";
+              AND EXTRACT(YEAR FROM date_sortie) = EXTRACT(YEAR FROM CURRENT_DATE)";
     $stmt = $db->prepare($query);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);

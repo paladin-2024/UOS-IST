@@ -37,13 +37,13 @@ $visitesByType = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Visites par mois (derniers 6 mois)
 $monthlyQuery = "
-    SELECT 
-        DATE_FORMAT(date_visite, '%Y-%m') as mois,
+    SELECT
+        TO_CHAR(date_visite, 'YYYY-MM') as mois,
         COUNT(*) as nombre
-    FROM visites 
-    WHERE cree_par = ? 
-    AND date_visite >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-    GROUP BY DATE_FORMAT(date_visite, '%Y-%m')
+    FROM visites
+    WHERE cree_par = ?
+    AND date_visite >= (CURRENT_DATE - INTERVAL '6 months')
+    GROUP BY TO_CHAR(date_visite, 'YYYY-MM')
     ORDER BY mois
 ";
 $stmt = $db->prepare($monthlyQuery);

@@ -109,7 +109,7 @@ require_once '../config/Connexion.php';
             echo '<div class="card-body">';
             
             try {
-                $queryStructure = "SHOW COLUMNS FROM suivi_enseignements";
+                $queryStructure = "SELECT column_name AS \"Field\", data_type AS \"Type\" FROM information_schema.columns WHERE table_name = 'suivi_enseignements'";
                 $stmtStructure = $connexion->prepare($queryStructure);
                 $stmtStructure->execute();
                 $columns = $stmtStructure->fetchAll(PDO::FETCH_ASSOC);
