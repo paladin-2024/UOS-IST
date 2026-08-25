@@ -17,10 +17,10 @@ try {
     // Vérifier s'il y a des nouvelles visites dans les dernières 5 minutes
     $checkQuery = "
         SELECT COUNT(*) as nouvelles_visites,
-               GROUP_CONCAT(CONCAT(nom_visiteur, ' ', prenom_visiteur) SEPARATOR ', ') as noms_visiteurs
-        FROM visites 
-        WHERE cree_par = ? 
-        AND date_creation >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+               STRING_AGG(CONCAT(nom_visiteur, ' ', prenom_visiteur), ', ') as noms_visiteurs
+        FROM visites
+        WHERE cree_par = ?
+        AND date_creation >= NOW() - INTERVAL '5 minutes'
         AND statut_visite = 'programmee'
     ";
     

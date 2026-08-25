@@ -94,7 +94,7 @@ try {
     $stmt = $connexion->prepare("
         UPDATE paiements_frais 
         SET est_confirme = 0,
-            commentaire = CONCAT(IFNULL(commentaire, ''), ' [ANNULÉ le ', NOW(), ' par utilisateur ', :idUser, ' - Motif: ', :motif, ']')
+            commentaire = CONCAT(COALESCE(commentaire, ''), ' [ANNULÉ le ', NOW(), ' par utilisateur ', :idUser, ' - Motif: ', :motif, ']')
         WHERE id = :paiement_id
     ");
     $stmt->bindParam(':paiement_id', $paiement_id);
@@ -110,7 +110,7 @@ try {
         $stmt = $connexion->prepare("
             UPDATE transactions 
             SET statut = 'Annulée',
-                commentaire = CONCAT(IFNULL(commentaire, ''), ' [ANNULÉ le ', NOW(), ' - Motif: ', :motif, ']')
+                commentaire = CONCAT(COALESCE(commentaire, ''), ' [ANNULÉ le ', NOW(), ' - Motif: ', :motif, ']')
             WHERE id = :transaction_id
         ");
         $stmt->bindParam(':transaction_id', $transaction_id);

@@ -72,10 +72,10 @@ if ($receptionId > 0) {
 function generateInvoiceNumber($db) {
     $year = date('y'); // Année courante en 2 chiffres
     
-    $query = "SELECT MAX(CAST(SUBSTRING(numero_facture, 6) AS UNSIGNED)) as max_num 
-              FROM facture_fournisseur 
-              WHERE numero_facture LIKE 'FACT" . $year . "%' 
-              AND YEAR(date_facture) = YEAR(CURRENT_DATE())";
+    $query = "SELECT MAX(CAST(SUBSTRING(numero_facture, 6) AS INTEGER)) as max_num
+              FROM facture_fournisseur
+              WHERE numero_facture LIKE 'FACT" . $year . "%'
+              AND EXTRACT(YEAR FROM date_facture) = EXTRACT(YEAR FROM CURRENT_DATE)";
     $stmt = $db->prepare($query);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);

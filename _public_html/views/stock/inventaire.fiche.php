@@ -63,8 +63,8 @@ if ($selectedDepotId) {
     $queryProducts = "
         SELECT DISTINCT p.id_produit, p.code_produit, p.libelle_produit,
                         um.symbole_unite, 
-                        GROUP_CONCAT(DISTINCT l.id_lot) as lot_ids,
-                        GROUP_CONCAT(DISTINCT l.numero_lot) as lot_numeros,
+                        STRING_AGG(DISTINCT l.id_lot::text, ',') as lot_ids,
+                        STRING_AGG(DISTINCT l.numero_lot, ',') as lot_numeros,
                         SUM(l.quantite_disponible) as quantite_totale
         FROM produit p
         INNER JOIN lot_produit l ON p.id_produit = l.id_produit

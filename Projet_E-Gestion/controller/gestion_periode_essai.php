@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
                 SELECT id, client_nom, client_email, date_debut, date_fin, statut, 
                        nombre_connexions, derniere_connexion,
                        CASE 
-                           WHEN date_fin > NOW() AND statut = 'Actif' THEN DATEDIFF(date_fin, NOW())
+                           WHEN date_fin > NOW() AND statut = 'Actif' THEN (date_fin::date - NOW()::date)
                            ELSE 0 
                        END as jours_restants
                 FROM periodes_essai 

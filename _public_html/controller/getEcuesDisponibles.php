@@ -26,8 +26,8 @@ try {
                 e.\"designationECUE\",
                 ue.\"designationUE\",
                 s.\"numeroSemestre\",
-                (IFNULL(e.CMI, 0) + IFNULL(e.TD, 0) + IFNULL(e.TP, 0)) as heures_total,
-                IFNULL(SUM(see.nombre_heures_reelles), 0) as heures_realisees
+                (COALESCE(e.CMI, 0) + COALESCE(e.TD, 0) + COALESCE(e.TP, 0)) as heures_total,
+                COALESCE(SUM(see.nombre_heures_reelles), 0) as heures_realisees
               FROM ecue e
               JOIN ue ON e.\"UE_idUE\" = ue.\"idUE\"
               JOIN semestre s ON ue.semestre_idsemestre = s.idsemestre

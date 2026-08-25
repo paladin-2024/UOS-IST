@@ -123,27 +123,27 @@ public function getAllAcademicYears() {
 
     public function getSections($search = '', $anneeAcadId = null) {
         $query = "SELECT section.*, annee_acad.designation AS anneeDesignation,
-                  (SELECT CONCAT(rs.noms, ' - ', rs.fonction) 
-                   FROM responsable_section rs 
-                   WHERE rs.section_idsection = section.idsection 
-                   AND rs.est_chef = 1 
-                   AND rs.annee_acad_idannee_acad = section.idAnnee
+                  (SELECT CONCAT(rs.noms, ' - ', rs.fonction)
+                   FROM responsable_section rs
+                   WHERE rs.section_idsection = section.idsection
+                   AND rs.est_chef = 1
+                   AND rs.annee_acad_idannee_acad = section.\"idAnnee\"
                    LIMIT 1) AS chef_section
-                  FROM section 
-                  JOIN annee_acad ON section.idAnnee = annee_acad.idannee_acad
+                  FROM section
+                  JOIN annee_acad ON section.\"idAnnee\" = annee_acad.idannee_acad
                   WHERE 1=1";
-        
+
         // Filtre par année académique
         if (!empty($anneeAcadId)) {
-            $query .= " AND section.idAnnee = :anneeAcadId";
+            $query .= " AND section.\"idAnnee\" = :anneeAcadId";
         }
-        
+
         // Filtre par recherche
         if (!empty($search)) {
-            $query .= " AND (section.designationSection LIKE :search OR annee_acad.designation LIKE :search)";
+            $query .= " AND (section.\"designationSection\" LIKE :search OR annee_acad.designation LIKE :search)";
         }
-        
-        $query .= " ORDER BY annee_acad.designation DESC, section.designationSection ASC";
+
+        $query .= " ORDER BY annee_acad.designation DESC, section.\"designationSection\" ASC";
 
         $stmt = $this->db->prepare($query);
         
@@ -4331,24 +4331,37 @@ public function getEtudiantsByPromotionAndNom($promotionId, $anneeAcadId, $searc
               FROM etudiant e
               JOIN promotion p ON e.promotion_idpromotion = p.idpromotion
               JOIN annee_acad a ON e.annee_acad_idannee_acad=a.idannee_acad
-              WHERE e.promotion_idpromotion = :promotionId
-              AND e.annee_acad_idannee_acad = :anneeAcadId";
-    
+              WHERE 1=1";
+
+    if (!empty($promotionId)) {
+        $query .= " AND e.promotion_idpromotion = :promotionId";
+    }
+
+    if (!empty($anneeAcadId)) {
+        $query .= " AND e.annee_acad_idannee_acad = :anneeAcadId";
+    }
+
     if (!empty($search)) {
         $query .= " AND e.noms LIKE :search";
     }
-    
+
     $query .= " ORDER BY e.noms ASC";
-    
+
     $stmt = $this->db->prepare($query);
-    $stmt->bindParam(':promotionId', $promotionId, PDO::PARAM_INT);
-    $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
-    
+
+    if (!empty($promotionId)) {
+        $stmt->bindParam(':promotionId', $promotionId, PDO::PARAM_INT);
+    }
+
+    if (!empty($anneeAcadId)) {
+        $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
+    }
+
     if (!empty($search)) {
         $searchParam = '%' . $search . '%';
         $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
     }
-    
+
     $stmt->execute();
     
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -4766,7 +4779,7 @@ public function deleteJury($idJury)
  */
 public function getJuryMembers($juryId)
 {
-    $query = "SELECT m.*, a.noms, DATE_FORMAT(m.date_ajout, '%d/%m/%Y %H:%i') as date_ajout 
+    $query = "SELECT m.*, a.noms, TO_CHAR(m.date_ajout, 'DD/MM/YYYY HH24:MI') as date_ajout
               FROM membre_bureau_jury m
               JOIN agent a ON m.\"idAgent\" = a.\"idAgent\"
               WHERE m.idbureau = :juryId

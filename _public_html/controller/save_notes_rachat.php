@@ -75,16 +75,16 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
                         // Mettre à jour ou insérer dans cotes_grille
                         $stmt = $db->prepare("
                             INSERT INTO cotes_grille (
-                                CC, EX, MF, \"ECUE_idECUE\", session_idsession, 
+                                \"CC\", \"EX\", \"MF\", \"ECUE_idECUE\", session_idsession,
                                 matricule, annee_acad_id, \"idUser\"
                             ) VALUES (
-                                :cc, :ex, :mf, :ecue, :session, 
+                                :cc, :ex, :mf, :ecue, :session,
                                 :matricule, :annee, :user
-                            ) ON DUPLICATE KEY UPDATE 
-                                CC = VALUES(CC), 
-                                EX = VALUES(EX), 
-                                MF = VALUES(MF),
-                                \"idUser\" = VALUES(\"idUser\")
+                            ) ON CONFLICT (\"ECUE_idECUE\", session_idsession, matricule, annee_acad_id) DO UPDATE
+                                SET \"CC\" = EXCLUDED.\"CC\",
+                                    \"EX\" = EXCLUDED.\"EX\",
+                                    \"MF\" = EXCLUDED.\"MF\",
+                                    \"idUser\" = EXCLUDED.\"idUser\"
                         ");
                         
                         $stmt->execute([

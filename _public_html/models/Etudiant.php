@@ -1991,7 +1991,7 @@ public function getNotesParUE($etudiantId) {
 public function getDevoirsAVenir($etudiantId, $limit = 5) {
     $query = "SELECT d.iddevoir, d.titre, d.date_limite, 
                      c.titre as cours_titre, 
-                     DATEDIFF(d.date_limite, NOW()) as jours_restants,
+                     (d.date_limite::date - NOW()::date) as jours_restants,
                      CASE 
                          WHEN EXISTS (
                              SELECT 1 FROM reponses_devoir r 

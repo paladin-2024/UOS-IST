@@ -36,7 +36,7 @@ g.designation as gradeDesignation,
 u.\"idUser\",
 u.\"loginUser\",
 u.\"etatUser\",
-GROUP_CONCAT(DISTINCT r.\"nomRole\" ORDER BY r.\"nomRole\" SEPARATOR ', ') AS allRoles,
+STRING_AGG(DISTINCT r.\"nomRole\", ', ' ORDER BY r.\"nomRole\") AS allRoles,
 CASE
 WHEN u.\"idUser\" IS NOT NULL THEN 'Oui'
 ELSE 'Non'

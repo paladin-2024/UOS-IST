@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                                     $nomFichier = uniqid() . "_grp{$i}." . $ext;
                                     if (move_uploaded_file($_FILES[$key]['tmp_name'], $uploadDir . $nomFichier)) {
                                         $stmtFG = $db->prepare("INSERT INTO fichiers_groupes_travail (id_devoir, numero_groupe, fichier) VALUES (:id, :grp, :fichier)
-                                            ON DUPLICATE KEY UPDATE fichier = VALUES(fichier)");
+                                            ON CONFLICT (id_devoir, numero_groupe) DO UPDATE SET fichier = EXCLUDED.fichier");
                                         $stmtFG->bindParam(':id', $idDevoirInsere, PDO::PARAM_INT);
                                         $stmtFG->bindParam(':grp', $i, PDO::PARAM_INT);
                                         $stmtFG->bindParam(':fichier', $nomFichier, PDO::PARAM_STR);
@@ -337,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                                     $nomFichier = uniqid() . "_grp{$i}." . $ext;
                                     if (move_uploaded_file($_FILES[$key]['tmp_name'], $uploadDir . $nomFichier)) {
                                         $stmtFG = $db->prepare("INSERT INTO fichiers_groupes_travail (id_devoir, numero_groupe, fichier) VALUES (:id, :grp, :fichier)
-                                            ON DUPLICATE KEY UPDATE fichier = VALUES(fichier)");
+                                            ON CONFLICT (id_devoir, numero_groupe) DO UPDATE SET fichier = EXCLUDED.fichier");
                                         $stmtFG->bindParam(':id', $idDevoir, PDO::PARAM_INT);
                                         $stmtFG->bindParam(':grp', $i, PDO::PARAM_INT);
                                         $stmtFG->bindParam(':fichier', $nomFichier, PDO::PARAM_STR);

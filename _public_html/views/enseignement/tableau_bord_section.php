@@ -10,7 +10,7 @@ $currentUserId = $_SESSION['id'];
 $pdo = Connexion::getInstance()->getPDO();
 
 // Vérifier si la colonne est_active existe
-$checkColumn = "SHOW COLUMNS FROM annee_acad LIKE 'est_active'";
+$checkColumn = "SELECT column_name FROM information_schema.columns WHERE table_name = 'annee_acad' AND table_schema = 'public' AND column_name = 'est_active'";
 $stmtCheck = $pdo->prepare($checkColumn);
 $stmtCheck->execute();
 $columnExists = $stmtCheck->fetch();
@@ -169,9 +169,9 @@ function getAvancementCours($pdo, $userSections, $anneeId) {
                 SUM(CASE WHEN ecue.\"CMI\" > 0 THEN ecue.\"CMI\" ELSE 0 END) as total_heures_cm_prevues,
                 SUM(CASE WHEN ecue.\"TD\" > 0 THEN ecue.\"TD\" ELSE 0 END) as total_heures_td_prevues,
                 SUM(CASE WHEN ecue.\"TP\" > 0 THEN ecue.\"TP\" ELSE 0 END) as total_heures_tp_prevues,
-                COALESCE(SUM(CASE WHEN se.type_cours = 'CM' THEN TIMESTAMPDIFF(HOUR, se.heure_debut, se.heure_fin) ELSE 0 END), 0) as heures_cm_realisees,
-                COALESCE(SUM(CASE WHEN se.type_cours = 'TD' THEN TIMESTAMPDIFF(HOUR, se.heure_debut, se.heure_fin) ELSE 0 END), 0) as heures_td_realisees,
-                COALESCE(SUM(CASE WHEN se.type_cours = 'TP' THEN TIMESTAMPDIFF(HOUR, se.heure_debut, se.heure_fin) ELSE 0 END), 0) as heures_tp_realisees
+                COALESCE(SUM(CASE WHEN se.type_cours = 'CM' THEN EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut))/3600.0 ELSE 0 END), 0) as heures_cm_realisees,
+                COALESCE(SUM(CASE WHEN se.type_cours = 'TD' THEN EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut))/3600.0 ELSE 0 END), 0) as heures_td_realisees,
+                COALESCE(SUM(CASE WHEN se.type_cours = 'TP' THEN EXTRACT(EPOCH FROM (se.heure_fin - se.heure_debut))/3600.0 ELSE 0 END), 0) as heures_tp_realisees
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN section s ON o.section_idsection = s.idsection

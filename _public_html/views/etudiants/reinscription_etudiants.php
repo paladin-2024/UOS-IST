@@ -210,7 +210,7 @@ function getCreditsValidesPromotion($connexion, $matricule, $idPromotion, $annee
     
     // Source 2: grilles anciennes (résultats importés historiques)
     try {
-        $tableCheck = $connexion->query("SHOW TABLES LIKE 'grilles_anciennes_notes'");
+        $tableCheck = $connexion->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'grilles_anciennes_notes'");
         if ($tableCheck->rowCount() > 0) {
             $stmt = $connexion->prepare("
                 SELECT SUM(sub.credits) as credits_obtenus

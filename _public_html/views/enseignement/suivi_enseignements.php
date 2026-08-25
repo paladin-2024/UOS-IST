@@ -10,7 +10,7 @@ $currentUserId = $_SESSION['id'];
 $pdo = Connexion::getInstance()->getPDO();
 
 // Vérifier si la colonne est_active existe
-$checkColumn = "SHOW COLUMNS FROM annee_acad LIKE 'est_active'";
+$checkColumn = "SELECT column_name FROM information_schema.columns WHERE table_name = 'annee_acad' AND table_schema = 'public' AND column_name = 'est_active'";
 $stmtCheck = $pdo->prepare($checkColumn);
 $stmtCheck->execute();
 $columnExists = $stmtCheck->fetch();

@@ -13,7 +13,7 @@ $selectedSection = isset($_GET['section']) ? intval($_GET['section']) : 0;
 $allAcademicYears = $universite->getAllAcademicYears();
 
 // Vérifier si la colonne est_active existe
-$checkColumn = "SHOW COLUMNS FROM annee_acad LIKE 'est_active'";
+$checkColumn = "SELECT column_name FROM information_schema.columns WHERE table_name = 'annee_acad' AND table_schema = 'public' AND column_name = 'est_active'";
 $stmtCheck = $db->prepare($checkColumn);
 $stmtCheck->execute();
 $columnExists = $stmtCheck->fetch();

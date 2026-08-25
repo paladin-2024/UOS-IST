@@ -105,7 +105,7 @@ try {
 
     // Récupérer tous les suivis d'enseignements de la promotion
     // Vérifier d'abord si la table utilise chef_promotion_id ou idUser
-    $checkColumnQuery = "SHOW COLUMNS FROM suivi_enseignements LIKE 'chef_promotion_id'";
+    $checkColumnQuery = "SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'suivi_enseignements' AND column_name = 'chef_promotion_id'";
     $checkStmt = $connexion->prepare($checkColumnQuery);
     $checkStmt->execute();
     $hasChefPromotionId = $checkStmt->fetch(PDO::FETCH_ASSOC);

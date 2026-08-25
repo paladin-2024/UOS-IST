@@ -48,12 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $db->beginTransaction();
         
         // Vérifier si la colonne 'commentaire' existe dans la table
-        $checkCommentColumn = $db->prepare("SHOW COLUMNS FROM autorisation_labo LIKE 'commentaire'");
+        $checkCommentColumn = $db->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = 'autorisation_labo' AND column_name = 'commentaire'");
         $checkCommentColumn->execute();
         $commentColumnExists = $checkCommentColumn->rowCount() > 0;
         
         // Vérifier si la colonne 'est_active' existe dans la table
-        $checkActiveColumn = $db->prepare("SHOW COLUMNS FROM autorisation_labo LIKE 'est_active'");
+        $checkActiveColumn = $db->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = 'autorisation_labo' AND column_name = 'est_active'");
         $checkActiveColumn->execute();
         $activeColumnExists = $checkActiveColumn->rowCount() > 0;
         

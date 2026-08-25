@@ -164,7 +164,7 @@ class Conge {
                     COUNT(*) as total
                   FROM demande_conge dc
                   JOIN agent a ON dc.\"idAgent\" = a.\"idAgent\"
-                  WHERE YEAR(dc.date_demande) = :annee";
+                  WHERE EXTRACT(YEAR FROM dc.date_demande) = :annee";
         
         if ($idService) {
             $query .= " AND a.\"idService\" = :idService";
@@ -974,7 +974,7 @@ class Conge {
         $params = [':idAgent' => $idAgent];
         
         if ($annee !== null) {
-            $sql .= " AND YEAR(date_debut) = :annee";
+            $sql .= " AND EXTRACT(YEAR FROM date_debut) = :annee";
             $params[':annee'] = $annee;
         }
         
@@ -1009,7 +1009,7 @@ class Conge {
         
         // Requête pour calculer le nombre de jours pris
         $sql = "SELECT dc.idtype_conge, tc.designation, 
-                SUM(DATEDIFF(dc.date_fin, dc.date_debut) + 1) as jours_totaux 
+                SUM((dc.date_fin::date - dc.date_debut::date) + 1) as jours_totaux 
                 FROM demande_conge dc
                 JOIN type_conge tc ON dc.idtype_conge = tc.idtype_conge
                 WHERE dc.\"idAgent\" = :idAgent AND dc.statut = 'Approuvé'";
@@ -1017,7 +1017,7 @@ class Conge {
         $params = [':idAgent' => $idAgent];
         
         if ($annee !== null) {
-            $sql .= " AND YEAR(dc.date_debut) = :annee";
+            $sql .= " AND EXTRACT(YEAR FROM dc.date_debut) = :annee";
             $params[':annee'] = $annee;
         }
         

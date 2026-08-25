@@ -21,7 +21,7 @@ try {
     }
     
     // Ajouter les colonnes de couleurs à la table promotion si elles n'existent pas
-    $checkColumnsQuery = "SHOW COLUMNS FROM promotion LIKE 'color_primary'";
+    $checkColumnsQuery = "SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'promotion' AND column_name = 'color_primary'";
     $stmt = $db->query($checkColumnsQuery);
     
     if ($stmt->rowCount() === 0) {

@@ -22,9 +22,9 @@ $stmt = $db->prepare("
            e.noms as nom_etudiant,
            e.matricule as matricule_etudiant
     FROM tentatives_fraude_presence tf
-    LEFT JOIN seance_cours sc ON tf.type_seance = 'cours' AND CONVERT(tf.idseance USING utf8mb4) = CONVERT(sc.idseance USING utf8mb4)
-    LEFT JOIN seance_labo sl ON tf.type_seance = 'labo' AND CONVERT(tf.idseance USING utf8mb4) = CONVERT(sl.idseance_labo USING utf8mb4)
-    LEFT JOIN etudiant e ON CONVERT(tf.matricule_tente USING utf8mb4) = CONVERT(e.matricule USING utf8mb4)
+    LEFT JOIN seance_cours sc ON tf.type_seance = 'cours' AND tf.idseance::text = sc.idseance::text
+    LEFT JOIN seance_labo sl ON tf.type_seance = 'labo' AND tf.idseance::text = sl.idseance_labo::text
+    LEFT JOIN etudiant e ON tf.matricule_tente::text = e.matricule::text
     ORDER BY tf.date_tentative DESC
 ");
 

@@ -94,12 +94,12 @@ if (!empty($_GET)) {
             break;
             
         case 'echeanciers_retard':
-            $where_clauses[] = "ep.date_echeance < CURDATE()";
+            $where_clauses[] = "ep.date_echeance < CURRENT_DATE";
             $where_clauses[] = "ep.statut_paiement != 'Complet'";
             break;
             
         case 'echeanciers_venir':
-            $where_clauses[] = "ep.date_echeance > CURDATE()";
+            $where_clauses[] = "ep.date_echeance > CURRENT_DATE";
             break;
     }
     
@@ -134,7 +134,7 @@ if (!empty($_GET)) {
             aa.designation AS annee_academique,
             (ep.montant - COALESCE(ep.montant_paye, 0)) AS solde,
             CASE 
-                WHEN ep.date_echeance < CURDATE() AND ep.statut_paiement != 'Complet' THEN DATEDIFF(CURDATE(), ep.date_echeance)
+                WHEN ep.date_echeance < CURRENT_DATE AND ep.statut_paiement != 'Complet' THEN (CURRENT_DATE - ep.date_echeance)
                 ELSE 0
             END AS jours_retard
         FROM echelonnement_paiement ep
