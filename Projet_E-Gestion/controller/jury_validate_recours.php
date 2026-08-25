@@ -61,11 +61,12 @@ function processSingleResponseValidation($id_reponse, $action) {
                           JOIN bureau_jury_promotion bjp ON e.promotion_idpromotion = bjp.idpromotion
                           JOIN bureau_jury_deliberation bjd ON bjp.idbureau = bjd.idbureau
                           LEFT JOIN membre_bureau_jury mbj ON bjd.idbureau = mbj.idbureau
-                          LEFT JOIN agent a ON a.idAgent = mbj.idAgent
+                          LEFT JOIN agent a ON a.\"idAgent\" = mbj.idAgent
+                          LEFT JOIN t_users u ON u.\"idAgent\" = a.\"idAgent\"
                           WHERE r.id_recours = :id_recours
                           AND bjd.est_actif = 1
-                          AND (bjd.president_id = :id_user OR bjd.secretaire_id = :id_user 
-                               OR a.idUser = :id_user)";
+                          AND (bjd.president_id = :id_user OR bjd.secretaire_id = :id_user
+                               OR u.\"idUser\" = :id_user)";
             
             $stmt_auth = $conn->prepare($query_auth);
             $stmt_auth->bindParam(':id_recours', $id_recours);
@@ -115,9 +116,9 @@ function processSingleResponseValidation($id_reponse, $action) {
         // Si le recours est approuvé et que de nouvelles notes sont disponibles, mettre à jour les notes finales
         if ($action == 'valider' && ($notes_info['nouvelle_note_cc'] !== null || $notes_info['nouvelle_note_ex'] !== null)) {
             // Récupérer les notes actuelles
-            $query_notes_actuelles = "SELECT CC, EX, MF
+            $query_notes_actuelles = "SELECT \"CC\", \"EX\", \"MF\"
                                      FROM cotes_grille
-                                     WHERE ECUE_idECUE = :id_ecue
+                                     WHERE \"ECUE_idECUE\" = :id_ecue
                                      AND session_idsession = :id_session
                                      AND matricule = :matricule
                                      AND annee_acad_id = :id_annee";
@@ -133,7 +134,7 @@ function processSingleResponseValidation($id_reponse, $action) {
             // Récupérer les pondérations
             $query_ponderation = "SELECT ponderation_cc, ponderation_ex
                                  FROM configuration_moyenne
-                                 WHERE idECUE = :id_ecue
+                                 WHERE \"idECUE\" = :id_ecue
                                  AND session_idsession = :id_session
                                  AND annee_acad_id = :id_annee
                                  LIMIT 1";
@@ -165,13 +166,13 @@ function processSingleResponseValidation($id_reponse, $action) {
             
             // Enregistrer dans l'historique
             if ($notes_actuelles) {
-                $query_historique = "INSERT INTO historique_cotes 
-                                    (ECUE_idECUE, session_idsession, annee_acad_id, matricule, 
+                $query_historique = "INSERT INTO historique_cotes
+                                    (\"ECUE_idECUE\", session_idsession, annee_acad_id, matricule,
                                      cc_avant, ex_avant, mf_avant,
                                      cc_apres, ex_apres, mf_apres,
-                                     motif, idUser) 
-                                    VALUES 
-                                    (:id_ecue, :id_session, :id_annee, :matricule, 
+                                     motif, \"idUser\")
+                                    VALUES
+                                    (:id_ecue, :id_session, :id_annee, :matricule,
                                      :cc_avant, :ex_avant, :mf_avant,
                                      :cc_apres, :ex_apres, :mf_apres,
                                      'Validation recours par jury', :idUser)";
@@ -191,12 +192,12 @@ function processSingleResponseValidation($id_reponse, $action) {
                 $stmt_historique->execute();
                 
                 // Mettre à jour les notes
-                $query_update_notes = "UPDATE cotes_grille 
-                                     SET CC = :cc, EX = :ex, MF = :mf, 
-                                         idUser = :idUser, date_compilation = NOW()
-                                     WHERE ECUE_idECUE = :id_ecue
+                $query_update_notes = "UPDATE cotes_grille
+                                     SET \"CC\" = :cc, \"EX\" = :ex, \"MF\" = :mf,
+                                         \"idUser\" = :idUser, date_compilation = NOW()
+                                     WHERE \"ECUE_idECUE\" = :id_ecue
                                      AND session_idsession = :id_session
-                                                                          AND matricule = :matricule
+                                     AND matricule = :matricule
                                      AND annee_acad_id = :id_annee";
                 
                 $stmt_update_notes = $conn->prepare($query_update_notes);
@@ -211,10 +212,10 @@ function processSingleResponseValidation($id_reponse, $action) {
                 $stmt_update_notes->execute();
             } else {
                 // Créer une nouvelle entrée de notes
-                $query_insert_notes = "INSERT INTO cotes_grille 
-                                     (ECUE_idECUE, session_idsession, matricule, annee_acad_id, 
-                                      CC, EX, MF, idUser, date_compilation)
-                                     VALUES 
+                $query_insert_notes = "INSERT INTO cotes_grille
+                                     (\"ECUE_idECUE\", session_idsession, matricule, annee_acad_id,
+                                      \"CC\", \"EX\", \"MF\", \"idUser\", date_compilation)
+                                     VALUES
                                      (:id_ecue, :id_session, :matricule, :id_annee,
                                       :cc, :ex, :mf, :idUser, NOW())";
                 
@@ -356,9 +357,9 @@ function processBulkResponseValidation($ids_reponse, $action) {
             // Si le recours est approuvé et que de nouvelles notes sont disponibles, mettre à jour les notes finales
             if ($action == 'valider' && ($notes_info['nouvelle_note_cc'] !== null || $notes_info['nouvelle_note_ex'] !== null)) {
                 // Récupérer les notes actuelles
-                $query_notes_actuelles = "SELECT CC, EX, MF
+                $query_notes_actuelles = "SELECT \"CC\", \"EX\", \"MF\"
                                          FROM cotes_grille
-                                         WHERE ECUE_idECUE = :id_ecue
+                                         WHERE \"ECUE_idECUE\" = :id_ecue
                                          AND session_idsession = :id_session
                                          AND matricule = :matricule
                                          AND annee_acad_id = :id_annee";
@@ -374,7 +375,7 @@ function processBulkResponseValidation($ids_reponse, $action) {
                 // Récupérer les pondérations
                 $query_ponderation = "SELECT ponderation_cc, ponderation_ex
                                      FROM configuration_moyenne
-                                     WHERE idECUE = :id_ecue
+                                     WHERE \"idECUE\" = :id_ecue
                                      AND session_idsession = :id_session
                                      AND annee_acad_id = :id_annee
                                      LIMIT 1";
@@ -406,13 +407,13 @@ function processBulkResponseValidation($ids_reponse, $action) {
                 
                 // Mettre à jour l'historique et les notes
                 if ($notes_actuelles) {
-                    $query_historique = "INSERT INTO historique_cotes 
-                                        (ECUE_idECUE, session_idsession, annee_acad_id, matricule, 
+                    $query_historique = "INSERT INTO historique_cotes
+                                        (\"ECUE_idECUE\", session_idsession, annee_acad_id, matricule,
                                          cc_avant, ex_avant, mf_avant,
                                          cc_apres, ex_apres, mf_apres,
-                                         motif, idUser) 
-                                        VALUES 
-                                        (:id_ecue, :id_session, :id_annee, :matricule, 
+                                         motif, \"idUser\")
+                                        VALUES
+                                        (:id_ecue, :id_session, :id_annee, :matricule,
                                          :cc_avant, :ex_avant, :mf_avant,
                                          :cc_apres, :ex_apres, :mf_apres,
                                          'Validation recours par jury', :idUser)";
@@ -432,10 +433,10 @@ function processBulkResponseValidation($ids_reponse, $action) {
                     $stmt_historique->execute();
                     
                     // Mettre à jour les notes
-                    $query_update_notes = "UPDATE cotes_grille 
-                                         SET CC = :cc, EX = :ex, MF = :mf, 
-                                             idUser = :idUser, date_compilation = NOW()
-                                         WHERE ECUE_idECUE = :id_ecue
+                    $query_update_notes = "UPDATE cotes_grille
+                                         SET \"CC\" = :cc, \"EX\" = :ex, \"MF\" = :mf,
+                                             \"idUser\" = :idUser, date_compilation = NOW()
+                                         WHERE \"ECUE_idECUE\" = :id_ecue
                                          AND session_idsession = :id_session
                                          AND matricule = :matricule
                                          AND annee_acad_id = :id_annee";
@@ -452,10 +453,10 @@ function processBulkResponseValidation($ids_reponse, $action) {
                     $stmt_update_notes->execute();
                 } else {
                     // Créer une nouvelle entrée de notes
-                    $query_insert_notes = "INSERT INTO cotes_grille 
-                                         (ECUE_idECUE, session_idsession, matricule, annee_acad_id, 
-                                          CC, EX, MF, idUser, date_compilation)
-                                         VALUES 
+                    $query_insert_notes = "INSERT INTO cotes_grille
+                                         (\"ECUE_idECUE\", session_idsession, matricule, annee_acad_id,
+                                          \"CC\", \"EX\", \"MF\", \"idUser\", date_compilation)
+                                         VALUES
                                          (:id_ecue, :id_session, :matricule, :id_annee,
                                           :cc, :ex, :mf, :idUser, NOW())";
                     

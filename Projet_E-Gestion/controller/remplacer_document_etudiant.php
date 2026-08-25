@@ -127,8 +127,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Enregistrer l'historique
         $stmt = $conn->prepare("
-            INSERT INTO etudiant_documents_historique 
-            (document_id, statut_precedent, nouveau_statut, commentaire, idUser)
+            INSERT INTO etudiant_documents_historique
+            (document_id, statut_precedent, nouveau_statut, commentaire, \"idUser\")
             VALUES (?, ?, 'En attente de validation', ?, ?)
         ");
         $stmt->execute([
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("
             UPDATE etudiant_documents 
             SET titre = ?, description = ?, chemin_fichier = ?, 
-                statut = 'En attente de validation', date_validation = NULL, idValidateur = NULL
+                statut = 'En attente de validation', date_validation = NULL, \"idValidateur\" = NULL
             WHERE id = ?
         ");
         $stmt->execute([

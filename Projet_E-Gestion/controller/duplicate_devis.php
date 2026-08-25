@@ -34,8 +34,8 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
         
         // 2. Générer un nouveau numéro de devis
         $year = date('y');
-        $query = "SELECT MAX(CAST(SUBSTRING(numero_devis, 6) AS UNSIGNED)) as max_num 
-                  FROM devis 
+        $query = "SELECT MAX(CAST(SUBSTRING(numero_devis, 6) AS INTEGER)) as max_num
+                  FROM devis
                   WHERE numero_devis LIKE 'DEV" . $year . "%'";
         $stmt = $db->prepare($query);
         $stmt->execute();
@@ -47,8 +47,8 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
         $query = "INSERT INTO devis 
                   (numero_devis, date_devis, id_client, montant_ht, taux_tva, montant_tva, 
                    montant_ttc, validite, observation, etat, id_user_creation, date_creation) 
-                  VALUES 
-                  (:numero_devis, CURRENT_DATE(), :id_client, :montant_ht, :taux_tva, :montant_tva, 
+                  VALUES
+                  (:numero_devis, CURRENT_DATE, :id_client, :montant_ht, :taux_tva, :montant_tva,
                    :montant_ttc, :validite, :observation, 'En cours', :id_user_creation, NOW())";
         
         $stmt = $db->prepare($query);

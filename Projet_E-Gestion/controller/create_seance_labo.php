@@ -52,8 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $db->prepare("SELECT COUNT(*) FROM autorisation_labo 
                               WHERE idlabo = :idlabo 
                               AND \"idAgent\" = :idAgent 
-                              AND date_debut <= CURRENT_DATE()
-                              AND (date_fin IS NULL OR date_fin >= CURRENT_DATE())");
+                              AND date_debut <= CURRENT_DATE
+                              AND (date_fin IS NULL OR date_fin >= CURRENT_DATE)");
         $stmt->bindParam(':idlabo', $idlabo, PDO::PARAM_INT);
         $stmt->bindParam(':idAgent', $idresponsable, PDO::PARAM_INT);
         $stmt->execute();

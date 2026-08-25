@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $db->prepare("INSERT INTO autorisation_labo 
             (idlabo, \"idAgent\", date_debut, niveau_autorisation, \"idUser\") 
             VALUES 
-            (:idlabo, :\"idAgent\", CURRENT_DATE(), 'Admin', :\"idUser\")");
+            (:idlabo, :\"idAgent\", CURRENT_DATE, 'Admin', :\"idUser\")");
         
         $stmt->bindParam(':idlabo', $idLabo, PDO::PARAM_INT);
         $stmt->bindParam(':idAgent', $responsable_id, PDO::PARAM_INT);
