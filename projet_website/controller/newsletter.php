@@ -18,15 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db = Connexion::getInstance()->getPDO();
             
             // Vérifier si la table newsletter_subscribers existe, sinon la créer
-            $checkTable = $db->query("SHOW TABLES LIKE 'newsletter_subscribers'");
+            $checkTable = $db->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'newsletter_subscribers'");
             if ($checkTable->rowCount() === 0) {
                 $createTable = "CREATE TABLE IF NOT EXISTS newsletter_subscribers (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    id SERIAL PRIMARY KEY,
                     email VARCHAR(100) NOT NULL UNIQUE,
-                    status ENUM('active', 'unsubscribed') NOT NULL DEFAULT 'active',
+                    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'unsubscribed')),
                     ip_address VARCHAR(45),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )";
                 $db->exec($createTable);
             }

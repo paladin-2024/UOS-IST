@@ -7,7 +7,7 @@ echo "<h2>Configuration de la table chef_promotion</h2>";
 
 try {
     // 1. Vérifier si la table chef_promotion existe
-    $queryTableExists = "SHOW TABLES LIKE 'chef_promotion'";
+    $queryTableExists = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'chef_promotion'";
     $stmtTableExists = $connexion->prepare($queryTableExists);
     $stmtTableExists->execute();
     $tableExists = $stmtTableExists->fetch();
@@ -56,7 +56,7 @@ try {
     }
 
     // 2. Vérifier si la table suivi_enseignements existe
-    $queryTableSuiviExists = "SHOW TABLES LIKE 'suivi_enseignements'";
+    $queryTableSuiviExists = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'suivi_enseignements'";
     $stmtTableSuiviExists = $connexion->prepare($queryTableSuiviExists);
     $stmtTableSuiviExists->execute();
     $tableSuiviExists = $stmtTableSuiviExists->fetch();
@@ -167,7 +167,7 @@ try {
             } else {
                 // Insérer le nouveau chef de promotion
                 $queryInsert = "INSERT INTO chef_promotion (idetudiant, promotion_idpromotion, annee_acad_idannee_acad, date_nomination, est_actif, \"idUser\")
-                               VALUES (:etudiant_id, :promotion_id, :annee_acad, CURDATE(), 1, :user_id)";
+                               VALUES (:etudiant_id, :promotion_id, :annee_acad, CURRENT_DATE, 1, :user_id)";
                 $stmtInsert = $connexion->prepare($queryInsert);
                 $stmtInsert->bindParam(':etudiant_id', $etudiantId);
                 $stmtInsert->bindParam(':promotion_id', $etudiantInfo['idpromotion']);

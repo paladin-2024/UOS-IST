@@ -32,12 +32,12 @@ try {
             // Récupération des recettes mensuelles
             $stmt = $connexion->prepare("
                 SELECT 
-                    DATE_FORMAT(t.date_transaction, '%Y-%m') as mois,
+                    TO_CHAR(t.date_transaction, 'YYYY-MM') as mois,
                     SUM(t.montant) as montant
                 FROM transactions t
                 WHERE t.type = 'Recette'
                 AND t.date_transaction BETWEEN :date_debut AND :date_fin
-                GROUP BY DATE_FORMAT(t.date_transaction, '%Y-%m')
+                GROUP BY TO_CHAR(t.date_transaction, 'YYYY-MM')
                 ORDER BY mois ASC
             ");
             $stmt->bindParam(':date_debut', $date_debut);
@@ -51,12 +51,12 @@ try {
             // Récupération des dépenses mensuelles
             $stmt = $connexion->prepare("
                 SELECT 
-                    DATE_FORMAT(t.date_transaction, '%Y-%m') as mois,
+                    TO_CHAR(t.date_transaction, 'YYYY-MM') as mois,
                     SUM(t.montant) as montant
                 FROM transactions t
                 WHERE t.type = 'Dépense'
                 AND t.date_transaction BETWEEN :date_debut AND :date_fin
-                GROUP BY DATE_FORMAT(t.date_transaction, '%Y-%m')
+                GROUP BY TO_CHAR(t.date_transaction, 'YYYY-MM')
                 ORDER BY mois ASC
             ");
             $stmt->bindParam(':date_debut', $date_debut);

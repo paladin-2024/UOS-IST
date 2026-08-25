@@ -36,16 +36,16 @@ g.designation as gradeDesignation,
 u.\"idUser\",
 u.\"loginUser\",
 u.\"etatUser\",
-GROUP_CONCAT(DISTINCT r.\"nomRole\" ORDER BY r.\"nomRole\" SEPARATOR ', ') AS allRoles,
+STRING_AGG(DISTINCT r.\"nomRole\", ', ' ORDER BY r.\"nomRole\") AS \"allRoles\",
 CASE
 WHEN u.\"idUser\" IS NOT NULL THEN 'Oui'
 ELSE 'Non'
-END as hasAccess,
+END as \"hasAccess\",
 CASE
 WHEN u.\"etatUser\" = 1 THEN 'Actif'
 WHEN u.\"etatUser\" = 0 THEN 'Inactif'
 ELSE 'Aucun'
-END as statutUser
+END as \"statutUser\"
 FROM agent a
 LEFT JOIN structure s ON a.\"idStructure\" = s.\"idStructure\"
 LEFT JOIN service srv ON a.\"idService\" = srv.\"idService\"
@@ -55,7 +55,7 @@ LEFT JOIN t_user_roles ur ON u.\"idUser\" = ur.\"idUser\"
 LEFT JOIN t_roles r ON ur.\"idRole\" = r.\"idRole\"
 INNER JOIN user_structure us ON a.\"idStructure\" = us.\"idStructure\"
 WHERE us.\"idUser\" = :userId
-         GROUP BY a.\"idAgent\"";
+         GROUP BY a.\"idAgent\", s.designation, srv.designation, g.designation, u.\"idUser\", u.\"loginUser\", u.\"etatUser\"";
 
 $params = [':userId' => $_SESSION['id']];
 

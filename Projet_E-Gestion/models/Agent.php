@@ -25,7 +25,7 @@ class Agent
         FROM agent AS a
         INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
-        LEFT JOIN service AS s ON a.\"idService\" = s.idService";
+        LEFT JOIN service AS s ON a.\"idService\" = s.\"idService\"";
         
         if (!empty($search)) {
             $query .= " WHERE a.noms LIKE :search";

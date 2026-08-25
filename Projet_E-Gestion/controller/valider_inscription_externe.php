@@ -81,7 +81,7 @@ try {
     $stmt = $connexion->prepare("
         SELECT COUNT(*) as nb_etudiants 
         FROM etudiant 
-        WHERE YEAR(\"dateEnregistrement\") = ?
+        WHERE EXTRACT(YEAR FROM \"dateEnregistrement\") = ?
     ");
     $stmt->execute([$anneeActuelle]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);

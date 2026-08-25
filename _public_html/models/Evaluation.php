@@ -73,11 +73,11 @@ class Evaluation {
                                     $formuleEX, $ponderationCC, $ponderationEX, $idUser) {
         $query = "INSERT INTO configuration_moyenne (\"idECUE\", session_idsession, annee_acad_id, 
                  formule_cc, formule_ex, ponderation_cc, ponderation_ex, \"idUser\") 
-                 VALUES (:idECUE, :idSession, :idAnneeAcad, :formuleCC, :formuleEX, 
-                 :ponderationCC, :ponderationEX, :idUser) 
-                 ON DUPLICATE KEY UPDATE 
-                 formule_cc = :formuleCC, formule_ex = :formuleEX, 
-                 ponderation_cc = :ponderationCC, ponderation_ex = :ponderationEX, 
+                 VALUES (:idECUE, :idSession, :idAnneeAcad, :formuleCC, :formuleEX,
+                 :ponderationCC, :ponderationEX, :idUser)
+                 ON CONFLICT (\"idECUE\", session_idsession, annee_acad_id) DO UPDATE SET
+                 formule_cc = :formuleCC, formule_ex = :formuleEX,
+                 ponderation_cc = :ponderationCC, ponderation_ex = :ponderationEX,
                  \"idUser\" = :idUser";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([

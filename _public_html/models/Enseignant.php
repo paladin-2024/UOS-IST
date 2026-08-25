@@ -1342,7 +1342,7 @@ public function genererRapportProgressionEtudiant($etudiantId)
                     AVG(pourcentage_avancement) as moyenne_avancement,
                     MIN(\"dateTache\") as premiere_tache,
                     MAX(\"dateTache\") as derniere_tache,
-                    DATEDIFF(MAX(\"dateTache\"), MIN(\"dateTache\")) as duree_jours
+                    (MAX(\"dateTache\")::date - MIN(\"dateTache\")::date) as duree_jours
                   FROM taches
                   WHERE sujets_idsujets = :idSujet";
         
@@ -1396,12 +1396,12 @@ public function genererRapportProgressionEtudiant($etudiantId)
     public function getTachesParMoisBySujet($idSujet)
     {
         $query = "SELECT 
-                    DATE_FORMAT(\"dateTache\", '%Y-%m') as mois,
+                    TO_CHAR(\"dateTache\", 'YYYY-MM') as mois,
                     COUNT(*) as nombre_taches,
                     SUM(CASE WHEN validation = 'Validé' THEN 1 ELSE 0 END) as taches_validees
                   FROM taches
                   WHERE sujets_idsujets = :idSujet
-                  GROUP BY DATE_FORMAT(\"dateTache\", '%Y-%m')
+                  GROUP BY TO_CHAR(\"dateTache\", 'YYYY-MM')
                   ORDER BY mois ASC";
         
         $stmt = $this->db->prepare($query);
@@ -1419,14 +1419,14 @@ public function genererRapportProgressionEtudiant($etudiantId)
     public function getEchangesParMoisBySujet($idSujet)
     {
         $query = "SELECT 
-                    DATE_FORMAT(e.\"dateEchange\", '%Y-%m') as mois,
+                    TO_CHAR(e.\"dateEchange\", 'YYYY-MM') as mois,
                     COUNT(*) as nombre_echanges,
                     SUM(CASE WHEN e.type_auteur = 'Etudiant' THEN 1 ELSE 0 END) as echanges_etudiant,
                     SUM(CASE WHEN e.type_auteur IN ('Directeur', 'Encadreur') THEN 1 ELSE 0 END) as echanges_enseignants
                   FROM echanges_taches e
                   JOIN taches t ON e.taches_idtaches = t.idtaches
                   WHERE t.sujets_idsujets = :idSujet
-                  GROUP BY DATE_FORMAT(e.\"dateEchange\", '%Y-%m')
+                  GROUP BY TO_CHAR(e.\"dateEchange\", 'YYYY-MM')
                   ORDER BY mois ASC";
         
         $stmt = $this->db->prepare($query);

@@ -12,16 +12,16 @@ class Service
     public function getService($idStructure = null)
     {
         $query = "SELECT
-            s.idService as idService,
-            str.idStructure as idStructure,
+            s.\"idService\" as \"idService\",
+            str.\"idStructure\" as \"idStructure\",
             s.designation as designationService,
-            s.responsable as responsable,
+            s.\"Responsable\" as responsable,
             str.designation as designationStructure
         FROM service AS s
-        INNER JOIN structure AS str ON s.Structure_idStructure = str.idStructure";
+        INNER JOIN structure AS str ON s.\"Structure_idStructure\" = str.\"idStructure\"";
 
         if ($idStructure !== null) {
-            $query .= " WHERE str.idStructure = :idStructure";
+            $query .= " WHERE str.\"idStructure\" = :idStructure";
         }
 
         $stmt = $this->db->prepare($query);
@@ -37,7 +37,7 @@ class Service
     // Ajouter un service
     public function addService($designation, $responsable, $idStructure)
     {
-        $query = "INSERT INTO service (designation, responsable, Structure_idStructure) 
+        $query = "INSERT INTO service (designation, \"Responsable\", \"Structure_idStructure\")
                   VALUES (:designation, :responsable, :idStructure)";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
@@ -50,8 +50,8 @@ class Service
     // Vérifier les doublons pour un service
     public function checkDuplicateService($designation, $idStructure)
     {
-        $query = "SELECT COUNT(*) as count FROM service 
-                  WHERE designation = :designation AND Structure_idStructure = :idStructure";
+        $query = "SELECT COUNT(*) as count FROM service
+                  WHERE designation = :designation AND \"Structure_idStructure\" = :idStructure";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
             'designation' => $designation,
@@ -64,7 +64,7 @@ class Service
     // Supprimer un service
     public function deleteService($idService)
     {
-        $query = "DELETE FROM service WHERE idService = :idService";
+        $query = "DELETE FROM service WHERE \"idService\" = :idService";
         $stmt = $this->db->prepare($query);
         return $stmt->execute(['idService' => $idService]);
     }
@@ -72,7 +72,7 @@ class Service
     // Récupérer un service par son ID
     public function getServiceById($idService)
     {
-        $query = "SELECT *,service.designation as designationService FROM service WHERE idService = :idService";
+        $query = "SELECT *,service.designation as designationService FROM service WHERE \"idService\" = :idService";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['idService' => $idService]);
         return $stmt->fetch();
@@ -81,9 +81,9 @@ class Service
     // Mettre à jour un service
     public function updateService($idService, $designation, $responsable, $idStructure)
     {
-        $query = "UPDATE service 
-                  SET designation = :designation, responsable = :responsable, Structure_idStructure = :idStructure 
-                  WHERE idService = :idService";
+        $query = "UPDATE service
+                  SET designation = :designation, \"Responsable\" = :responsable, \"Structure_idStructure\" = :idStructure
+                  WHERE \"idService\" = :idService";
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
             'idService' => $idService,

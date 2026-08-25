@@ -40,10 +40,10 @@ if (empty($depots)) {
 
 // Génération d'un numéro de transfert automatique
 function generateTransferNumber($db) {
-    $query = "SELECT MAX(CAST(SUBSTRING(numero_transfert, 4) AS UNSIGNED)) as max_num 
+    $query = "SELECT MAX(CAST(SUBSTRING(numero_transfert, 4) AS INTEGER)) as max_num 
               FROM transfert_stock 
               WHERE numero_transfert LIKE 'TR-%' 
-              AND YEAR(date_transfert) = YEAR(CURRENT_DATE())";
+              AND EXTRACT(YEAR FROM date_transfert) = EXTRACT(YEAR FROM CURRENT_DATE)";
     $stmt = $db->prepare($query);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);

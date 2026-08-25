@@ -258,7 +258,7 @@ try {
             UPDATE sessions_caisse SET
                 date_validation = NOW(),
                 \"idValidateur\" = :idValidateur,
-                commentaire = CONCAT(IFNULL(commentaire, ''), '\n\n--- Commentaire de validation ---\n', :commentaire_validation)
+                commentaire = CONCAT(COALESCE(commentaire, ''), '\n\n--- Commentaire de validation ---\n', :commentaire_validation)
             WHERE id = :session_id
         ");
         $stmt->bindParam(':session_id', $session_id);

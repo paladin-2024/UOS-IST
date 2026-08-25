@@ -49,14 +49,14 @@ try {
         }
         
         // Insérer ou mettre à jour l'affectation
-        $sql = "INSERT INTO stage_assignments (idetudiant, idencadreur, lieu_stage, date_debut, date_fin) 
+        $sql = "INSERT INTO stage_assignments (idetudiant, idencadreur, lieu_stage, date_debut, date_fin)
                 VALUES (:studentId, :supervisorId, :location, :dateDebut, :dateFin)
-                ON DUPLICATE KEY UPDATE 
-                idencadreur = :supervisorId2, 
+                ON CONFLICT (idetudiant) DO UPDATE SET
+                idencadreur = :supervisorId2,
                 lieu_stage = :location2,
                 date_debut = :dateDebut2,
                 date_fin = :dateFin2";
-        
+
         $stmt = $db->prepare($sql);
         $stmt->execute([
             'studentId' => $studentId,
@@ -101,16 +101,16 @@ try {
         }
         
         // Préparer la requête d'insertion/mise à jour
-        $sql = "INSERT INTO stage_assignments (idetudiant, idencadreur, lieu_stage, date_debut, date_fin) 
+        $sql = "INSERT INTO stage_assignments (idetudiant, idencadreur, lieu_stage, date_debut, date_fin)
                 VALUES (:studentId, :supervisorId, :location, :dateDebut, :dateFin)
-                ON DUPLICATE KEY UPDATE 
-                idencadreur = :supervisorId2, 
+                ON CONFLICT (idetudiant) DO UPDATE SET
+                idencadreur = :supervisorId2,
                 lieu_stage = :location2,
                 date_debut = :dateDebut2,
                 date_fin = :dateFin2";
-        
+
         $stmt = $db->prepare($sql);
-        
+
         $successCount = 0;
         foreach ($studentIds as $studentId) {
             if (empty($studentId)) continue;

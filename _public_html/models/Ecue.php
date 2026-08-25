@@ -2557,9 +2557,9 @@ public function calculateAndStoreUEAverages($idUE, $anneeAcadId) {
         $insertQuery = "INSERT INTO temp_ue_averages 
                         (matricule, id_ue, session_id, annee_acad_id, moyenne_ponderee, est_valide)
                         VALUES (:matricule, :idUE, :sessionId, :anneeAcadId, :moyenne, :estValide)
-                        ON DUPLICATE KEY UPDATE 
-                        moyenne_ponderee = VALUES(moyenne_ponderee),
-                        est_valide = VALUES(est_valide)";
+                        ON CONFLICT (matricule, id_ue, session_id, annee_acad_id) DO UPDATE SET
+                        moyenne_ponderee = EXCLUDED.moyenne_ponderee,
+                        est_valide = EXCLUDED.est_valide";
         
         $insertStmt = $this->db->prepare($insertQuery);
         

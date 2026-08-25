@@ -1674,7 +1674,7 @@ public function getEtudiantsLitigesSoutenance($sectionId = null, $promotionId = 
                 COUNT(DISTINCT fs.idfrais_soutenance) as total_frais,
                 COUNT(DISTINCT CASE WHEN ps.\"estComplet\" = 1 THEN fs.idfrais_soutenance END) as frais_payes,
                 COUNT(DISTINCT fs.idfrais_soutenance) - COUNT(DISTINCT CASE WHEN ps.\"estComplet\" = 1 THEN fs.idfrais_soutenance END) as frais_manquants,
-                GROUP_CONCAT(DISTINCT CASE WHEN (ps.\"estComplet\" IS NULL OR ps.\"estComplet\" = 0) THEN fs.designation END SEPARATOR ', ') as frais_manquants_liste,
+                STRING_AGG(DISTINCT CASE WHEN (ps.\"estComplet\" IS NULL OR ps.\"estComplet\" = 0) THEN fs.designation END, ', ') as frais_manquants_liste,
                 SUM(CASE WHEN ps.\"montantPaye\" IS NULL THEN fs.montant ELSE fs.montant - ps.\"montantPaye\" END) as montant_restant,
                 fs.devise,
                 CASE 

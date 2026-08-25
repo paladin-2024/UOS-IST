@@ -62,11 +62,11 @@ $stmtStatsParOrientation->execute();
 $statsParOrientation = $stmtStatsParOrientation->fetchAll(PDO::FETCH_ASSOC);
 
 // Récupérer les statistiques par année
-$queryStatsParAnnee = "SELECT YEAR(date_depot) as annee, COUNT(*) as count 
-                       FROM travaux_scientifiques 
-                       WHERE est_public = 1 AND statut = 'Validé' 
-                       GROUP BY YEAR(date_depot) 
-                       ORDER BY YEAR(date_depot) DESC";
+$queryStatsParAnnee = "SELECT EXTRACT(YEAR FROM date_depot)::int as annee, COUNT(*) as count
+                       FROM travaux_scientifiques
+                       WHERE est_public = 1 AND statut = 'Validé'
+                       GROUP BY EXTRACT(YEAR FROM date_depot)
+                       ORDER BY EXTRACT(YEAR FROM date_depot) DESC";
 $stmtStatsParAnnee = $db->prepare($queryStatsParAnnee);
 $stmtStatsParAnnee->execute();
 $statsParAnneeData = $stmtStatsParAnnee->fetchAll(PDO::FETCH_ASSOC);

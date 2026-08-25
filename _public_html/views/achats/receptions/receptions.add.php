@@ -63,10 +63,10 @@ $commandes = $stmtCommandes->fetchAll(PDO::FETCH_ASSOC);
 function generateReceptionNumber($db) {
     $year = date('y'); // Année courante en 2 chiffres
     
-    $query = "SELECT MAX(CAST(SUBSTRING(numero_reception, 5) AS UNSIGNED)) as max_num 
-              FROM reception_fournisseur 
-              WHERE numero_reception LIKE 'BR" . $year . "%' 
-              AND YEAR(date_reception) = YEAR(CURRENT_DATE())";
+    $query = "SELECT MAX(CAST(SUBSTRING(numero_reception, 5) AS INTEGER)) as max_num
+              FROM reception_fournisseur
+              WHERE numero_reception LIKE 'BR" . $year . "%'
+              AND EXTRACT(YEAR FROM date_reception) = EXTRACT(YEAR FROM CURRENT_DATE)";
     $stmt = $db->prepare($query);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
