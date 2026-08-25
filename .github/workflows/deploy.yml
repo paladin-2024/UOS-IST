@@ -10,6 +10,7 @@ jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    environment: "VPS Deployment"
     steps:
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.3
