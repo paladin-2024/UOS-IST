@@ -47,14 +47,9 @@ jobs:
       - name: Validate nginx-host configs (syntax only)
         run: |
           set -e
-          mkdir -p /tmp/fake_le/live/ucg-butembo.wscsarl.info
-          openssl req -x509 -newkey rsa:2048 \
-            -keyout /tmp/fake_le/live/ucg-butembo.wscsarl.info/privkey.pem \
-            -out /tmp/fake_le/live/ucg-butembo.wscsarl.info/fullchain.pem \
-            -days 1 -nodes -subj "/CN=ci-placeholder"
-          echo "ssl_protocols TLSv1.2 TLSv1.3;" > /tmp/fake_le/options-ssl-nginx.conf
-          openssl dhparam -out /tmp/fake_le/ssl-dhparams.pem 2048
+          # Checked-in configs are the plain-HTTP, pre-certbot state (certbot
+          # injects the HTTPS server blocks + cert paths live on the VPS), so
+          # no fake cert files are needed here anymore.
           docker run --rm \
             -v "$PWD/deploy/nginx-host:/etc/nginx/conf.d:ro" \
-            -v /tmp/fake_le:/etc/letsencrypt:ro \
             nginx:1.27-alpine nginx -t
