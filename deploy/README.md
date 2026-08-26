@@ -6,6 +6,9 @@ either of those -- it only adds:
 
 - A dedicated Postgres **container** for ISTM (internal-only, no host port
   published, so it can't collide with the Postgres already running here).
+  One-off schema fixes that land after the initial `postgres-init` bootstrap
+  live in `deploy/migrations/` -- run each new file there once against the
+  production DB (they're written to be idempotent, safe to re-run).
 - Two PHP-FPM **containers** (`gestion`, `portail`), each reachable only from
   `127.0.0.1` on ports `9101`/`9102`.
 - Three **host** nginx vhost files (`nginx-host/*.conf`) that go into the
