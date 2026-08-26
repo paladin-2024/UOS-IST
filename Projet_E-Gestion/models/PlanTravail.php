@@ -14,9 +14,9 @@ class PlanTravail {
             $this->connexion->beginTransaction();
             
             // Insérer le plan principal
-            $sql = "INSERT INTO plan_travail (idsujets, titre_plan, introduction, problematique, objectifs, methodologie, idUser) 
+            $sql = "INSERT INTO plan_travail (idsujets, titre_plan, introduction, problematique, objectifs, methodologie, \"idUser\")
                     VALUES (:idsujets, :titre_plan, :introduction, :problematique, :objectifs, :methodologie, :idUser)";
-            
+
             $stmt = $this->connexion->prepare($sql);
             $stmt->execute([
                 ':idsujets' => $donnees['sujet_id'],
@@ -27,8 +27,8 @@ class PlanTravail {
                 ':methodologie' => $donnees['methodologie'] ?? null,
                 ':idUser' => $donnees['user_id']
             ]);
-            
-            $planId = $this->connexion->lastInsertId();
+
+            $planId = $this->connexion->lastInsertId('plan_travail_idplan_travail_seq');
             
             // Insérer les chapitres s'ils existent
             if (isset($donnees['chapitres']) && is_array($donnees['chapitres'])) {
@@ -69,7 +69,7 @@ class PlanTravail {
                     statut_validation = 'En attente',
                     commentaire_directeur = NULL,
                     date_validation = NULL,
-                    idValidateur = NULL
+                    \"idValidateur\" = NULL
                     WHERE idplan_travail = :plan_id";
             
             $stmt = $this->connexion->prepare($sql);
@@ -106,7 +106,7 @@ class PlanTravail {
                     statut_validation = :statut,
                     commentaire_directeur = :commentaire,
                     date_validation = NOW(),
-                    idValidateur = :directeur_id
+                    \"idValidateur\" = :directeur_id
                     WHERE idplan_travail = :plan_id";
             
             $stmt = $this->connexion->prepare($sql);
@@ -137,7 +137,7 @@ class PlanTravail {
         $sql = "SELECT pt.*, 
                        a.noms as validateur_nom
                 FROM plan_travail pt
-                LEFT JOIN agent a ON pt.idValidateur = a.idAgent
+                LEFT JOIN agent a ON pt.\"idValidateur\" = a.\"idAgent\"
                 WHERE pt.idsujets = :sujet_id
                 ORDER BY pt.version DESC
                 LIMIT 1";
@@ -151,10 +151,10 @@ class PlanTravail {
      * Récupérer un plan par ID
      */
     public function getPlanById($planId) {
-        $sql = "SELECT pt.*, 
+        $sql = "SELECT pt.*,
                        s.intitule as sujet_intitule,
-                       s.idDirecteur,
-                       s.idEncadreur,
+                       s.\"idDirecteur\",
+                       s.\"idEncadreur\",
                        s.etudiant_idetudiant,
                        e.noms as etudiant_nom,
                        e.matricule,
@@ -164,9 +164,9 @@ class PlanTravail {
                 FROM plan_travail pt
                 JOIN sujets s ON pt.idsujets = s.idsujets
                 JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                LEFT JOIN agent dir ON s.idDirecteur = dir.idAgent
-                LEFT JOIN agent enc ON s.idEncadreur = enc.idAgent
-                LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                LEFT JOIN agent dir ON s.\"idDirecteur\" = dir.\"idAgent\"
+                LEFT JOIN agent enc ON s.\"idEncadreur\" = enc.\"idAgent\"
+                LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                 WHERE pt.idplan_travail = :plan_id";
         
         $stmt = $this->connexion->prepare($sql);
@@ -205,8 +205,8 @@ class PlanTravail {
             ':description' => $chapitre['description'] ?? null,
             ':ordre' => $ordre
         ]);
-        
-        return $this->connexion->lastInsertId();
+
+        return $this->connexion->lastInsertId('chapitre_plan_idchapitre_plan_seq');
     }
 
     /**
@@ -218,7 +218,7 @@ class PlanTravail {
             $this->connexion->prepare("UPDATE deadline_assignment SET statut_deadline = 'Annulée' WHERE idchapitre_plan = ?")->execute([$chapitreId]);
             
             // Créer la nouvelle deadline
-            $sql = "INSERT INTO deadline_assignment (idchapitre_plan, type_element, deadline, description_deadline, priorite, idDirecteur)
+            $sql = "INSERT INTO deadline_assignment (idchapitre_plan, type_element, deadline, description_deadline, priorite, \"idDirecteur\")
                     VALUES (:chapitre_id, 'chapitre', :deadline, :description, :priorite, :directeur_id)";
             
             $stmt = $this->connexion->prepare($sql);
@@ -234,8 +234,8 @@ class PlanTravail {
             $this->connexion->prepare("UPDATE chapitre_plan SET deadline = ?, date_attribution_deadline = NOW(), commentaire_deadline = ? WHERE idchapitre_plan = ?")
                             ->execute([$deadline, $description, $chapitreId]);
             
-            return $this->connexion->lastInsertId();
-            
+            return $this->connexion->lastInsertId('deadline_assignment_iddeadline_seq');
+
         } catch (Exception $e) {
             throw new Exception("Erreur lors de l'assignation de la deadline: " . $e->getMessage());
         }
@@ -254,7 +254,7 @@ class PlanTravail {
                 JOIN sujets s ON pt.idsujets = s.idsujets
                 JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
                 LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
-                WHERE s.idDirecteur = :directeur_id 
+                WHERE s.\"idDirecteur\" = :directeur_id 
                 AND pt.statut_validation = 'En attente'
                 ORDER BY pt.date_soumission DESC";
         
@@ -267,7 +267,7 @@ class PlanTravail {
      * Récupérer tous les plans d'un directeur
      */
     public function getPlansParDirecteur($directeurId, $statut = null) {
-        $whereClause = "WHERE s.idDirecteur = :directeur_id";
+        $whereClause = "WHERE s.\"idDirecteur\" = :directeur_id";
         $params = [':directeur_id' => $directeurId];
         
         if ($statut) {
@@ -300,11 +300,11 @@ class PlanTravail {
      * Récupérer les deadlines à venir
      */
     public function getDeadlinesProchaines($directeurId = null, $jours = 7) {
-        $whereClause = "WHERE da.statut_deadline = 'Active' AND da.deadline BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL :jours DAY)";
+        $whereClause = "WHERE da.statut_deadline = 'Active' AND da.deadline BETWEEN CURRENT_DATE AND (CURRENT_DATE + (:jours || ' days')::interval)";
         $params = [':jours' => $jours];
         
         if ($directeurId) {
-            $whereClause .= " AND da.idDirecteur = :directeur_id";
+            $whereClause .= " AND da.\"idDirecteur\" = :directeur_id";
             $params[':directeur_id'] = $directeurId;
         }
         
@@ -333,7 +333,7 @@ class PlanTravail {
      * Ajouter une entrée dans l'historique
      */
     private function ajouterHistorique($planId, $statut, $commentaire, $userId, $version = 1) {
-        $sql = "INSERT INTO plan_validation_history (idplan_travail, statut, commentaire, idUser, version_plan)
+        $sql = "INSERT INTO plan_validation_history (idplan_travail, statut, commentaire, \"idUser\", version_plan)
                 VALUES (:plan_id, :statut, :commentaire, :user_id, :version)";
         
         $stmt = $this->connexion->prepare($sql);
@@ -353,7 +353,7 @@ class PlanTravail {
         $sql = "SELECT pvh.*, 
                        a.noms as auteur_nom
                 FROM plan_validation_history pvh
-                LEFT JOIN agent a ON pvh.idUser = a.idAgent
+                LEFT JOIN agent a ON pvh.\"idUser\" = a.\"idAgent\"
                 WHERE pvh.idplan_travail = :plan_id
                 ORDER BY pvh.date_action DESC";
         
@@ -537,7 +537,7 @@ class PlanTravail {
      * Statistiques des plans par statut
      */
     public function getStatistiquesPlans($directeurId = null) {
-        $whereClause = $directeurId ? "WHERE s.idDirecteur = :directeur_id" : "";
+        $whereClause = $directeurId ? "WHERE s.\"idDirecteur\" = :directeur_id" : "";
         $params = $directeurId ? [':directeur_id' => $directeurId] : [];
         
         $sql = "SELECT 

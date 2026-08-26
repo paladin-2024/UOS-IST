@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     // Récupérer les crédits de l'UE
                     $stmt = $connexion->prepare("
-                        SELECT SUM((e.CMI + e.TD + e.TP) /$heureCredit) as credits
+                        SELECT SUM((e.\"CMI\" + e.\"TD\" + e.\"TP\") /$heureCredit) as credits
                         FROM ecue e
                         WHERE e.\"UE_idUE\" = :ueId
                     ");
@@ -455,8 +455,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 u.\"designationUE\", 
                                 s.idsemestre, 
                                 s.\"numeroSemestre\",
-                                cg.MF as note_obtenue,
-                                ((e.CMI + e.TD + e.TP) / ?) as credits_ecue
+                                cg.\"MF\" as note_obtenue,
+                                ((e.\"CMI\" + e.\"TD\" + e.\"TP\") / ?) as credits_ecue
                             FROM ecue e
                             INNER JOIN ue u ON e.\"UE_idUE\" = u.\"idUE\"
                             INNER JOIN semestre s ON u.semestre_idsemestre = s.idsemestre

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../models/Connexion.php';
+require_once dirname(__DIR__) . '/config/Connexion.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
@@ -12,7 +12,7 @@ if (!isset($_SESSION['id'])) {
 if (!isset($_POST['idSeance']) || !isset($_POST['titre']) || !isset($_POST['date_seance']) || 
     !isset($_POST['heure_debut']) || !isset($_POST['heure_fin']) || !isset($_POST['idLabo'])) {
     $_SESSION['error'] = "Tous les champs obligatoires doivent être remplis.";
-    header('Location: ../laboratoire/seance.list&id=' . $_POST['idLabo']);
+    header('Location: ../laboratoire/seance.list?id=' . $_POST['idLabo']);
     exit;
 }
 
@@ -31,14 +31,14 @@ $refLongitude = isset($_POST['ref_longitude']) && !empty($_POST['ref_longitude']
 // Valider les données
 if (empty($titre) || empty($dateSeance) || empty($heureDebut) || empty($heureFin)) {
     $_SESSION['error'] = "Tous les champs obligatoires doivent être remplis.";
-    header('Location: ../laboratoire/seance.edit&id=' . $idSeance);
+    header('Location: ../laboratoire/seance.edit?id=' . $idSeance);
     exit;
 }
 
 // Vérifier que l'heure de fin est après l'heure de début
 if ($heureDebut >= $heureFin) {
     $_SESSION['error'] = "L'heure de fin doit être postérieure à l'heure de début.";
-    header('Location: ../laboratoire/seance.edit&id=' . $idSeance);
+    header('Location: ../laboratoire/seance.edit?id=' . $idSeance);
     exit;
 }
 
@@ -75,12 +75,12 @@ try {
     }
     
     // Rediriger vers la liste des séances
-    header('Location: ../laboratoire/seance.list&id=' . $idLabo);
+    header('Location: ../laboratoire/seance.list?id=' . $idLabo);
     exit;
     
 } catch (PDOException $e) {
     // Gérer les erreurs de base de données
     $_SESSION['error'] = "Erreur de base de données: " . $e->getMessage();
-    header('Location: ../laboratoire/seance.edit&id=' . $idSeance);
+    header('Location: ../laboratoire/seance.edit?id=' . $idSeance);
     exit;
 }

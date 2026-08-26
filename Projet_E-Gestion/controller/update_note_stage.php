@@ -14,9 +14,9 @@ $pdo = Connexion::getInstance()->getPDO();
 $userId = $_SESSION['id'];
 
 // Récupérer l'ID de l'agent (enseignant)
-$query = "SELECT a.idAgent FROM agent a 
-          INNER JOIN t_users u ON a.idAgent = u.idAgent 
-          WHERE u.idUser = ? AND a.type_agent = 'Enseignant'";
+$query = "SELECT a.\"idAgent\" FROM agent a
+          INNER JOIN t_users u ON a.\"idAgent\" = u.\"idAgent\"
+          WHERE u.\"idUser\" = ? AND a.type_agent = 'Enseignant'";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$userId]);
 $idEnseignant = $stmt->fetchColumn();

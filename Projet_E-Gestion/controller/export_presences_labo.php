@@ -376,7 +376,7 @@ if (isset($_GET['id']) && intval($_GET['id']) > 0) {
             'text' => $e->getMessage(),
             'icon' => 'error'
         ];
-        header('Location: ../laboratoire/presence.list&id=' . $idSeance);
+        header('Location: ../laboratoire/presence.list?id=' . $idSeance);
         exit();
     }
 } else {

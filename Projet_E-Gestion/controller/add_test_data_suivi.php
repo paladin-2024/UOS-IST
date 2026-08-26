@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../models/Connexion.php';
+require_once '../config/Connexion.php';
 
 // Vérifier l'authentification et les droits admin
 if (!isset($_SESSION['id']) || $_SESSION['idRole'] != 1) {

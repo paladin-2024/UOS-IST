@@ -23,6 +23,7 @@ try {
     }
     
     $grilleAncienne = new GrilleAncienne();
+    $grilleAncienne->createTablesIfNotExists();
     $db = Connexion::getInstance()->getPDO();
     
     // Commencer une transaction

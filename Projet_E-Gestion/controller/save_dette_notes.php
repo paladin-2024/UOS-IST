@@ -60,7 +60,7 @@ try {
                 id_dette, type_evaluation, note, date_evaluation,
                 session_idsession, annee_acad_idannee_acad, \"idUser\"
             ) VALUES (
-                :dette, 'CC', :note, CURDATE(),
+                :dette, 'CC', :note, CURRENT_DATE,
                 :session, :annee, :user
             )";
     
@@ -78,7 +78,7 @@ try {
                 id_dette, type_evaluation, note, date_evaluation,
                 session_idsession, annee_acad_idannee_acad, \"idUser\"
             ) VALUES (
-                :dette, 'EX', :note, CURDATE(),
+                :dette, 'EX', :note, CURRENT_DATE,
                 :session, :annee, :user
             )";
     
@@ -140,16 +140,16 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
     // Si la dette est validée, mettre à jour les cotes dans la table principale
     if ($statut == 'Validée') {
         // Récupérer les informations nécessaires
-        $sql = "SELECT matricule, ECUE_idECUE FROM dette_etudiant WHERE id_dette = :dette";
+        $sql = "SELECT matricule, \"ECUE_idECUE\" FROM dette_etudiant WHERE id_dette = :dette";
         $stmt = $db->prepare($sql);
         $stmt->execute([':dette' => $idDette]);
         $info = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         // Vérifier si une entrée existe déjà dans cotes_grille
-        $sql = "SELECT idpoints FROM cotes_grille 
-                WHERE matricule = :matricule 
-                AND ECUE_idECUE = :ecue 
-                AND session_idsession = :session 
+        $sql = "SELECT idpoints FROM cotes_grille
+                WHERE matricule = :matricule
+                AND \"ECUE_idECUE\" = :ecue
+                AND session_idsession = :session
                 AND annee_acad_id = :annee";
         
         $stmt = $db->prepare($sql);
@@ -162,15 +162,15 @@ $moyenneFinale = ($noteCC * $ponderations['ponderation_cc']) + ($noteEX * $ponde
         
         if ($stmt->rowCount() > 0) {
             // Mettre à jour
-            $sql = "UPDATE cotes_grille 
-                    SET CC = :cc, EX = :ex, MF = :mf, date_compilation = NOW(), idUser = :user
-                    WHERE matricule = :matricule 
-                    AND ECUE_idECUE = :ecue 
-                    AND session_idsession = :session 
+            $sql = "UPDATE cotes_grille
+                    SET \"CC\" = :cc, \"EX\" = :ex, \"MF\" = :mf, date_compilation = NOW(), \"idUser\" = :user
+                    WHERE matricule = :matricule
+                    AND \"ECUE_idECUE\" = :ecue
+                    AND session_idsession = :session
                     AND annee_acad_id = :annee";
         } else {
             // Insérer
-            $sql = "INSERT INTO cotes_grille (CC, EX, MF, ECUE_idECUE, session_idsession, matricule, annee_acad_id, idUser)
+            $sql = "INSERT INTO cotes_grille (\"CC\", \"EX\", \"MF\", \"ECUE_idECUE\", session_idsession, matricule, annee_acad_id, \"idUser\")
                     VALUES (:cc, :ex, :mf, :ecue, :session, :matricule, :annee, :user)";
         }
         

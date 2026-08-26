@@ -60,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $insertStmt->bindParam(':designation', $designation);
         $insertStmt->bindParam(':est_active', $estActive, PDO::PARAM_INT);
         $insertStmt->execute();
-        
+
         // Récupération de l'ID de la nouvelle année
-        $newYearId = $connexion->lastInsertId();
+        $newYearId = $connexion->lastInsertId('annee_acad_idannee_acad_seq');
         
         // Vérifier si l'utilisateur souhaite copier les données
         if (isset($_POST['copier_donnees']) && $_POST['copier_donnees'] == 1 && !empty($_POST['annee_source'])) {
@@ -71,10 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // 1. Copier les sections si demandé
             if (isset($_POST['copier_sections']) && $_POST['copier_sections'] == 1) {
                 $connexion->exec("
-                    INSERT INTO section (designationSection, dateCreation, idAnnee)
-                    SELECT designationSection, NOW(), {$newYearId}
+                    INSERT INTO section (\"designationSection\", \"dateCreation\", \"idAnnee\")
+                    SELECT \"designationSection\", NOW(), {$newYearId}
                     FROM section
-                    WHERE idAnnee = {$anneeSource}
+                    WHERE \"idAnnee\" = {$anneeSource}
                 ");
                 
                 // Créer une table temporaire pour mapper les ID de sections
@@ -89,9 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     INSERT INTO section_mapping (old_id, new_id)
                     SELECT s_old.idsection, s_new.idsection
                     FROM section s_old
-                    JOIN section s_new ON s_new.designationSection = s_old.designationSection 
-                                       AND s_new.idAnnee = {$newYearId}
-                    WHERE s_old.idAnnee = {$anneeSource}
+                    JOIN section s_new ON s_new.\"designationSection\" = s_old.\"designationSection\"
+                                       AND s_new.\"idAnnee\" = {$newYearId}
+                    WHERE s_old.\"idAnnee\" = {$anneeSource}
                 ");
             }
             
@@ -129,8 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 isset($_POST['copier_orientations']) && $_POST['copier_orientations'] == 1) {
                 
                 $connexion->exec("
-                    INSERT INTO promotion (designationPromotion, dateCreation, cycle, orientation_idorientation, annee_acad_idannee_acad, est_terminale)
-                    SELECT p.designationPromotion, NOW(), p.cycle, om.new_id, {$newYearId}, p.est_terminale
+                    INSERT INTO promotion (\"designationPromotion\", \"dateCreation\", cycle, orientation_idorientation, annee_acad_idannee_acad, est_terminale)
+                    SELECT p.\"designationPromotion\", NOW(), p.cycle, om.new_id, {$newYearId}, p.est_terminale
                     FROM promotion p
                     JOIN orientation_mapping om ON p.orientation_idorientation = om.old_id
                     WHERE p.annee_acad_idannee_acad = {$anneeSource}
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     SELECT p_old.idpromotion, p_new.idpromotion
                     FROM promotion p_old
                     JOIN orientation_mapping om ON p_old.orientation_idorientation = om.old_id
-                    JOIN promotion p_new ON p_new.designationPromotion = p_old.designationPromotion 
+                    JOIN promotion p_new ON p_new.\"designationPromotion\" = p_old.\"designationPromotion\"
                                          AND p_new.annee_acad_idannee_acad = {$newYearId}
                                          AND p_new.orientation_idorientation = om.new_id
                     WHERE p_old.annee_acad_idannee_acad = {$anneeSource}
@@ -218,19 +218,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 isset($_POST['copier_ue']) && $_POST['copier_ue'] == 1) {
                 
                 $connexion->exec("
-                    INSERT INTO ecue (\"designationECUE\", CMI, TD, TP, \"UE_idUE\", \"idCreateur\", \"estVisible\")
-                    SELECT e.\"designationECUE\", e.CMI, e.TD, e.TP, um.new_id, e.\"idCreateur\", e.\"estVisible\"
+                    INSERT INTO ecue (\"designationECUE\", \"CMI\", \"TD\", \"TP\", \"UE_idUE\", \"idCreateur\", \"estVisible\")
+                    SELECT e.\"designationECUE\", e.\"CMI\", e.\"TD\", e.\"TP\", um.new_id, e.\"idCreateur\", e.\"estVisible\"
                     FROM ecue e
                     JOIN ue_mapping um ON e.\"UE_idUE\" = um.old_id
                 ");
             }
             
             // Supprimer les tables temporaires
-            $connexion->exec("DROP TEMPORARY TABLE IF EXISTS section_mapping");
-            $connexion->exec("DROP TEMPORARY TABLE IF EXISTS orientation_mapping");
-            $connexion->exec("DROP TEMPORARY TABLE IF EXISTS promotion_mapping");
-            $connexion->exec("DROP TEMPORARY TABLE IF EXISTS semestre_mapping");
-            $connexion->exec("DROP TEMPORARY TABLE IF EXISTS ue_mapping");
+            $connexion->exec("DROP TABLE IF EXISTS section_mapping");
+            $connexion->exec("DROP TABLE IF EXISTS orientation_mapping");
+            $connexion->exec("DROP TABLE IF EXISTS promotion_mapping");
+            $connexion->exec("DROP TABLE IF EXISTS semestre_mapping");
+            $connexion->exec("DROP TABLE IF EXISTS ue_mapping");
         }
         
         // Valider la transaction
