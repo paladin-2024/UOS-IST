@@ -140,7 +140,7 @@ function envoyerEmailRejet($inscription, $motifRejet) {
 
 // Fonction pour générer le corps de l'email de rejet en HTML
 function genererCorpsEmailRejet($inscription, $motifRejet) {
-    $urlPortail = "https://std-ucg-butembo.wscsarl.info/login";
+    $urlPortail = "https://std.ucg-butembo.net/login";
     
     $htmlMessage = '<!DOCTYPE html>
     <html>
@@ -282,7 +282,7 @@ function genererCorpsEmailRejet($inscription, $motifRejet) {
                     <p><strong>Institut National du Bâtiment et des Travaux Publics</strong></p>
                     <p>ISTM-BENI</p>
                     <p>Email: <a href="mailto:scolarite@istmbeni.ac.cd" style="color: #4299e1; text-decoration: none;">scolarite@istmbeni.ac.cd</a></p>
-                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">std-ucg-butembo.wscsarl.info</a></p>
+                    <p>Portail: <a href="' . $urlPortail . '" style="color: #4299e1; text-decoration: none;">std.ucg-butembo.net</a></p>
                     <p>&copy; ' . date('Y') . ' ISTM-BENI. Tous droits réservés.</p>
                 </div>
             </div>
