@@ -16,9 +16,9 @@ either of those -- it only adds:
 
 | Subdomain | Proxies to | Docroot |
 |---|---|---|
-| `ucg-butembo.wscsarl.info` | `127.0.0.1:9101` (gestion) | `Projet_E-Gestion/` |
-| `std-ucg-butembo.wscsarl.info` | `127.0.0.1:9101` (same container) | `Projet_E-Gestion/dossiers/` |
-| `portail-ucg-butembo.wscsarl.info` | `127.0.0.1:9102` (portail) | `projet_website/` |
+| `ucg-butembo.net` | `127.0.0.1:9101` (gestion) | `Projet_E-Gestion/` |
+| `std.ucg-butembo.net` | `127.0.0.1:9101` (same container) | `Projet_E-Gestion/dossiers/` |
+| `portail.ucg-butembo.net` | `127.0.0.1:9102` (portail) | `projet_website/` |
 
 Everything below assumes the repo is checked out at **`/opt/ucg-butembo`**
 on the host. If you used a different path, update it consistently in:
@@ -54,7 +54,7 @@ the comment in `docker-compose.yml`).
    DB_USER=istm             # must match deploy/.env's POSTGRES_USER
    DB_PASS=<same as deploy/.env's POSTGRES_PASSWORD>
    ```
-   Also set `STUDENT_PORTAL_URL=https://std-ucg-butembo.wscsarl.info` in
+   Also set `STUDENT_PORTAL_URL=https://std.ucg-butembo.net` in
    `projet_website/.env`.
 
 4. **Compose secrets**: copy `deploy/.env.example` to `deploy/.env`, set a
@@ -81,14 +81,16 @@ the comment in `docker-compose.yml`).
    -- they're bind-mounted as part of each app's full directory, so whatever's
    on the host is what the app sees; nothing container-specific to manage.
 
-8. **DNS**: point `ucg-butembo`, `std-ucg-butembo`, and
-   `portail-ucg-butembo` (all under `wscsarl.info`) at this VPS's IP.
+8. **DNS**: point `ucg-butembo.net`, `std.ucg-butembo.net`, and
+   `portail.ucg-butembo.net` at this VPS's IP.
 
-9. **TLS**: the vhosts above are HTTP-only. Once DNS has propagated, use
-   whatever this box already uses for its other sites' certificates
-   (certbot is the usual choice) to add `listen 443 ssl` + certs for the 3
-   new server names -- same as however `cnpr.conf`/`taxe-kisangani.conf` got
-   theirs.
+9. **TLS**: the vhosts above are HTTP-only. Once DNS has propagated, run
+   certbot once for all three hosts together (single SAN cert):
+   ```
+   certbot --nginx -d ucg-butembo.net -d std.ucg-butembo.net -d portail.ucg-butembo.net
+   ```
+   certbot edits each `nginx-host/*.conf` in place to add the `listen 443
+   ssl` block, cert paths, and the http->https redirect.
 
 ## Notes / open items
 
