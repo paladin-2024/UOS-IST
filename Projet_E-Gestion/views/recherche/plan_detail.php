@@ -1,6 +1,6 @@
 <?php
 // Vérification de l'accès
-if (!isset($_SESSION['user_id']) && !isset($_SESSION['student_id'])) {
+if (!isset($_SESSION['id']) && !isset($_SESSION['student_id'])) {
     header('Location: index.php');
     exit();
 }
@@ -25,8 +25,8 @@ if (!$plan) {
 
 // Vérifier les autorisations
 $isEtudiant = isset($_SESSION['student_id']);
-$isDirecteur = isset($_SESSION['user_id']) && $_SESSION['user_id'] == $plan['idDirecteur'];
-$isEncadreur = isset($_SESSION['user_id']) && $_SESSION['user_id'] == $plan['idEncadreur'];
+$isDirecteur = isset($_SESSION['id']) && $_SESSION['id'] == $plan['idDirecteur'];
+$isEncadreur = isset($_SESSION['id']) && $_SESSION['id'] == $plan['idEncadreur'];
 
 if ($isEtudiant && $_SESSION['student_id'] != $plan['etudiant_idetudiant']) {
     header('Location: index.php');

@@ -253,7 +253,7 @@ class PlanTravail {
                 FROM plan_travail pt
                 JOIN sujets s ON pt.idsujets = s.idsujets
                 JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                 WHERE s.\"idDirecteur\" = :directeur_id 
                 AND pt.statut_validation = 'En attente'
                 ORDER BY pt.date_soumission DESC";
@@ -285,10 +285,10 @@ class PlanTravail {
                 FROM plan_travail pt
                 JOIN sujets s ON pt.idsujets = s.idsujets
                 JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
-                LEFT JOIN specialisation sp ON s.idSpecialisation = sp.idSpecialisation
+                LEFT JOIN specialisation sp ON s.\"idSpecialisation\" = sp.\"idSpecialisation\"
                 LEFT JOIN chapitre_plan cp ON pt.idplan_travail = cp.idplan_travail
                 $whereClause
-                GROUP BY pt.idplan_travail
+                GROUP BY pt.idplan_travail, s.intitule, e.noms, e.matricule, sp.designation
                 ORDER BY pt.date_soumission DESC";
         
         $stmt = $this->connexion->prepare($sql);

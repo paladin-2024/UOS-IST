@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/config/Connexion.php';
 require_once dirname(__DIR__) . '/models/Conge.php';
 
 // Vérifier si l'utilisateur est connecté et a les droits d'administrateur
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || ($_SESSION['user_role'] != 'admin' && $_SESSION['user_role'] != 'rh')) {
+if (!isset($_SESSION['id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'Administrateur') {
     header('Location: ../login');
     exit();
 }

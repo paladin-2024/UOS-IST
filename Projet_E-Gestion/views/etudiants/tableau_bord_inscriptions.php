@@ -402,7 +402,7 @@ $cycleColors = [
                                             <div class="ps-3">
                                                 <h6><?= $statsGlobales['etudiants_actifs'] ?? 0 ?></h6>
                                                 <span class="text-success small pt-1 fw-bold">
-                                                    <?= $statsGlobales['total_etudiants'] > 0 ? round(($statsGlobales['etudiants_actifs'] / $statsGlobales['total_etudiants']) * 100) : 0 ?>%
+                                                    <?= ($statsGlobales['total_etudiants'] ?? 0) > 0 ? round((($statsGlobales['etudiants_actifs'] ?? 0) / $statsGlobales['total_etudiants']) * 100) : 0 ?>%
                                                 </span>
                                             </div>
                                         </div>
@@ -420,7 +420,7 @@ $cycleColors = [
                                             <div class="ps-3">
                                                 <h6><?= $statsGlobales['dossiers_complets'] ?? 0 ?></h6>
                                                 <span class="text-info small pt-1 fw-bold">
-                                                    <?= $statsGlobales['total_etudiants'] > 0 ? round(($statsGlobales['dossiers_complets'] / $statsGlobales['total_etudiants']) * 100) : 0 ?>%
+                                                    <?= ($statsGlobales['total_etudiants'] ?? 0) > 0 ? round((($statsGlobales['dossiers_complets'] ?? 0) / $statsGlobales['total_etudiants']) * 100) : 0 ?>%
                                                 </span>
                                             </div>
                                         </div>
@@ -438,7 +438,7 @@ $cycleColors = [
                                             <div class="ps-3">
                                                 <h6><?= $statsGlobales['total_hommes'] ?? 0 ?></h6>
                                                 <span class="text-primary small pt-1 fw-bold">
-                                                    <?= $statsGlobales['total_etudiants'] > 0 ? round(($statsGlobales['total_hommes'] / $statsGlobales['total_etudiants']) * 100) : 0 ?>%
+                                                    <?= ($statsGlobales['total_etudiants'] ?? 0) > 0 ? round((($statsGlobales['total_hommes'] ?? 0) / $statsGlobales['total_etudiants']) * 100) : 0 ?>%
                                                 </span>
                                             </div>
                                         </div>
@@ -456,7 +456,7 @@ $cycleColors = [
                                             <div class="ps-3">
                                                 <h6><?= $statsGlobales['total_femmes'] ?? 0 ?></h6>
                                                 <span class="text-danger small pt-1 fw-bold">
-                                                    <?= $statsGlobales['total_etudiants'] > 0 ? round(($statsGlobales['total_femmes'] / $statsGlobales['total_etudiants']) * 100) : 0 ?>%
+                                                    <?= ($statsGlobales['total_etudiants'] ?? 0) > 0 ? round((($statsGlobales['total_femmes'] ?? 0) / $statsGlobales['total_etudiants']) * 100) : 0 ?>%
                                                 </span>
                                             </div>
                                         </div>

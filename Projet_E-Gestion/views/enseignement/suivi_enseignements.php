@@ -164,7 +164,7 @@ function getSuivisEnseignement($pdo, $filters, $userSections = []) {
     
     // Filtrer par ECUE
     if (!empty($filters['ecue'])) {
-        $query .= " AND se.idECUE = :ecue";
+        $query .= " AND se.\"idECUE\" = :ecue";
         $params[':ecue'] = $filters['ecue'];
     }
     

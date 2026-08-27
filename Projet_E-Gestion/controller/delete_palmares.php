@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     $idPalmares = intval($_GET['id']);
     
     // Récupérer l'ID de l'utilisateur connecté
-    $idUser = $_SESSION['user_id'] ?? 0;
+    $idUser = $_SESSION['id'] ?? 0;
     
     if ($idPalmares <= 0) {
         echo "<script>
