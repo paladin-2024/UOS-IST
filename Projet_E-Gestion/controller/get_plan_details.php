@@ -4,7 +4,7 @@ require_once '../config/Connexion.php';
 require_once '../models/PlanTravail.php';
 
 // Vérifier l'authentification
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['id'])) {
     http_response_code(403);
     echo "Accès non autorisé";
     exit();
@@ -30,7 +30,7 @@ try {
     }
     
     // Vérifier que l'utilisateur est le directeur du sujet
-    if ($plan['idDirecteur'] != $_SESSION['user_id']) {
+    if ($plan['idDirecteur'] != $_SESSION['id']) {
         http_response_code(403);
         echo "Vous n'êtes pas autorisé à voir ce plan";
         exit();

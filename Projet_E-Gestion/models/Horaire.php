@@ -679,7 +679,7 @@ public function getHorairesByPromotionAndDates($idPromotion, $idAnneeAcad, $date
              JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
              JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
              LEFT JOIN (
-                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", ee.\"idAgent\"
+                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", MIN(ee.\"idAgent\") as \"idAgent\"
                  FROM enseignant_ecue ee
                  LEFT JOIN (
                      SELECT \"idECUE\", \"anneeAcad\", MIN(\"idAgent\") as \"idAgent\"
@@ -688,14 +688,14 @@ public function getHorairesByPromotionAndDates($idPromotion, $idAnneeAcad, $date
                      GROUP BY \"idECUE\", \"anneeAcad\"
                  ) tit ON ee.\"idECUE\" = tit.\"idECUE\" AND ee.\"anneeAcad\" = tit.\"anneeAcad\"
                  WHERE tit.\"idAgent\" IS NOT NULL OR ee.\"idAgent\" = (
-                     SELECT MIN(\"idAgent\") 
-                     FROM enseignant_ecue ee2 
+                     SELECT MIN(\"idAgent\")
+                     FROM enseignant_ecue ee2
                      WHERE ee2.\"idECUE\" = ee.\"idECUE\" AND ee2.\"anneeAcad\" = ee.\"anneeAcad\"
                  )
                  GROUP BY ee.\"idECUE\", ee.\"anneeAcad\"
              ) ee ON e.\"idECUE\" = ee.\"idECUE\" AND ee.\"anneeAcad\" = :idAnneeAcad
              LEFT JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
-             WHERE p.idpromotion = :idPromotion 
+             WHERE p.idpromotion = :idPromotion
              AND h.annee_acad_idannee_acad = :idAnneeAcad";
     
     // Ajouter la condition de date si nécessaire
@@ -838,7 +838,7 @@ public function getOccupationSalles($idAnneeAcad, $dateDebut, $dateFin) {
              JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
              JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
              LEFT JOIN (
-                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", ee.\"idAgent\"
+                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", MIN(ee.\"idAgent\") as \"idAgent\"
                  FROM enseignant_ecue ee
                  WHERE ee.poste = 'Titulaire'
                  GROUP BY ee.\"idECUE\", ee.\"anneeAcad\"
@@ -914,7 +914,7 @@ public function getOccupationPromotions($idAnneeAcad, $dateDebut, $dateFin) {
              JOIN semestre s ON u.semestre_idsemestre = s.idsemestre
              JOIN promotion p ON s.promotion_idpromotion = p.idpromotion
              LEFT JOIN (
-                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", ee.\"idAgent\"
+                 SELECT ee.\"idECUE\", ee.\"anneeAcad\", MIN(ee.\"idAgent\") as \"idAgent\"
                  FROM enseignant_ecue ee
                  WHERE ee.poste = 'Titulaire'
                  GROUP BY ee.\"idECUE\", ee.\"anneeAcad\"

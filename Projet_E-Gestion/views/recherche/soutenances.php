@@ -46,7 +46,7 @@ function getStatistiquesMemoires($db, $idAnneeAcad, $idSection = null) {
     $sql = "SELECT 
                 s.idsection,
                 s.\"designationSection\",
-                COUNT(dm.iddepot_memoire) as nb_total,
+                COUNT(dm.\"idDepot\") as nb_total,
                 COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 1 AND 3 THEN 1 END) as t1,
                 COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 4 AND 6 THEN 1 END) as t2,
                 COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 7 AND 9 THEN 1 END) as t3,
@@ -191,7 +191,11 @@ function getStatistiquesEncadrement($db, $idAnneeAcad, $idSection = null) {
     }
     
     $sql .= ' GROUP BY a."idAgent", a.noms
-              HAVING (nb_sujets_diriges > 0 OR nb_sujets_encadres > 0 OR nb_jury > 0)
+              HAVING (
+                  COUNT(CASE WHEN sj."idDirecteur" = a."idAgent" THEN 1 END) > 0
+                  OR COUNT(CASE WHEN sj."idEncadreur" = a."idAgent" THEN 1 END) > 0
+                  OR COUNT(CASE WHEN j.idenseignant = a."idAgent" THEN 1 END) > 0
+              )
               ORDER BY a.noms';
     
     $stmt = $db->prepare($sql);

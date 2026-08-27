@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/config/Connexion.php';
 require_once dirname(__DIR__) . '/models/Conge.php';
 
 // Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['id'])) {
     header('Location: ../login');
     exit();
 }
