@@ -13,8 +13,8 @@ $statsQuery = "
         COUNT(CASE WHEN statut_visite = 'en_cours' THEN 1 END) as visites_en_cours,
         COUNT(CASE WHEN statut_visite = 'terminee' THEN 1 END) as visites_terminees,
         COUNT(CASE WHEN statut_visite = 'annulee' THEN 1 END) as visites_annulees,
-        COUNT(CASE WHEN DATE(date_visite) = CURDATE() THEN 1 END) as visites_aujourdhui,
-        COUNT(CASE WHEN DATE(date_visite) = CURDATE() + INTERVAL 1 DAY THEN 1 END) as visites_demain
+        COUNT(CASE WHEN DATE(date_visite) = CURRENT_DATE THEN 1 END) as visites_aujourdhui,
+        COUNT(CASE WHEN DATE(date_visite) = CURRENT_DATE + INTERVAL '1 day' THEN 1 END) as visites_demain
     FROM visites 
     WHERE cree_par = ?
 ";
@@ -56,7 +56,7 @@ $todayQuery = "
     FROM visites v
     LEFT JOIN agent a ON v.Agent_idAgent = a.idAgent
     LEFT JOIN service s ON v.Service_idService = s.idService
-    WHERE v.cree_par = ? AND DATE(v.date_visite) = CURDATE()
+    WHERE v.cree_par = ? AND DATE(v.date_visite) = CURRENT_DATE
     ORDER BY v.heure_debut
 ";
 $stmt = $db->prepare($todayQuery);

@@ -235,9 +235,10 @@ public function getMemoiresParSection($idSection, $idAnneeAcad, $filtreEtudiant 
             LEFT JOIN agent d ON s.\"idDirecteur\" = d.\"idAgent\"
             LEFT JOIN agent en ON s.\"idEncadreur\" = en.\"idAgent\"
             WHERE s.\"idSpecialisation\" IN (
-                SELECT sp.\"idSpecialisation\" 
-                FROM specialisation sp 
-                WHERE sp.idsection = :idSection
+                SELECT sp.\"idSpecialisation\"
+                FROM specialisation sp
+                JOIN orientation o ON sp.idorientation = o.idorientation
+                WHERE o.section_idsection = :idSection
             ) 
             AND s.annee_acad_idannee_acad = :idAnneeAcad";
     
@@ -385,7 +386,8 @@ public function getStatistiquesMemoires($idAnneeAcad, $idSection = null) {
                 COUNT(CASE WHEN EXTRACT(MONTH FROM dm.\"dateDepot\") BETWEEN 10 AND 12 THEN 1 END) as t4
             FROM 
                 section s
-            LEFT JOIN specialisation sp ON sp.idsection = s.idsection
+            LEFT JOIN orientation dso_o ON dso_o.section_idsection = s.idsection
+            LEFT JOIN specialisation sp ON sp.idorientation = dso_o.idorientation
             LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad
             LEFT JOIN depot_memoire dm ON dm.sujets_idsujets = sj.idsujets";
     
@@ -452,7 +454,8 @@ public function getStatistiquesSoutenances($idAnneeAcad, $idSection = null) {
                 COUNT(CASE WHEN st.statut = 'Annulée' THEN 1 END) as annulees
             FROM 
                 section s
-            LEFT JOIN specialisation sp ON sp.idsection = s.idsection
+            LEFT JOIN orientation dso_o ON dso_o.section_idsection = s.idsection
+            LEFT JOIN specialisation sp ON sp.idorientation = dso_o.idorientation
             LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad
             LEFT JOIN soutenance st ON st.sujets_idsujets = sj.idsujets";
     
@@ -488,7 +491,8 @@ public function getStatistiquesSujets($idAnneeAcad, $idSection = null) {
                 COUNT(CASE WHEN sj.statut_validation = 'Modifié' THEN 1 END) as sujets_modifies
             FROM 
                 section s
-            LEFT JOIN specialisation sp ON sp.idsection = s.idsection
+            LEFT JOIN orientation dso_o ON dso_o.section_idsection = s.idsection
+            LEFT JOIN specialisation sp ON sp.idorientation = dso_o.idorientation
             LEFT JOIN sujets sj ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\" AND sj.annee_acad_idannee_acad = :anneeAcad";
     
     $params = [':anneeAcad' => $idAnneeAcad];
@@ -523,19 +527,24 @@ public function getStatistiquesEncadrement($idAnneeAcad, $idSection = null) {
             LEFT JOIN sujets sj ON (sj.\"idDirecteur\" = a.\"idAgent\" OR sj.\"idEncadreur\" = a.\"idAgent\") 
                                AND sj.annee_acad_idannee_acad = :anneeAcad
             LEFT JOIN specialisation sp ON sj.\"idSpecialisation\" = sp.\"idSpecialisation\"
+            LEFT JOIN orientation dso_o2 ON sp.idorientation = dso_o2.idorientation
             LEFT JOIN jury_soutenance j ON j.idenseignant = a.\"idAgent\"
             LEFT JOIN soutenance st ON st.idsoutenance = j.idsoutenance
             WHERE a.type_agent = 'Enseignant'";
-    
+
     $params = [':anneeAcad' => $idAnneeAcad];
-    
+
     if ($idSection) {
-        $sql .= " AND ag_s.idsection = :idSection AND sp.idsection = :idSection";
+        $sql .= " AND ag_s.idsection = :idSection AND dso_o2.section_idsection = :idSection";
         $params[':idSection'] = $idSection;
     }
-    
+
     $sql .= " GROUP BY a.\"idAgent\", a.noms
-              HAVING (nb_sujets_diriges > 0 OR nb_sujets_encadres > 0 OR nb_jury > 0)
+              HAVING (
+                  COUNT(CASE WHEN sj.\"idDirecteur\" = a.\"idAgent\" THEN 1 END) > 0
+                  OR COUNT(CASE WHEN sj.\"idEncadreur\" = a.\"idAgent\" THEN 1 END) > 0
+                  OR COUNT(CASE WHEN j.idenseignant = a.\"idAgent\" THEN 1 END) > 0
+              )
               ORDER BY a.noms";
     
     $stmt = $this->db->prepare($sql);
