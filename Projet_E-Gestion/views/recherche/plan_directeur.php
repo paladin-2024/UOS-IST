@@ -1,6 +1,6 @@
 <?php
 // Vérification de l'accès
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['id'])) {
     header('Location: index.php');
     exit();
 }
@@ -11,7 +11,7 @@ require_once dirname(__DIR__, 2) . '/models/Agent.php';
 $planModel = new PlanTravail();
 $agentModel = new Agent();
 
-$directeurId = $_SESSION['user_id'];
+$directeurId = $_SESSION['id'];
 $directeur = $agentModel->getAgentById($directeurId);
 
 // Récupérer les plans en attente

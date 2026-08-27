@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $commentaire = $_POST['commentaire'] ?? '';
     
     // Récupérer l'ID de l'utilisateur connecté
-    $idUser = $_SESSION['user_id'] ?? 0;
+    $idUser = $_SESSION['id'] ?? 0;
 
     // Valider les entrées
     if (empty($designation) || empty($numeroDecision) || empty($dateDecision) || 

@@ -66,7 +66,7 @@ class Deliberation
             $query .= " (bj.designation LIKE :search OR bj.numero_decision LIKE :search)";
         }
         
-        $query .= " GROUP BY bj.idbureau ORDER BY bj.date_creation DESC";
+        $query .= " GROUP BY bj.idbureau, p.noms, s.noms ORDER BY bj.date_creation DESC";
         
         $stmt = $this->db->prepare($query);
         
@@ -516,7 +516,7 @@ class Deliberation
     // Récupérer les sessions d'évaluation
     public function getAllSessions()
     {
-        $query = "SELECT * FROM session ORDER BY designSession";
+        $query = "SELECT * FROM session ORDER BY \"designSession\"";
         $stmt = $this->db->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -3907,7 +3907,7 @@ public function isDeliberationPubliee($promotionId) {
  */
 public function getAllPromotions() {
     $query = "SELECT p.idpromotion, p.\"designationPromotion\", p.cycle, o.\"designationOrientation\", a.designation as annee_acad 
-    FROM promotion p JOIN orientation o ON p.orientation_idorientation = o.idorientation JOIN annee_acad a ON p.annee_acad_idannee_acad = a.idannee_acad ORDER BY a.designation DESC, o.\"designationOrientation\", p.cycle, p.designationPromotion";
+    FROM promotion p JOIN orientation o ON p.orientation_idorientation = o.idorientation JOIN annee_acad a ON p.annee_acad_idannee_acad = a.idannee_acad ORDER BY a.designation DESC, o.\"designationOrientation\", p.cycle, p.\"designationPromotion\"";
     
     $stmt = $this->db->prepare($query);
     $stmt->execute();
