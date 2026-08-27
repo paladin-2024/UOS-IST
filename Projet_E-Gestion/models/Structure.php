@@ -3650,7 +3650,7 @@ public function getEmailsByUserAccess2($userId,$limit = 100)
             cr.*,a.*
         FROM couriels_recu cr
         INNER JOIN service s ON cr.\"Service_idService\" = s.\"idService\"
-        INNER JOIN agent a ON cr.userConcerne=a.\"idAgent\"
+        INNER JOIN agent a ON cr.\"userConcerne\"=a.\"idAgent\"
         INNER JOIN structure str ON s.\"Structure_idStructure\"=str.\"idStructure\"
         INNER JOIN user_structure as us ON us.\"idStructure\"=str.\"idStructure\"
         WHERE us.\"idUser\" = :userId
@@ -3675,7 +3675,7 @@ public function addEmail($provenance, $depositaire, $dateArrive, $serviceId, $us
     try {
         $query = "
             INSERT INTO couriels_recu (
-                \"dateArrive\", provenance, depositaire, objet, \"resumeCouriel\", \"dateEnregistrement\", \"idUser\", userConcerne, \"Service_idService\"
+                \"dateArrive\", provenance, depositaire, objet, \"resumeCouriel\", \"dateEnregistrement\", \"idUser\", \"userConcerne\", \"Service_idService\"
             ) VALUES (
                 :dateArrive, :provenance, :depositaire, :objet, :resumeCouriel, NOW(), :idUser, :userConcerne, :serviceId
             )

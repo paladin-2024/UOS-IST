@@ -746,7 +746,7 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
 
     public function getAllDepartments() {
-        $query = "SELECT iddepartement, designationDepartement FROM departement ORDER BY designationDepartement ASC";
+        $query = "SELECT id_departement AS iddepartement, libelle_departement AS \"designationDepartement\" FROM departement ORDER BY libelle_departement ASC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1972,11 +1972,11 @@ public function deposerTravail($data) {
     
     // Ajouter les champs spécifiques aux thèses si nécessaire
     if ($data['type_document'] === 'Thèse') {
-        $query .= ", 
-        anneeThese,
-        universiteThese,
-        faculteThese,
-        specialisationThese";
+        $query .= ",
+        \"anneeThese\",
+        \"universiteThese\",
+        \"faculteThese\",
+        \"specialisationThese\"";
     }
     
     $query .= ") VALUES (
@@ -2059,9 +2059,9 @@ public function getTravaux($search = '', $filters = []) {
                    OR o.\"designationOrientation\" LIKE :search";
         
         // Ajouter la recherche dans les champs spécifiques aux thèses
-        $query .= " OR t.universiteThese LIKE :search
+        $query .= " OR t.\"universiteThese\" LIKE :search
                    OR t.\"faculteThese\" LIKE :search
-                   OR t.specialisationThese LIKE :search";
+                   OR t.\"specialisationThese\" LIKE :search";
         
         $query .= ")";
     }
@@ -2101,7 +2101,7 @@ public function getTravaux($search = '', $filters = []) {
         $query .= " AND t.\"anneeThese\" = :anneeThese";
     }
     if (!empty($filters['universiteThese'])) {
-        $query .= " AND t.universiteThese LIKE :universiteThese";
+        $query .= " AND t.\"universiteThese\" LIKE :universiteThese";
     }
     if (!empty($filters['faculteThese'])) {
         $query .= " AND t.\"faculteThese\" LIKE :faculteThese";
@@ -2112,7 +2112,7 @@ public function getTravaux($search = '', $filters = []) {
                 t.orientation_id, t.specialisation_id, t.annee_academique_id, 
                 t.directeur_id, t.mots_cles, t.resume, t.fichier_path, 
                 t.date_depot, t.statut, t.est_public, 
-                t.\"anneeThese\", t.universiteThese, t.\"faculteThese\", t.specialisationThese,
+                t.\"anneeThese\", t.\"universiteThese\", t.\"faculteThese\", t.\"specialisationThese\",
                 o.\"designationOrientation\", s.designation, aa.designation, e.\"nomEnseignant\"";
 
     // Trier par date de dépôt décroissante (plus récent en premier)
@@ -2539,18 +2539,18 @@ public function updateTravail($id, $data) {
         
         // Gérer les champs spécifiques aux thèses
         if ($data['type_document'] === 'Thèse') {
-            $query .= ", 
-                anneeThese = :anneeThese,
-                universiteThese = :universiteThese,
-                faculteThese = :faculteThese,
-                specialisationThese = :specialisationThese";
+            $query .= ",
+                \"anneeThese\" = :anneeThese,
+                \"universiteThese\" = :universiteThese,
+                \"faculteThese\" = :faculteThese,
+                \"specialisationThese\" = :specialisationThese";
         } else {
             // Si ce n'est pas une thèse, mettre ces champs à NULL
-            $query .= ", 
-                anneeThese = NULL,
-                universiteThese = NULL,
-                faculteThese = NULL,
-                specialisationThese = NULL";
+            $query .= ",
+                \"anneeThese\" = NULL,
+                \"universiteThese\" = NULL,
+                \"faculteThese\" = NULL,
+                \"specialisationThese\" = NULL";
         }
 
         $query .= " WHERE id = :id";
