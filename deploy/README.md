@@ -92,6 +92,18 @@ the comment in `docker-compose.yml`).
    certbot edits each `nginx-host/*.conf` in place to add the `listen 443
    ssl` block, cert paths, and the http->https redirect.
 
+   **Important**: `deploy.yml` runs `cp nginx-host/*.conf /etc/nginx/conf.d/`
+   on every deploy to `main`, which overwrites whatever's live on the VPS
+   with whatever's committed in the repo. Since certbot edits the *live*
+   files directly, not the repo, the very next deploy after running certbot
+   will silently wipe out the HTTPS blocks it just added -- unless you copy
+   the certbot-modified files back into `deploy/nginx-host/` in the repo
+   (`cat /etc/nginx/conf.d/{gestion,student-portal,portail}.conf` on the VPS,
+   paste into the matching repo files, commit) right after running certbot.
+   This bit us once already (2026-08-27): a routine deploy overwrote HTTPS
+   for all three hosts, and nginx fell back to a different site's cert for
+   unmatched SNI, serving that site's content instead.
+
 ## Notes / open items
 
 - SELinux is disabled on this host, so no `semanage`/`setsebool` steps are
