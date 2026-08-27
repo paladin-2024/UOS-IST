@@ -34,5 +34,14 @@ RUN apk add --no-cache --virtual .build-deps \
     && docker-php-ext-install -j"$(nproc)" pdo_pgsql pgsql gd zip mbstring intl opcache \
     && apk del --no-cache .build-deps
 
+# Raise upload limits to match nginx's client_max_body_size (20m in the
+# nginx-host vhosts) -- PHP's own stock defaults (upload_max_filesize=2M,
+# post_max_size=8M) silently truncate/reject anything larger before nginx's
+# limit is ever reached, so both need to agree.
+RUN { \
+        echo 'upload_max_filesize = 20M'; \
+        echo 'post_max_size = 20M'; \
+    } > /usr/local/etc/php/conf.d/uploads.ini
+
 EXPOSE 9000
 CMD ["php-fpm"]
