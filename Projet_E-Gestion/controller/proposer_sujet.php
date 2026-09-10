@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // Vérifications
         if (empty($intitule) || empty($idSpecialisation) || empty($anneeAcadId) || empty($directeurId)) {
-            echo "<script src='../assets/js/sweetalert.min.js'></script>";
+            echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Vérifier si le directeur existe et est un enseignant
         $directeur = $agentModel->getAgentById($directeurId);
         if (!$directeur || $directeur['type_agent'] !== 'Enseignant') {
-            echo "<script src='../assets/js/sweetalert.min.js'></script>";
+            echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($encadreurId) {
             $encadreur = $agentModel->getAgentById($encadreurId);
             if (!$encadreur || $encadreur['type_agent'] !== 'Enseignant') {
-                echo "<script src='../assets/js/sweetalert.min.js'></script>";
+                echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Vérifier que le directeur et l'encadreur sont différents
         if ($encadreurId && $directeurId === $encadreurId) {
-            echo "<script src='../assets/js/sweetalert.min.js'></script>";
+            echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $status = $sujetExistant['statut_validation'];
             // Si le sujet n'est pas rejeté (A reformulé), on ne peut pas en proposer un nouveau
             if ($status !== 'A reformulé') {
-                echo "<script src='../assets/js/sweetalert.min.js'></script>";
+                echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             $feesHtml = !empty($unpaidFeesList) ? implode(', ', $unpaidFeesList) : 'des frais requis';
-            echo "<script src='../assets/js/sweetalert.min.js'></script>";
+            echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -163,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $etudiantModel->proposerSujet($data);
 
         if ($result) {
-            echo "<script src='../assets/js/sweetalert.min.js'></script>";
+            echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -176,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             </script>";
         } else {
-            echo "<script src='../assets/js/sweetalert.min.js'></script>";
+            echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -192,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
 
     } catch (Exception $e) {
-        echo "<script src='../assets/js/sweetalert.min.js'></script>";
+        echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
