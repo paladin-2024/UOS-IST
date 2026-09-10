@@ -447,7 +447,7 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
 
                             <div class="text-center mt-4">
-                                <button type="button" class="btn btn-secondary" onclick="window.location.href='?view=enseignement/palmares_archives'">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='?view=academique/palmares_archives'">
                                     <i class="bi bi-x-circle"></i> Annuler
                                 </button>
                                 <button type="submit" class="btn btn-primary">

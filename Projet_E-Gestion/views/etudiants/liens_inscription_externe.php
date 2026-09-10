@@ -64,7 +64,7 @@ $liensPage = array_slice($liens, $offset, $perPage);
         <h1>Gestion des Liens d'Inscription Externe</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="?view=dashboard">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="?view=index">Accueil</a></li>
                 <li class="breadcrumb-item">Étudiants</li>
                 <li class="breadcrumb-item active">Liens d'Inscription Externe</li>
             </ol>

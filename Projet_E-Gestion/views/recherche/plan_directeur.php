@@ -47,7 +47,7 @@ if (isset($_SESSION['message'])) {
                     </h4>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="?view=dashboard">Tableau de bord</a></li>
+                            <li class="breadcrumb-item"><a href="?view=index">Tableau de bord</a></li>
                             <li class="breadcrumb-item active">Plans de Travail</li>
                         </ol>
                     </nav>

@@ -16,7 +16,7 @@ if (!$userId || !$enseignant->isUserEnseignant($userId)) {
             title: 'Accès refusé',
             text: 'Vous devez être connecté en tant qu\'enseignant pour accéder à cette page.'
         }).then(() => {
-            window.location.href = '?view=dashboard';
+            window.location.href = '?view=index';
         });
     </script>";
     exit;
@@ -31,7 +31,7 @@ if (!$idEnseignant) {
             title: 'Erreur',
             text: 'Impossible de récupérer les informations de l\'enseignant.'
         }).then(() => {
-            window.location.href = '?view=dashboard';
+            window.location.href = '?view=index';
         });
     </script>";
     exit;
@@ -82,7 +82,7 @@ $coursEnseignant = $enseignant->getCoursAffectesEnseignant($idEnseignant, $curre
         <h1>MES COURS</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="?view=dashboard">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="?view=index">Accueil</a></li>
                 <li class="breadcrumb-item active">Mes Cours</li>
             </ol>
         </nav>

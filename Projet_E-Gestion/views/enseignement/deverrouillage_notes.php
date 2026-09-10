@@ -16,7 +16,7 @@ if (!$userId) {
             title: 'Accès refusé',
             text: 'Vous devez être connecté en tant qu\'administrateur pour accéder à cette page.'
         }).then(() => {
-            window.location.href = '?view=dashboard';
+            window.location.href = '?view=index';
         });
     </script>";
     exit;
@@ -50,7 +50,7 @@ $ecuesVerrouilles = $ecue->getAllVerrouillages($filtres);
         <h1>Gestion des Déverrouillages d'Encodage</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="?view=dashboard">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="?view=index">Accueil</a></li>
                 <li class="breadcrumb-item">Enseignement</li>
                 <li class="breadcrumb-item active">Déverrouillage des Notes</li>
             </ol>

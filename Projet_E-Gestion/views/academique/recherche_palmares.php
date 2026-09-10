@@ -14,7 +14,7 @@ $annees = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1>RECHERCHE DANS LES PALMARÈS</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="?view=dashboard">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="?view=index">Accueil</a></li>
                 <li class="breadcrumb-item"><a href="?view=academique/palmares_archives">Palmarès archivés</a></li>
                 <li class="breadcrumb-item active">Recherche avancée</li>
             </ol>

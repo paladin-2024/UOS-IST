@@ -26,7 +26,7 @@ $documentsPage = array_slice($documentsObligatoires, $offset, $perPage);
         <h1>Gestion des Documents Obligatoires</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="?view=dashboard">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="?view=index">Accueil</a></li>
                 <li class="breadcrumb-item">Enseignement</li>
                 <li class="breadcrumb-item active">Documents Obligatoires</li>
             </ol>

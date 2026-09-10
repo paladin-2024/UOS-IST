@@ -344,7 +344,7 @@ $pdf->Cell(40, 7, number_format($balance_disponible, 2, ',', ' '), 1, 0, 'R', tr
 $pdf->Cell(25, 7, number_format($taux_balance, 2) . '%', 1, 1, 'R', true);
 
 // Fonction améliorée pour afficher les catégories et sous-catégories avec leurs montants
-function renderCategoryRows($pdf, $categories, $category_id, $level = 0, $budget_data, $has_children) {
+function renderCategoryRows($pdf, $categories, $category_id, $budget_data, $has_children, $level = 0) {
     // Récupérer la catégorie actuelle
     $category = null;
     foreach ($categories as $cat) {
@@ -427,7 +427,7 @@ function renderCategoryRows($pdf, $categories, $category_id, $level = 0, $budget
         // Trouver toutes les sous-catégories directes
         foreach ($categories as $child) {
             if ($child['parent_id'] == $category_id) {
-                renderCategoryRows($pdf, $categories, $child['id'], $level + 1, $budget_data, $has_children);
+                renderCategoryRows($pdf, $categories, $child['id'], $budget_data, $has_children, $level + 1);
             }
         }
     }
@@ -457,7 +457,7 @@ $pdf->Cell(20, 7, 'Taux Réal.', 1, 1, 'C', true);
 $pdf->SetTextColor(0, 0, 0);
 foreach ($all_categories as $categorie) {
     if ($categorie['type'] === 'Recette' && empty($categorie['parent_id'])) {
-        renderCategoryRows($pdf, $all_categories, $categorie['id'], 0, $budget_data, $has_children);
+        renderCategoryRows($pdf, $all_categories, $categorie['id'], $budget_data, $has_children, 0);
     }
 }
 
@@ -497,7 +497,7 @@ $pdf->Cell(20, 7, 'Taux Réal.', 1, 1, 'C', true);
 $pdf->SetTextColor(0, 0, 0);
 foreach ($all_categories as $categorie) {
     if ($categorie['type'] === 'Dépense' && empty($categorie['parent_id'])) {
-        renderCategoryRows($pdf, $all_categories, $categorie['id'], 0, $budget_data, $has_children);
+        renderCategoryRows($pdf, $all_categories, $categorie['id'], $budget_data, $has_children, 0);
     }
 }
 

@@ -525,7 +525,7 @@ foreach ($mois_donnees as $mois) {
                         </div>
                         
                         <div class="text-center mt-3">
-                            <a href="?view=finance/transactions" class="btn btn-sm btn-primary">Voir toutes les transactions</a>
+                            <a href="?view=finance/operations_caisse" class="btn btn-sm btn-primary">Voir toutes les transactions</a>
                         </div>
                     </div>
                 </div>

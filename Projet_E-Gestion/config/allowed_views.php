@@ -182,6 +182,7 @@ return [
     'deliberation/editer_grille_ancienne',
     'deliberation/encodage_points',
     'deliberation/execution',
+    'deliberation/fees_fiche_validation',
     'deliberation/generation_masse_anciennes',
     'deliberation/gestion_autorisations',
     'deliberation/gestion_dettes',
@@ -283,6 +284,7 @@ return [
     'finance/rapport/recherche_situation',
     'finance/rapport_paiements',
     'finance/sessions_caisse',
+    'finance/tableau_bord_encaissements',
     'finance/tableau_bord_paiements',
     'finance/verification_acces_services',
 
@@ -351,6 +353,11 @@ return [
     'include/header',
     'include/mesFonctions',
 
+    'indicateur/categorie_indicateur',
+    'indicateur/encoder',
+    'indicateur/indicateur_add',
+    'indicateur/rapport_indicateur',
+
     'jury/validation_recours',
 
     'laboratoire/autorisation_add',
@@ -393,6 +400,7 @@ return [
     'portail/debug_session',
     'portail/domaine',
     'portail/export_fiche_avancement',
+    'portail/fiches_validation',
     'portail/footer',
     'portail/footer_student',
     'portail/frais_academiques',
@@ -447,6 +455,8 @@ return [
 
     'reception/chef_promotion',
     'reception/courriel_add',
+    'reception/courriel_coment',
+    'reception/courriel_edit',
     'reception/courriel_list',
     'reception/evolution_cours',
     'reception/mes_rendez_vous',
@@ -519,6 +529,9 @@ return [
     'stock/stock_transfert_add',
     'stock/transfert_list',
     'stock/transfert_view',
+
+    'suivi_cours/chef_section',
+    'suivi_cours/tableau_bord',
 
     'ur/affecation_ur',
     'ur/sujets',

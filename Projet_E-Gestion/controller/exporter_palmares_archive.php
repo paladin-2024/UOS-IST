@@ -12,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\Style\Font;
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
-    header('Location: ../index.php?view=login');
+    header('Location: ../index.php?view=accueil');
     exit;
 }
 

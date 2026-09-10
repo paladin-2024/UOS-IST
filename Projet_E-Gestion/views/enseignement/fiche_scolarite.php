@@ -18,7 +18,7 @@ if ($idEtudiant <= 0) {
             title: 'Erreur',
             text: 'Identifiant d\'étudiant non spécifié ou invalide.'
         }).then(() => {
-            window.location.href = '?view=dashboard';
+            window.location.href = '?view=index';
         });
     </script>";
     exit;
@@ -41,7 +41,7 @@ if (!$etudiant) {
             title: 'Erreur',
             text: 'Étudiant non trouvé dans la base de données.'
         }).then(() => {
-            window.location.href = '?view=dashboard';
+            window.location.href = '?view=index';
         });
     </script>";
     exit;
