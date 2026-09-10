@@ -468,7 +468,7 @@ $affectations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="controller/finance_operations.php" method="POST">
                 <input type="hidden" name="action" value="ajouter_categorie">
                 
                 <div class="modal-header">

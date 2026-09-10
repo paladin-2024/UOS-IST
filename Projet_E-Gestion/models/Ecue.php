@@ -1780,7 +1780,7 @@ public function saveNote($evaluationId, $idEtudiant, $coteObtenu) {
  * Compte le nombre d'examens pour une session et un ECUE donnés
  */
 public function countExamsBySessionAndEcue($sessionId, $idECUE, $annee_acad_id) {
-    $query = "SELECT COUNT(*) as nbExams
+    $query = "SELECT COUNT(*) as \"nbExams\"
               FROM evaluations e
               INNER JOIN typeevaluation t ON e.\"idType\" = t.\"idType\"
               WHERE e.\"idECUE\" = ?

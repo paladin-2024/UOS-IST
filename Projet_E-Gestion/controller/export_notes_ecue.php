@@ -21,7 +21,7 @@ if (!isset($_SESSION['id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['idECUE'])) {
-    header('Location: ../?view=enseignement/cours');
+    header('Location: ../?view=recherche/mes_cours');
     exit;
 }
 

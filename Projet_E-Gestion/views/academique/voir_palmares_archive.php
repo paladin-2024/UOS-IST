@@ -614,12 +614,12 @@ $meilleursEtudiants = array_slice($etudiants, 0, 3);
                 <h5 class="modal-title">Ajouter un fichier PDF</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="controller/upload_pdf_palmares.php" method="post" enctype="multipart/form-data">
+            <form action="controller/upload_palmares_pdf.php" method="post" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <input type="hidden" name="id_palmares" value="<?= $idPalmares ?>">
+                    <input type="hidden" name="idpalmares" value="<?= $idPalmares ?>">
                     <div class="mb-3">
                         <label for="pdf_file" class="form-label">Sélectionner un fichier PDF</label>
-                        <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                        <input type="file" class="form-control" id="pdf_file" name="fichier_scanne" accept=".pdf" required>
                         <div class="form-text">Le fichier doit être au format PDF et ne pas dépasser 10 Mo.</div>
                     </div>
                 </div>

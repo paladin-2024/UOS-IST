@@ -108,7 +108,7 @@ $etudiants = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1>Liste des Étudiants</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="?view=dashboard">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="?view=index">Accueil</a></li>
                 <li class="breadcrumb-item active">Liste des Étudiants</li>
             </ol>
         </nav>

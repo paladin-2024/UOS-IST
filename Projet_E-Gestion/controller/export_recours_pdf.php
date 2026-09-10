@@ -21,7 +21,7 @@ $conn = Connexion::getInstance()->getPDO();
 $query_recours = '
     SELECT r.id_recours, r.matricule, r.motif, r.description, r.date_creation, r.statut,
            r.preuve, r.est_paye, r.id_ecue, r.id_session, r.id_annee_acad,
-           e."designationECUE", ue."designationUE", s."designSession", s.description as descSession,
+           e."designationECUE", ue."designationUE", s."designSession", s.description as "descSession",
            et.noms,
            p."designationPromotion", o."designationOrientation",
            a.designation as annee_academique

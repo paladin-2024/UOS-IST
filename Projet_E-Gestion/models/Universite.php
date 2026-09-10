@@ -122,7 +122,7 @@ public function getAllAcademicYears() {
     }
 
     public function getSections($search = '', $anneeAcadId = null) {
-        $query = "SELECT section.*, annee_acad.designation AS anneeDesignation,
+        $query = "SELECT section.*, annee_acad.designation AS \"anneeDesignation\",
                   (SELECT CONCAT(rs.noms, ' - ', rs.fonction)
                    FROM responsable_section rs
                    WHERE rs.section_idsection = section.idsection
@@ -197,7 +197,7 @@ public function getAllAcademicYears() {
      * Récupère les détails complets d'une section
      */
     public function getSectionById($id) {
-        $query = "SELECT s.*, aa.designation AS anneeDesignation,
+        $query = "SELECT s.*, aa.designation AS \"anneeDesignation\",
                   (SELECT CONCAT(rs.noms, ' - ', rs.fonction) 
                    FROM responsable_section rs 
                    WHERE rs.section_idsection = s.idsection 
@@ -221,7 +221,7 @@ public function getAllAcademicYears() {
     }
 
     public function getManagersBySection($sectionId) {
-        $query = "SELECT rs.*, aa.designation AS anneeDesignation 
+        $query = "SELECT rs.*, aa.designation AS \"anneeDesignation\" 
                   FROM responsable_section rs
                   JOIN annee_acad aa ON rs.annee_acad_idannee_acad = aa.idannee_acad
                   WHERE rs.section_idsection = :sectionId ORDER BY aa.designation DESC";
@@ -277,7 +277,7 @@ public function getAllAcademicYears() {
 
     
     public function getDepartements($search = '') {
-        $query = "SELECT d.*, s.\"designationSection\" AS sectionDesignation,a.designation as annee 
+        $query = "SELECT d.*, s.\"designationSection\" AS \"sectionDesignation\",a.designation as annee 
                   FROM departement d
                   JOIN section s ON d.section_idsection = s.idsection
                   JOIN annee_acad a ON a.idannee_acad=s.\"idAnnee\"";
@@ -325,7 +325,7 @@ public function getAllAcademicYears() {
 
     // Methods for managing department managers
     public function getManagersByDepartement($departementId) {
-        $query = "SELECT rd.*, aa.designation AS anneeDesignation 
+        $query = "SELECT rd.*, aa.designation AS \"anneeDesignation\" 
                   FROM responsable_departement rd
                   JOIN annee_acad aa ON rd.annee_acad_idannee_acad = aa.idannee_acad
                   WHERE rd.departement_iddepartement = :departementId ORDER BY aa.designation DESC";
@@ -381,7 +381,7 @@ public function getAllAcademicYears() {
     // Other existing methods...
 
     public function getPromotions($search = '', $anneeAcadId = null) {
-        $query = "SELECT p.*, o.\"designationOrientation\" AS orientationDesignation, aa.designation AS anneeDesignation
+        $query = "SELECT p.*, o.\"designationOrientation\" AS \"orientationDesignation\", aa.designation AS \"anneeDesignation\"
                   FROM promotion p
                   JOIN orientation o ON p.orientation_idorientation = o.idorientation
                   JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad";
@@ -726,8 +726,8 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
 
     public function getTeachers($search = '') {
         $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, e.\"idAgent\", e.\"idDepartement\", 
-                         a.noms AS agentName, a.\"lieuNaissance\", a.\"dateNaissance\", a.sexe, a.telephone, a.email,
-                         d.designationDepartement AS departmentName
+                         a.noms AS \"agentName\", a.\"lieuNaissance\", a.\"dateNaissance\", a.sexe, a.telephone, a.email,
+                         d.designationDepartement AS \"departmentName\"
                   FROM enseignant e
                   JOIN agent a ON e.\"idAgent\" = a.\"idAgent\"
                   JOIN departement d ON e.\"idDepartement\" = d.iddepartement";
@@ -813,7 +813,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     // Existing methods...
 
     public function getResearchUnits($search = '') {
-        $query = "SELECT ur.*, d.designationDepartement AS departmentDesignation 
+        $query = "SELECT ur.*, d.designationDepartement AS \"departmentDesignation\" 
                   FROM unite_recherche ur
                   JOIN departement d ON ur.departement_iddepartement = d.iddepartement";
         if (!empty($search)) {
@@ -831,8 +831,8 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     }
 
     public function getTeachersWithResearchUnits($search = '') {
-        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS departmentName, 
-                         ur.\"designation_UR\" AS researchUnitName
+        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS \"departmentName\", 
+                         ur.\"designation_UR\" AS \"researchUnitName\"
                   FROM enseignant e
                   JOIN departement d ON e.\"idDepartement\" = d.iddepartement
                   LEFT JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.\"idUser\"
@@ -852,7 +852,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
     }
 
     public function getTeachersByResearchUnit($researchUnitId) {
-        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS departmentName
+        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS \"departmentName\"
                   FROM enseignant e
                   JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.\"idUser\"
                   JOIN departement d ON e.\"idDepartement\" = d.iddepartement
@@ -929,7 +929,7 @@ public function createTeacher($nomEnseignant, $grade, $idAgent, $idDepartement, 
 
     // Method to get teachers by specialization
     public function getTeachersBySpecialisation($specialisationId) {
-        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS departmentName
+        $query = "SELECT e.idenseignant, e.\"nomEnseignant\", e.grade, d.designationDepartement AS \"departmentName\"
                   FROM enseignant e
                   JOIN enseignant_uniterecherche eur ON e.idenseignant = eur.\"idUser\"
                   JOIN departement d ON e.\"idDepartement\" = d.iddepartement
@@ -1491,14 +1491,13 @@ public function isEnseignant($userId) {
  */
 public function getSujetsByEnseignant($userId, $search = '') {
     $query = "SELECT s.*, spec.designation as specialisation, aa.designation as annee,
-                     ur.\"designation_UR\" as uniteRecherche
+                     ur.\"designation_UR\" as \"uniteRecherche\",
                      CONCAT(e.noms, ' (', e.matricule, ')') as etudiant,
                      CONCAT(d.\"nomEnseignant\", ' (', d.grade, ')') as directeur,
                      CONCAT(enc.\"nomEnseignant\", ' (', enc.grade, ')') as encadreur
               FROM sujets s
               LEFT JOIN specialisation spec ON s.\"idSpecialisation\" = spec.\"idSpecialisation\"
               LEFT JOIN unite_recherche ur ON spec.\"idUnite_recherche\"=ur.idunite_recherche
-              LEFT JOIN 
               LEFT JOIN annee_acad aa ON s.annee_acad_idannee_acad = aa.idannee_acad
               LEFT JOIN etudiant e ON s.etudiant_idetudiant = e.idetudiant
               LEFT JOIN enseignant d ON s.\"idDirecteur\" = d.idenseignant
@@ -2609,7 +2608,7 @@ public function updateTravail($id, $data) {
 }
 
 public function getFrais($search = '') {
-    $query = "SELECT f.*, p.\"designationPromotion\", aa.designation AS anneeDesignation 
+    $query = "SELECT f.*, p.\"designationPromotion\", aa.designation AS \"anneeDesignation\" 
               FROM frais f
               JOIN promotion p ON f.promotion_idpromotion = p.idpromotion
               JOIN annee_acad aa ON f.annee_acad_idannee_acad = aa.idannee_acad";
@@ -2634,7 +2633,7 @@ public function getFrais($search = '') {
 }
 
 public function getFraisById($id) {
-    $query = "SELECT f.*, p.\"designationPromotion\", aa.designation AS anneeDesignation 
+    $query = "SELECT f.*, p.\"designationPromotion\", aa.designation AS \"anneeDesignation\" 
               FROM frais f
               JOIN promotion p ON f.promotion_idpromotion = p.idpromotion
               JOIN annee_acad aa ON f.annee_acad_idannee_acad = aa.idannee_acad
@@ -2651,7 +2650,7 @@ public function getFraisByPromotionAndYear($promotionId, $anneeAcadId) {
     try {
         $query = "SELECT f.*, 
                          p.\"designationPromotion\",
-                         aa.designation as anneeDesignation
+                         aa.designation as \"anneeDesignation\"
                   FROM frais f
                   JOIN promotion p ON f.promotion_idpromotion = p.idpromotion
                   JOIN annee_acad aa ON f.annee_acad_idannee_acad = aa.idannee_acad
@@ -2753,13 +2752,13 @@ public function deleteFrais($id) {
 
 public function getPaiements($search = '', $filters = []) {
     $query = "SELECT p.*, 
-                     f.designation AS fraisDesignation, 
-                     f.montant AS montantTotal, 
+                     f.designation AS \"fraisDesignation\", 
+                     f.montant AS \"montantTotal\", 
                      f.devise,
-                     e.noms AS nomEtudiant, 
+                     e.noms AS \"nomEtudiant\", 
                      e.matricule,
                      pr.\"designationPromotion\",
-                     aa.designation AS anneeDesignation
+                     aa.designation AS \"anneeDesignation\"
               FROM paiement p
               JOIN frais f ON p.frais_idfrais = f.idfrais
               JOIN etudiant e ON p.etudiant_idetudiant = e.idetudiant
@@ -2833,13 +2832,13 @@ public function getPaiements($search = '', $filters = []) {
 
 public function getPaiementById($id) {
     $query = "SELECT p.*, 
-                     f.designation AS fraisDesignation, 
-                     f.montant AS montantTotal, 
+                     f.designation AS \"fraisDesignation\", 
+                     f.montant AS \"montantTotal\", 
                      f.devise,
-                     e.noms AS nomEtudiant, 
+                     e.noms AS \"nomEtudiant\", 
                      e.matricule,
                      pr.\"designationPromotion\",
-                     aa.designation AS anneeDesignation
+                     aa.designation AS \"anneeDesignation\"
               FROM paiement p
               JOIN frais f ON p.frais_idfrais = f.idfrais
               JOIN etudiant e ON p.etudiant_idetudiant = e.idetudiant
@@ -2919,7 +2918,7 @@ public function createPaiement($etudiantId, $fraisId, $montantPaye, $referencePa
 public function updatePaiement($id, $montantPaye, $referencePaiement, $modePaiement, $commentaire = '') {
     try {
         // Récupérer les informations actuelles du paiement
-        $query = "SELECT p.*, f.montant AS montantTotal 
+        $query = "SELECT p.*, f.montant AS \"montantTotal\" 
                   FROM paiement p
                   JOIN frais f ON p.frais_idfrais = f.idfrais
                   WHERE p.idpaiement = :id";
@@ -2998,7 +2997,7 @@ public function getEtatPaiementsEtudiant($etudiantId, $anneeAcadId) {
         $frais = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Récupérer tous les paiements de l'étudiant
-        $query = "SELECT p.*, f.designation AS fraisDesignation, f.montant AS montantTotal 
+        $query = "SELECT p.*, f.designation AS \"fraisDesignation\", f.montant AS \"montantTotal\" 
                   FROM paiement p
                   JOIN frais f ON p.frais_idfrais = f.idfrais
                   WHERE p.etudiant_idetudiant = :etudiantId 
@@ -3584,7 +3583,7 @@ public function deleteOrientation($orientationId) {
 // Méthodes pour les responsables d'orientation
 public function getManagersByOrientation($orientationId) {
     // Préparer la requête pour récupérer les responsables
-    $query = "SELECT r.*, a.designation as anneeDesignation 
+    $query = "SELECT r.*, a.designation as \"anneeDesignation\" 
               FROM responsable_orientation r 
               JOIN annee_acad a ON r.annee_acad_idannee_acad = a.idannee_acad 
               WHERE r.orientation_idorientation = :orientationId 
@@ -3673,7 +3672,7 @@ public function getUserById($userId) {
 
 public function getOrientations($search = '', $anneeAcadId = null) {
 // Préparer la requête de base avec le chef d'orientation
-$query = "SELECT o.*, s.\"designationSection\" as sectionDesignation, a.designation as anneeDesignation, a.idannee_acad,
+$query = "SELECT o.*, s.\"designationSection\" as \"sectionDesignation\", a.designation as \"anneeDesignation\", a.idannee_acad,
 (SELECT CONCAT(ro.noms, ' - ', ro.fonction) 
 FROM responsable_orientation ro 
 WHERE ro.orientation_idorientation = o.idorientation 
@@ -3712,9 +3711,9 @@ return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 public function getOrientationsForExport($idSection = 'all', $idOrientation = 'all') {
     // Construire la requête de base
-    $query = "SELECT o.*, s.\"designationSection\" as sectionDesignation, 
+    $query = "SELECT o.*, s.\"designationSection\" as \"sectionDesignation\", 
                      r.idresponsable_orientation, r.noms, r.fonction, r.\"dateEnregistrement\",
-                     a.designation as anneeDesignation
+                     a.designation as \"anneeDesignation\"
               FROM orientation o 
               JOIN section s ON o.section_idsection = s.idsection 
               LEFT JOIN responsable_orientation r ON o.idorientation = r.orientation_idorientation
@@ -3747,7 +3746,7 @@ public function getOrientationsForExport($idSection = 'all', $idOrientation = 'a
 
 // Récupérer les promotions par orientation
 public function getPromotionsByOrientation($orientationId) {
-    $query = "SELECT p.idpromotion, p.\"designationPromotion\", aa.designation as anneeDesignation
+    $query = "SELECT p.idpromotion, p.\"designationPromotion\", aa.designation as \"anneeDesignation\"
               FROM promotion p
               JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
               WHERE p.orientation_idorientation = :orientationId
@@ -3775,7 +3774,7 @@ public function getPromotionOrientation($promotionId) {
 }
 
 public function getPromotionById($promotionId) {
-    $query = "SELECT p.*, o.\"designationOrientation\", aa.designation as anneeDesignation
+    $query = "SELECT p.*, o.\"designationOrientation\", aa.designation as \"anneeDesignation\"
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
@@ -3807,7 +3806,7 @@ public function getUserSections($userId) {
  * @return array Liste des promotions
  */
 public function getPromotionsBySection($sectionId, $anneeAcadId = null) {
-    $query = "SELECT p.*, aa.designation as anneeDesignation
+    $query = "SELECT p.*, aa.designation as \"anneeDesignation\"
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN section s ON o.section_idsection = s.idsection
@@ -3876,7 +3875,7 @@ public function getAllUEs($anneeAcadId, $search = '')
 }
 
 public function getPromotionsByAnneeAcad($anneeAcadId, $search = '') {
-    $query = "SELECT p.*, o.\"designationOrientation\", aa.designation AS anneeDesignation 
+    $query = "SELECT p.*, o.\"designationOrientation\", aa.designation AS \"anneeDesignation\" 
               FROM promotion p
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
               JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
@@ -4823,8 +4822,8 @@ public function removeJuryMember($memberId)
  */
 public function getPromotionsByJury($juryId)
 {
-    $query = "SELECT bp.*, p.\"designationPromotion\", p.cycle, o.\"designationOrientation\" as orientationDesignation, 
-                    a.designation as anneeDesignation
+    $query = "SELECT bp.*, p.\"designationPromotion\", p.cycle, o.\"designationOrientation\" as \"orientationDesignation\", 
+                    a.designation as \"anneeDesignation\"
               FROM bureau_jury_promotion bp
               JOIN promotion p ON bp.idpromotion = p.idpromotion
               JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -7603,7 +7602,7 @@ public function isStudentActiveForYear($studentId, $academicYearId) {
             
             // Récupérer les promotions cibles disponibles
             $query = "SELECT cco.id as config_id, p.*, 
-                             o.\"designationOrientation\", aa.designation as anneeDesignation
+                             o.\"designationOrientation\", aa.designation as \"anneeDesignation\"
                       FROM configuration_choix_orientation cco
                       JOIN promotion p ON cco.promotion_cible_id = p.idpromotion
                       LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
@@ -7718,7 +7717,7 @@ public function isStudentActiveForYear($studentId, $academicYearId) {
                     // Utiliser la méthode standard avec affectation
                     $montantTotal = $affectation['montant_specifique'] > 0 ? $affectation['montant_specifique'] : $affectation['montant_frais'];
                     
-                    $query = "SELECT COALESCE(SUM(montant), 0) as totalPaye 
+                    $query = "SELECT COALESCE(SUM(montant), 0) as \"totalPaye\" 
                               FROM paiements_frais
                               WHERE affectation_id = :affectationId AND matricule_etudiant = :matricule";
                     $stmt = $this->db->prepare($query);
@@ -7819,7 +7818,7 @@ public function isStudentActiveForYear($studentId, $academicYearId) {
                     // Utiliser la méthode standard avec affectation
                     $montantTotal = $affectation['montant_specifique'] > 0 ? $affectation['montant_specifique'] : $affectation['montant_frais'];
                     
-                    $query = "SELECT COALESCE(SUM(montant), 0) as totalPaye 
+                    $query = "SELECT COALESCE(SUM(montant), 0) as \"totalPaye\" 
                               FROM paiements_frais
                               WHERE affectation_id = :affectationId AND matricule_etudiant = :matricule";
                     $stmt = $this->db->prepare($query);

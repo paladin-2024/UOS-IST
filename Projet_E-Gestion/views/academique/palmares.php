@@ -72,7 +72,7 @@ $totalPages = ceil($totalPalmares / $limit);
                                 | <a href="?view=academique/ajouter_palmares" class="btnPage">
                                     <i class="bi bi-plus-circle-fill"></i> Ajouter un palmarès
                                 </a>
-                                | <a href="?view=academique/importer_palmares" class="btnPage">
+                                | <a href="?view=academique/ajouter_palmares" class="btnPage">
                                     <i class="bi bi-upload"></i> Importer palmarès
                                 </a>
                             </span>

@@ -27,7 +27,7 @@ try {
     
     // Récupérer les promotions de l'année académique
     $query = "SELECT p.idpromotion, p.\"designationPromotion\", p.cycle,
-                     o.\"designationOrientation\", a.designation as anneeDesignation, p.est_terminale
+                     o.\"designationOrientation\", a.designation as \"anneeDesignation\", p.est_terminale
               FROM promotion p
               INNER JOIN orientation o ON p.orientation_idorientation = o.idorientation
               INNER JOIN annee_acad a ON p.annee_acad_idannee_acad = a.idannee_acad

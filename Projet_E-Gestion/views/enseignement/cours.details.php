@@ -7,7 +7,7 @@ $agent=new Agent();
 // Récupérer l'ID de l'ECUE
 $idEcue = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($idEcue <= 0) {
-    echo "<script>window.location.href = '?view=enseignement/cours';</script>";
+    echo "<script>window.location.href = '?view=recherche/mes_cours';</script>";
     exit;
 }
 
@@ -17,7 +17,7 @@ $currentYear = $universite->getCurrentAcademicYear();
 // Récupérer les détails de l'ECUE
 $ecueDetails = $ecue->getEcueById($idEcue);
 if (!$ecueDetails) {
-    echo "<script>window.location.href = '?view=enseignement/cours';</script>";
+    echo "<script>window.location.href = '?view=recherche/mes_cours';</script>";
     exit;
 }
 

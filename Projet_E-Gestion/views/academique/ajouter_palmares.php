@@ -27,7 +27,7 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Accueil</a></li>
-                <li class="breadcrumb-item"><a href="?view=enseignement/palmares">PalmarÃ¨s</a></li>
+                <li class="breadcrumb-item"><a href="?view=academique/palmares">PalmarÃ¨s</a></li>
                 <li class="breadcrumb-item active">Ajouter un palmarÃ¨s</li>
             </ol>
         </nav>
@@ -138,7 +138,7 @@ $sections = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                             
                             <div class="text-center mt-4">
-                                <button type="button" class="btn btn-secondary" onclick="window.location.href='?view=enseignement/palmares'">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='?view=academique/palmares'">
                                     <i class="bi bi-x-circle"></i> Annuler
                                 </button>
                                 <button type="submit" class="btn btn-primary">

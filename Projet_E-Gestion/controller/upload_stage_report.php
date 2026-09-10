@@ -13,7 +13,7 @@ error_log("SESSION student_id: " . (isset($_SESSION['student_id']) ? $_SESSION['
 if (!isset($_SESSION['student_id'])) {
     error_log("ERROR: student_id not in session");
     $_SESSION['error_message'] = "Vous devez être connecté pour effectuer cette action.";
-    header('Location: ../index.php?view=login');
+    header('Location: ../index.php?view=accueil');
     exit;
 }
 

@@ -82,8 +82,8 @@ $configUniversitee = $universite->getConfigurationUniversite();
 
 	<script src="assets/js/DataLoader.js"></script>
 
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+	<link rel="stylesheet" href="assets/css/sweetalert.min.css">
+	<script src="assets/js/sweetalert.min.js"></script>
 
 	<link href="assets/DataTables/datatables.min.css" rel="stylesheet">
  

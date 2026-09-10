@@ -210,7 +210,7 @@ try {
         // Admin - tous les enseignants
         if ($selectedSpecialisation) {
             // Filtrer par spécialisation
-            $query = "SELECT DISTINCT a.*, g.designation as gradeDesignation
+            $query = "SELECT DISTINCT a.*, g.designation as \"gradeDesignation\"
                        FROM agent a
                        LEFT JOIN grade g ON a.grade_id = g.idgrade
                        INNER JOIN sujets sj ON sj.\"idDirecteur\" = a.\"idAgent\" OR sj.idEncadrant = a.\"idAgent\"
@@ -220,7 +220,7 @@ try {
             $stmt->execute(['specialisationId' => $selectedSpecialisation]);
             $enseignants = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
-            $query = "SELECT a.*, g.designation as gradeDesignation
+            $query = "SELECT a.*, g.designation as \"gradeDesignation\"
                        FROM agent a
                        LEFT JOIN grade g ON a.grade_id = g.idgrade
                        WHERE a.type_agent = 'Enseignant'
@@ -238,7 +238,7 @@ try {
                     $paramName = ":section_" . $index;
                     $sectionPlaceholders[] = $paramName;
                 }
-                $query = "SELECT DISTINCT a.*, g.designation as gradeDesignation
+                $query = "SELECT DISTINCT a.*, g.designation as \"gradeDesignation\"
                            FROM agent a
                            LEFT JOIN grade g ON a.grade_id = g.idgrade
                            LEFT JOIN agent_section ag_s ON ag_s.\"idAgent\" = a.\"idAgent\"
@@ -260,7 +260,7 @@ try {
                     $paramName = ":section_" . $index;
                     $sectionPlaceholders[] = $paramName;
                 }
-                $query = "SELECT DISTINCT a.*, g.designation as gradeDesignation
+                $query = "SELECT DISTINCT a.*, g.designation as \"gradeDesignation\"
                            FROM agent a
                            LEFT JOIN grade g ON a.grade_id = g.idgrade
                            LEFT JOIN agent_section ag_s ON ag_s.\"idAgent\" = a.\"idAgent\"

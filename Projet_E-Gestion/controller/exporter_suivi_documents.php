@@ -17,7 +17,7 @@ if (!isset($_SESSION['id'])) {
 if (!isset($_GET['promotion_id']) || empty($_GET['promotion_id'])) {
     echo "<script>
         alert('Promotion non spécifiée');
-        window.location.href = '../?view=enseignement/suivi_documents_etudiants';
+        window.location.href = '../?view=etudiants/suivi_documents_etudiants';
     </script>";
     exit();
 }
@@ -43,7 +43,7 @@ try {
     if (!$promotion) {
         echo "<script>
             alert('Promotion non trouvée');
-            window.location.href = '../?view=enseignement/suivi_documents_etudiants';
+            window.location.href = '../?view=etudiants/suivi_documents_etudiants';
         </script>";
         exit();
     }
@@ -262,7 +262,7 @@ try {
 } catch (PDOException $e) {
     echo "<script>
     alert('Erreur lors de l\'exportation: " . $e->getMessage() . "');
-    window.location.href = '../?view=enseignement/suivi_documents_etudiants';
+    window.location.href = '../?view=etudiants/suivi_documents_etudiants';
 </script>";
 exit();
 }

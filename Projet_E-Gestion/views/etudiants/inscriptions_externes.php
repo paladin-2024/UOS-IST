@@ -63,7 +63,7 @@ $inscriptionsPage = array_slice($inscriptions, $offset, $perPage);
         <h1>Inscriptions Externes</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="?view=dashboard">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="?view=index">Accueil</a></li>
                 <li class="breadcrumb-item">Étudiants</li>
                 <li class="breadcrumb-item"><a href="?view=etudiants/liens_inscription_externe">Liens d'Inscription</a></li>
                 <li class="breadcrumb-item active">Inscriptions Reçues</li>

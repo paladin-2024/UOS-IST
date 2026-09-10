@@ -8,7 +8,7 @@ class Stage {
 
     // Get user's responsibilities (promotions they manage)
     public function getUserResponsibilities($userId) {
-        $sql = "SELECT rs.*, s.\"designationSection\", p.\"designationPromotion\" as promotionDesignation
+        $sql = "SELECT rs.*, s.\"designationSection\", p.\"designationPromotion\" as \"promotionDesignation\"
                 FROM responsable_section rs
                 JOIN section s ON rs.idsection = s.idsection
                 JOIN promotion p ON rs.idpromotion = p.idpromotion

@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['exportBtn'])) {
     try {
         // Récupérer les informations de la section
         $stmtSection = $db->prepare("
-            SELECT s.*, a.designation as anneeDesignation
+            SELECT s.*, a.designation as \"anneeDesignation\"
             FROM section s
             LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
             WHERE s.idsection = ?
@@ -99,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['exportBtn'])) {
         
         // Récupérer les données
         $query = "
-            SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation, 
-                   ur.\"designation_UR\", s.designation as specialisationName, 
+            SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\",
+                   ur.\"designation_UR\", s.designation as \"specialisationName\",
                    es.\"dateAffectation\"
             FROM enseignant_specialisation es
             JOIN agent a ON es.\"idAgent\" = a.\"idAgent\"

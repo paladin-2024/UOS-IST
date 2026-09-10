@@ -6,7 +6,7 @@ $ecue = new Ecue();
 // Récupérer l'ID du devoir
 $idDevoir = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($idDevoir <= 0) {
-    echo "<script>window.location.href = '?view=enseignement/cours';</script>";
+    echo "<script>window.location.href = '?view=recherche/mes_cours';</script>";
     exit;
 }
 
@@ -16,7 +16,7 @@ $currentYear = $universite->getCurrentAcademicYear();
 // Récupérer les détails du devoir
 $devoir = $ecue->getAssignmentById($idDevoir);
 if (!$devoir) {
-    echo "<script>window.location.href = '?view=enseignement/cours';</script>";
+    echo "<script>window.location.href = '?view=recherche/mes_cours';</script>";
     exit;
 }
 
@@ -34,7 +34,7 @@ $dateLimite = date('Y-m-d\TH:i', strtotime($devoir['date_limite']));
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Accueil</a></li>
-                <li class="breadcrumb-item"><a href="?view=enseignement/cours">Cours</a></li>
+                <li class="breadcrumb-item"><a href="?view=recherche/mes_cours">Cours</a></li>
                 <li class="breadcrumb-item"><a href="?view=enseignement/cours.details&id=<?= $devoir['idECUE'] ?>">Détails du cours</a></li>
                 <li class="breadcrumb-item"><a href="?view=enseignement/devoir.details&id=<?= $idDevoir ?>">Détails du devoir</a></li>
                 <li class="breadcrumb-item active">Modifier</li>
