@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         // Vérifications
         if ($idDevoir <= 0 || $idEtudiant <= 0) {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $devoirInfo = $coursModel->getDevoirById($idDevoir);
         
         if (!$devoirInfo) {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $maintenant = new DateTime();
         
         if ($maintenant > $dateLimite) {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $soumissionExistante = $coursModel->checkExistingSubmission($idDevoir, $idEtudiant);
         
         if ($soumissionExistante && !isset($_POST['confirm_overwrite'])) {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $coursModel->submitAssignment($idDevoir, $idEtudiant, $commentaire, $fichierNom);
         
         if ($result) {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unlink($cheminFichier);
         }
         
-        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        echo "<script src='../assets/js/sweetalert.min.js'></script>";
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({

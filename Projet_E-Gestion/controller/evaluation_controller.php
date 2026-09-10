@@ -8,7 +8,7 @@ require_once dirname(__DIR__) . '/models/Universite.php';
 
 // Vérifier que l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -34,7 +34,7 @@ $pdo = $connexion->getPDO();
 // Récupérer l'ID de l'utilisateur et vérifier s'il est un enseignant
 $userId = $_SESSION['id'];
 if (!$enseignant->isUserEnseignant($userId)) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -52,7 +52,7 @@ if (!$enseignant->isUserEnseignant($userId)) {
 // Récupérer l'ID de l'agent enseignant
 $idEnseignant = $enseignant->getAgentIdByUserId($userId);
 if (!$idEnseignant) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if ($resultat) {
                 // Rediriger avec un message de succès
-                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                echo "<script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </script>";
             } else {
                 // Erreur lors de l'ajout
-                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                echo "<script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (PDOException $e) {
             // Erreur de base de données
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if ($resultat) {
                 // Rediriger avec un message de succès
-                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                echo "<script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -193,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </script>";
             } else {
                 // Erreur lors de la mise à jour
-                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                echo "<script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -208,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (PDOException $e) {
             // Erreur de base de données
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -233,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Si aucune note à enregistrer
         if (empty($notes)) {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -324,7 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $pdo->commit();
                         
                         // Rediriger avec un message de succès
-                        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                        echo "<script src='../assets/js/sweetalert.min.js'></script>";
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
@@ -344,7 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         
                         // Afficher l'erreur
-                        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                        echo "<script src='../assets/js/sweetalert.min.js'></script>";
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
@@ -410,7 +410,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $pdo->commit();
                         
                         // Rediriger avec un message de succès
-                        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                        echo "<script src='../assets/js/sweetalert.min.js'></script>";
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
@@ -430,7 +430,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         
                         // Afficher l'erreur
-                        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                        echo "<script src='../assets/js/sweetalert.min.js'></script>";
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
@@ -447,7 +447,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Action inconnue
                 else {
-                    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                    echo "<script src='../assets/js/sweetalert.min.js'></script>";
                     echo "<script>
                         document.addEventListener('DOMContentLoaded', function() {
                             Swal.fire({
@@ -471,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $idECUE = isset($_GET['ecue']) ? intval($_GET['ecue']) : 0;
                     
                     if (!$evaluationId || !$idECUE) {
-                        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                        echo "<script src='../assets/js/sweetalert.min.js'></script>";
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
@@ -528,7 +528,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $pdo->commit();
                         
                         // Rediriger avec un message de succès
-                        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                        echo "<script src='../assets/js/sweetalert.min.js'></script>";
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
@@ -548,7 +548,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         
                         // Afficher l'erreur
-                        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                        echo "<script src='../assets/js/sweetalert.min.js'></script>";
                         echo "<script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 Swal.fire({
@@ -564,7 +564,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 // Action inconnue
                 else {
-                    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                    echo "<script src='../assets/js/sweetalert.min.js'></script>";
                     echo "<script>
                         document.addEventListener('DOMContentLoaded', function() {
                             Swal.fire({
@@ -580,7 +580,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             // Méthode non autorisée
             else {
-                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                echo "<script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({

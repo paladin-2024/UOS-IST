@@ -257,7 +257,7 @@ try {
 
 // Si c'est une deuxième session et aucun étudiant n'est éligible
 if ($isDeuxiemeSession && empty($etudiants)) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         Swal.fire({
             icon: 'warning',
