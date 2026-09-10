@@ -66,7 +66,7 @@ class NumeroReleve {
     private function generateNumeroReleve() {
         // Récupérer le dernier numéro du jour
         $today = date('Ymd');
-        $query = "SELECT MAX(numero_releve) as lastNumero FROM numero_releves 
+        $query = "SELECT MAX(numero_releve) as \"lastNumero\" FROM numero_releves
                   WHERE numero_releve LIKE :pattern";
         
         $stmt = $this->db->prepare($query);

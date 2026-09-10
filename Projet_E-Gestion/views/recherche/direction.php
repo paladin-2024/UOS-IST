@@ -64,7 +64,7 @@ if ($currentYear) {
 if ($isResponsableSection && !empty($userSections)) {
     // Pour les responsables de section : seulement les enseignants de leurs sections
     $sectionPlaceholders = implode(',', array_fill(0, count($userSections), '?'));
-    $queryEnseignants = 'SELECT DISTINCT a."idAgent", a.noms, g.designation as gradeDesignation,
+    $queryEnseignants = 'SELECT DISTINCT a."idAgent", a.noms, g.designation as "gradeDesignation",
                                 STRING_AGG(DISTINCT s."designationSection", \', \') as sections_list
                          FROM agent a
                          LEFT JOIN grade g ON a.grade_id = g.idgrade
@@ -87,7 +87,7 @@ if ($isResponsableSection && !empty($userSections)) {
     
 } else {
     // Pour les administrateurs : tous les enseignants
-    $queryEnseignants = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+    $queryEnseignants = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\"
                          FROM agent a 
                          LEFT JOIN grade g ON a.grade_id = g.idgrade 
                          WHERE a.type_agent = 'Enseignant' ";

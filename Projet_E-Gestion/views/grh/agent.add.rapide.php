@@ -30,9 +30,9 @@ $filterAccess = isset($_GET['filter_access']) ? $_GET['filter_access'] : '';
 
 // Requête pour récupérer les agents avec informations d'accès utilisateur
 $sql = "SELECT a.*,
-s.designation as designationStructure,
-srv.designation as designationService,
-g.designation as gradeDesignation,
+s.designation as \"designationStructure\",
+srv.designation as \"designationService\",
+g.designation as \"gradeDesignation\",
 u.\"idUser\",
 u.\"loginUser\",
 u.\"etatUser\",

@@ -38,7 +38,7 @@ class BibliothequeNumerique {
 
     // Récupérer les travaux avec filtres
     public function getTravaux($search = '', $filters = []) {
-        $query = "SELECT t.*, d.designationDepartement, s.designation as designationSpecialisation,
+        $query = "SELECT t.*, d.designationDepartement, s.designation as \"designationSpecialisation\",
                  (SELECT COUNT(*) FROM consultations WHERE travail_id = t.id) as nb_consultations
                  FROM travaux_scientifiques t
                  LEFT JOIN section d ON t.departement_id = d.idsection

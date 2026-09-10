@@ -1356,7 +1356,7 @@ public function getCoursBySemestre($etudiantId) {
                 $montantTotal = $affectation['montant_specifique'] > 0 ? $affectation['montant_specifique'] : $affectation['montant_frais'];
                 
                 // Récupérer les paiements pour cette affectation
-                $query = "SELECT COALESCE(SUM(montant), 0) as totalPaye 
+                $query = "SELECT COALESCE(SUM(montant), 0) as \"totalPaye\"
                           FROM paiements_frais
                           WHERE affectation_id = :affectationId AND matricule_etudiant = :matricule";
                 $stmt = $this->db->prepare($query);
@@ -1449,7 +1449,7 @@ public function getCoursBySemestre($etudiantId) {
                 $montantTotal = $affectation['montant_specifique'] > 0 ? $affectation['montant_specifique'] : $affectation['montant_frais'];
                 
                 // Récupérer les paiements pour cette affectation
-                $query = "SELECT COALESCE(SUM(montant), 0) as totalPaye 
+                $query = "SELECT COALESCE(SUM(montant), 0) as \"totalPaye\"
                           FROM paiements_frais
                           WHERE affectation_id = :affectationId AND matricule_etudiant = :matricule";
                 $stmt = $this->db->prepare($query);
@@ -1538,7 +1538,7 @@ public function getCoursBySemestre($etudiantId) {
                 $montantTotal = $affectation['montant_specifique'] > 0 ? $affectation['montant_specifique'] : $affectation['montant_frais'];
                 
                 // Récupérer les paiements pour cette affectation
-                $query = "SELECT COALESCE(SUM(montant), 0) as totalPaye 
+                $query = "SELECT COALESCE(SUM(montant), 0) as \"totalPaye\"
                           FROM paiements_frais
                           WHERE affectation_id = :affectationId AND matricule_etudiant = :matricule";
                 $stmt = $this->db->prepare($query);
@@ -1638,7 +1638,7 @@ public function getCoursBySemestre($etudiantId) {
                 $montantTotal = $affectation['montant_specifique'] > 0 ? $affectation['montant_specifique'] : $affectation['montant_frais'];
                 
                 // Récupérer les paiements pour cette affectation
-                $query = "SELECT COALESCE(SUM(montant), 0) as totalPaye 
+                $query = "SELECT COALESCE(SUM(montant), 0) as \"totalPaye\"
                           FROM paiements_frais
                           WHERE affectation_id = :affectationId AND matricule_etudiant = :matricule";
                 $stmt = $this->db->prepare($query);
@@ -1724,7 +1724,7 @@ public function getCoursBySemestre($etudiantId) {
                 
                 $montantTotal = $affectation['montant_specifique'] > 0 ? $affectation['montant_specifique'] : $affectation['montant_frais'];
                 
-                $query = "SELECT COALESCE(SUM(montant), 0) as totalPaye 
+                $query = "SELECT COALESCE(SUM(montant), 0) as \"totalPaye\"
                           FROM paiements_frais
                           WHERE affectation_id = :affectationId AND matricule_etudiant = :matricule";
                 $stmt = $this->db->prepare($query);
@@ -1806,7 +1806,7 @@ public function getCoursBySemestre($etudiantId) {
                 $montantTotal = $affectation['montant_specifique'] > 0 ? $affectation['montant_specifique'] : $affectation['montant_frais'];
                 
                 // Récupérer les paiements pour cette affectation
-                $query = "SELECT COALESCE(SUM(montant), 0) as totalPaye 
+                $query = "SELECT COALESCE(SUM(montant), 0) as \"totalPaye\"
                           FROM paiements_frais
                           WHERE affectation_id = :affectationId AND matricule_etudiant = :matricule";
                 $stmt = $this->db->prepare($query);

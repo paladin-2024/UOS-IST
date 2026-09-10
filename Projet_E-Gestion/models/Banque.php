@@ -141,7 +141,7 @@ public function updateBankBalance($bankId, $amount)
 }
 public function getBanksById($bankId)
 {
-    $query = "SELECT c.numeroCompte as numeroCompte,c.intituleCompte as designation FROM banque as b INNER JOIN compte as c ON b.Compte_idCompte=c.idCompte WHERE idBanque = :bankId";
+    $query = "SELECT c.numero_compte as \"numeroCompte\", c.intitule_compte as \"designation\" FROM banque as b INNER JOIN compte_bancaire as c ON b.id_banque = c.id_banque WHERE b.id_banque = :bankId";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':bankId', $bankId, PDO::PARAM_INT);
     $stmt->execute();

@@ -61,7 +61,7 @@ try {
     $sqlEtudiantsProf = '
         SELECT
             a."idAgent",
-            a.noms as nomDirecteur,
+            a.noms as "nomDirecteur",
             a.email,
             g.designation as grade,
             sp.designation as specialisation,

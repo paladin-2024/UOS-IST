@@ -154,7 +154,7 @@ if ($selectedSection > 0) {
     if ($hasFullAccess) {
         // Admin - tous les enseignants
         $queryEnseignants = "
-            SELECT a.*, g.designation as gradeDesignation, s.designation as serviceDesignation
+            SELECT a.*, g.designation as \"gradeDesignation\", s.designation as \"serviceDesignation\"
             FROM agent a
             LEFT JOIN grade g ON a.grade_id = g.idgrade
             LEFT JOIN service s ON a.\"idService\" = s.idservice
@@ -180,7 +180,7 @@ if ($selectedSection > 0) {
         // Responsable de section - uniquement les enseignants affectés aux sections où il a des droits
         $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
         $queryEnseignants = "
-            SELECT DISTINCT a.*, g.designation as gradeDesignation, s.designation as serviceDesignation
+            SELECT DISTINCT a.*, g.designation as \"gradeDesignation\", s.designation as \"serviceDesignation\"
             FROM agent a
             LEFT JOIN grade g ON a.grade_id = g.idgrade
             LEFT JOIN service s ON a.\"idService\" = s.idservice

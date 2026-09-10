@@ -38,7 +38,7 @@ if (!$ecue_info) {
 }
 
 // Récupérer la session
-$query_session = "SELECT \"designSession\", description as descSession FROM session WHERE idsession = :idSession";
+$query_session = "SELECT \"designSession\", description as \"descSession\" FROM session WHERE idsession = :idSession";
 $stmt_session = $conn->prepare($query_session);
 $stmt_session->bindParam(':idSession', $idSession);
 $stmt_session->execute();
@@ -63,7 +63,7 @@ if (!$annee) {
 $query_recours = "
     SELECT r.id_recours, r.matricule, e.noms as nom_etudiant, p.\"designationPromotion\",
            ec.\"designationECUE\", u.\"designationUE\", r.motif, r.date_creation, r.statut,
-           s.\"designSession\", r.description, s.description as descSession
+           s.\"designSession\", r.description, s.description as \"descSession\"
     FROM recours r
     JOIN etudiant e ON r.matricule = e.matricule
     JOIN promotion p ON e.promotion_idpromotion = p.idpromotion

@@ -338,7 +338,7 @@ class Projet
 
     public function getTotalDocumentsByProject($projectId) {
         $stmt = $this->db->prepare("
-            SELECT COUNT(*) as totalDocuments
+            SELECT COUNT(*) as \"totalDocuments\"
             FROM doc_activite da
             INNER JOIN activite_projet ap ON da.\"Activite_projet_idActivite_projet\" = ap.\"idActivite_projet\"
             WHERE ap.\"Projet_idProjet\" = :projectId

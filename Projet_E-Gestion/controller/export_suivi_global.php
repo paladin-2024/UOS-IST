@@ -109,9 +109,9 @@ function getStatistiquesAvancement($pdo, $promotionId, $semestreId, $anneeAcadId
     $query = "SELECT DISTINCT 
               e.\"idECUE\",
               e.\"designationECUE\",
-              e.CMI as volumeHoraireCM,
-              e.TD as volumeHoraireTD,
-              e.TP as volumeHoraireTP,
+              e.CMI as \"volumeHoraireCM\",
+              e.TD as \"volumeHoraireTD\",
+              e.TP as \"volumeHoraireTP\",
               u.\"designationUE\",
               s.\"numeroSemestre\",
               s.idsemestre

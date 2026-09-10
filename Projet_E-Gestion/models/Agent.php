@@ -14,14 +14,14 @@ class Agent
     {
         $query = "SELECT
             a.*,
-            str.designation as designationStructure,
+            str.designation as \"designationStructure\",
             str.\"idStructure\" as \"idStructure\",
-            g.designation as gradeDesignation,
-            s.designation as serviceDesignation,
+            g.designation as \"gradeDesignation\",
+            s.designation as \"serviceDesignation\",
             s.\"idService\" as \"idService\",
-            (SELECT COUNT(*) FROM dossier_famille WHERE \"Agent_idAgent\" = a.\"idAgent\") as totalFamilyMembers,
-            (SELECT COUNT(*) FROM contrat_agent WHERE \"Agent_idAgent\" = a.\"idAgent\") as totalContracts,
-            (SELECT COUNT(*) FROM document_agent WHERE \"Agent_idAgent\" = a.\"idAgent\") as totalDocuments
+            (SELECT COUNT(*) FROM dossier_famille WHERE \"Agent_idAgent\" = a.\"idAgent\") as \"totalFamilyMembers\",
+            (SELECT COUNT(*) FROM contrat_agent WHERE \"Agent_idAgent\" = a.\"idAgent\") as \"totalContracts\",
+            (SELECT COUNT(*) FROM document_agent WHERE \"Agent_idAgent\" = a.\"idAgent\") as \"totalDocuments\"
         FROM agent AS a
         INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
@@ -151,8 +151,8 @@ class Agent
         public function getAgentById($idAgent)
         {
             $query = "SELECT a.\"idAgent\", a.noms, a.type_agent as type_agent_agent, a.grade_id, a.telephone, a.email,
-            g.designation as gradeDesignation
-            FROM agent a 
+            g.designation as \"gradeDesignation\"
+            FROM agent a
             LEFT JOIN grade g ON a.grade_id = g.idgrade
             WHERE a.\"idAgent\" = :idAgent";
             $stmt = $this->db->prepare($query);
@@ -668,10 +668,10 @@ class Agent
     {
         $query = "SELECT
             a.*,
-            str.designation as designationStructure,
+            str.designation as \"designationStructure\",
             str.\"idStructure\" as \"idStructure\",
-            g.designation as gradeDesignation,
-            s.designation as serviceDesignation,
+            g.designation as \"gradeDesignation\",
+            s.designation as \"serviceDesignation\",
             s.\"idService\" as \"idService\"
         FROM agent AS a
         INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
@@ -705,10 +705,10 @@ class Agent
         // Première requête : récupérer tous les agents du type demandé avec diagnostic
         $query = "SELECT
             a.*,
-            str.designation as designationStructure,
+            str.designation as \"designationStructure\",
             str.\"idStructure\" as \"idStructure\",
-            g.designation as gradeDesignation,
-            s.designation as serviceDesignation,
+            g.designation as \"gradeDesignation\",
+            s.designation as \"serviceDesignation\",
             CASE 
                 WHEN str.\"idStructure\" IS NULL THEN 'Structure manquante'
                 WHEN g.idgrade IS NULL THEN 'Grade manquant'
@@ -802,10 +802,10 @@ class Agent
     {
         $query = "SELECT
             a.*,
-            str.designation as designationStructure,
+            str.designation as \"designationStructure\",
             str.\"idStructure\" as \"idStructure\",
-            g.designation as gradeDesignation,
-            s.designation as serviceDesignation
+            g.designation as \"gradeDesignation\",
+            s.designation as \"serviceDesignation\"
         FROM agent AS a
         INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
@@ -837,10 +837,10 @@ class Agent
     {
         $query = "SELECT
             a.*,
-            str.designation as designationStructure,
+            str.designation as \"designationStructure\",
             str.\"idStructure\" as \"idStructure\",
-            g.designation as gradeDesignation,
-            s.designation as serviceDesignation
+            g.designation as \"gradeDesignation\",
+            s.designation as \"serviceDesignation\"
         FROM agent AS a
         INNER JOIN structure AS str ON a.\"idStructure\" = str.\"idStructure\"
         LEFT JOIN grade AS g ON a.grade_id = g.idgrade
@@ -1136,9 +1136,9 @@ public function checkCodeExists($code) {
 public function getAgentByCode($code) {
     try {
         $query = "SELECT a.*, 
-                 str.designation as designationStructure,
-                 g.designation as gradeDesignation,
-                 s.designation as serviceDesignation,
+                 str.designation as \"designationStructure\",
+                 g.designation as \"gradeDesignation\",
+                 s.designation as \"serviceDesignation\",
                  ai.direction, ai.division, ai.decision_grade, ai.notification_grade,
                  ti.specialisation, ti.domaine_recherche,
                  ri.unite_recherche, ri.projet_recherche
@@ -1171,9 +1171,9 @@ public function getAgentByCode($code) {
 public function getAgentByMatricule($matricule) {
     try {
         $query = "SELECT a.*,
-                 str.designation as designationStructure,
-                 g.designation as gradeDesignation,
-                 s.designation as serviceDesignation,
+                 str.designation as \"designationStructure\",
+                 g.designation as \"gradeDesignation\",
+                 s.designation as \"serviceDesignation\",
                  ai.direction, ai.division, ai.decision_grade, ai.notification_grade,
                  ti.specialisation, ti.domaine_recherche,
                  ri.unite_recherche, ri.projet_recherche
@@ -1206,10 +1206,10 @@ public function getAgentByMatricule($matricule) {
 public function searchAgentsByName($searchTerm, $limit = 100) {
     try {
         $query = "SELECT a.*,
-                 str.designation as designationStructure,
+                 str.designation as \"designationStructure\",
                  str.\"idStructure\" as \"idStructure\",
-                 g.designation as gradeDesignation,
-                 s.designation as serviceDesignation,
+                 g.designation as \"gradeDesignation\",
+                 s.designation as \"serviceDesignation\",
                  ai.direction, ai.division, ai.decision_grade, ai.notification_grade,
                  ti.specialisation, ti.domaine_recherche,
                  ri.unite_recherche, ri.projet_recherche
@@ -1267,7 +1267,7 @@ public function getFormationsForAgent($idAgent) {
  */
 public function getGradeHistoryForAgent($idAgent) {
     try {
-        $query = "SELECT hg.*, g.designation as gradeDesignation 
+        $query = "SELECT hg.*, g.designation as \"gradeDesignation\"
                  FROM historique_grade hg
                  INNER JOIN grade g ON hg.idgrade = g.idgrade
                  WHERE hg.\"idAgent\" = :idAgent 
@@ -1609,8 +1609,8 @@ public function getFilteredAgents($search = '', $typeAgent = '', $gradeId = 0, $
     $conditions = [];
     $params = [];
     
-    $query = "SELECT a.*, s.designation as designationStructure 
-              FROM agent a 
+    $query = "SELECT a.*, s.designation as \"designationStructure\"
+              FROM agent a
               LEFT JOIN structure s ON a.\"idStructure\" = s.idStructure";
     
     // Ajouter les conditions de filtrage
@@ -1714,7 +1714,7 @@ public function getAgentCountsByGrade() {
  * @return array Liste des agents récemment ajoutés
  */
 public function getRecentlyAddedAgents($limit = 5) {
-    $query = "SELECT a.*, s.designation as structureName 
+    $query = "SELECT a.*, s.designation as \"structureName\"
               FROM agent a
               LEFT JOIN structure s ON a.\"idStructure\" = s.\"idStructure\"
               ORDER BY a.\"dateEnregistrement\" DESC 

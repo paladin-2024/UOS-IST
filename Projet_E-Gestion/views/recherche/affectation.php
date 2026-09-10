@@ -179,7 +179,7 @@ if ($hasFullAccess) {
 // Récupérer la liste des enseignants pour les select directeur/encadreur (filtrés selon les sections autorisées)
 if ($hasFullAccess) {
     // Admin - tous les enseignants
-    $query = "SELECT a.*, g.designation as gradeDesignation
+    $query = "SELECT a.*, g.designation as \"gradeDesignation\"
               FROM agent a
               LEFT JOIN grade g ON a.grade_id = g.idgrade
               WHERE a.type_agent = 'Enseignant'
@@ -190,7 +190,7 @@ if ($hasFullAccess) {
 } else {
     // Responsable de section - seulement les enseignants de ses sections
     $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
-    $query = "SELECT DISTINCT a.*, g.designation as gradeDesignation
+    $query = "SELECT DISTINCT a.*, g.designation as \"gradeDesignation\"
               FROM agent a
               LEFT JOIN grade g ON a.grade_id = g.idgrade
               LEFT JOIN agent_section ag_s ON ag_s.\"idAgent\" = a.\"idAgent\"

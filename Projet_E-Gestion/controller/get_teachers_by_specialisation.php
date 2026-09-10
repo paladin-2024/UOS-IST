@@ -13,7 +13,7 @@ $idSpecialisation = intval($_GET['idSpecialisation']);
 $db = Connexion::getInstance()->getPDO();
 
 try {
-    $query = "SELECT es.id as \"idAffectation\", a.noms, g.designation as gradeDesignation, 
+    $query = "SELECT es.id as \"idAffectation\", a.noms, g.designation as \"gradeDesignation\",
                      es.\"dateAffectation\"
               FROM enseignant_specialisation es
               JOIN agent a ON es.\"idAgent\" = a.\"idAgent\"

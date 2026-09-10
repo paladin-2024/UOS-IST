@@ -310,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
                          
                          // Get new promotion designation
                          $stmtNewPromo = $connexion->prepare("
-                             SELECT p.\"designationPromotion\", aa.designation as anneeAcad
+                             SELECT p.\"designationPromotion\", aa.designation as \"anneeAcad\"
                              FROM promotion p
                              JOIN annee_acad aa ON p.annee_acad_idannee_acad = aa.idannee_acad
                              WHERE p.idpromotion = ?

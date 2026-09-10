@@ -105,7 +105,7 @@ if (!$hasFullAccess) {
 if ($hasFullAccess) {
     // Admin - toutes les sections de l'année sélectionnée
     $stmt = $db->prepare("
-        SELECT s.idsection, s.\"designationSection\", s.\"dateCreation\", s.\"idAnnee\", a.designation as anneeDesignation
+        SELECT s.idsection, s.\"designationSection\", s.\"dateCreation\", s.\"idAnnee\", a.designation as \"anneeDesignation\"
         FROM section s
         LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
         WHERE a.idannee_acad = ?
@@ -120,7 +120,7 @@ if ($hasFullAccess) {
     } else {
         $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
         $stmt = $db->prepare("
-            SELECT s.idsection, s.\"designationSection\", s.\"dateCreation\", s.\"idAnnee\", a.designation as anneeDesignation
+            SELECT s.idsection, s.\"designationSection\", s.\"dateCreation\", s.\"idAnnee\", a.designation as \"anneeDesignation\"
             FROM section s
             LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
             WHERE s.idsection IN ($sectionsParams) AND a.idannee_acad = ?
@@ -143,7 +143,7 @@ if ($hasFullAccess) {
     // Admin - toutes les orientations
     $stmt = $db->prepare("
         SELECT o.idorientation, o.\"designationOrientation\", o.\"dateCreation\", 
-               s.idsection, s.\"designationSection\", s.\"idAnnee\", a.designation as anneeDesignation 
+               s.idsection, s.\"designationSection\", s.\"idAnnee\", a.designation as \"anneeDesignation\" 
         FROM orientation o
         JOIN section s ON o.section_idsection = s.idsection
         LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
@@ -160,7 +160,7 @@ if ($hasFullAccess) {
         $sectionsParams = str_repeat('?,', count($userSections) - 1) . '?';
         $stmt = $db->prepare("
             SELECT o.idorientation, o.\"designationOrientation\", o.\"dateCreation\", 
-                   s.idsection, s.\"designationSection\", s.\"idAnnee\", a.designation as anneeDesignation 
+                   s.idsection, s.\"designationSection\", s.\"idAnnee\", a.designation as \"anneeDesignation\" 
             FROM orientation o
             JOIN section s ON o.section_idsection = s.idsection
             LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
@@ -461,7 +461,7 @@ foreach ($researchUnits as $unit) {
                                         foreach ($researchUnits as $unit) {
                                             // Récupérer les sections associées à cette unité de recherche
                                             $stmtSections = $db->prepare("
-                                                SELECT s.idsection, s.\"designationSection\", a.designation as anneeDesignation
+                                                SELECT s.idsection, s.\"designationSection\", a.designation as \"anneeDesignation\"
                                                 FROM unite_recherche_section urs
                                                 JOIN section s ON urs.idsection = s.idsection
                                                 LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad
