@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/config/Connexion.php';
 
 // Vérifier si l'utilisateur est connecté et est un étudiant
 if (!isset($_SESSION['student_id']) || !isset($_SESSION['student_matricule'])) {
-    echo "<script src='../assets/js/sweetalert.min.js'></script>";
+    echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -38,7 +38,7 @@ $stmtChef->execute();
 $chefPromotion = $stmtChef->fetch(PDO::FETCH_ASSOC);
 
 if (!$chefPromotion) {
-    echo "<script src='../assets/js/sweetalert.min.js'></script>";
+    echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -245,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtInsert->bindParam(':idUser', $_SESSION['student_id']);
 
         if ($stmtInsert->execute()) {
-            echo "<script src='../assets/js/sweetalert.min.js'></script>";
+            echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -262,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
     } catch (Exception $e) {
-        echo "<script src='../assets/js/sweetalert.min.js'></script>";
+        echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
@@ -287,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 }
 
 // Si ce n'est pas une requête POST, rediriger vers la page étudiant
-echo "<script src='../assets/js/sweetalert.min.js'></script>";
+echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
 echo "<script>
     document.addEventListener('DOMContentLoaded', function() {
         Swal.fire({
