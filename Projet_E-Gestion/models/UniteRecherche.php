@@ -278,7 +278,7 @@ class UniteRecherche
 // Récupérer les enseignants pour l'exportation Excel
 public function getTeachersForExport($idUniteRecherche = 'all', $idSection = 'all')
 {
-    $query = "SELECT a.*, g.designation as gradeDesignation, s.designation as serviceDesignation,
+    $query = "SELECT a.*, g.designation as \"gradeDesignation\", s.designation as \"serviceDesignation\",
               ur.idunite_recherche, ur.\"designation_UR\", 
               sec.idsection, sec.\"designationSection\",
               sp.\"idSpecialisation\", sp.designation, es.\"dateAffectation\"

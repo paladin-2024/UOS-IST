@@ -40,7 +40,7 @@ $isAdmin = isset($_SESSION['idRole']) && $_SESSION['idRole'] == 1;
 $agentId = $agent->getAgentIdByUserId($userId);
 
 // Récupérer les informations de la délibération
-$delib = $deliberation->getDeliberationById($deliberationId);
+$delib = $deliberation->getDeliberationInfo($deliberationId);
 
 if (!$delib) {
     header('Content-Type: application/json');

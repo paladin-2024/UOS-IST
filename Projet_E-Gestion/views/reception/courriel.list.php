@@ -49,22 +49,28 @@ $emails = $structureModel->getEmailsByUserAccess($userId,$searchName,$startDate,
                                     <th>Provenance</th>
                                     <th>Dépositaire</th>
                                     <th>Objet</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
+                                <?php
                                 $hasResults = false;
                                 foreach ($emails as $email) {
                                     $dateArrive = date('d/m/Y', strtotime($email['dateArrive']));
                                     $dateEnregistrement = date('d/m/Y H:i', strtotime($email['dateEnregistrement']));
                                     $hasResults = true;
+                                    $editUrl = "index.php?view=reception/courriel.edit&id=" . (int) $email['idcouriels_recu'];
+                                    $comentUrl = "index.php?view=reception/courriel.coment&id=" . (int) $email['idcouriels_recu'];
                                     echo "
                                         <tr>
                                             <td>{$dateEnregistrement}</td>
                                             <td>{$email['provenance']}</td>
                                             <td>{$email['depositaire']}</td>
                                             <td>{$email['objet']}</td>
-                                            
+                                            <td>
+                                                <a href='{$editUrl}' class='btn btn-primary btn-sm'>Modifier</a>
+                                                <a href='{$comentUrl}' class='btn btn-outline-secondary btn-sm'>Commenter</a>
+                                            </td>
                                         </tr>
                                     ";
                                 }

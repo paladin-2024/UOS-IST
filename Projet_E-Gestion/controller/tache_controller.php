@@ -5,7 +5,7 @@ require_once dirname(__DIR__) . '/config/Connexion.php';
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
     // Rediriger vers la page de connexion
-    header('Location: ../index.php?view=login');
+    header('Location: ../index.php?view=accueil');
     exit();
 }
 

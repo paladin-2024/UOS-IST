@@ -675,8 +675,8 @@ class Structure
     public function getInvoicesByUserAccess($userId, $structureId, $search = '')
     {
         $query = "
-            SELECT fc.idFacture_client AS idInvoice, fc.numeroFacture, fc.dateFacture, fc.montant, 
-                fc.statut, fc.Client_idClient, c.noms AS clientName, s.designation AS structureName, c.\"Structure_idStructure\",fc.motif
+            SELECT fc.idFacture_client AS \"idInvoice\", fc.numeroFacture, fc.dateFacture, fc.montant,
+                fc.statut, fc.Client_idClient, c.noms AS \"clientName\", s.designation AS \"structureName\", c.\"Structure_idStructure\",fc.motif
             FROM facture_client fc
             INNER JOIN client c ON fc.Client_idClient = c.idClient
             INNER JOIN structure s ON c.\"Structure_idStructure\" = s.\"idStructure\"
@@ -707,8 +707,8 @@ class Structure
     public function getInvoicesByUserAccess2($userId,$structureId, $searchName = '', $startDate = '', $endDate = '')
 {
     $query = "
-        SELECT fc.idFacture_client AS idInvoice, fc.numeroFacture, fc.dateFacture, fc.montant, 
-            fc.statut, fc.Client_idClient, c.noms AS clientName, s.designation AS structureName
+        SELECT fc.idFacture_client AS \"idInvoice\", fc.numeroFacture, fc.dateFacture, fc.montant,
+            fc.statut, fc.Client_idClient, c.noms AS \"clientName\", s.designation AS \"structureName\"
         FROM facture_client fc
         INNER JOIN client c ON fc.Client_idClient = c.idClient
         INNER JOIN structure s ON c.\"Structure_idStructure\" = s.\"idStructure\"
@@ -864,9 +864,9 @@ class Structure
     public function getSupplierInvoicesByUserAccess($userId, $structureId, $search = '')
 {
     $query = "
-        SELECT ff.idFacture_fournisseur AS idInvoice, ff.numeroFacture, ff.dateFacture, ff.montant, 
-               ff.statut, ff.Fournisseur_idFournisseur, f.nom AS fournisseurName, 
-               s.designation AS structureName, f.\"Structure_idStructure\"
+        SELECT ff.idFacture_fournisseur AS \"idInvoice\", ff.numeroFacture, ff.dateFacture, ff.montant,
+               ff.statut, ff.Fournisseur_idFournisseur, f.nom AS \"fournisseurName\",
+               s.designation AS \"structureName\", f.\"Structure_idStructure\"
         FROM facture_fournisseur ff
         INNER JOIN fournisseur f ON ff.Fournisseur_idFournisseur = f.idFournisseur
         INNER JOIN structure s ON f.\"Structure_idStructure\" = s.\"idStructure\"
@@ -896,9 +896,9 @@ class Structure
 public function getSupplierInvoicesByUserAccess2($userId, $structureId, $searchName = '', $startDate = '', $endDate = '')
 {
     $query = "
-        SELECT ff.idFacture_fournisseur AS idInvoice, ff.numeroFacture, ff.dateFacture, ff.montant, 
-               ff.statut, ff.Fournisseur_idFournisseur, f.nom AS fournisseurName, 
-               s.designation AS structureName, f.\"Structure_idStructure\"
+        SELECT ff.idFacture_fournisseur AS \"idInvoice\", ff.numeroFacture, ff.dateFacture, ff.montant,
+               ff.statut, ff.Fournisseur_idFournisseur, f.nom AS \"fournisseurName\",
+               s.designation AS \"structureName\", f.\"Structure_idStructure\"
         FROM facture_fournisseur ff
         INNER JOIN fournisseur f ON ff.Fournisseur_idFournisseur = f.idFournisseur
         INNER JOIN structure s ON f.\"Structure_idStructure\" = s.\"idStructure\"
@@ -986,7 +986,7 @@ public function addPayment($datePaiement, $montant, $libelle, $depositaire, $use
 public function getPaymentsByInvoiceId($idInvoice)
 {
     $query = "
-        SELECT pc.*, u.\"nomUser\" AS userName
+        SELECT pc.*, u.\"nomUser\" AS \"userName\"
         FROM paiement_client pc
         INNER JOIN t_users u ON pc.\"idUser\" = u.\"idUser\"
         WHERE pc.Facture_client_idFacture_client = :idInvoice
@@ -1015,7 +1015,7 @@ public function getBanksByUserAccess($userId)
 
 public function getTotalPaymentsForInvoice($idInvoice)
 {
-    $query = "SELECT SUM(montant) as totalPaid FROM paiement_client WHERE Facture_client_idFacture_client = :idInvoice";
+    $query = "SELECT SUM(montant) as \"totalPaid\" FROM paiement_client WHERE Facture_client_idFacture_client = :idInvoice";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idInvoice', $idInvoice, PDO::PARAM_INT);
     $stmt->execute();
@@ -1026,7 +1026,7 @@ public function getTotalPaymentsForInvoice($idInvoice)
 public function getInvoiceById($idInvoice)
 {
     $query = "
-        SELECT fc.montant, fc.statut, fc.numeroFacture, c.noms AS clientName,c.idClient as Client_idClient
+        SELECT fc.montant, fc.statut, fc.numeroFacture, c.noms AS \"clientName\",c.idClient as \"Client_idClient\"
         FROM facture_client fc
         INNER JOIN client c ON fc.Client_idClient = c.idClient
         WHERE fc.idFacture_client = :idInvoice
@@ -1049,7 +1049,7 @@ public function updateInvoiceStatus($idInvoice, $status)
 public function getPaymentById($paymentId)
 {
     $query = "
-        SELECT pc.*, c.\"Structure_idStructure\", u.\"nomUser\" AS userName
+        SELECT pc.*, c.\"Structure_idStructure\", u.\"nomUser\" AS \"userName\"
         FROM paiement_client pc
         INNER JOIN facture_client fc ON pc.Facture_client_idFacture_client = fc.idFacture_client
         INNER JOIN client c ON fc.Client_idClient = c.idClient
@@ -1350,7 +1350,7 @@ public function reverseSupplierInvoiceJournalEntries($idSupplierInvoice,$idUser)
 
 public function getBanksById($bankId)
 {
-    $query = "SELECT c.numeroCompte as numeroCompte,c.intituleCompte as designation FROM banque as b INNER JOIN compte as c ON b.Compte_idCompte=c.idCompte WHERE idBanque = :bankId";
+    $query = "SELECT c.numero_compte as \"numeroCompte\", c.intitule_compte as \"designation\" FROM banque as b INNER JOIN compte_bancaire as c ON b.id_banque = c.id_banque WHERE b.id_banque = :bankId";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':bankId', $bankId, PDO::PARAM_INT);
     $stmt->execute();
@@ -1402,7 +1402,7 @@ public function reversePaymentJournalEntries($idPaiement,$idUser)
 public function getSupplierPaymentsByInvoiceId($idInvoice)
 {
     $query = "
-        SELECT pf.*, u.\"nomUser\" AS userName
+        SELECT pf.*, u.\"nomUser\" AS \"userName\"
         FROM paiement_fournisseur pf
         INNER JOIN t_users u ON pf.\"idUser\" = u.\"idUser\"
         WHERE pf.Facture_fournisseur_idFacture_fournisseur = :idInvoice
@@ -1425,12 +1425,12 @@ public function getSupplierPaymentsById($id) {
             pf.beneficiaire,
             pf.\"modePaiement\",
             pf.\"dateEnregistrement\",
-            f.nom AS fournisseurNom,
-            f.adresse AS fournisseurAdresse,
-            f.email AS fournisseurEmail,
-            f.telephone AS fournisseurTelephone,
+            f.nom AS \"fournisseurNom\",
+            f.adresse AS \"fournisseurAdresse\",
+            f.email AS \"fournisseurEmail\",
+            f.telephone AS \"fournisseurTelephone\",
             ff.numeroFacture,
-            ff.montant AS factureMontant,
+            ff.montant AS \"factureMontant\",
             ff.dateFacture
         FROM 
             paiement_fournisseur pf
@@ -1452,7 +1452,7 @@ public function getSupplierPaymentsById($id) {
 public function getSupplierInvoiceById($idInvoice)
 {
     $query = "
-        SELECT ff.*, f.nom AS fournisseurName
+        SELECT ff.*, f.nom AS \"fournisseurName\"
         FROM facture_fournisseur ff
         INNER JOIN fournisseur f ON ff.Fournisseur_idFournisseur = f.idFournisseur
         WHERE ff.idFacture_fournisseur = :idInvoice
@@ -1466,7 +1466,7 @@ public function getSupplierInvoiceById($idInvoice)
 // Retrieve total payments for a supplier invoice
 public function getTotalSupplierPaymentsForInvoice($idInvoice)
 {
-    $query = "SELECT SUM(montant) as totalPaid FROM paiement_fournisseur WHERE Facture_fournisseur_idFacture_fournisseur = :idInvoice";
+    $query = "SELECT SUM(montant) as \"totalPaid\" FROM paiement_fournisseur WHERE Facture_fournisseur_idFacture_fournisseur = :idInvoice";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':idInvoice', $idInvoice, PDO::PARAM_INT);
     $stmt->execute();
@@ -1525,7 +1525,7 @@ public function getSupplierById($idFournisseur)
 public function getSupplierPaymentById($paymentId)
 {
     $query = "
-        SELECT pc.*, c.\"Structure_idStructure\", u.\"nomUser\" AS userName,c.idFournisseur as Fournisseur_idFournisseur
+        SELECT pc.*, c.\"Structure_idStructure\", u.\"nomUser\" AS \"userName\",c.idFournisseur as \"Fournisseur_idFournisseur\"
         FROM paiement_fournisseur pc
         INNER JOIN facture_fournisseur fc ON pc.Facture_fournisseur_idFacture_fournisseur = fc.idFacture_fournisseur
         INNER JOIN fournisseur c ON fc.Fournisseur_idFournisseur = c.idFournisseur
@@ -1933,7 +1933,7 @@ public function getUserCount()
     public function getGroupesRecetteByUserAccess($userId)
     {
         $query = "
-            SELECT gr.*, brs.designation AS budgetDesignation, brs.solde_b_recette AS budgetSolde
+            SELECT gr.*, brs.designation AS \"budgetDesignation\", brs.solde_b_recette AS \"budgetSolde\"
             FROM groupe_recette_structure gr
             INNER JOIN budget_recette_structure brs ON gr.\"Budget_recette_structure_idBudget_recette_structure\" = brs.idBudget_recette_structure
             INNER JOIN structure s ON brs.\"Structure_idStructure\" = s.\"idStructure\"
@@ -1950,7 +1950,7 @@ public function getUserCount()
     public function getGroupesRecetteByUserAccess2($userId, $search = '', $limit = 20)
     {
         $query = "
-            SELECT gr.*, brs.designation AS budgetDesignation, brs.solde_b_recette AS budgetSolde
+            SELECT gr.*, brs.designation AS \"budgetDesignation\", brs.solde_b_recette AS \"budgetSolde\"
             FROM groupe_recette_structure gr
             INNER JOIN budget_recette_structure brs ON gr.\"Budget_recette_structure_idBudget_recette_structure\" = brs.idBudget_recette_structure
             INNER JOIN structure s ON brs.\"Structure_idStructure\" = s.\"idStructure\"
@@ -2668,7 +2668,7 @@ public function getUserCount()
     public function getEtatDeBesoinsByUser($userId, $search = '', $limit = 20)
     {
         $query = "
-            SELECT edb.*, s.designation AS serviceDesignation
+            SELECT edb.*, s.designation AS \"serviceDesignation\"
             FROM etat_de_besoin edb
             INNER JOIN service s ON edb.\"Service_idService\" = s.\"idService\"
             WHERE edb.\"idUser\" = :userId
@@ -2697,7 +2697,7 @@ public function getUserCount()
     public function getEtatDeBesoinsByUserStructure($userId, $search = '', $limit = 20)
     {
         $query = "
-            SELECT edb.*, s.designation AS serviceDesignation
+            SELECT edb.*, s.designation AS \"serviceDesignation\"
             FROM etat_de_besoin edb
             INNER JOIN service s ON edb.\"Service_idService\" = s.\"idService\"
             INNER JOIN structure st ON st.\"idStructure\"=s.\"Structure_idStructure\"
@@ -2731,15 +2731,15 @@ public function getUserCount()
     $query = "
         SELECT 
             edb.*, 
-            s.designation AS serviceDesignation,
-            d.idDepense_structure as idDepense,
+            s.designation AS \"serviceDesignation\",
+            d.idDepense_structure as \"idDepense\",
             d.montantD,
             d.motifD,
             d.beneficiaire,
-            d.dateoperation as dateDepense,
-            b.designation as bankDesignation,
-            b.numeroCompte as bankNumeroCompte,
-            u.\"nomUser\" as userDepense
+            d.dateoperation as \"dateDepense\",
+            b.designation as \"bankDesignation\",
+            b.numeroCompte as \"bankNumeroCompte\",
+            u.\"nomUser\" as \"userDepense\"
         FROM etat_de_besoin edb
         INNER JOIN service s ON edb.\"Service_idService\" = s.\"idService\"
         INNER JOIN ligne_depense_structure lds ON edb.\"idLigne_depense\" = lds.idligne_depense_structure
@@ -2876,10 +2876,10 @@ public function getUserCount()
     {
         $query = "
             SELECT edb.*, 
-                s.designation AS serviceDesignation, 
-                st.designation AS structureDesignation,
+                s.designation AS \"serviceDesignation\",
+                st.designation AS \"structureDesignation\",
                 st.\"idStructure\",
-                u.\"nomUser\" AS userName
+                u.\"nomUser\" AS \"userName\"
             FROM etat_de_besoin edb
             INNER JOIN service s ON edb.\"Service_idService\" = s.\"idService\"
             INNER JOIN structure st ON s.\"Structure_idStructure\" = st.\"idStructure\"
@@ -3581,7 +3581,7 @@ public function getSortieById($sortieId)
 {
     try {
         $query = "
-            SELECT ms.*, d.*, u.*, c.noms AS clientName
+            SELECT ms.*, d.*, u.*, c.noms AS \"clientName\"
             FROM manifeste_sortie ms
             INNER JOIN depot d ON ms.\"Depot_idDepot\" = d.\"idDepot\"
             INNER JOIN t_users u ON ms.\"idUser\" = u.\"idUser\"
@@ -3712,6 +3712,77 @@ public function deleteEmail($emailId)
         error_log("Error deleting email: " . $e->getMessage());
         return false;
     }
+}
+
+public function getEmailById($emailId)
+{
+    $query = "SELECT * FROM couriels_recu WHERE idcouriels_recu = :emailId";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':emailId', $emailId, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+public function updateEmail($emailId, $provenance, $depositaire, $dateArrive, $serviceId, $userConcerne, $objet, $resume)
+{
+    try {
+        $query = "
+            UPDATE couriels_recu SET
+                \"dateArrive\" = :dateArrive,
+                provenance = :provenance,
+                depositaire = :depositaire,
+                objet = :objet,
+                \"resumeCouriel\" = :resumeCouriel,
+                \"userConcerne\" = :userConcerne,
+                \"Service_idService\" = :serviceId
+            WHERE idcouriels_recu = :emailId
+        ";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':dateArrive', $dateArrive, PDO::PARAM_STR);
+        $stmt->bindParam(':provenance', $provenance, PDO::PARAM_STR);
+        $stmt->bindParam(':depositaire', $depositaire, PDO::PARAM_STR);
+        $stmt->bindParam(':objet', $objet, PDO::PARAM_STR);
+        $stmt->bindParam(':resumeCouriel', $resume, PDO::PARAM_STR);
+        $stmt->bindParam(':userConcerne', $userConcerne, PDO::PARAM_INT);
+        $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+        $stmt->bindParam(':emailId', $emailId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    } catch (Exception $e) {
+        error_log("Error updating email: " . $e->getMessage());
+        throw new Exception("Unable to update email.");
+    }
+}
+
+public function addCourrielComment($emailId, $userId, $commentaire)
+{
+    try {
+        $query = "INSERT INTO couriels_recu_commentaires
+                    (commentaire, couriels_recu_idcouriels_recu, \"idUser\")
+                  VALUES (:commentaire, :emailId, :userId)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':commentaire', $commentaire, PDO::PARAM_STR);
+        $stmt->bindParam(':emailId', $emailId, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    } catch (Exception $e) {
+        error_log("Error adding courriel comment: " . $e->getMessage());
+        throw new Exception("Unable to add comment.");
+    }
+}
+
+public function getCourrielComments($emailId)
+{
+    $query = "SELECT c.*, u.\"nomUser\"
+              FROM couriels_recu_commentaires c
+              JOIN t_users u ON u.\"idUser\" = c.\"idUser\"
+              WHERE c.couriels_recu_idcouriels_recu = :emailId
+              ORDER BY c.\"dateCommentaire\" ASC";
+    $stmt = $this->db->prepare($query);
+    $stmt->bindParam(':emailId', $emailId, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 public function getCategoriesByUserAccess($userId, $search = '', $limit = 20)

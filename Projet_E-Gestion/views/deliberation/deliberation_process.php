@@ -1876,7 +1876,7 @@ function printResultatsFinaux() {
 function genererPV(type) {
     if (!deliberationId) return;
     
-    window.location.href = `controller/generer_pv.php?deliberation=${deliberationId}&type=${type}`;
+    window.location.href = `controller/generer_pv_deliberation.php?deliberation=${deliberationId}&type=${type}`;
 }
 
 // Fonction pour générer un palmarès

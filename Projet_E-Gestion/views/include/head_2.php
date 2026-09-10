@@ -26,8 +26,8 @@ $configUniversitee = $universite->getConfigurationUniversite();
 
 	<!-- Vendor CSS Files -->
 	<link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+	<link rel="stylesheet" href="../assets/css/sweetalert.min.css">
+	<script src="../assets/js/sweetalert.min.js"></script>
 
 	<!-- Template Main CSS File -->
 	<link href="../assets/css/style.css" rel="stylesheet">

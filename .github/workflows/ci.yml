@@ -18,16 +18,77 @@ jobs:
           extensions: pdo_pgsql, pgsql, gd, zip, mbstring, intl
 
       - name: Lint Projet_E-Gestion
-        run: |
-          find Projet_E-Gestion -name "*.php" -print0 \
-            | xargs -0 -P "$(nproc)" -I{} php -l "{}" \
-            | grep -v "No syntax errors detected" && exit 1 || true
+        # Relies on `php -l`'s own exit code, not text-matching its stdout --
+        # a PHP deprecation notice (e.g. an optional-before-required
+        # parameter) prints an extra line before "No syntax errors detected"
+        # but is NOT a syntax error, so the old `grep -v "No syntax errors
+        # detected" && exit 1` here would have failed the build on it. It
+        # never actually did fail (this CI environment's php.ini doesn't
+        # display deprecation notices during `-l`), but that made it a
+        # latent trap for a future runner/PHP-version change, not a real
+        # guarantee -- exit-code-based is correct regardless of what gets
+        # printed.
+        #
+        # Excludes vendor/ trees: the real Composer-managed
+        # Projet_E-Gestion/vendor/ (untracked, built by `composer install`,
+        # may not even exist on a fresh CI checkout) plus two committed,
+        # separately-vendored bundles (assets/html2pdf/vendor/,
+        # assets/vendor/vendor/) -- third-party library source we don't
+        # maintain, so its own deprecation notices aren't ours to fix and
+        # aren't worth linting.
+        run: find Projet_E-Gestion -name "*.php" -not -path "*/vendor/*" -print0 | xargs -0 -P "$(nproc)" php -l
 
       - name: Lint projet_website
+        run: find projet_website -name "*.php" -print0 | xargs -0 -P "$(nproc)" php -l
+
+  migrations-sanity:
+    # Neither this repo's tests nor `php-lint` ever touch deploy/migrations/
+    # -- a broken or non-idempotent migration would only surface the first
+    # time someone actually ran it against the real production DB (per
+    # deploy/README.md: "run each new file there once against the production
+    # DB"). This restores the real base dump into a throwaway Postgres and
+    # applies every migration twice, in the same lexical (date-prefixed)
+    # order deploy/README.md instructs a human to run them in: once to catch
+    # a broken/conflicting migration before it ever reaches prod, and again
+    # to catch one that isn't actually idempotent despite claiming to be.
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U ci"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore base dump
+        env:
+          PGPASSWORD: ci
         run: |
-          find projet_website -name "*.php" -print0 \
-            | xargs -0 -P "$(nproc)" -I{} php -l "{}" \
-            | grep -v "No syntax errors detected" && exit 1 || true
+          createdb -h localhost -U ci istm_app_ci
+          gunzip -c deploy/postgres-init/istm_app.sql.gz \
+            | psql -h localhost -U ci -v ON_ERROR_STOP=1 -d istm_app_ci -q
+
+      - name: Apply every migration twice (errors + idempotency)
+        env:
+          PGPASSWORD: ci
+        run: |
+          set -e
+          for pass in 1 2; do
+            echo "--- pass $pass ---"
+            for f in deploy/migrations/*.sql; do
+              echo "applying $f"
+              psql -h localhost -U ci -v ON_ERROR_STOP=1 -d istm_app_ci -q -f "$f"
+            done
+          done
 
   deploy-config-sanity:
     runs-on: ubuntu-latest

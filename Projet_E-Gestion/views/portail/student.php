@@ -324,7 +324,7 @@ function getGradePrefix($grade) {
                                                         <?php
                                                         // Pour l'encadreur, tous les grades sont autorisés - récupérer tous les agents avec roles d'enseignement
                                                         $db = Connexion::getInstance()->getPDO();
-                                                        $queryEnseignants = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+                                                        $queryEnseignants = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\" 
                                                                             FROM agent a 
                                                                             LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                                             WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')
@@ -2396,13 +2396,13 @@ function getGradePrefix($grade) {
                                         $cycle = isset($_SESSION['cycle']) ? $_SESSION['cycle'] : "";
 
                                         if (isset($estFinalistePremierCycle) && $estFinalistePremierCycle) {
-                                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+                                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\" 
                                                     FROM agent a 
                                                     LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                     WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')
                                                     ORDER BY g.designation, a.noms ASC";
                                         } else {
-                                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+                                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\" 
                                                     FROM agent a 
                                                     LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                     WHERE a.type_agent = 'Enseignant' 
@@ -2446,7 +2446,7 @@ function getGradePrefix($grade) {
                                         <option value="">Sélectionner un encadreur</option>
                                         <?php
                                         // Pour l'encadreur, récupérer tous les agents avec roles d'enseignement
-                                        $queryEnseignantsAll = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+                                        $queryEnseignantsAll = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\" 
                                                             FROM agent a 
                                                             LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                             WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')
@@ -2642,7 +2642,7 @@ function getGradePrefix($grade) {
                                     // Récupération directe des enseignants depuis la base de données
                                     $cycle = isset($_SESSION['cycle']) ? $_SESSION['cycle'] : "";
 
-                                    $query = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+                                    $query = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\" 
                                                 FROM agent a 
                                                 LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                 WHERE a.type_agent = 'Enseignant' 
@@ -2688,7 +2688,7 @@ function getGradePrefix($grade) {
                                     <option value="">Sélectionner un encadreur</option>
                                     <?php
                                     // Récupérer tous les agents avec roles d'enseignement pour l'encadreur
-                                    $queryEnseignantsAll = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+                                    $queryEnseignantsAll = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\" 
                                                         FROM agent a 
                                                         LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                         WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')
@@ -2906,7 +2906,7 @@ function getGradePrefix($grade) {
                             // Récupération directe des enseignants depuis la base de données
                             $cycle = isset($_SESSION['cycle']) ? $_SESSION['cycle'] : "";
 
-                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+                            $query = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\" 
                                         FROM agent a 
                                         LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                         WHERE a.type_agent = 'Enseignant' 
@@ -2953,7 +2953,7 @@ function getGradePrefix($grade) {
                             <option value="">Sélectionner un encadrant</option>
                             <?php
                             // Récupérer tous les agents avec roles d'enseignement pour l'encadreur
-                            $queryEnseignantsAll2 = "SELECT a.\"idAgent\", a.noms, g.designation as gradeDesignation 
+                            $queryEnseignantsAll2 = "SELECT a.\"idAgent\", a.noms, g.designation as \"gradeDesignation\" 
                                                 FROM agent a 
                                                 LEFT JOIN grade g ON a.grade_id = g.idgrade 
                                                 WHERE a.type_agent IN ('Enseignant', 'Assistant', 'Chef de travaux', 'ATER', 'Vacataire')

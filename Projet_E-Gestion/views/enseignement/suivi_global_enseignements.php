@@ -107,7 +107,7 @@ function getSemestresByPromotion($pdo, $promotionId) {
 }
 
 // Fonction pour calculer les statistiques d'avancement
-function getStatistiquesAvancement($pdo, $promotionId, $semestreId = null, $anneeAcadId, $userSections = []) {
+function getStatistiquesAvancement($pdo, $promotionId, $anneeAcadId, $semestreId = null, $userSections = []) {
     // Vérifier d'abord que l'utilisateur a accès à cette promotion
     if (!empty($userSections)) {
         $checkParams = [':promotionId' => $promotionId];
@@ -153,9 +153,9 @@ function getStatistiquesAvancement($pdo, $promotionId, $semestreId = null, $anne
     $query = "SELECT DISTINCT 
               e.\"idECUE\",
               e.\"designationECUE\",
-              e.\"CMI\" as volumeHoraireCM,
-              e.\"TD\" as volumeHoraireTD,
-              e.\"TP\" as volumeHoraireTP,
+              e.\"CMI\" as \"volumeHoraireCM\",
+              e.\"TD\" as \"volumeHoraireTD\",
+              e.\"TP\" as \"volumeHoraireTP\",
               u.\"designationUE\",
               s.\"numeroSemestre\",
               s.idsemestre
@@ -287,9 +287,9 @@ if ($promotionFilter > 0) {
 $statistiques = null;
 if ($promotionFilter > 0) {
     if ($isResponsableSection) {
-        $statistiques = getStatistiquesAvancement($pdo, $promotionFilter, $semestreFilter, $currentYear['idannee_acad'], $userSections);
+        $statistiques = getStatistiquesAvancement($pdo, $promotionFilter, $currentYear['idannee_acad'], $semestreFilter, $userSections);
     } else {
-        $statistiques = getStatistiquesAvancement($pdo, $promotionFilter, $semestreFilter, $currentYear['idannee_acad']);
+        $statistiques = getStatistiquesAvancement($pdo, $promotionFilter, $currentYear['idannee_acad'], $semestreFilter);
     }
 }
 

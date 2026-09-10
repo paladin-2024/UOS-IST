@@ -2420,7 +2420,7 @@ public function affecterEnseignant($idAgent, $idEcue, $poste, $idAnneeAcad) {
 
 
 public function getEnseignantsAffectesByCours($idEcue, $idAnneeAcad) {
-    $query = "SELECT ee.*, a.noms, a.photo, g.designation as gradeDesignation
+    $query = "SELECT ee.*, a.noms, a.photo, g.designation as \"gradeDesignation\"
               FROM enseignant_ecue ee
               JOIN agent a ON ee.\"idAgent\" = a.\"idAgent\"
               LEFT JOIN grade g ON a.grade_id = g.idgrade

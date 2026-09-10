@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/config/Connexion.php';
 
 // Vérifier connexion
 if (!isset($_SESSION['id'])) {
-    header('Location: ../index.php?view=login');
+    header('Location: ../index.php?view=accueil');
     exit;
 }
 

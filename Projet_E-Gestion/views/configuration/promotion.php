@@ -127,7 +127,7 @@ $orientations = $universite->getOrientations('', $anneeActuelle ? $anneeActuelle
                                     <tbody>
                                         <?php
                                         // Construire la requête avec filtres
-                                        $query = "SELECT p.*, o.\"designationOrientation\" as orientationDesignation, aa.designation as anneeDesignation
+                                        $query = "SELECT p.*, o.\"designationOrientation\" as \"orientationDesignation\", aa.designation as \"anneeDesignation\"
                                                    FROM promotion p
                                                    LEFT JOIN orientation o ON p.orientation_idorientation = o.idorientation
                                                    LEFT JOIN section sec ON o.section_idsection = sec.idsection

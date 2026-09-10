@@ -263,7 +263,7 @@ class Frais
         $query = "SELECT 
                 fs.*,
                 s.\"designationSection\",
-                u.\"nomUser\" as nomUtilisateur
+                u.\"nomUser\" as \"nomUtilisateur\"
             FROM frais_soutenance AS fs
             LEFT JOIN t_users AS u ON fs.user_id = u.\"idUser\"
             LEFT JOIN section AS s ON fs.section_id = s.idsection
@@ -293,7 +293,7 @@ class Frais
         $query = "SELECT 
                 fs.*,
                 s.\"designationSection\",
-                u.\"nomUser\" as nomUtilisateur
+                u.\"nomUser\" as \"nomUtilisateur\"
             FROM frais_soutenance AS fs
             LEFT JOIN t_users AS u ON fs.user_id = u.\"idUser\"
             LEFT JOIN section AS s ON fs.section_id = s.idsection
@@ -1474,7 +1474,7 @@ public function getFraisSoutenanceForEtudiant($etudiantId, $anneeAcadId) {
                      fs.montant - COALESCE((SELECT SUM(ps.\"montantPaye\") 
                                           FROM paiement_soutenance ps 
                                           WHERE ps.frais_soutenance_id = fs.idfrais_soutenance 
-                                          AND ps.etudiant_id = :etudiantId), 0) as montantRestant
+                                          AND ps.etudiant_id = :etudiantId), 0) as \"montantRestant\"
               FROM frais_soutenance fs
               WHERE fs.annee_acad_id = :anneeAcadId
               AND (fs.section_id = :sectionId OR fs.section_id IS NULL)

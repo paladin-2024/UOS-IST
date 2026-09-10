@@ -116,19 +116,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($est_echelonnable) {
                         $stmt = $connexion->prepare("
                             INSERT INTO tranches_paiement_config (
-                                frais_id, numero_tranche, designation, pourcentage, 
-                                montant_fixe, est_requis_inscription, est_requis_examens, est_requis_deliberation
+                                frais_id, numero_tranche, designation, pourcentage,
+                                montant_fixe, est_requis_inscription, est_requis_examens, est_requis_deliberation, \"idUser\"
                             ) VALUES (
-                                :frais_id, 1, 'Paiement complet', 100, :montant, 
-                                :est_requis_inscription, :est_requis_examens, :est_requis_deliberation
+                                :frais_id, 1, 'Paiement complet', 100, :montant,
+                                :est_requis_inscription, :est_requis_examens, :est_requis_deliberation, :idUser
                             )
                         ");
-                        
+
                         $stmt->bindParam(':frais_id', $frais_id);
                         $stmt->bindParam(':montant', $montant);
                         $stmt->bindParam(':est_requis_inscription', $est_requis_inscription, PDO::PARAM_INT);
                         $stmt->bindParam(':est_requis_examens', $est_requis_examens, PDO::PARAM_INT);
                         $stmt->bindParam(':est_requis_deliberation', $est_requis_deliberation, PDO::PARAM_INT);
+                        $stmt->bindParam(':idUser', $idUser);
                         $stmt->execute();
                     }
                     
@@ -265,19 +266,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if ($row['nb_tranches'] == 0) {
                             $stmt = $connexion->prepare("
                                 INSERT INTO tranches_paiement_config (
-                                    frais_id, numero_tranche, designation, pourcentage, 
-                                    montant_fixe, est_requis_inscription, est_requis_examens, est_requis_deliberation
+                                    frais_id, numero_tranche, designation, pourcentage,
+                                    montant_fixe, est_requis_inscription, est_requis_examens, est_requis_deliberation, \"idUser\"
                                 ) VALUES (
-                                    :frais_id, 1, 'Paiement complet', 100, :montant, 
-                                    :est_requis_inscription, :est_requis_examens, :est_requis_deliberation
+                                    :frais_id, 1, 'Paiement complet', 100, :montant,
+                                    :est_requis_inscription, :est_requis_examens, :est_requis_deliberation, :idUser
                                 )
                             ");
-                            
+
                             $stmt->bindParam(':frais_id', $id);
                             $stmt->bindParam(':montant', $montant);
                             $stmt->bindParam(':est_requis_inscription', $est_requis_inscription, PDO::PARAM_INT);
                             $stmt->bindParam(':est_requis_examens', $est_requis_examens, PDO::PARAM_INT);
                             $stmt->bindParam(':est_requis_deliberation', $est_requis_deliberation, PDO::PARAM_INT);
+                            $stmt->bindParam(':idUser', $idUser);
                             $stmt->execute();
                         }
                     } else {
@@ -410,16 +412,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     $stmt = $connexion->prepare("
                         INSERT INTO tranches_paiement_config (
-                            frais_id, numero_tranche, designation, pourcentage, 
-                            montant_fixe, date_echeance_fixe, est_requis_inscription, 
-                            est_requis_examens, est_requis_deliberation
+                            frais_id, numero_tranche, designation, pourcentage,
+                            montant_fixe, date_echeance_fixe, est_requis_inscription,
+                            est_requis_examens, est_requis_deliberation, \"idUser\"
                         ) VALUES (
-                            :frais_id, :numero, :designation, :pourcentage, 
-                            :montant, :date_echeance, :requis_inscription, 
-                            :requis_examens, :requis_deliberation
+                            :frais_id, :numero, :designation, :pourcentage,
+                            :montant, :date_echeance, :requis_inscription,
+                            :requis_examens, :requis_deliberation, :idUser
                         )
                     ");
-                    
+
                     $stmt->bindParam(':frais_id', $frais_id);
                     $stmt->bindParam(':numero', $numero);
                     $stmt->bindParam(':designation', $designation);
@@ -429,6 +431,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->bindParam(':requis_inscription', $requis_inscription, PDO::PARAM_INT);
                     $stmt->bindParam(':requis_examens', $requis_examens, PDO::PARAM_INT);
                     $stmt->bindParam(':requis_deliberation', $requis_deliberation, PDO::PARAM_INT);
+                    $stmt->bindParam(':idUser', $idUser);
                     
                     if (!$stmt->execute()) {
                         throw new Exception('Erreur lors de l\'ajout de la tranche #' . $numero);

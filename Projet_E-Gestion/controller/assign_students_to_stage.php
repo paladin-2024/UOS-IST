@@ -7,7 +7,7 @@ require_once '../models/JournalServeur.php';
 // Vérifier l'authentification
 if (!isset($_SESSION['id'])) {
     $_SESSION['error_message'] = "Vous devez être connecté pour effectuer cette action.";
-    header('Location: ../index.php?view=login');
+    header('Location: ../index.php?view=accueil');
     exit;
 }
 

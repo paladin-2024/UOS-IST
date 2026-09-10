@@ -152,7 +152,7 @@ $resultats = $deliberation->getDeliberationResults($deliberationId);
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="controller/generate_pv_deliberation.php?deliberation_id=<?= $deliberationId ?>" target="_blank">
+                                        <a class="dropdown-item" href="controller/generer_pv_deliberation.php?deliberation=<?= $deliberationId ?>" target="_blank">
                                             <i class="bi bi-file-earmark-text me-1"></i> PV de délibération
                                         </a>
                                     </li>

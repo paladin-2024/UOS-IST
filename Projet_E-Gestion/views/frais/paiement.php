@@ -276,10 +276,10 @@ foreach ($sections as $section) {
                                             // Déterminer les champs selon le type de paiement
                                             if ($selectedType == 'academique') {
                                                 $datePaiement = $paiement['datePaiement'];
-                                                $nomEtudiant = $paiement['nom_etudiant'];
-                                                $designationFrais = isset($paiement['designation_frais']) ? $paiement['designation_frais'] : $fraisDetails['designation'];
+                                                $nomEtudiant = $paiement['nomEtudiant'];
+                                                $designationFrais = isset($paiement['fraisDesignation']) ? $paiement['fraisDesignation'] : $fraisDetails['designation'];
                                                 $montantPaye = $paiement['montantPaye'];
-                                                $montantTotal = $paiement['montant_total'];
+                                                $montantTotal = $paiement['montantTotal'];
                                                 $devise = $paiement['devise'];
                                                 $estComplet = $paiement['estComplet'];
                                                 $modePaiement = $paiement['modePaiement'];

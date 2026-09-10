@@ -14,7 +14,7 @@ $anneeAcad = isset($_GET['annee_acad']) ? intval($_GET['annee_acad']) : 0;
 $db = Connexion::getInstance()->getPDO();
 
 try {
-    $query = "SELECT s.*, a.designation as anneeDesignation, a.idannee_acad as idAnnee
+    $query = "SELECT s.*, a.designation as \"anneeDesignation\", a.idannee_acad as \"idAnneeAcad\"
           FROM unite_recherche_section urs
           JOIN section s ON urs.idsection = s.idsection
           LEFT JOIN annee_acad a ON s.\"idAnnee\" = a.idannee_acad

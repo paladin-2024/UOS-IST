@@ -2,7 +2,7 @@
 include "./views/include/header.php";
 
 if (!isset($_SESSION['id'])) {
-    echo "<script>window.location.href='?view=login';</script>";
+    echo "<script>window.location.href='?view=accueil';</script>";
     exit;
 }
 

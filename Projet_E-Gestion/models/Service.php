@@ -14,9 +14,9 @@ class Service
         $query = "SELECT
             s.\"idService\" as \"idService\",
             str.\"idStructure\" as \"idStructure\",
-            s.designation as designationService,
+            s.designation as \"designationService\",
             s.\"Responsable\" as responsable,
-            str.designation as designationStructure
+            str.designation as \"designationStructure\"
         FROM service AS s
         INNER JOIN structure AS str ON s.\"Structure_idStructure\" = str.\"idStructure\"";
 
@@ -72,7 +72,7 @@ class Service
     // Récupérer un service par son ID
     public function getServiceById($idService)
     {
-        $query = "SELECT *,service.designation as designationService FROM service WHERE \"idService\" = :idService";
+        $query = "SELECT *,service.designation as \"designationService\" FROM service WHERE \"idService\" = :idService";
         $stmt = $this->db->prepare($query);
         $stmt->execute(['idService' => $idService]);
         return $stmt->fetch();

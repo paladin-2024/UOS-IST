@@ -14,7 +14,7 @@ if (!isset($_SESSION['id'])) {
             title: 'Accès refusé',
             text: 'Vous devez être connecté pour effectuer cette action.'
         }).then(() => {
-            window.location.href = '../index.php?view=login';
+            window.location.href = '../index.php?view=accueil';
         });
     </script>";
     exit();

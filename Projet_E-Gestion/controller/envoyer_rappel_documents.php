@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 title: 'Erreur',
                 text: 'Tous les champs sont obligatoires.'
             }).then(() => {
-                window.location.href = '../?view=enseignement/suivi_documents_etudiants&promotion=" . $promotionId . "';
+                window.location.href = '../?view=etudiants/suivi_documents_etudiants&promotion=" . $promotionId . "';
             });
         </script>";
         exit();
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     title: 'Information',
                     text: 'Aucun étudiant n\'a de documents manquants ou rejetés.'
                 }).then(() => {
-                    window.location.href = '../?view=enseignement/suivi_documents_etudiants&promotion=" . $promotionId . "';
+                    window.location.href = '../?view=etudiants/suivi_documents_etudiants&promotion=" . $promotionId . "';
                 });
             </script>";
             exit();
@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 title: 'Opération terminée',
                 text: 'Emails envoyés: " . $emailsEnvoyes . " | Emails en erreur: " . $emailsEnErreur . "'
             }).then(() => {
-                window.location.href = '../?view=enseignement/suivi_documents_etudiants&promotion=" . $promotionId . "';
+                window.location.href = '../?view=etudiants/suivi_documents_etudiants&promotion=" . $promotionId . "';
             });
         </script>";
     } catch (PDOException $e) {
@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 title: 'Erreur',
                 text: 'Une erreur est survenue: " . $e->getMessage() . "'
             }).then(() => {
-                window.location.href = '../?view=enseignement/suivi_documents_etudiants&promotion=" . $promotionId . "';
+                window.location.href = '../?view=etudiants/suivi_documents_etudiants&promotion=" . $promotionId . "';
             });
         </script>";
     }
