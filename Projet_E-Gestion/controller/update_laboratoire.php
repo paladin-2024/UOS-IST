@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
     } catch (Exception $e) {
         // Afficher un message d'erreur
-        echo "<script src='../assets/js/sweetalert.min.js'></script>";
+        echo "<body><script src='../assets/js/sweetalert.min.js'></script>";
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({

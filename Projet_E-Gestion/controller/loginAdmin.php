@@ -7,7 +7,7 @@ require_once dirname(__DIR__) . '/models/SuperUser.php';
 require_once dirname(__DIR__) . '/utils/Security.php';
 
 if (!isset($_POST['csrf_token']) || !AppSecurity::verifyCsrfToken($_POST['csrf_token'])) {
-    echo "<script src=\"../assets/js/sweetalert.min.js\"></script>
+    echo "<body><script src=\"../assets/js/sweetalert.min.js\"></script>
     <script>
         Swal.fire({
             icon: 'error',
@@ -54,7 +54,7 @@ if (isset($_POST['con'])) {
         exit;
     } else {
         // En cas d'erreur ou si l'utilisateur est inactif, affichez un message d'alerte avec SweetAlert
-        echo "<script src=\"../assets/js/sweetalert.min.js\"></script>
+        echo "<body><script src=\"../assets/js/sweetalert.min.js\"></script>
         <script>
             Swal.fire({
                 icon: 'error',
