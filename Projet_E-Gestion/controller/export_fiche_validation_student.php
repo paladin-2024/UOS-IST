@@ -37,7 +37,7 @@ $etudiantModel = new Etudiant();
 $feesPaid = $etudiantModel->hasStudentPaidFicheValidationFees($_SESSION['student_id']);
 
 if (!$feesPaid) {
-    echo '<html><body><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script><script>
+    echo '<html><body><script src="../assets/js/sweetalert.min.js"></script><script>
     Swal.fire({icon:"error",title:"Paiement requis",text:"Vous devez payer les frais requis avant de télécharger la fiche de validation."}).then(()=>{window.history.back();});
     </script></body></html>';
     exit();

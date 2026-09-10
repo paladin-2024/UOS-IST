@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header('Location: ../portail/student');
         exit();
     } else {
-        echo "<script src=\"https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js\"></script>
+        echo "<script src=\"../assets/js/sweetalert.min.js\"></script>
         <script>
             Swal.fire({
                 icon: 'error',

@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Vérifier l'authentification
 if (!isset($_SESSION['id'])) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -30,7 +30,7 @@ $idEvaluation = isset($_POST['idevaluation']) ? intval($_POST['idevaluation']) :
 $idECUE = isset($_POST['idECUE']) ? intval($_POST['idECUE']) : 0;
 
 if ($idEvaluation <= 0 || $idECUE <= 0) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -65,7 +65,7 @@ try {
     $evaluation = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$evaluation) {
-        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        echo "<script src='../assets/js/sweetalert.min.js'></script>";
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
@@ -82,7 +82,7 @@ try {
     
     // Vérifier si un fichier a été téléchargé
     if (!isset($_FILES['excelFile']) || $_FILES['excelFile']['error'] !== UPLOAD_ERR_OK) {
-        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        echo "<script src='../assets/js/sweetalert.min.js'></script>";
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
@@ -289,7 +289,7 @@ $anneeAcadId = $anneeAcad ? $anneeAcad['idannee_acad'] : 0;
     }
     
     // Message de succès
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
@@ -317,7 +317,7 @@ $anneeAcadId = $anneeAcad ? $anneeAcad['idannee_acad'] : 0;
     error_log("Erreur lors de l'importation des notes: " . $e->getMessage());
     
     // Afficher un message d'erreur à l'utilisateur
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script src='../assets/js/sweetalert.min.js'></script>";
     echo "<script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
