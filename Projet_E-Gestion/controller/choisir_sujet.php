@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validation des données requises
     if (!$sujetId || !$directeurId || !$etudiantId) {
-        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        echo "<script src='../assets/js/sweetalert.min.js'></script>";
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($sujetExistant) {
             // Vérifier si le sujet existant n'est pas annulé
             if ($sujetExistant['statut_validation'] !== 'Rejeté') {
-                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                echo "<script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Vérification que le directeur et l'encadreur sont différents
         if ($encadreurId && $encadreurId === $directeurId) {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Vérifier si le directeur et l'encadreur existent et sont des enseignants
         $directeur = $agentModel->getAgentById($directeurId);
         if (!$directeur || $directeur['type_agent'] !== 'Enseignant') {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($encadreurId) {
             $encadreur = $agentModel->getAgentById($encadreurId);
             if (!$encadreur || $encadreur['type_agent'] !== 'Enseignant') {
-                echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+                echo "<script src='../assets/js/sweetalert.min.js'></script>";
                 echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $success = $etudiantModel->choisirSujet($sujetId, $etudiantId, $directeurId, $encadreurId);
         
         if ($success) {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 });
             </script>";
         } else {
-            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script src='../assets/js/sweetalert.min.js'></script>";
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </script>";
         }
     } catch (Exception $e) {
-        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        echo "<script src='../assets/js/sweetalert.min.js'></script>";
         echo "<script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
