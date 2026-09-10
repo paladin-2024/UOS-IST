@@ -112,7 +112,32 @@ the comment in `docker-compose.yml`).
   codebase, same `vendor/`, same DB) -- nginx just points two different
   server blocks at two different docroots within it (`/` vs `/dossiers`).
 - UOS is intentionally not part of this deployment -- only ISTM is in scope.
-- This was validated offline (nginx config syntax, the Postgres
-  init/restore script against a real container) but the actual PHP-FPM
-  containers have not been end-to-end tested against a live nginx yet --
-  do a real smoke test (login flows on all 3 subdomains) right after step 6.
+- End-to-end validated live on 2026-09-10 (not just offline anymore): a
+  real code+migration deploy went out (`main` merge -> CI ->
+  `deploy.yml` -> containers rebuilt -> nginx reloaded), confirmed via
+  the actual site responding and a previously-403 route resolving
+  correctly post-deploy.
+
+## Recovering admin access
+
+If nobody has (or remembers) working credentials for the ERP app's admin
+account, the password can be reset directly against the DB -- it's a
+standard bcrypt hash (`password_hash()`/`password_verify()`), not
+recoverable, only resettable:
+
+```bash
+# 1. Generate a hash for a new password (run on the VPS):
+docker exec deploy-gestion-1 php -r "echo password_hash('NEW_PASSWORD_HERE', PASSWORD_DEFAULT), \"\n\";"
+
+# 2. Find the target account's idUser if unsure (default seed admin is idUser=1, loginUser='admin'):
+docker exec -it deploy-postgres-1 psql -U istm -d istm_app -c \
+  'SELECT "idUser", "loginUser", "etatUser" FROM t_users u JOIN t_user_roles ur ON ur."idUser"=u."idUser" AND ur."isPrincipal"=1 WHERE ur."idRole" = 1;'
+
+# 3. Apply the hash from step 1 (paste it in place of the placeholder):
+docker exec -it deploy-postgres-1 psql -U istm -d istm_app -c \
+  "UPDATE t_users SET pw = 'PASTE_HASH_HERE' WHERE \"idUser\" = 1;"
+```
+
+Change the password again from within the app immediately after logging
+in -- anything typed into a chat/terminal session shouldn't be treated as
+a long-term credential.
