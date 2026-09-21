@@ -9,7 +9,7 @@ $user = new User();
 
 // Fonction pour afficher les alertes SweetAlert2
 function showAlert($success, $message) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($success ? 'success' : 'error') . "',
             title: '" . ($success ? 'Succès' : 'Erreur') . "',
