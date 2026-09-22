@@ -66,7 +66,12 @@ try {
         // Créer une dépendance pour chaque promotion et chaque frais
         foreach ($promotionIds as $promotionId) {
             foreach ($fraisIds as $fraisId) {
-                if ($dependanceModel->addDependance($serviceId, $fraisId, $promotionId, null, null, $scope, $ordre, $_SESSION['id'])) {
+                // addDependance() is (serviceId, fraisId, scope, promotionId, cycle,
+                // anneeAcadId, ordre, userId) -- $promotionId/$scope used to be
+                // passed positionally into the scope/anneeAcadId slots, losing the
+                // real promotionId and putting a string where an int column is
+                // expected.
+                if ($dependanceModel->addDependance($serviceId, $fraisId, $scope, $promotionId, null, null, $ordre, $_SESSION['id'])) {
                     $successCount++;
                 } else {
                     $errorCount++;
@@ -76,7 +81,10 @@ try {
     } else {
         // Pour les autres scopes, une dépendance par frais
         foreach ($fraisIds as $fraisId) {
-            if ($dependanceModel->addDependance($serviceId, $fraisId, null, $cycle ?: null, $anneeAcadId ?: null, $scope, $ordre, $_SESSION['id'])) {
+            // Same addDependance() signature note as above -- $scope was being
+            // dropped (passed as null) and $cycle/$anneeAcadId/$scope were each
+            // one slot off from their real parameters.
+            if ($dependanceModel->addDependance($serviceId, $fraisId, $scope, null, $cycle ?: null, $anneeAcadId ?: null, $ordre, $_SESSION['id'])) {
                 $successCount++;
             } else {
                 $errorCount++;
