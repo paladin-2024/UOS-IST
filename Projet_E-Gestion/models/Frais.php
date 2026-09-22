@@ -139,13 +139,22 @@ class Frais
      * @param int $anneeAcadId - ID de l'année académique
      * @return bool - Succès ou échec
      */
-    public function createFrais($designation, $montant, $devise, $description, $estObligatoire, $promotionId, $anneeAcadId)
+    public function createFrais($designation, $montant, $devise, $description, $estObligatoire, $promotionId, $anneeAcadId, $idUser)
     {
-        $query = "INSERT INTO frais (designation, montant, devise, description, \"estObligatoire\", 
-                  \"dateCreation\", promotion_idpromotion, annee_acad_idannee_acad) 
-                  VALUES (:designation, :montant, :devise, :description, :estObligatoire, 
-                  NOW(), :promotionId, :anneeAcadId)";
-        
+        // The `frais` table was restructured to be categorie_id/cycle-scoped,
+        // not promotion-scoped -- promotion_idpromotion and annee_acad_idannee_acad
+        // don't exist anymore (real columns: categorie_id, annee_acad_id, cycle,
+        // est_obligatoire, date_creation, "idUser", the last one required and
+        // camelCase so it needs quoting). $promotionId is kept as a parameter for
+        // backward compatibility with existing callers but is no longer used --
+        // there's no per-promotion scoping in the current schema. Defaults to the
+        // "Frais académiques" category since the current UI has no category
+        // selector; cycle defaults to 'Tous' at the DB level.
+        $query = "INSERT INTO frais (designation, montant, devise, description, est_obligatoire,
+                  date_creation, categorie_id, annee_acad_id, \"idUser\")
+                  VALUES (:designation, :montant, :devise, :description, :estObligatoire,
+                  NOW(), (SELECT id FROM categories_frais WHERE designation = 'Frais académiques' LIMIT 1), :anneeAcadId, :idUser)";
+
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
             'designation' => $designation,
@@ -153,8 +162,8 @@ class Frais
             'devise' => $devise,
             'description' => $description,
             'estObligatoire' => $estObligatoire ? 1 : 0,
-            'promotionId' => $promotionId,
-            'anneeAcadId' => $anneeAcadId
+            'anneeAcadId' => $anneeAcadId,
+            'idUser' => $idUser
         ]);
     }
 
@@ -171,15 +180,17 @@ class Frais
      */
     public function updateFrais($idFrais, $designation, $montant, $devise, $description, $estObligatoire, $promotionId)
     {
-        $query = "UPDATE frais 
-                  SET designation = :designation, 
-                      montant = :montant, 
-                      devise = :devise, 
-                      description = :description, 
-                      \"estObligatoire\" = :estObligatoire, 
-                      promotion_idpromotion = :promotionId 
-                  WHERE idfrais = :idFrais";
-        
+        // Same schema mismatch as createFrais() -- $promotionId kept for
+        // backward compatibility, no longer used (no promotion scoping in the
+        // current schema); "idfrais" was never the real PK column, it's "id".
+        $query = "UPDATE frais
+                  SET designation = :designation,
+                      montant = :montant,
+                      devise = :devise,
+                      description = :description,
+                      est_obligatoire = :estObligatoire
+                  WHERE id = :idFrais";
+
         $stmt = $this->db->prepare($query);
         return $stmt->execute([
             'idFrais' => $idFrais,
@@ -187,8 +198,7 @@ class Frais
             'montant' => $montant,
             'devise' => $devise,
             'description' => $description,
-            'estObligatoire' => $estObligatoire ? 1 : 0,
-            'promotionId' => $promotionId
+            'estObligatoire' => $estObligatoire ? 1 : 0
         ]);
     }
 
@@ -210,7 +220,7 @@ class Frais
             return false;
         }
         
-        $query = "DELETE FROM frais WHERE idfrais = :idFrais";
+        $query = "DELETE FROM frais WHERE id = :idFrais";
         $stmt = $this->db->prepare($query);
         return $stmt->execute(['idFrais' => $idFrais]);
     }

@@ -2687,46 +2687,43 @@ public function getFraisByPromotionAndYear($promotionId, $anneeAcadId) {
     }
 }
 
-public function createFrais($designation, $montant, $devise, $promotionId, $anneeAcadId, $description = '', $estObligatoire = true) {
-    $dateCreation = date('Y-m-d H:i:s');
-    
-    $query = "INSERT INTO frais (designation, montant, devise, description, \"estObligatoire\", \"dateCreation\", promotion_idpromotion, annee_acad_idannee_acad) 
-              VALUES (:designation, :montant, :devise, :description, :estObligatoire, :dateCreation, :promotionId, :anneeAcadId)";
-    
+public function createFrais($designation, $montant, $devise, $promotionId, $anneeAcadId, $description = '', $estObligatoire = true, $idUser = null) {
+    // Same schema mismatch as models/Frais.php::createFrais() -- the `frais`
+    // table is categorie_id/cycle-scoped now, not promotion-scoped.
+    // $promotionId kept for backward compatibility, no longer used.
+    $query = "INSERT INTO frais (designation, montant, devise, description, est_obligatoire, date_creation, categorie_id, annee_acad_id, \"idUser\")
+              VALUES (:designation, :montant, :devise, :description, :estObligatoire, NOW(), (SELECT id FROM categories_frais WHERE designation = 'Frais académiques' LIMIT 1), :anneeAcadId, :idUser)";
+
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':designation', $designation);
     $stmt->bindParam(':montant', $montant);
     $stmt->bindParam(':devise', $devise);
     $stmt->bindParam(':description', $description);
     $stmt->bindParam(':estObligatoire', $estObligatoire, PDO::PARAM_BOOL);
-    $stmt->bindParam(':dateCreation', $dateCreation);
-    $stmt->bindParam(':promotionId', $promotionId);
     $stmt->bindParam(':anneeAcadId', $anneeAcadId);
-    
+    $stmt->bindParam(':idUser', $idUser);
+
     return $stmt->execute();
 }
 
 public function updateFrais($id, $designation, $montant, $devise, $promotionId, $anneeAcadId, $description = '', $estObligatoire = true) {
-    $query = "UPDATE frais 
-              SET designation = :designation, 
-                  montant = :montant, 
-                  devise = :devise, 
-                  description = :description, 
-                  \"estObligatoire\" = :estObligatoire, 
-                  promotion_idpromotion = :promotionId, 
-                  annee_acad_idannee_acad = :anneeAcadId 
-              WHERE idfrais = :id";
-    
+    // $promotionId/$anneeAcadId kept for backward compatibility, no longer used.
+    $query = "UPDATE frais
+              SET designation = :designation,
+                  montant = :montant,
+                  devise = :devise,
+                  description = :description,
+                  est_obligatoire = :estObligatoire
+              WHERE id = :id";
+
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':designation', $designation);
     $stmt->bindParam(':montant', $montant);
     $stmt->bindParam(':devise', $devise);
     $stmt->bindParam(':description', $description);
     $stmt->bindParam(':estObligatoire', $estObligatoire, PDO::PARAM_BOOL);
-    $stmt->bindParam(':promotionId', $promotionId);
-    $stmt->bindParam(':anneeAcadId', $anneeAcadId);
     $stmt->bindParam(':id', $id);
-    
+
     return $stmt->execute();
 }
 
@@ -2736,17 +2733,17 @@ public function deleteFrais($id) {
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':id', $id);
     $stmt->execute();
-    
+
     if ($stmt->fetchColumn() > 0) {
         // Des paiements existent, ne pas supprimer
         return false;
     }
-    
+
     // Aucun paiement associé, procéder à la suppression
-    $query = "DELETE FROM frais WHERE idfrais = :id";
+    $query = "DELETE FROM frais WHERE id = :id";
     $stmt = $this->db->prepare($query);
     $stmt->bindParam(':id', $id);
-    
+
     return $stmt->execute();
 }
 
