@@ -78,7 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             intval($promotionId),
             intval($anneeAcadId),
             $description,
-            $estObligatoire
+            $estObligatoire,
+            $idUser
         );
 
         if ($result) {

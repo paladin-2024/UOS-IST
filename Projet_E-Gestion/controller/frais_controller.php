@@ -275,11 +275,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 
                 // Création du frais académique
-                $result = $universite->createFrais($designation, $montant, $devise, $description, $estObligatoire, $promotionId, $anneeAcadId);
+                $result = $universite->createFrais($designation, $montant, $devise, $description, $estObligatoire, $promotionId, $anneeAcadId, $idUser);
                 $message = $result ? 'Le frais académique a été créé avec succès.' : 'Une erreur est survenue lors de la création du frais académique.';
             } else {
-                // Création du frais de soutenance
-                $result = $universite->createFraisSoutenance($designation, $montant, $devise, $description, $anneeAcadId, $idUser);
+                // Création du frais de soutenance (normally intercepted by the
+                // dedicated type_frais=='soutenance' block earlier in this file;
+                // this is a defensive fallback, kept consistent with it)
+                $sectionId = isset($_POST['section']) ? intval($_POST['section']) : 0;
+                $result = $universite->createFraisSoutenance($designation, $montant, $devise, $description, $anneeAcadId, $sectionId, $estObligatoire, $idUser);
                 $message = $result ? 'Le frais de soutenance a été créé avec succès.' : 'Une erreur est survenue lors de la création du frais de soutenance.';
             }
             break;
@@ -336,8 +339,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $result = $universite->updateFrais($idFrais, $designation, $montant, $devise, $description, $estObligatoire, $promotionId);
                 $message = $result ? 'Le frais académique a été modifié avec succès.' : 'Une erreur est survenue lors de la modification du frais académique.';
             } else {
-                // Modification du frais de soutenance
-                $result = $universite->updateFraisSoutenance($idFrais, $designation, $montant, $devise, $description, $sectionId, $estObligatoire);	
+                // Modification du frais de soutenance ($sectionId was never
+                // read in this branch -- used undefined/null before)
+                $sectionId = isset($_POST['section']) ? intval($_POST['section']) : 0;
+                $result = $universite->updateFraisSoutenance($idFrais, $designation, $montant, $devise, $description, $sectionId, $estObligatoire);
                 $message = $result ? 'Le frais de soutenance a été modifié avec succès.' : 'Une erreur est survenue lors de la modification du frais de soutenance.';
             }
             break;
@@ -456,10 +461,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $estObligatoire = (!empty($obligatoireCell) && (strtolower($obligatoireCell) == 'oui' || $obligatoireCell == '1')) ? 1 : 0;
                         
                         // Créer le frais académique
-                        $result = $universite->createFrais($designation, $montant, $devise, $description, $estObligatoire, $promotionId, $anneeAcadId);
+                        $result = $universite->createFrais($designation, $montant, $devise, $description, $estObligatoire, $promotionId, $anneeAcadId, $idUser);
                     } else {
-                        // Créer le frais de soutenance
-                        $result = $universite->createFraisSoutenance($designation, $montant, $devise, $description, $anneeAcadId, $idUser);
+                        // Créer le frais de soutenance ($estObligatoire isn't
+                        // read from the import sheet for this type, so left
+                        // at its default)
+                        $result = $universite->createFraisSoutenance($designation, $montant, $devise, $description, $anneeAcadId, $sectionId, true, $idUser);
                     }
                     
                     if ($result) {
@@ -528,7 +535,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
-                title:             }).then(() => {
+                title: 'Erreur',
+                text: 'ID du frais invalide.'
+            }).then(() => {
                 window.location.href = '../frais/configuration_frais?type_frais={$type_frais}';
             });
         </script>";
