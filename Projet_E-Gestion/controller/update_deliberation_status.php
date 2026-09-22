@@ -7,7 +7,7 @@ session_start();
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -30,7 +30,7 @@ $agentId = $agent->getAgentIdByUserId($userId);
 $isJuryPresident = $universite->isJuryPresident($agentId);
 
 if (!$isAdmin && !$isJuryPresident) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -49,7 +49,7 @@ $motifChangement = isset($_POST['motif_changement']) ? trim($_POST['motif_change
 
 // Validation des données
 if (!$deliberationId || !$nouveauStatut || !$motifChangement) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -64,7 +64,7 @@ if (!$deliberationId || !$nouveauStatut || !$motifChangement) {
 // Vérifier si l'utilisateur a les droits de modifier cette délibération
 $deliberation = $universite->getDeliberationById($deliberationId);
 if (!$deliberation) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -78,7 +78,7 @@ if (!$deliberation) {
 
 // Vérifier si le président du jury a le droit de modifier cette délibération
 if (!$isAdmin && $deliberation['statut'] === 'Publiée') {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -94,7 +94,7 @@ if (!$isAdmin && $deliberation['statut'] === 'Publiée') {
 if (!$isAdmin && $isJuryPresident) {
     $bureau = $universite->getJuryById($deliberation['idbureau']);
     if (!$bureau || $bureau['president_id'] != $agentId) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Accès refusé',
@@ -109,7 +109,7 @@ if (!$isAdmin && $isJuryPresident) {
 
 // Vérifier si un non-admin tente de mettre le statut à "Publiée"
 if (!$isAdmin && $nouveauStatut === 'Publiée') {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -131,7 +131,7 @@ try {
     );
     
     if ($result) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -141,7 +141,7 @@ try {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -152,7 +152,7 @@ try {
         </script>";
     }
 } catch (Exception $e) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

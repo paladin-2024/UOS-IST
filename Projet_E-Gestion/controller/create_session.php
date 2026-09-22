@@ -19,7 +19,7 @@ if (isset($_POST['addSessionBtn'])) {
     
     // Tentative de création
     if ($universite->createSession($designSession,$description)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -30,7 +30,7 @@ if (isset($_POST['addSessionBtn'])) {
         </script>";
         exit();
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

@@ -22,7 +22,7 @@ $date_paiement = isset($_POST['date_paiement']) ? trim($_POST['date_paiement']) 
 
 // Valider l'ID de recours
 if ($id_recours <= 0) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -46,7 +46,7 @@ try {
     $recours = $stmt_check->fetch(PDO::FETCH_ASSOC);
     
     if (!$recours) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -59,7 +59,7 @@ try {
     }
     
     if ($recours['statut'] !== 'En attente') {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'warning',
                 title: 'Attention',
@@ -104,7 +104,7 @@ try {
         $stmt_log->bindParam(':id_utilisateur', $_SESSION['id']);
         $stmt_log->execute();
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -114,7 +114,7 @@ try {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -125,7 +125,7 @@ try {
         </script>";
     }
 } catch (PDOException $e) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur de base de données',

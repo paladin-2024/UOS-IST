@@ -17,7 +17,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Vérification d'authentification
 if (!isset($_SESSION['id'])) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -31,7 +31,7 @@ if (!isset($_SESSION['id'])) {
 
 // Vérifier si un fichier a été téléchargé
 if (!isset($_FILES['excelFile']) || $_FILES['excelFile']['error'] !== UPLOAD_ERR_OK) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -88,7 +88,7 @@ try {
 
     // Vérifier que toutes les métadonnées sont présentes
     if (!$bureauId || !$promotionId || !$sessionId || !$anneeId) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -662,7 +662,7 @@ $ponderationExamen = $config ? $config['ponderation_ex'] : $ponderationsDefaut['
         $redirectUrl .= '&semestre=' . $semestreId;
     }
 
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'success',
             title: 'Import réussi',
@@ -682,7 +682,7 @@ $ponderationExamen = $config ? $config['ponderation_ex'] : $ponderationsDefaut['
     // Log l'erreur pour le débogage
     error_log("Erreur importation grille modifiable: " . $e->getMessage() . " - Fichier: " . $e->getFile() . " - Ligne: " . $e->getLine());
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur d\\'importation',

@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validation des données
     if ($idEcue <= 0 || $idAgent <= 0 || empty($poste) || $idAnneeAcad <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupérer l'UE associée à l'ECUE
     $ecueInfo = $ecueModel->getEcueById($idEcue);
     if (!$ecueInfo) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = $result ? 'L\'enseignant a été affecté avec succès.' : 'Une erreur est survenue lors de l\'affectation de l\'enseignant.';
     }
 
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',

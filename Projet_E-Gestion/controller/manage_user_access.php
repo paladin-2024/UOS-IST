@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Validation des champs requis
         if ($idAgent === 0 || $idUser === 0) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         $existingUser = $checkUserStmt->fetch(PDO::FETCH_ASSOC);
         if (!$existingUser) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Validation des champs requis pour la mise à jour
             if (empty($loginUser) || empty($roles)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $roleStmt->execute();
             
             if (!$roleStmt->fetch()) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $checkLoginStmt->execute();
             
             if ($checkLoginStmt->fetch()) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $successMessage .= "<br><strong>Nouveau mot de passe:</strong> " . htmlspecialchars($newPassword);
                 }
                 
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'success',
                         title: 'Succès',
@@ -180,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Vérifier que l'utilisateur connecté n'essaie pas de supprimer son propre accès
             if ($idUser == $_SESSION['id']) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 if ($deleteUserStmt->execute()) {
                     $connexion->commit();
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'success',
                             title: 'Succès',
@@ -239,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
 
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $connexion->rollback();
         }
         error_log("Erreur PDO dans manage_user_access.php: " . $e->getMessage());
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur de base de données',
@@ -270,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $connexion->rollback();
         }
         error_log("Erreur dans manage_user_access.php: " . $e->getMessage());
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

@@ -36,7 +36,7 @@ $userId = $_SESSION['id'];
 $idEnseignant = $enseignant->getAgentIdByUserId($userId);
 
 if (!$idEnseignant || !$enseignant->isUserEnseignant($userId)) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -53,7 +53,7 @@ $currentYear = $universite->getCurrentAcademicYear();
 
 // Vérifier que l'enseignant est autorisé à accéder à cet ECUE
 if (!$enseignant->isEnseignantAssignedToEcue($idEnseignant, $idEcue, $currentYear['idannee_acad'])) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -68,7 +68,7 @@ if (!$enseignant->isEnseignantAssignedToEcue($idEnseignant, $idEcue, $currentYea
 // Récupérer les détails de l'ECUE
 $ecueDetails = $ecue->getEcueById($idEcue);
 if (!$ecueDetails) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -83,7 +83,7 @@ if (!$ecueDetails) {
 // Récupérer toutes les évaluations pour cet ECUE
 $evaluations = $ecue->getEvaluationsByEcue($idEcue, $currentYear['idannee_acad']);
 if (empty($evaluations)) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'info',
             title: 'Information',
@@ -98,7 +98,7 @@ if (empty($evaluations)) {
 // Récupérer la liste des étudiants inscrits à ce cours
 $etudiants = $ecue->getStudentsByEcue($idEcue, $currentYear['idannee_acad']);
 if (empty($etudiants)) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'info',
             title: 'Information',

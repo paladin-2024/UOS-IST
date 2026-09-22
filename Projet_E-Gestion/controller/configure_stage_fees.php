@@ -9,7 +9,7 @@ $promotionId = isset($_POST['promotion_id']) ? intval($_POST['promotion_id']) : 
 $stageFees = isset($_POST['stage_fees']) ? $_POST['stage_fees'] : [];
 
 if ($promotionId <= 0) {
-echo "<script>
+echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
 Swal.fire({
 icon: 'error',
 title: 'Erreur',
@@ -27,7 +27,7 @@ try {
 // Set the required fees for the promotion
 $stage->setRequiredFeesForPromotion($promotionId, $stageFees);
 
-echo "<script>
+echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
 Swal.fire({
     icon: 'success',
     title: 'Succès',
@@ -37,7 +37,7 @@ Swal.fire({
 });
 </script>";
 } catch (Exception $e) {
-echo "<script>
+echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
 Swal.fire({
 icon: 'error',
 title: 'Erreur',

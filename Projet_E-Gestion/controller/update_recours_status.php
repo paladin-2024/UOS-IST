@@ -5,7 +5,7 @@ require_once dirname(__DIR__) . '/config/Connexion.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -19,7 +19,7 @@ if (!isset($_SESSION['id'])) {
 
 // Vérifier si les données nécessaires sont présentes
 if (!isset($_POST['id_recours']) || !isset($_POST['nouveau_statut'])) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -37,7 +37,7 @@ $nouveau_statut = $_POST['nouveau_statut'];
 // Valider le statut
 $statuts_valides = ['En attente', 'En traitement', 'Approuvé', 'Rejeté'];
 if (!in_array($nouveau_statut, $statuts_valides)) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -52,7 +52,7 @@ if (!in_array($nouveau_statut, $statuts_valides)) {
 // Vérifier les autorisations pour certaines actions
 if (($nouveau_statut == 'Approuvé' || $nouveau_statut == 'Rejeté') && 
     (!isset($_SESSION['role']) || ($_SESSION['role'] != 'Administrateur' && $_SESSION['role'] != 'Jury'))) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -141,7 +141,7 @@ try {
             break;
     }
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'success',
             title: 'Succès',
@@ -152,7 +152,7 @@ try {
     </script>";
     
 } catch (Exception $e) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

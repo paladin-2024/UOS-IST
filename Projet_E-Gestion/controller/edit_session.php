@@ -20,7 +20,7 @@ if (isset($_POST['editSessionBtn'])) {
     
     // Tentative de mise à jour
     if ($universite->updateSession($idsession, $designSession,$description)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -31,7 +31,7 @@ if (isset($_POST['editSessionBtn'])) {
         </script>";
         exit();
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

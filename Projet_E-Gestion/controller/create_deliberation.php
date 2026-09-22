@@ -7,7 +7,7 @@ session_start();
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -30,7 +30,7 @@ $agentId = $agent->getAgentIdByUserId($userId);
 $isJuryPresident = $universite->isJuryPresident($agentId);
 
 if (!$isAdmin && !$isJuryPresident) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -52,7 +52,7 @@ $commentaire = isset($_POST['commentaire']) ? trim($_POST['commentaire']) : '';
 
 // Validation des données
 if (!$bureauId || !$anneeId || !$sessionId || !$promotionId || !$dateDeliberation) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -76,7 +76,7 @@ if (!$isAdmin) {
     }
     
     if (!$hasAccess) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Accès refusé',
@@ -100,7 +100,7 @@ foreach ($promotions as $promotion) {
 }
 
 if (!$promotionExists) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -115,7 +115,7 @@ if (!$promotionExists) {
 // Vérifier s'il existe déjà une délibération pour cette promotion, session et année
 $existingDeliberation = $universite->getDeliberationByFilters($bureauId, $promotionId, $sessionId, $anneeId);
 if ($existingDeliberation) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'warning',
             title: 'Délibération existante',
@@ -140,7 +140,7 @@ try {
     );
     
     if ($result) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -150,7 +150,7 @@ try {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -161,7 +161,7 @@ try {
         </script>";
     }
 } catch (Exception $e) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

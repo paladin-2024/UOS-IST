@@ -19,7 +19,7 @@ switch ($action) {
         
         // Validation des données
         if (empty($dateSoutenance) || empty($lieu) || $idSujet <= 0) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -46,7 +46,7 @@ switch ($action) {
                 }
             }
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -56,7 +56,7 @@ switch ($action) {
                 });
             </script>";
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -79,7 +79,7 @@ switch ($action) {
         
         // Validation des données
         if (empty($designation) || $montant <= 0 || $idAnneeAcad <= 0) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -93,7 +93,7 @@ switch ($action) {
         
         // Ajouter le frais de soutenance
         if ($soutenance->addFraisSoutenance($designation, $montant, $devise, $description, $idAnneeAcad, $idUser)) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -103,7 +103,7 @@ switch ($action) {
                 });
             </script>";
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',

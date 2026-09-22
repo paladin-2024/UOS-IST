@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     
     // Validation des données obligatoires
     if (empty($designation) || $montant <= 0 || empty($devise) || $sectionId <= 0 || $anneeAcadId <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     $result = $universite->createFraisSoutenance($designation, $montant, $devise, $description, $anneeAcadId,$sectionId, $estObligatoire, $idUser);
     $message = $result ? 'Le frais de soutenance a été créé avec succès.' : 'Une erreur est survenue lors de la création du frais de soutenance.';
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     
     // Validation des données obligatoires
     if ($idFrais <= 0 || empty($designation) || $montant <= 0 || empty($devise) || $sectionId <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     $result = $universite->updateFraisSoutenance($idFrais, $designation, $montant, $devise, $description, $sectionId, $estObligatoire);
     $message = $result ? 'Le frais de soutenance a été modifié avec succès.' : 'Une erreur est survenue lors de la modification du frais de soutenance.';
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     
     // Validation des données obligatoires
     if ($etudiantId <= 0 || $fraisSoutenanceId <= 0 || $montantPaye <= 0 || empty($referencePaiement) || empty($modePaiement) || $anneeAcadId <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     $result = $universite->enregistrerPaiementSoutenance($fraisSoutenanceId, $etudiantId, $montantPaye, $referencePaiement, $modePaiement, $commentaire, $anneeAcadId, $idUser);
     $message = $result ? 'Le paiement a été enregistré avec succès.' : 'Une erreur est survenue lors de l\'enregistrement du paiement.';
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action']) && $_GET['acti
     $etudiantId = isset($_GET['etudiant']) ? intval($_GET['etudiant']) : 0;
     
     if ($idPaiement <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action']) && $_GET['acti
     $result = $universite->deletePaiementSoutenance($idPaiement);
     $message = $result ? 'Le paiement a été supprimé avec succès.' : 'Une erreur est survenue lors de la suppression du paiement.';
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     
     // Validation
     if ($idPaiement <= 0 || $montantPaye <= 0 || empty($referencePaiement) || empty($modePaiement)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     $result = $universite->updatePaiementSoutenance($idPaiement, $montantPaye, $referencePaiement, $modePaiement, $commentaire);
     
     if ($result) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -207,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         case 'create':
             // Validation des données obligatoires
             if (empty($designation) || $montant <= 0 || empty($devise) || $anneeAcadId <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -262,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $estObligatoire = isset($_POST['estObligatoire']) ? 1 : 0;
                 
                 if ($promotionId <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -288,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Récupération de l'ID du frais pour la modification
             $idFrais = isset($_POST['idFrais']) ? intval($_POST['idFrais']) : 0;
             if ($idFrais <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -302,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Validation des données obligatoires
             if (empty($designation) || $montant <= 0 || empty($devise)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -320,7 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $estObligatoire = isset($_POST['estObligatoire']) ? 1 : 0;
                 
                 if ($promotionId <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -346,7 +346,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Suppression du frais
             $idFrais = isset($_POST['idFrais']) ? intval($_POST['idFrais']) : 0;
             if ($idFrais <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -374,7 +374,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $promotionId = isset($_POST['promotion_import']) ? intval($_POST['promotion_import']) : 0;
                 
                 if ($promotionId <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -389,7 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $sectionId = isset($_POST['section_import']) ? intval($_POST['section_import']) : 0;
                 
                 if ($sectionId <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -404,7 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Vérifier si un fichier a été uploadé
             if (!isset($_FILES['fichier_import']) || $_FILES['fichier_import']['error'] !== UPLOAD_ERR_OK) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -469,7 +469,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
                 
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'success',
                         title: 'Importation terminée',
@@ -481,7 +481,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit();
                 
             } catch (Exception $e) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -495,7 +495,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
 
         default:
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -508,7 +508,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     // Affichage du message de résultat pour les actions principales
     if ($action != 'import') {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: '" . ($result ? 'success' : 'error') . "',
                 title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -525,7 +525,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $type_frais = $_GET['type'];
     
     if ($idFrais <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title:             }).then(() => {
@@ -543,7 +543,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = $result ? 'Le frais de soutenance a été supprimé avec succès.' : 'Une erreur est survenue lors de la suppression du frais de soutenance.';
     }
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',

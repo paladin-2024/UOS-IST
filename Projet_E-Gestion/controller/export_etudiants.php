@@ -31,7 +31,7 @@ $universite = new Universite();
 // Récupérer les informations de la promotion
 $promotionInfo = $universite->getPromotionById($promotionId);
 if (!$promotionInfo) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

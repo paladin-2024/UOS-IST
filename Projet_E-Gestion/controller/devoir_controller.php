@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Validation des données obligatoires
             if ($idECUE <= 0 || empty($titre) || empty($description) || empty($date_limite)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Gestion du fichier uploadé
             if (!isset($_FILES['fichier']) || $_FILES['fichier']['error'] !== UPLOAD_ERR_OK) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $uploadFile = $uploadDir . $fichier;
             
             if (!move_uploaded_file($_FILES['fichier']['tmp_name'], $uploadFile)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Validation des données obligatoires
             if ($idDevoir <= 0 || $idECUE <= 0 || empty($titre) || empty($description) || empty($date_limite)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Récupérer les informations actuelles du devoir
             $currentDevoir = $ecueModel->getAssignmentById($idDevoir);
             if (!$currentDevoir) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $uploadFile = $uploadDir . $fichier;
                 
                 if (!move_uploaded_file($_FILES['fichier']['tmp_name'], $uploadFile)) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Validation des données obligatoires
             if ($idReponse <= 0 || $idDevoir <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
             
         default:
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     // Affichage du message de résultat
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         case 'delete_assignment':
             // Validation des données
             if ($idDevoir <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -247,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Récupérer l'ECUE associé pour la redirection
             $devoir = $ecueModel->getAssignmentById($idDevoir);
             if (!$devoir) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -265,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $result = $ecueModel->deleteAssignment($idDevoir);
             $message = $result ? 'Le devoir a été supprimé avec succès.' : 'Une erreur est survenue lors de la suppression du devoir.';
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: '" . ($result ? 'success' : 'error') . "',
                     title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -281,7 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Validation des données
             if ($idReponse <= 0 || $idDevoir <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -297,7 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $result = $ecueModel->deleteAssignmentResponse($idReponse);
             $message = $result ? 'La réponse a été supprimée avec succès.' : 'Une erreur est survenue lors de la suppression de la réponse.';
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: '" . ($result ? 'success' : 'error') . "',
                     title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -309,7 +309,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
             
         default:
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',

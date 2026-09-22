@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Validation des données obligatoires
             if ($etudiantId <= 0 || $fraisId <= 0 || $montantPaye <= 0 || empty($referencePaiement) || empty($modePaiement) || $anneeAcadId <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $fraisModel->checkDuplicateReference($referencePaiement);
 
             if ($stmt) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Validation des données obligatoires
             if ($idPaiement <= 0 || $montantPaye <= 0 || empty($referencePaiement) || empty($modePaiement)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
             
         default:
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     // Affichage du message de résultat
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $fraisId = isset($_GET['frais']) ? intval($_GET['frais']) : 0;
     
     if ($idPaiement <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -169,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = $result ? 'Le paiement de soutenance a été supprimé avec succès.' : 'Une erreur est survenue lors de la suppression du paiement.';
     }
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '" . ($result ? 'success' : 'error') . "',
             title: '" . ($result ? 'Succès' : 'Erreur') . "',
