@@ -17,9 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $mois = isset($_POST['mois']) ? trim($_POST['mois']) : '';
     $joursPresence = isset($_POST['joursPresence']) ? intval($_POST['joursPresence']) : 0;
     $joursAbsence = isset($_POST['joursAbsence']) ? intval($_POST['joursAbsence']) : 0;
+    $joursRetard = isset($_POST['joursRetard']) ? intval($_POST['joursRetard']) : 0;
 
     if (empty($annee) || empty($mois) || $agentId <= 0 || $idPresence <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validate presence days do not exceed working days
     if ($joursPresence > $joursOuvrables) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -55,8 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $joursAbsence = $joursOuvrables - $joursPresence;
 
     // Update the presence record
-    if ($agent->updatePresence($idPresence, $annee, $mois, $joursPresence, $joursAbsence)) {
-        echo "<script>
+    // updatePresence() requires $joursRetard as a 6th, non-default parameter --
+    // this call used to omit it entirely (fatal ArgumentCountError on every
+    // invocation). Sourced from POST the same way the sibling create_presence.php
+    // does, defaulting to 0 since this form doesn't currently collect it either.
+    if ($agent->updatePresence($idPresence, $annee, $mois, $joursPresence, $joursAbsence, $joursRetard)) {
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -66,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
