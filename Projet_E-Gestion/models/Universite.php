@@ -583,11 +583,11 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
     }
     
 
-    public function createStudent($matricule, $noms, $lieuNaissance, $dateNaissance, $adressemail, $telephone, $sexe, $nationalite, $anneeAcadId, $promotionId, $idUser) {
+    public function createStudent($matricule, $noms, $lieuNaissance, $dateNaissance, $adressemail, $telephone, $sexe, $nationalite, $anneeAcadId, $promotionId, $idUser, $adresse = null, $personneContact = null, $telephoneContact = null) {
         $dateEnregistrement = date('Y-m-d H:i:s');
         $defaultPwd = password_hash("12345678", PASSWORD_BCRYPT);
-        $query = "INSERT INTO etudiant (matricule, noms, \"lieuNaissance\", \"dateNaissance\", adressemail, telephone, sexe, nationalite, pwd, \"dateEnregistrement\", annee_acad_idannee_acad, promotion_idpromotion, \"idUser\") 
-                  VALUES (:matricule, :noms, :lieuNaissance, :dateNaissance, :adressemail, :telephone, :sexe, :nationalite, :pwd, :dateEnregistrement, :anneeAcadId, :promotionId, :idUser)";
+        $query = "INSERT INTO etudiant (matricule, noms, \"lieuNaissance\", \"dateNaissance\", adressemail, telephone, sexe, nationalite, pwd, \"dateEnregistrement\", annee_acad_idannee_acad, promotion_idpromotion, \"idUser\", adresse, personne_contact, telephone_contact)
+                  VALUES (:matricule, :noms, :lieuNaissance, :dateNaissance, :adressemail, :telephone, :sexe, :nationalite, :pwd, :dateEnregistrement, :anneeAcadId, :promotionId, :idUser, :adresse, :personneContact, :telephoneContact)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':matricule', $matricule);
         $stmt->bindParam(':noms', $noms);
@@ -602,6 +602,9 @@ public function updatePromotion($promotionId, $designationPromotion, $cycle, $or
         $stmt->bindParam(':anneeAcadId', $anneeAcadId);
         $stmt->bindParam(':promotionId', $promotionId);
         $stmt->bindParam(':idUser', $idUser);
+        $stmt->bindParam(':adresse', $adresse);
+        $stmt->bindParam(':personneContact', $personneContact);
+        $stmt->bindParam(':telephoneContact', $telephoneContact);
         return $stmt->execute();
     }
 
@@ -6902,16 +6905,20 @@ public function getStudentsByPreparatoireClass($preparatoireClass) {
 }
 
 
-public function addPreparatoireStudent($matricule, $noms, $lieuNaissance, $dateNaissance, $adressemail, $telephone, $sexe, $nationalite, $anneeAcademique, $adresse, $personne_contact, $telephone_contact) {
+public function addPreparatoireStudent($matricule, $noms, $lieuNaissance, $dateNaissance, $adressemail, $telephone, $sexe, $nationalite, $anneeAcademique, $adresse, $personne_contact, $telephone_contact, $idUser = null) {
     try {
+        // etudiant_tempon has no "annee_academique" column (real column is
+        // annee_acad_idannee_acad) and "idUser" is NOT NULL but was never
+        // inserted -- both caused every call to fail (caught PDOException,
+        // silently returned false to the caller).
         $query = "INSERT INTO etudiant_tempon (
-                    matricule, noms, \"lieuNaissance\", \"dateNaissance\", adressemail, telephone, 
-                    sexe, nationalite, annee_academique, adresse, personne_contact, telephone_contact
+                    matricule, noms, \"lieuNaissance\", \"dateNaissance\", adressemail, telephone,
+                    sexe, nationalite, annee_acad_idannee_acad, adresse, personne_contact, telephone_contact, \"idUser\"
                   ) VALUES (
                     :matricule, :noms, :lieuNaissance, :dateNaissance, :adressemail, :telephone,
-                    :sexe, :nationalite, :anneeAcademique, :adresse, :personne_contact, :telephone_contact
+                    :sexe, :nationalite, :anneeAcademique, :adresse, :personne_contact, :telephone_contact, :idUser
                   )";
-        
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':matricule', $matricule);
         $stmt->bindParam(':noms', $noms);
@@ -6925,7 +6932,8 @@ public function addPreparatoireStudent($matricule, $noms, $lieuNaissance, $dateN
         $stmt->bindParam(':adresse', $adresse);
         $stmt->bindParam(':personne_contact', $personne_contact);
         $stmt->bindParam(':telephone_contact', $telephone_contact);
-        
+        $stmt->bindParam(':idUser', $idUser);
+
         return $stmt->execute();
     } catch (PDOException $e) {
         error_log("Erreur lors de l'ajout d'un étudiant préparatoire: " . $e->getMessage());

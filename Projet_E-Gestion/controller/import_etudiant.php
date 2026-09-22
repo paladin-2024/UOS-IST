@@ -366,17 +366,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
                  }
                  
                  // Create student
+                 // createStudent()'s signature is (..., $idUser, $adresse, $personneContact,
+                 // $telephoneContact) -- this call used to pass 14 args against an
+                 // (at the time) 11-param signature, which PHP silently allows (no
+                 // ArgumentCountError for excess args) and just drops the 3 extras
+                 // instead of throwing. createStudent() now accepts and persists
+                 // adresse/personne_contact/telephone_contact too.
                  $result = $universite->createStudent(
-                     $matricule, 
-                     $noms, 
-                     $lieuNaissance, 
-                     $dateNaissance, 
-                     $adressemail, 
-                     $telephone, 
-                     $sexe, 
-                     $nationalite, 
-                     $idAnnee, 
-                     $promotionId, 
+                     $matricule,
+                     $noms,
+                     $lieuNaissance,
+                     $dateNaissance,
+                     $adressemail,
+                     $telephone,
+                     $sexe,
+                     $nationalite,
+                     $idAnnee,
+                     $promotionId,
                      $idUser,
                      $adresse,
                      $personneContact,
@@ -401,6 +407,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
              else {
                  // Implement the logic for preparatory students
                  // This might involve a different method or table
+                 // addPreparatoireStudent() has no param in the $adresse slot for
+                 // $idUser -- it used to land there, shifting adresse/personneContact
+                 // one slot right and silently dropping telephoneContact entirely.
+                 // idUser is now a real (trailing, optional) param on the method.
                  $result = $universite->addPreparatoireStudent(
                      $matricule,
                      $noms,
@@ -411,10 +421,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
                      $sexe,
                      $nationalite,
                      $anneeAcademique,
-                     $idUser,
                      $adresse,
                      $personneContact,
-                     $telephoneContact
+                     $telephoneContact,
+                     $idUser
                  );
                  
                  if ($result) {
