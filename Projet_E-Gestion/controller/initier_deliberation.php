@@ -66,7 +66,15 @@ if ($existingDeliberation) {
 }
 
 // Créer une nouvelle délibération
-$deliberationId = $deliberation->createDeliberation($bureauId, $promotionId, $sessionId, $anneeId, $userId);
+// createDeliberation() is (bureauId, promotionId, sessionId, anneeAcadId, date,
+// commentaire, userId) -- the original call here was
+// createDeliberation($bureauId, $promotionId, $sessionId, $anneeId, $userId),
+// 5 args against 7 required params (fatal ArgumentCountError on every call),
+// with $anneeId/$userId landing in the wrong slots even once padded. This is
+// an "initiate now" action with no user-supplied date/comment, so those two
+// are filled with sensible defaults here; $anneeId (already validated above)
+// now goes into its real slot instead of being dropped.
+$deliberationId = $deliberation->createDeliberation($bureauId, $promotionId, $sessionId, $anneeId, date('Y-m-d'), '', $userId);
 
 if ($deliberationId) {
     // Initialiser les étapes du processus

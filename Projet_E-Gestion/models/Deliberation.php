@@ -548,23 +548,27 @@ class Deliberation
     }
 
     // Créer une nouvelle délibération
-    public function createDeliberation($bureauId, $promotionId, $sessionId, $date, $commentaire, $userId)
+    public function createDeliberation($bureauId, $promotionId, $sessionId, $anneeAcadId, $date, $commentaire, $userId)
     {
-        $query = "INSERT INTO deliberation (idbureau, idpromotion, session_idsession, date_deliberation, commentaire, statut, \"idUser\")
-                  VALUES (:bureauId, :promotionId, :sessionId, :date, :commentaire, 'En préparation', :userId)";
-        
+        // annee_acad_id is NOT NULL on the real (post-Postgres-migration) table but
+        // was missing from this INSERT entirely, causing an uncaught PDOException
+        // (SQLSTATE 23502) on every call.
+        $query = "INSERT INTO deliberation (idbureau, idpromotion, session_idsession, annee_acad_id, date_deliberation, commentaire, statut, \"idUser\")
+                  VALUES (:bureauId, :promotionId, :sessionId, :anneeAcadId, :date, :commentaire, 'En préparation', :userId)";
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':bureauId', $bureauId, PDO::PARAM_INT);
         $stmt->bindParam(':promotionId', $promotionId, PDO::PARAM_INT);
         $stmt->bindParam(':sessionId', $sessionId, PDO::PARAM_INT);
+        $stmt->bindParam(':anneeAcadId', $anneeAcadId, PDO::PARAM_INT);
         $stmt->bindParam(':date', $date);
         $stmt->bindParam(':commentaire', $commentaire);
         $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
-        
+
         if ($stmt->execute()) {
             return $this->db->lastInsertId();
         }
-        
+
         return false;
     }
 
