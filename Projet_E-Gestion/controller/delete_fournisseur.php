@@ -79,7 +79,7 @@ if (isset($_GET['id'])) {
         $logStmt->execute();
         
         // Redirection avec message de succès
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 title: 'Succès',
                 text: 'Le fournisseur a été supprimé avec succès.',
@@ -92,7 +92,7 @@ if (isset($_GET['id'])) {
         exit;
         
     } catch (Exception $e) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 title: 'Erreur',
                 text: '" . addslashes($e->getMessage()) . "',
@@ -106,7 +106,7 @@ if (isset($_GET['id'])) {
     }
 } else {
     // Redirection si accès direct au fichier
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             title: 'Erreur',
             text: 'Paramètre manquant',

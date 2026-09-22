@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Validation des données obligatoires
             if (empty($designation) || $ueId <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -64,7 +64,7 @@ case 'create_multiple':
     
     // Validation des données obligatoires
     if (empty($designation) || empty($ues)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -118,7 +118,7 @@ case 'create_multiple':
             
             // Validation des données obligatoires
             if ($idEcue <= 0 || empty($designation)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -145,7 +145,7 @@ case 'create_multiple':
             
             // Validation des données obligatoires
             if ($idECUE <= 0 || $idAgent <= 0 || empty($poste) || $anneeAcad <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -160,7 +160,7 @@ case 'create_multiple':
             // Vérifier si l'enseignant est déjà affecté à cet ECUE
             $existingTeacher = $ecueModel->checkTeacherAssignment($idECUE, $idAgent, $anneeAcad);
             if ($existingTeacher) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'warning',
                         title: 'Attention',
@@ -187,7 +187,7 @@ case 'create_multiple':
             
             // Validation des données obligatoires
             if ($idECUE <= 0 || empty($titre)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -220,7 +220,7 @@ case 'create_multiple':
             
             // Validation des données obligatoires
             if ($idpartie <= 0 || empty($titre) || empty($type_ressource)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -239,7 +239,7 @@ case 'create_multiple':
             if ($type_ressource === 'Lien') {
                 $lien_externe = isset($_POST['lien_externe']) ? trim($_POST['lien_externe']) : '';
                 if (empty($lien_externe)) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -253,7 +253,7 @@ case 'create_multiple':
             } else {
                 // Gestion du fichier uploadé
                 if (!isset($_FILES['fichier']) || $_FILES['fichier']['error'] !== UPLOAD_ERR_OK) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -276,7 +276,7 @@ case 'create_multiple':
                 $uploadFile = $uploadDir . $fichier;
                 
                 if (!move_uploaded_file($_FILES['fichier']['tmp_name'], $uploadFile)) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -305,7 +305,7 @@ case 'create_multiple':
             
             // Validation des données obligatoires
             if ($idECUE <= 0 || empty($titre)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -319,7 +319,7 @@ case 'create_multiple':
             
             // Gestion du fichier uploadé
             if (!isset($_FILES['fichier']) || $_FILES['fichier']['error'] !== UPLOAD_ERR_OK) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -342,7 +342,7 @@ case 'create_multiple':
             $uploadFile = $uploadDir . $fichier;
             
             if (!move_uploaded_file($_FILES['fichier']['tmp_name'], $uploadFile)) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -369,7 +369,7 @@ case 'create_multiple':
             
             // Vérifier si un fichier a été uploadé
             if (!isset($_FILES['fichier_import']) || $_FILES['fichier_import']['error'] !== UPLOAD_ERR_OK) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -422,7 +422,7 @@ case 'create_multiple':
                     }
                 }
                 
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'success',
                         title: 'Importation terminée',
@@ -434,7 +434,7 @@ case 'create_multiple':
                 exit();
                 
             } catch (Exception $e) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -457,7 +457,7 @@ case 'create_multiple':
                 
                 // Validation des données obligatoires
                 if ($idPartie <= 0 || $idECUE <= 0 || empty($titre)) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -477,7 +477,7 @@ case 'create_multiple':
             
             
         default:
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -491,7 +491,7 @@ case 'create_multiple':
     
     // Affichage du message de résultat pour les actions principales (sauf import qui a son propre message)
     if ($action != 'import') {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: '" . ($result ? 'success' : 'error') . "',
                 title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -512,7 +512,7 @@ case 'create_multiple':
         case 'delete':
             // Validation des données
             if ($idEcue <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -528,7 +528,7 @@ case 'create_multiple':
             $result = $ecueModel->deleteEcue($idEcue);
             $message = $result ? 'L\'ECUE a été supprimé avec succès.' : 'Une erreur est survenue lors de la suppression de l\'ECUE.';
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: '" . ($result ? 'success' : 'error') . "',
                     title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -544,7 +544,7 @@ case 'create_multiple':
             
             // Validation des données
             if ($idEnseignantEcue <= 0 || $idEcue <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -560,7 +560,7 @@ case 'create_multiple':
             $result = $ecueModel->removeTeacherFromEcue($idEnseignantEcue);
             $message = $result ? 'L\'enseignant a été retiré avec succès.' : 'Une erreur est survenue lors du retrait de l\'enseignant.';
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: '" . ($result ? 'success' : 'error') . "',
                     title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -576,7 +576,7 @@ case 'create_multiple':
             
             // Validation des données
             if ($idPartie <= 0 || $idEcue <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -592,7 +592,7 @@ case 'create_multiple':
             $result = $ecueModel->deleteChapter($idPartie);
             $message = $result ? 'Le chapitre a été supprimé avec succès.' : 'Une erreur est survenue lors de la suppression du chapitre.';
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: '" . ($result ? 'success' : 'error') . "',
                     title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -609,7 +609,7 @@ case 'create_multiple':
             // Récupérer les informations de la ressource pour connaître l'ECUE associé
             $ressource = $ecueModel->getResourceById($idRessource);
             if (!$ressource) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -629,7 +629,7 @@ case 'create_multiple':
             $result = $ecueModel->deleteResource($idRessource);
             $message = $result ? 'La ressource a été supprimée avec succès.' : 'Une erreur est survenue lors de la suppression de la ressource.';
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: '" . ($result ? 'success' : 'error') . "',
                     title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -645,7 +645,7 @@ case 'create_multiple':
             
             // Validation des données
             if ($idSupport <= 0 || $idEcue <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -661,7 +661,7 @@ case 'create_multiple':
             $result = $ecueModel->deleteSupport($idSupport);
             $message = $result ? 'Le support a été supprimé avec succès.' : 'Une erreur est survenue lors de la suppression du support.';
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: '" . ($result ? 'success' : 'error') . "',
                     title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -673,7 +673,7 @@ case 'create_multiple':
             break;
             
         default:
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',

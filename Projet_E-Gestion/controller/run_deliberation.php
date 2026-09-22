@@ -7,7 +7,7 @@ require_once dirname(__DIR__) . '/models/Deliberation.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['id'])) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -28,7 +28,7 @@ $isAdmin = isset($_SESSION['idRole']) && $_SESSION['idRole'] == 1;
 $isJuryPresident = $universite->isJuryPresident($agentId);
 
 if (!$isAdmin && !$isJuryPresident) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -42,7 +42,7 @@ if (!$isAdmin && !$isJuryPresident) {
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -66,7 +66,7 @@ $etapes = isset($_POST['etapes']) ? $_POST['etapes'] : [];
 
 // Vérifier si tous les paramètres nécessaires sont présents
 if (!$deliberationId || !$bureauId || !$promotionId || !$sessionId || !$anneeId || !$typeDeliberation || empty($etapes)) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -80,7 +80,7 @@ if (!$deliberationId || !$bureauId || !$promotionId || !$sessionId || !$anneeId 
 
 // Vérifier si le type de délibération est valide
 if ($typeDeliberation === 'semestre' && !$semestreId) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -103,7 +103,7 @@ $deliberation = new Deliberation();
 // Initialiser le processus de délibération
 $processId = $deliberation->initializeProcess($deliberationId, $userId);
 if (!$processId) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

@@ -16,12 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if ($idPresence <= 0) throw new Exception('Identifiant présence invalide.');
         $agentModel->deleteDailyPresence($idPresence);
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({ icon:'success', title:'Supprimé' }).then(()=>{ window.location.href='../grh/agent.pres.add';});
         </script>";
         exit();
     } catch (Exception $e) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({ icon:'error', title:'Erreur', text:'" . addslashes($e->getMessage()) . "' }).then(()=>{ window.location.href='../grh/agent.pres.add';});
         </script>";
         exit();

@@ -29,7 +29,7 @@ if ($agentId) {
 
 // Rediriger si l'utilisateur n'a pas les droits
 if (!$isAdmin && !$isJuryPresident) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -48,7 +48,7 @@ $anneeId = isset($_GET['annee']) ? intval($_GET['annee']) : 0;
 
 // Validation des paramètres
 if ($idBureau && (!$isAdmin && !$universite->isAgentJuryPresident($agentId, $idBureau))) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Valider que l'utilisateur a le droit de configurer ce jury
     if (!$isAdmin && !$universite->isAgentJuryPresident($agentId, $idBureau)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $universite->saveDeliberationConfig($configParams);
     
     if ($result) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

@@ -22,12 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $csv = implode(',', $jours);
         $agentModel = new Agent();
         $agentModel->savePresenceConfig($csv, $heure_debut . ':00', $heure_fin . ':00', $tolerance, $pause_debut ? $pause_debut . ':00' : null, $pause_fin ? $pause_fin . ':00' : null, $_SESSION['id']);
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({ icon:'success', title:'Configuration enregistrée' }).then(()=>{ window.location.href='../grh/presence.config'; });
         </script>";
         exit();
     } catch (Exception $e) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({ icon:'error', title:'Erreur', text:'" . addslashes($e->getMessage()) . "' }).then(()=>{ window.location.href='../grh/presence.config'; });
         </script>";
         exit();

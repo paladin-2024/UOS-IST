@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idPerm'])) {
 
     // Vérifier si les champs requis sont remplis
     if (empty($idPerm) || empty($idMod)  || empty($codePerm) || empty($nomPerm) || empty($descPerm)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idPerm'])) {
           );
          
          // Message de succès
-         echo "<script>
+         echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
              Swal.fire({
                  icon: 'success',
                  title: 'Succès',
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idPerm'])) {
          );
          
          // Message d'erreur en cas d'échec
-         echo "<script>
+         echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
              Swal.fire({
                  icon: 'error',
                  title: 'Erreur',

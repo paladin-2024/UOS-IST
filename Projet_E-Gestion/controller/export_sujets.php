@@ -35,7 +35,7 @@ $stmt->execute();
 $anneeInfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$anneeInfo) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -100,7 +100,7 @@ if ($isAdmin) {
     $userSections = array_values(array_unique(array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN))));
     
     if (empty($userSections)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Accès refusé',

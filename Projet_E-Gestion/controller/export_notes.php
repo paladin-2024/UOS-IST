@@ -31,7 +31,7 @@ $idDevoir = intval($_POST['idDevoir']);
 // Récupérer les détails du devoir
 $devoir = $ecue->getAssignmentById($idDevoir);
 if (!$devoir) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

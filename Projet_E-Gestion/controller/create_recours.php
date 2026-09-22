@@ -31,7 +31,7 @@ $statut = ($est_paye == 1) ? 'En traitement' : 'En attente';
 
 // Valider les données obligatoires
 if (empty($matricule) || $id_ecue <= 0 || $id_session <= 0 || $id_annee_acad <= 0 || empty($motif)) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -53,7 +53,7 @@ $stmt_etudiant->bindParam(':matricule', $matricule);
 $stmt_etudiant->execute();
 
 if ($stmt_etudiant->rowCount() == 0) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -80,7 +80,7 @@ $stmt_check->bindParam(':id_annee_acad', $id_annee_acad);
 $stmt_check->execute();
 
 if ($stmt_check->rowCount() > 0) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'warning',
             title: 'Attention',
@@ -101,7 +101,7 @@ if (isset($_FILES['preuve']) && $_FILES['preuve']['error'] == 0) {
     
     // Vérifier l'extension et la taille
     if (!in_array(strtolower($filetype), $allowed)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -114,7 +114,7 @@ if (isset($_FILES['preuve']) && $_FILES['preuve']['error'] == 0) {
     }
     
     if ($_FILES['preuve']['size'] > 5 * 1024 * 1024) { // 5MB
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -139,7 +139,7 @@ if (isset($_FILES['preuve']) && $_FILES['preuve']['error'] == 0) {
     if (move_uploaded_file($_FILES['preuve']['tmp_name'], $upload_dir . $new_filename)) {
         $preuve = 'uploads/recours/' . $new_filename;
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -182,7 +182,7 @@ try {
             ? 'Le recours a été enregistré avec succès et est en traitement.' 
             : 'Le recours a été enregistré avec succès et est en attente de paiement.';
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -192,7 +192,7 @@ try {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -203,7 +203,7 @@ try {
         </script>";
     }
 } catch (PDOException $e) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur de base de données',
