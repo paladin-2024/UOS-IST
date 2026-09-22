@@ -497,7 +497,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
              }
              $combinedHtml .= $errorMessage;
              
-             echo "<script>
+             echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                      Swal.fire({
                          icon: 'warning',
                          title: 'Importation partielle',
@@ -517,7 +517,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
              
              $resultHtml .= $reEnrollmentMessage;
              
-             echo "<script>
+             echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                      Swal.fire({
                          icon: 'success',
                          title: 'Importation réussie',
@@ -528,7 +528,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['importStudentBtn'])) 
                    </script>";
          }
      } catch (Exception $e) {
-         echo "<script>
+         echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                  Swal.fire({
                      icon: 'error',
                      title: 'Erreur d\'importation',

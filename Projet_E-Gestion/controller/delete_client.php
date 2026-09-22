@@ -91,7 +91,7 @@ if (isset($_GET['id'])) {
         $logStmt->execute();
         
         // Rediriger avec un message
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 title: 'Succès',
                 text: '$message',
@@ -106,7 +106,7 @@ if (isset($_GET['id'])) {
         exit;
         
     } catch (Exception $e) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 title: 'Erreur',
                 text: '" . addslashes($e->getMessage()) . "',
@@ -120,7 +120,7 @@ if (isset($_GET['id'])) {
     }
 } else {
     // Redirection si pas d'ID
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             title: 'Erreur',
             text: 'ID client non spécifié',

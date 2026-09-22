@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             case 'update':
                 // Validation des données obligatoires uniquement pour création et modification
                 if (empty($intitule) || empty($cycle) || $idSpecialisation <= 0 || $anneeAcadId <= 0 || $idUser <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Vérifier si l'utilisateur peut accéder à cette spécialisation
                 if (!isSpecialisationAccessible($pdo, $idSpecialisation, $userSections, $hasFullAccess)) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Accès refusé',
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     // Récupération de l'ID du sujet pour la modification
                     $idSujet = isset($_POST['idsujets']) ? intval($_POST['idsujets']) : 0;
                     if ($idSujet <= 0) {
-                        echo "<script>
+                        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Erreur',
@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     // Vérifier si l'utilisateur peut modifier ce sujet
                     if (!isSubjectAccessible($pdo, $idSujet, $userSections, $hasFullAccess)) {
-                        echo "<script>
+                        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Accès refusé',
@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Validation des données
                 if ($idSujet <= 0 || empty($intitule) || $idSpecialisation <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -221,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $idEnseignant = $stmt->fetchColumn();
 
                 if (!$idEnseignant) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -262,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $result = false;
                 }
 
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: '" . ($result ? 'success' : 'error') . "',
                         title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -278,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Suppression du sujet
                 $idSujet = isset($_POST['idsujets']) ? intval($_POST['idsujets']) : 0;
                 if ($idSujet <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -292,7 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 // Vérifier si l'utilisateur peut supprimer ce sujet
                 if (!isSubjectAccessible($pdo, $idSujet, $userSections, $hasFullAccess)) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Accès refusé',
@@ -311,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $taskCount = $stmtCheckTasks->fetchColumn();
                 
                 if ($taskCount > 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -346,7 +346,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $idValidateur = $stmtAgent->fetchColumn();
                 
                 if (!$idValidateur) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -361,7 +361,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Récupération de l'ID du sujet
                 $idSujet = isset($_POST['idsujets']) ? intval($_POST['idsujets']) : 0;
                 if ($idSujet <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -380,7 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $etudiantId = isset($_POST['etudiant']) && !empty($_POST['etudiant']) ? intval($_POST['etudiant']) : null;
                     
                     if (!$directeurId || !$etudiantId) {
-                        echo "<script>
+                        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Validation impossible',
@@ -417,7 +417,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 $message = $result ? 'Le statut du sujet a été mis à jour avec succès.' : 'Une erreur est survenue lors de la mise à jour du statut.';
                 
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: '" . ($result ? 'success' : 'error') . "',
                         title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -431,7 +431,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
             default:
                 // Action non reconnue
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -448,7 +448,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Déterminer la page de redirection selon l'action
             $redirect = ($action == 'update2') ? '../recherche/projet.recherche' : '../recherche/affectation';
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: '" . ($result ? 'success' : 'error') . "',
                     title: '" . ($result ? 'Succès' : 'Erreur') . "',
@@ -461,7 +461,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
     } catch (PDOException $e) {
         // Gestion des erreurs de base de données
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur de base de données',
@@ -474,7 +474,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 } else {
     // Méthode HTTP non autorisée
     header('HTTP/1.1 405 Method Not Allowed');
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

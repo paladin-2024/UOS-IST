@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userId = $_SESSION['id']; // Example: Retrieve user ID from session
 
     if (empty($dateElaboration) || empty($libelle) || $serviceId <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($etatDeBesoinId) {
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

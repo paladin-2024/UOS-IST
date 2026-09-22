@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editResearchUnitBtn'])
     
     // Validation des données
     if (empty($idUniteRecherche) || empty($designationUR) || empty($idSections)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editResearchUnitBtn'])
         $db->commit();
         
         // Redirection avec succès
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editResearchUnitBtn'])
         error_log("Erreur lors de la modification de l'unité de recherche: " . $e->getMessage());
         
         // Redirection avec erreur
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editResearchUnitBtn'])
     }
 } else {
     // Redirection si méthode non autorisée
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

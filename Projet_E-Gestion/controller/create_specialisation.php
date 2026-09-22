@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Validation des données
     if (empty($designation) || empty($idUniteRecherche) || empty($idOrientations)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $message .= " (sauf pour $errorCount orientation(s) où elle existait déjà)";
             }
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 });
             </script>";
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'warning',
                     title: 'Attention',
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $db->rollBack();
         error_log("Erreur lors de la création de la spécialisation: " . $e->getMessage());
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </script>";
     }
 } else {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

@@ -5,7 +5,7 @@ require_once dirname(__DIR__) . '/config/Connexion.php';
 require_once dirname(__DIR__) . '/models/Banque.php';
 
 function redirectToBankList($message, $type = 'error') {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: '$type',
             title: '" . ucfirst($type) . "',

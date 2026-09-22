@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validate required fields
     if ($fournisseurId <= 0 || empty($dateFacture) || $montant <= 0 || empty($numeroFacture)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Check for future date
     if (strtotime($dateFacture) > time()) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Check for duplicate invoice number within the same supplier
     if ($structure->checkDuplicateFournisseurInvoice($numeroFacture, $fournisseurId)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Insert the new supplier invoice using the model
     if ($structure->addSupplierInvoice($dateFacture, $montant, $motif, $numeroFacture, $statut, $userId, $fournisseurId)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Credit the VAT account with the VAT amount
             $structure->addJournalAutomatique($dateOperation, $compteTVA, $libelleCompteTVA, $montantTVA, 0, $libele, $numPiece, $structureId,$userId);
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </script>";
         }
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

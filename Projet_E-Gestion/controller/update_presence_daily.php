@@ -33,13 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $agentModel->updateDailyPresence($idPresence, $fullArrivee, $fullDepart, $commentaire, $userId);
         $pdo->commit();
 
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({ icon:'success', title:'Mise à jour effectuée' }).then(()=>{ window.location.href='../grh/agent.pres.add';});
         </script>";
         exit();
     } catch (Exception $e) {
         if ($pdo->inTransaction()) { $pdo->rollBack(); }
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({ icon:'error', title:'Erreur', text:'" . addslashes($e->getMessage()) . "' }).then(()=>{ window.location.href='../grh/agent.pres.add';});
         </script>";
         exit();

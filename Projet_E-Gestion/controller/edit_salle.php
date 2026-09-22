@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idSalle']) && isset($_
     $designation = trim($_POST['designationSalle']);
 
     if (empty($designation)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idSalle']) && isset($_
 
     // Mise à jour de la salle
     if ($universite->updateSalle($id, $designation)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idSalle']) && isset($_
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

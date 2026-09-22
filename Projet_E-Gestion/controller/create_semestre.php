@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Validation des données
     if (empty($numeroSemestre)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $promotions = isset($_POST['promotions']) ? $_POST['promotions'] : [];
         
         if (empty($promotions)) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $message .= " $errorCount erreur(s) rencontrée(s).";
             }
             
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 });
             </script>";
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $promotionId = isset($_POST['promotion_idpromotion']) ? intval($_POST['promotion_idpromotion']) : 0;
         
         if ($promotionId <= 0) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $result = $universite->createSemestre($numeroSemestre, $promotionId);
         
         if ($result) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 });
             </script>";
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',

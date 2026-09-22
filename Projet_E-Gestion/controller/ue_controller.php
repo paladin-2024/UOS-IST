@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         case 'create':
             // Validation des données obligatoires
             if (empty($codeUE) || empty($designationUE) || $semestre_idsemestre <= 0 || $anneeAcadId <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Récupération de l'ID de l'UE pour la modification
             $idUE = isset($_POST['idUE']) ? intval($_POST['idUE']) : 0;
             if ($idUE <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Validation des données obligatoires
             if (empty($codeUE) || empty($designationUE) || $semestre_idsemestre <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         case 'create_multiple':
             // Validation des données obligatoires
             if (empty($codeUE) || empty($designationUE) || !isset($_POST['semestres']) || empty($_POST['semestres'])) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Suppression de l'UE
                 $idUE = isset($_POST['idUE']) ? intval($_POST['idUE']) : 0;
                 if ($idUE <= 0) {
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $skipHeader = isset($_POST['skip_header']) ? (bool)$_POST['skip_header'] : false;
             
             if ($semestre_id <= 0) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Vérifier si un fichier a été uploadé
             if (!isset($_FILES['fichier_import']) || $_FILES['fichier_import']['error'] !== UPLOAD_ERR_OK) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -212,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
                 
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'success',
                         title: 'Importation terminée',
@@ -224,7 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit();
                 
             } catch (Exception $e) {
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
 
         default:
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -251,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     // Affichage du message de résultat pour les actions principales
     if ($action != 'import') {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: '" . ($result ? 'success' : 'error') . "',
                 title: '" . ($result ? 'Succès' : 'Erreur') . "',

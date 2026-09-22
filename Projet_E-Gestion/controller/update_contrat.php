@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Check if the ID is valid
     if ($idContratAgent <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validate required fields
     if (empty($designation) || empty($typeContrat) || empty($dateDebut) || $serviceId <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Check if the service exists
     if (!$service->getServiceById($serviceId)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'edit') {
         // Call the function to update the contract
         if ($agent->updateContract($idContratAgent, $designation, $typeContrat, $dateDebut, $dateFin, $fonction, $salaireDeBase, $transport, $logement, $anciennete)) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 });
             </script>";
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }else{
         // Call the function to update the contract
         if ($agent->updateContract($idContratAgent, $designation, $typeContrat, $dateDebut, $dateFin, $fonction, $salaireDeBase, $transport, $logement, $anciennete)) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 });
             </script>";
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',

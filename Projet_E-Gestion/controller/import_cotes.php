@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Vérifier l'authentification
 if (!isset($_SESSION['id'])) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Accès refusé',
@@ -31,7 +31,7 @@ $promotionId = isset($_POST['promotionId']) ? intval($_POST['promotionId']) : 0;
 $bureauId = isset($_POST['bureauId']) ? intval($_POST['bureauId']) : 0;
 
 if ($ecueId <= 0 || $sessionId <= 0 || $anneeId <= 0 || $promotionId <= 0) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -64,7 +64,7 @@ try {
     // Récupérer les détails de l'ECUE
     $ecueDetails = $ecue->getEcueById($ecueId);
     if (!$ecueDetails) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -86,7 +86,7 @@ try {
         $hasAccess = $universite->canAgentAccessPromotion($agentId, $promotionId);
         
         if (!$hasAccess) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Accès refusé',
@@ -101,7 +101,7 @@ try {
     
     // Vérifier si un fichier a été téléchargé
     if (!isset($_FILES['excelFile']) || $_FILES['excelFile']['error'] !== UPLOAD_ERR_OK) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -127,7 +127,7 @@ try {
     
     // Vérifier si le fichier correspond aux paramètres de la requête
     if ($fileEcueId != $ecueId || $fileSessionId != $sessionId || $fileAnneeId != $anneeId) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -296,7 +296,7 @@ try {
     $bureauId = isset($_POST['bureauId']) ? intval($_POST['bureauId']) : 0;
     $semestreId = isset($_POST['semestreId']) ? intval($_POST['semestreId']) : 0;
     
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
     Swal.fire({
         icon: 'success',
         title: 'Succès',
@@ -312,7 +312,7 @@ try {
     });
 </script>";
 } catch (Exception $e) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',

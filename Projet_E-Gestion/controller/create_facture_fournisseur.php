@@ -526,7 +526,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $db->commit();
         
         // Rediriger avec un message de succès
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 title: 'Succès',
                 text: 'La facture fournisseur a été créée avec succès.',
@@ -544,7 +544,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Annuler la transaction en cas d'erreur
         $db->rollBack();
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 title: 'Erreur',
                 text: '" . addslashes($e->getMessage()) . "',
@@ -560,7 +560,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 } else {
     // Redirection si accès direct au fichier
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             title: 'Erreur',
             text: 'Accès non autorisé',

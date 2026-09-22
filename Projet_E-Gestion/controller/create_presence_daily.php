@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $agentModel->addDailyPresence($agentId, $datePresence, $fullArrivee, $fullDepart, $commentaire, $userId, $ip, $ua);
         $pdo->commit();
 
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Présence enregistrée',
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     } catch (Exception $e) {
         if ($pdo->inTransaction()) { $pdo->rollBack(); }
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

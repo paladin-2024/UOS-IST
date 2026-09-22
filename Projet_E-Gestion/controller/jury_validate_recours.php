@@ -19,7 +19,7 @@ elseif (($action == 'valider' || $action == 'rejeter') && isset($_POST['ids_reco
     processBulkResponseValidation($ids_recours, $action);
 }
 else {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -237,7 +237,7 @@ function processSingleResponseValidation($id_reponse, $action) {
         
         // Rediriger avec message de succès
         $message = $action == 'valider' ? 'validée' : 'rejetée';
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -251,7 +251,7 @@ function processSingleResponseValidation($id_reponse, $action) {
         // Annuler la transaction en cas d'erreur
         $conn->rollBack();
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -481,7 +481,7 @@ function processBulkResponseValidation($ids_reponse, $action) {
         
         if (count($errors) > 0) {
             $error_msg = "Traitement terminé avec " . count($errors) . " erreurs: <br>" . implode("<br>", $errors);
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'warning',
                     title: 'Traitement avec erreurs',
@@ -493,7 +493,7 @@ function processBulkResponseValidation($ids_reponse, $action) {
             </script>";
         } else {
             $message = $action == 'valider' ? 'validés' : 'rejetés';
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -508,7 +508,7 @@ function processBulkResponseValidation($ids_reponse, $action) {
         // Annuler la transaction en cas d'erreur
         $conn->rollBack();
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

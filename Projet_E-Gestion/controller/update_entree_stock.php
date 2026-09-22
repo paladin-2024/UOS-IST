@@ -242,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Valider la transaction
         $db->commit();
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -258,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db->rollBack();
         }
         
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

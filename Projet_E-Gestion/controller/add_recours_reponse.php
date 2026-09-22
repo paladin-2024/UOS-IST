@@ -43,7 +43,7 @@ $filter_url = !empty($filter_params) ? '?' . implode('&', $filter_params) : '';
 
 // Valider les données
 if ($id_recours <= 0 || empty($commentaire)) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -67,7 +67,7 @@ if (!$id_enseignant) {
     if ($agent) {
         $id_enseignant = $agent['idAgent'];
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -83,7 +83,7 @@ if (!$id_enseignant) {
 // Vérifier si les notes sont dans la plage valide
 if (($nouvelle_note_cc !== null && ($nouvelle_note_cc < 0 || $nouvelle_note_cc > 20)) || 
     ($nouvelle_note_ex !== null && ($nouvelle_note_ex < 0 || $nouvelle_note_ex > 20))) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -193,7 +193,7 @@ try {
         
         $fromJury = isset($_POST['reponse_jury']) && $_POST['reponse_jury'] == 1;
 
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -206,7 +206,7 @@ try {
         </script>";
 
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -217,7 +217,7 @@ try {
         </script>";
     }
 } catch (PDOException $e) {
-    echo "<script>
+    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
         Swal.fire({
             icon: 'error',
             title: 'Erreur de base de données',

@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $messageClass = $result['success'] ? 'success' : 'error';
                 $redirectUrl = "../?view=recherche/depot_soutenance";
                 
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: '" . ($result['success'] ? 'success' : 'error') . "',
                         title: '" . ($result['success'] ? 'Succès' : 'Erreur') . "',
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $messageClass = $result['success'] ? 'success' : 'error';
                 $redirectUrl = "../?view=recherche/depot_soutenance";
                 
-                echo "<script>
+                echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                     Swal.fire({
                         icon: '" . ($result['success'] ? 'success' : 'error') . "',
                         title: '" . ($result['success'] ? 'Succès' : 'Erreur') . "',
@@ -188,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } else {
                     $redirectUrl = "../?view=recherche/depot_soutenance&tab=soutenances";
                     
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: '" . ($result['success'] ? 'success' : 'error') . "',
                             title: '" . ($result['success'] ? 'Succès' : 'Erreur') . "',
@@ -228,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $messageClass = $result['success'] ? 'success' : 'error';
                     $redirectUrl = "../?view=recherche/gestion_jurys";
                     
-                    echo "<script>
+                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                         Swal.fire({
                             icon: '" . ($result['success'] ? 'success' : 'error') . "',
                             title: '" . ($result['success'] ? 'Succès' : 'Erreur') . "',
@@ -297,7 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     $messageClass = $result['success'] ? 'success' : 'error';
                                     $redirectUrl = "../?view=recherche/mes_soutenances";
                                     
-                                    echo "<script>
+                                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                                         Swal.fire({
                                             icon: '" . ($result['success'] ? 'success' : 'error') . "',
                                             title: '" . ($result['success'] ? 'Succès' : 'Erreur') . "',
@@ -365,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     $messageClass = $result['success'] ? 'success' : 'error';
                                     $redirectUrl = "../?view=recherche/mes_soutenances";
                                     
-                                    echo "<script>
+                                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                                         Swal.fire({
                                             icon: '" . ($result['success'] ? 'success' : 'error') . "',
                                             title: '" . ($result['success'] ? 'Succès' : 'Erreur') . "',
@@ -432,7 +432,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     $messageClass = $result['success'] ? 'success' : 'error';
                                     $redirectUrl = "../?view=recherche/jury_soutenances";
                                     
-                                    echo "<script>
+                                    echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                                         Swal.fire({
                                             icon: '" . ($result['success'] ? 'success' : 'error') . "',
                                             title: '" . ($result['success'] ? 'Succès' : 'Erreur') . "',
@@ -503,7 +503,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     } else {
                                         $redirectUrl = "../?view=recherche/depot_soutenance&tab=soutenances";
                                         
-                                        echo "<script>
+                                        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                                             Swal.fire({
                                                 icon: '" . ($result['success'] ? 'success' : 'error') . "',
                                                 title: '" . ($result['success'] ? 'Succès' : 'Erreur') . "',

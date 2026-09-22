@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validation des champs requis
     if (empty($noms) || empty($dateNaissance) || $idStructure <= 0 || empty($type_agent) || $idAgent <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Vérifier si l'agent existe
     $agentExists = $agent->getAgentById($idAgent);
     if (!$agentExists) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Vérifier si la structure existe
     $structureExists = $structure->checkStructureExists($idStructure);
     if (!$structureExists) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($grade_id !== null) {
         $gradeInfo = $grade->getGradeById($grade_id);
         if (!$gradeInfo) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Vérifier que le grade correspond au type d'agent
         if ($gradeInfo['type_agent'] !== $type_agent) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($idService !== null) {
         $serviceInfo = $service->getServiceById($idService);
         if (!$serviceInfo) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Vérifier que le service appartient à la structure sélectionnée
         if ($serviceInfo['Structure_idStructure'] != $idStructure) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Créer une ressource image à partir de la chaîne de données
         $imageResource = imagecreatefromstring($imageData);
         if (!$imageResource) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (imagejpeg($imageResource, $filePath, 60)) { // 90 est la qualité de l'image (0-100)
             $photoPath = '../uploads/agents/' . $fileName;
         } else {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -199,7 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Appeler la fonction de mise à jour d'agent
     if ($agent->updateAgent($idAgent, $noms, $lieuNaissance, $dateNaissance, $sexe, $etatCivil, $niveauEtude, $telephone, $email, $codeAgent, $matricule, $type_agent, $grade_id, $fileName, $idStructure, $idService)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

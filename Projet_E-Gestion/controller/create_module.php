@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validation du champ nomMod
     if (empty($nomMod) || empty($package)) {
         // Message d'erreur si le nom est vide
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Vérifier les doublons pour le nom du module
     if ($module->checkDuplicateModule($nomMod, $package)) {
         // Message d'erreur pour le doublon
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
         
         // Redirection avec succès et message Swal
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
         
         // Message d'erreur avec Swal
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($visiteId) || empty($nomVisiteur) || empty($telephoneVisiteur) || 
         empty($agentId) || empty($serviceId) || empty($dateVisite) || 
         empty($heureDebut) || empty($heureFin) || empty($objetVisite)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validation des heures
     if ($heureDebut >= $heureFin) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $visiteExistante = $stmtCheck->fetch(PDO::FETCH_ASSOC);
         
         if (!$visiteExistante) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $conflicts = $stmtConflict->fetch(PDO::FETCH_ASSOC);
         
         if ($conflicts['conflicts'] > 0) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'warning',
                     title: 'Conflit détecté',
@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmtHistorique->execute([$visiteId, $visiteExistante['statut_visite'], $statutVisite, $userId]);
             }
 
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'success',
                     title: 'Succès',
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
     } catch (Exception $e) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',

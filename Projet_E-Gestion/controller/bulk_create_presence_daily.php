@@ -70,13 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = "Enregistrés: $saved, doublons: $skippedDup";
         if ($errors > 0) { $msg .= ", erreurs: $errors"; }
 
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({ icon:'success', title:'Encodage terminé', text: '" . $msg . "' }).then(()=>{ window.location.href='../grh/agent.pres.add'; });
         </script>";
         exit();
     } catch (Exception $e) {
         if ($pdo->inTransaction()) { $pdo->rollBack(); }
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({ icon:'error', title:'Erreur', text:'" . addslashes($e->getMessage()) . "' }).then(()=>{ window.location.href='../grh/agent.pres.add'; });
         </script>";
         exit();

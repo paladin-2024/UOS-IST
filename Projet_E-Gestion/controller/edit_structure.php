@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Vérifier si l'ID est valide
     if ($id <= 0) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Validation des champs requis
     if (empty($designation) || empty($adresse)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Déplacer le fichier téléchargé dans le dossier uploads
         if (!move_uploaded_file($logo['tmp_name'], $logoPath)) {
-            echo "<script>
+            echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Appeler la fonction d'édition de la structure
     if ($structure->updateStructure($id, $designation, $adresse, $phone1, $phone2, $siteweb, $logoName, $joursOuvrables, $IPR, $tauxRetenuAbsence, $nJoursRecouvrement)) {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'success',
                 title: 'Succès',
@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             });
         </script>";
     } else {
-        echo "<script>
+        echo "<!DOCTYPE html><body><script src=\"../assets/js/sweetalert.min.js\"></script><script>
             Swal.fire({
                 icon: 'error',
                 title: 'Erreur',
