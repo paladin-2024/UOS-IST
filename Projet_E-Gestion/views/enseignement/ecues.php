@@ -8,17 +8,13 @@ $enseignant = new Enseignant();
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $ueId = isset($_GET['ue']) ? intval($_GET['ue']) : 0;
 
-// Vérifier si l'UE existe
+// Cette page n'a de sens que pour une UE précise -- elle ne peut pas être
+// reliée directement depuis un menu (c'était le cas via une entrée de
+// sidebar orpheline, voir deploy/migrations -- supprimée car cette page a
+// toujours exigé un ?ue=). Pas d'erreur alarmante ici : on redirige en
+// silence vers la liste des UE, qui est le vrai point d'entrée.
 if ($ueId <= 0) {
-    echo "<script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Erreur',
-            text: 'Unité d\'enseignement non spécifiée.'
-        }).then(() => {
-            window.location.href = '?view=enseignement/unites_enseignement';
-        });
-    </script>";
+    echo "<script>window.location.href = '?view=enseignement/unites_enseignement';</script>";
     exit;
 }
 
